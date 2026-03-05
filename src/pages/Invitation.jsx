@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
+import { useState, useEffect, useRef } from "react"
 
 const WEDDING = {
   groom: "Marc",
@@ -87,6 +88,28 @@ export default function Invitation() {
   const guestName = searchParams.get("gn") || ""
   const numPersons = parseInt(searchParams.get("np") || "1")
 
+  // Music
+const audioRef = useRef(null)
+const [playing, setPlaying] = useState(false)
+
+const startMusic = () => {
+  if (audioRef.current) {
+    audioRef.current.play()
+    setPlaying(true)
+  }
+}
+
+const toggleMusic = () => {
+  if (!audioRef.current) return
+  if (playing) {
+    audioRef.current.pause()
+    setPlaying(false)
+  } else {
+    audioRef.current.play()
+    setPlaying(true)
+  }
+}
+
   useEffect(() => {
     if (guestName) setName(guestName)
     if (numPersons) setPersons(numPersons)
@@ -113,7 +136,25 @@ export default function Invitation() {
     return (
       <div className="min-h-screen bg-[#0d0a08] flex flex-col items-center justify-center text-center px-6 cursor-pointer relative overflow-hidden"
         style={{ background: "radial-gradient(ellipse at 50% 30%, #3d2314 0%, #0d0a08 70%)" }}
-        onClick={() => setStarted(true)}>
+        onClick={() => {
+                      setStarted(true)
+                      setTimeout(() => startMusic(), 500)
+        }}>
+          {/* Hidden audio player */}
+          <audio ref={audioRef} loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" />
+
+          {/* Floating music button — only shows after started */}
+          {started && (
+              <motion.button
+                  onClick={toggleMusic}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1 }}
+                  className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-[#c9a96e] text-black flex items-center justify-center shadow-lg hover:bg-[#b8965d] transition"
+              > 
+            {playing ? "🔇" : "🎵"}
+            </motion.button>
+          )}
         <Petals />
         <motion.div className="relative z-10"
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.5 }}>
