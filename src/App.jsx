@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { HashRouter, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { getAuth, onAuthStateChanged } from "firebase/auth"
 import Invitation from "./pages/Invitation"
 import Admin from "./pages/Admin"
@@ -20,7 +20,7 @@ export default function App() {
   }, [])
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Invitation />} />
         <Route path="/admin/login" element={
@@ -32,6 +32,6 @@ export default function App() {
           </ProtectedRoute>
         } />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   )
 }
