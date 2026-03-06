@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { getAuth, onAuthStateChanged } from "firebase/auth"
 import Landing from "./pages/Landing"
 import Invitation from "./pages/Invitation"
+import Invitation2 from "./pages/Invitation2"
 import Admin from "./pages/Admin"
 import Login from "./pages/Login"
 
@@ -25,6 +26,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/demo" element={<Invitation />} />
+        <Route path="/demo2" element={<Invitation2 />} />
         <Route path="/admin/login" element={user ? <Navigate to="/admin" /> : <Login />} />
         <Route path="/admin" element={<ProtectedRoute user={user}><Admin /></ProtectedRoute>} />
       </Routes>
