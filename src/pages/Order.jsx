@@ -15,7 +15,7 @@ const templates = [
   { id: "rosegold", name: "Rose Gold & Blush", preview: "🌸", desc: "Romantic blush pink tones", link: "/demo3" },
 ]
 
-const steps = ["Package", "Template", "Details", "Confirm"]
+const steps = ["Package", "Template", "Details", "Contact", "Payment"]
 
 export default function Order() {
   const [step, setStep] = useState(0)
@@ -49,7 +49,7 @@ export default function Order() {
         createdAt: serverTimestamp()
       })
       // WhatsApp notification
-      const msg = `🎉 New Order on Lumivite!\n📦 ${form.package.toUpperCase()} Package\n🎨 ${form.template} Template\n💒 ${form.groomName} & ${form.brideName}\n📅 ${form.weddingDate}\n👤 Client: ${form.yourName}\n📞 ${form.yourPhone}`
+      const msg = `🎉 New Order on Lumivite!\n📦 ${form.package.toUpperCase()} Package — ${packages.find(p => p.id === form.package)?.price}\n🎨 ${form.template} Template\n💒 ${form.groomName} & ${form.brideName}\n📅 ${form.weddingDate}\n👤 Client: ${form.yourName}\n📞 ${form.yourPhone}\n⚠️ Awaiting payment confirmation!`
       fetch(`https://api.callmebot.com/whatsapp.php?phone=${import.meta.env.VITE_CALLMEBOT_PHONE}&text=${encodeURIComponent(msg)}&apikey=${import.meta.env.VITE_CALLMEBOT_APIKEY}`, { mode: "no-cors" }).catch(() => {})
       setStatus("success")
     } catch (e) {
@@ -291,75 +291,224 @@ export default function Order() {
             </motion.div>
           )}
 
-          {/* STEP 3 - Contact & Confirm */}
-          {step === 3 && (
-            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <h2 className="font-serif text-3xl font-light text-center mb-2">Your Contact Info</h2>
-              <p className="text-white/40 text-center text-sm mb-10">We'll reach you on WhatsApp within 24 hours</p>
+          {/* STEP 3 - Contact */}
+      {step === 3 && (
+      <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+      <h2 className="font-serif text-3xl font-light text-center mb-2">Your Contact Info</h2>
+      <p className="text-white/40 text-center text-sm mb-10">We'll reach you on WhatsApp within 24 hours</p>
+      <div className="space-y-4 mb-8">
+      {[
+        ["Your Full Name", "yourName", "text", "Sarah Abboud"],
+        ["WhatsApp Number", "yourPhone", "tel", "+961 71 234 567"],
+        ["Email (optional)", "yourEmail", "email", "sarah@email.com"],
+      ].map(([label, key, type, ph]) => (
+        <div key={key}>
+          <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{label}</label>
+          <input value={form[key]} onChange={e => update(key, e.target.value)}
+            type={type} placeholder={ph}
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition" />
+        </div>
+      ))}
+      <div>
+        <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">Additional Notes (optional)</label>
+        <textarea value={form.notes} onChange={e => update("notes", e.target.value)}
+          placeholder="Any special requests..." rows={3}
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
+      </div>
+    </div>
 
-              <div className="space-y-4 mb-8">
-                {[
-                  ["Your Full Name", "yourName", "text", "Sarah Abboud"],
-                  ["WhatsApp Number", "yourPhone", "tel", "+961 71 234 567"],
-                  ["Email (optional)", "yourEmail", "email", "sarah@email.com"],
-                ].map(([label, key, type, ph]) => (
-                  <div key={key}>
-                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{label}</label>
-                    <input value={form[key]} onChange={e => update(key, e.target.value)}
-                      type={type} placeholder={ph}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition" />
-                  </div>
-                ))}
-                <div>
-                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">Additional Notes (optional)</label>
-                  <textarea value={form.notes} onChange={e => update("notes", e.target.value)}
-                    placeholder="Any special requests or questions..." rows={3}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
-                </div>
-              </div>
+              {/* Mini Order Summary */}
+          <div className="bg-white/3 border border-white/10 rounded-2xl p-5 mb-8">
+          <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-3">Order Summary</p>
+          <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+          <span className="text-white/50">Package</span>
+          <span className="text-white capitalize">{form.package} — {packages.find(p => p.id === form.package)?.price}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-white/50">Template</span>
+          <span className="text-white">{templates.find(t => t.id === form.template)?.name}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-white/50">Couple</span>
+          <span className="text-white">{form.groomName} & {form.brideName}</span>
+        </div>
+        <div className="border-t border-white/10 pt-2 mt-2 flex justify-between">
+          <span className="text-white/50">Total Due</span>
+          <span className="font-bold text-xl text-[#c9a96e]">{packages.find(p => p.id === form.package)?.price}</span>
+        </div>
+      </div>
+    </div>
 
-              {/* Order Summary */}
-              <div className="bg-white/3 border border-white/10 rounded-2xl p-6 mb-8">
-                <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">Order Summary</p>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-white/50">Package</span>
-                    <span className="text-white font-medium capitalize">{form.package} — {packages.find(p => p.id === form.package)?.price}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-white/50">Template</span>
-                    <span className="text-white font-medium">{templates.find(t => t.id === form.template)?.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-white/50">Couple</span>
-                    <span className="text-white font-medium">{form.groomName} & {form.brideName}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-white/50">Date</span>
-                    <span className="text-white font-medium">{form.weddingDate}</span>
-                  </div>
-                  <div className="border-t border-white/10 pt-2 mt-2 flex justify-between">
-                    <span className="text-white/50">Total</span>
-                    <span className="font-semibold text-lg" style={{ color: "#c9a96e" }}>
-                      {packages.find(p => p.id === form.package)?.price}
-                    </span>
-                  </div>
-                </div>
-              </div>
+    <div className="flex gap-3">
+      <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">
+        ← Back
+      </button>
+      <button onClick={() => setStep(4)}
+        disabled={!form.yourName || !form.yourPhone}
+        className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
+        style={{ background: "#c9a96e" }}>
+        Continue to Payment →
+      </button>
+    </div>
+  </motion.div>
+  )}
 
-              <div className="flex gap-3">
-                <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">
-                  ← Back
-                </button>
-                <button onClick={handleSubmit}
-                  disabled={!form.yourName || !form.yourPhone || status === "loading"}
-                  className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
-                  style={{ background: "#c9a96e" }}>
-                  {status === "loading" ? "Submitting..." : "Place Order 🎉"}
-                </button>
-              </div>
-            </motion.div>
-          )}
+          {/* STEP 4 - Payment */}
+{step === 4 && (
+  <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+    <h2 className="font-serif text-3xl font-light text-center mb-2">Complete Payment</h2>
+    <p className="text-white/40 text-center text-sm mb-10">Choose your preferred payment method</p>
+
+    {/* Amount Due */}
+    <div className="text-center mb-8">
+      <p className="text-white/40 text-sm mb-1">Total Due</p>
+      <p className="font-serif text-5xl font-light text-[#c9a96e]">
+        {packages.find(p => p.id === form.package)?.price}
+      </p>
+      <p className="text-white/30 text-xs mt-1 capitalize">{form.package} Package · {templates.find(t => t.id === form.template)?.name}</p>
+    </div>
+
+    {/* Payment Methods */}
+    <div className="grid gap-4 mb-8">
+
+      {/* OMT */}
+      <div className="bg-white/3 border border-white/10 rounded-2xl p-6 hover:border-[#c9a96e]/30 transition">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center text-xl">🏧</div>
+          <div>
+            <p className="font-medium text-white">OMT Transfer</p>
+            <p className="text-white/40 text-xs">Cash transfer via OMT</p>
+          </div>
+        </div>
+        <div className="bg-white/5 rounded-xl p-4 space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span className="text-white/40">Recipient Name</span>
+            <span className="text-white font-medium">Saadallah Mhanna</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-white/40">Phone Number</span>
+            <div className="flex items-center gap-2">
+              <span className="text-white font-medium">+961 71 444 328</span>
+              <button onClick={() => { navigator.clipboard.writeText("96171444328"); alert("Copied!") }}
+                className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-2 py-0.5 hover:bg-[#c9a96e]/10 transition">
+                Copy
+              </button>
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-white/40">Amount</span>
+            <span className="text-[#c9a96e] font-bold">{packages.find(p => p.id === form.package)?.price}</span>
+          </div>
+        </div>
+        <p className="text-white/30 text-xs mt-3">After sending, click "I've Paid" below and we'll confirm within 1 hour.</p>
+      </div>
+
+      {/* Bank Transfer */}
+<div className="bg-white/3 border border-white/10 rounded-2xl p-6 hover:border-[#c9a96e]/30 transition">
+  <div className="flex items-center gap-3 mb-4">
+    <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-xl">🏦</div>
+    <div>
+      <p className="font-medium text-white">Bank Card Transfer</p>
+      <p className="text-white/40 text-xs">Transfer directly to Blom Bank card</p>
+    </div>
+  </div>
+  <div className="bg-white/5 rounded-xl p-4 space-y-2 text-sm">
+    <div className="flex justify-between">
+      <span className="text-white/40">Bank</span>
+      <span className="text-white font-medium">Blom Bank</span>
+    </div>
+    <div className="flex justify-between items-center">
+      <span className="text-white/40">Card Number</span>
+      <div className="flex items-center gap-2">
+        <span className="text-white font-mono text-xs">4870 5220 7425 8478</span>
+        <button onClick={() => { navigator.clipboard.writeText("4870522074258478"); alert("Copied!") }}
+          className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-2 py-0.5 hover:bg-[#c9a96e]/10 transition">
+          Copy
+        </button>
+      </div>
+    </div>
+    <div className="flex justify-between">
+      <span className="text-white/40">Name on Card</span>
+      <span className="text-white font-medium">SAADALLAH MHANNA</span>
+    </div>
+    <div className="flex justify-between">
+      <span className="text-white/40">Amount</span>
+      <span className="text-[#c9a96e] font-bold">{packages.find(p => p.id === form.package)?.price}</span>
+    </div>
+  </div>
+  <p className="text-white/30 text-xs mt-3">Use your name + wedding date as transfer reference.</p>
+</div>
+
+          {/* Whish Money */}
+<div className="bg-white/3 border border-white/10 rounded-2xl p-6 hover:border-[#c9a96e]/30 transition">
+  <div className="flex items-center gap-3 mb-4">
+    <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center text-xl">💜</div>
+    <div>
+      <p className="font-medium text-white">Whish Money</p>
+      <p className="text-white/40 text-xs">Send via Whish Money app</p>
+    </div>
+  </div>
+  <div className="bg-white/5 rounded-xl p-4 space-y-2 text-sm">
+    <div className="flex justify-between">
+      <span className="text-white/40">Whish Number</span>
+      <div className="flex items-center gap-2">
+        <span className="text-white font-medium">+961 71 444 328</span>
+        <button onClick={() => { navigator.clipboard.writeText("96171444328"); alert("Copied!") }}
+          className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-2 py-0.5 hover:bg-[#c9a96e]/10 transition">
+          Copy
+        </button>
+      </div>
+    </div>
+    <div className="flex justify-between">
+      <span className="text-white/40">Name</span>
+      <span className="text-white font-medium">SAADALLAH MHANNA</span>
+    </div>
+    <div className="flex justify-between">
+      <span className="text-white/40">Amount</span>
+      <span className="text-[#c9a96e] font-bold">{packages.find(p => p.id === form.package)?.price}</span>
+    </div>
+  </div>
+  <p className="text-white/30 text-xs mt-3">Open Whish app → Send Money → enter number above → confirm amount.</p>
+</div>
+
+
+      {/* WhatsApp Pay / Cash */}
+      <div className="bg-white/3 border border-white/10 rounded-2xl p-6 hover:border-[#c9a96e]/30 transition">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center text-xl">💬</div>
+          <div>
+            <p className="font-medium text-white">WhatsApp / Cash</p>
+            <p className="text-white/40 text-xs">Arrange payment directly with us</p>
+          </div>
+        </div>
+        <a href={`https://wa.me/96171444328?text=${encodeURIComponent(`Hi! I just placed an order for ${form.groomName} & ${form.brideName}'s wedding invitation (${form.package} package). I'd like to arrange payment. Total: ${packages.find(p => p.id === form.package)?.price}`)}`}
+          target="_blank" rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-medium text-white transition text-sm"
+          style={{ background: "#25D366" }}>
+          💬 Message Us on WhatsApp
+        </a>
+      </div>
+
+    </div>
+
+    {/* Confirm Payment Button */}
+    <div className="flex gap-3">
+      <button onClick={() => setStep(3)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">
+        ← Back
+      </button>
+      <button onClick={handleSubmit} disabled={status === "loading"}
+        className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
+        style={{ background: "#c9a96e" }}>
+        {status === "loading" ? "Submitting..." : "✅ I've Paid — Place Order"}
+      </button>
+    </div>
+
+    <p className="text-white/20 text-xs text-center mt-4">
+      Your order will be confirmed after payment verification. We'll contact you on WhatsApp within 1 hour.
+    </p>
+  </motion.div>
+)}
 
         </AnimatePresence>
       </div>
