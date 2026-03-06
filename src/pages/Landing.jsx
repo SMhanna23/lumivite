@@ -130,28 +130,62 @@ export default function Landing() {
 
       {/* Demo Preview */}
       <section className="py-24 px-6 text-center">
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-3">See It In Action</p>
-          <h2 className="font-serif text-4xl font-light mb-4">A Real Invitation</h2>
-          <p className="text-white/40 mb-8 text-sm">Click to open a live demo invitation</p>
-          <a href="/demo" className="inline-block">
-            <div className="relative mx-auto max-w-xs rounded-3xl overflow-hidden border border-white/10 shadow-2xl hover:scale-105 transition duration-500"
-              style={{ background: "radial-gradient(ellipse at 50% 0%, #3d2314, #0d0a08)" }}>
-              <div className="p-12 text-center">
-                <p className="text-[#c9a96e] text-xs tracking-widest uppercase mb-4">You're invited</p>
-                <p className="font-serif text-4xl font-light mb-1">Christopher</p>
-                <p className="text-[#c9a96e] text-2xl font-serif italic">&</p>
-                <p className="font-serif text-4xl font-light mb-6">Joelle</p>
-                <div className="flex gap-2 justify-center mb-4">
-                  {["00", "12", "45", "30"].map((v, i) => (
-                    <div key={i} className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center text-sm font-bold">{v}</div>
-                  ))}
-                </div>
-                <p className="text-white/30 text-xs">TAP TO OPEN</p>
-              </div>
+      <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+      <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-3">Choose Your Style</p>
+      <h2 className="font-serif text-4xl font-light mb-4">Two Stunning Templates</h2>
+      <p className="text-white/40 mb-12 text-sm">Click any template to see a live demo</p>
+      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+
+      {/* Template 1 - Dark Luxury */}
+      <a href="/demo" className="group block">
+        <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}
+          className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl"
+          style={{ background: "radial-gradient(ellipse at 50% 0%, #3d2314, #0d0a08)" }}>
+          <div className="p-10 text-center">
+            <p className="text-[#c9a96e] text-xs tracking-widest uppercase mb-4">You're invited</p>
+            <p className="font-serif text-4xl font-light text-white mb-1">Marc</p>
+            <p className="text-[#c9a96e] text-2xl font-serif italic">&</p>
+            <p className="font-serif text-4xl font-light text-white mb-6">Mariana</p>
+            <div className="flex gap-2 justify-center mb-4">
+              {["198","03","00","34"].map((v,i) => (
+                <div key={i} className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center text-sm font-bold text-white">{v}</div>
+              ))}
             </div>
-          </a>
+            <p className="text-white/30 text-xs tracking-widest">TAP TO OPEN</p>
+          </div>
+          <div className="bg-black/30 py-3 px-6 flex items-center justify-between">
+            <span className="text-[#c9a96e] text-sm font-medium">Dark Luxury</span>
+            <span className="text-white/40 text-xs group-hover:text-[#c9a96e] transition">View Demo →</span>
+          </div>
         </motion.div>
+      </a>
+
+      {/* Template 2 - Botanical */}
+      <a href="/demo2" className="group block">
+        <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}
+          className="rounded-3xl overflow-hidden border border-[#4a7c59]/20 shadow-2xl"
+          style={{ background: "linear-gradient(135deg, #f5f0e8, #e8f0e9)" }}>
+          <div className="p-10 text-center">
+            <p className="text-[#4a7c59] text-xs tracking-widest uppercase mb-4 font-medium">You're invited</p>
+            <p className="text-4xl font-light text-[#2d3a2e] mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Christopher</p>
+            <p className="text-[#4a7c59] text-2xl italic" style={{ fontFamily: "'Cormorant Garamond', serif" }}>&</p>
+            <p className="text-4xl font-light text-[#2d3a2e] mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Joelle</p>
+            <div className="flex gap-2 justify-center mb-4">
+              {["198","03","00","34"].map((v,i) => (
+                <div key={i} className="w-12 h-12 bg-[#4a7c59]/10 border border-[#4a7c59]/30 rounded-lg flex items-center justify-center text-sm font-bold text-[#2d5a3d]">{v}</div>
+              ))}
+            </div>
+            <p className="text-[#4a7c59]/40 text-xs tracking-widest">TAP TO OPEN</p>
+          </div>
+          <div className="bg-[#4a7c59]/10 py-3 px-6 flex items-center justify-between border-t border-[#4a7c59]/10">
+            <span className="text-[#4a7c59] text-sm font-medium">Botanical Garden</span>
+            <span className="text-[#4a7c59]/40 text-xs group-hover:text-[#4a7c59] transition">View Demo →</span>
+          </div>
+        </motion.div>
+        </a>
+
+      </div>
+      </motion.div>
       </section>
 
       {/* Features */}
