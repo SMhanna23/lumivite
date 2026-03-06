@@ -17,6 +17,12 @@ const WEDDING = {
   quoteRef: "1 John 4:19",
   venue: "Feytroun, Lebanon",
   message: "Request the honor of your presence at the wedding of their son and daughter",
+
+  registry: [
+  { name: "Wish Money", icon: "💳", desc: "Contribute to our honeymoon fund", link: "https://www.wishmoney.io", color: "#c9a96e" },
+  { name: "ABC Store", icon: "🎁", desc: "Browse our gift registry", link: "https://www.abc.com.lb", color: "#c9a96e" },
+  { name: "Bank Transfer", icon: "🏦", desc: "iban: LB62 0099 0000 0001 0019 2000 9123", link: null, color: "#c9a96e" },
+],
 }
 
 function Countdown({ targetDate }) {
@@ -310,6 +316,50 @@ export default function Invitation() {
           </div>
         </motion.div>
       </section>
+
+      {/* Gift Registry */}
+<section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
+  <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+    <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">With Love</p>
+    <h2 className="font-serif text-4xl font-light text-center mb-4">Gift Registry</h2>
+    <p className="text-white/40 text-sm text-center mb-12">Your presence is our greatest gift. If you wish to honor us further:</p>
+    <div className="grid gap-4">
+      {WEDDING.registry.map((item, i) => (
+        <motion.div key={i}
+          initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
+          {item.link ? (
+            <a href={item.link} target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-5 p-5 rounded-2xl border border-white/10 bg-white/3 hover:border-[#c9a96e]/40 hover:bg-white/5 transition group">
+              <div className="w-12 h-12 rounded-xl bg-[#c9a96e]/10 flex items-center justify-center text-2xl flex-shrink-0">
+                {item.icon}
+              </div>
+              <div className="flex-1 text-left">
+                <p className="font-medium text-white">{item.name}</p>
+                <p className="text-white/40 text-sm">{item.desc}</p>
+              </div>
+              <span className="text-[#c9a96e] text-sm opacity-0 group-hover:opacity-100 transition">→</span>
+            </a>
+          ) : (
+            <div className="flex items-center gap-5 p-5 rounded-2xl border border-white/10 bg-white/3">
+              <div className="w-12 h-12 rounded-xl bg-[#c9a96e]/10 flex items-center justify-center text-2xl flex-shrink-0">
+                {item.icon}
+              </div>
+              <div className="flex-1 text-left">
+                <p className="font-medium text-white">{item.name}</p>
+                <p className="text-white/40 text-sm font-mono text-xs mt-0.5">{item.desc}</p>
+              </div>
+              <button onClick={() => navigator.clipboard.writeText(item.desc.replace("iban: ", ""))}
+                className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">
+                Copy
+              </button>
+            </div>
+          )}
+        </motion.div>
+      ))}
+    </div>
+  </motion.div>
+</section>
 
       {/* RSVP */}
       <section className="py-24 px-6 max-w-md mx-auto text-center relative z-10">
