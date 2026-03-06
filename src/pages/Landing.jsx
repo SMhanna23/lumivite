@@ -134,7 +134,7 @@ export default function Landing() {
       <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-3">Choose Your Style</p>
       <h2 className="font-serif text-4xl font-light mb-4">Two Stunning Templates</h2>
       <p className="text-white/40 mb-12 text-sm">Click any template to see a live demo</p>
-      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
 
       {/* Template 1 - Dark Luxury */}
       <a href="/demo" className="group block">
@@ -189,7 +189,7 @@ export default function Landing() {
       </section>
       
       {/* Template 3 - Rose Gold */}
-  <a href="/demo3" className="group block md:col-span-2 lg:col-span-1">
+  <a href="/demo3" className="group block">
     <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}
       className="rounded-3xl overflow-hidden shadow-2xl"
       style={{ background: "linear-gradient(160deg, #FDF6F0, #F9E0E0, #F5D5D5)", border: "1px solid rgba(183,110,121,0.2)" }}>
