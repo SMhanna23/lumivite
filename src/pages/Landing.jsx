@@ -184,35 +184,36 @@ export default function Landing() {
         </motion.div>
         </a>
 
+
+      {/* Template 3 - Rose Gold */}
+      <a href="/demo3" className="group block">
+        <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}
+          className="rounded-3xl overflow-hidden shadow-2xl"
+          style={{ background: "linear-gradient(160deg, #FDF6F0, #F9E0E0, #F5D5D5)", border: "1px solid rgba(183,110,121,0.2)" }}>
+          <div className="p-10 text-center">
+            <p className="text-xs tracking-widest uppercase mb-4 font-medium" style={{ color: "#B76E79" }}>You're invited</p>
+            <p className="text-4xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#5C2D35" }}>Christopher</p>
+            <p className="text-2xl italic" style={{ color: "#B76E79", fontFamily: "'Cormorant Garamond', serif" }}>&</p>
+            <p className="text-4xl font-light mb-6" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#5C2D35" }}>Joelle</p>
+            <div className="flex gap-2 justify-center mb-4">
+              {["198","03","00","34"].map((v,i) => (
+                <div key={i} className="w-12 h-12 rounded-lg flex items-center justify-center text-sm font-light"
+                  style={{ background: "rgba(183,110,121,0.12)", border: "1px solid rgba(183,110,121,0.35)", color: "#8B4D3B" }}>{v}</div>
+              ))}
+            </div>
+            <p className="text-xs tracking-widest opacity-40" style={{ color: "#B76E79" }}>TAP TO OPEN</p>
+          </div>
+          <div className="py-3 px-6 flex items-center justify-between"
+            style={{ background: "rgba(183,110,121,0.08)", borderTop: "1px solid rgba(183,110,121,0.12)" }}>
+            <span className="text-sm font-medium" style={{ color: "#B76E79" }}>Rose Gold & Blush</span>
+            <span className="text-xs transition group-hover:opacity-100" style={{ color: "rgba(183,110,121,0.5)" }}>View Demo →</span>
+          </div>
+        </motion.div>
+      </a>
+
       </div>
       </motion.div>
       </section>
-      
-      {/* Template 3 - Rose Gold */}
-  <a href="/demo3" className="group block">
-    <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}
-      className="rounded-3xl overflow-hidden shadow-2xl"
-      style={{ background: "linear-gradient(160deg, #FDF6F0, #F9E0E0, #F5D5D5)", border: "1px solid rgba(183,110,121,0.2)" }}>
-      <div className="p-10 text-center">
-        <p className="text-xs tracking-widest uppercase mb-4 font-medium" style={{ color: "#B76E79" }}>You're invited</p>
-        <p className="text-4xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#5C2D35" }}>Christopher</p>
-        <p className="text-2xl italic" style={{ color: "#B76E79", fontFamily: "'Cormorant Garamond', serif" }}>&</p>
-        <p className="text-4xl font-light mb-6" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#5C2D35" }}>Joelle</p>
-        <div className="flex gap-2 justify-center mb-4">
-        {["198","03","00","34"].map((v,i) => (
-          <div key={i} className="w-12 h-12 rounded-lg flex items-center justify-center text-sm font-light"
-            style={{ background: "rgba(183,110,121,0.12)", border: "1px solid rgba(183,110,121,0.35)", color: "#8B4D3B" }}>{v}</div>
-        ))}
-      </div>
-      <p className="text-xs tracking-widest opacity-40" style={{ color: "#B76E79" }}>TAP TO OPEN</p>
-    </div>
-    <div className="py-3 px-6 flex items-center justify-between"
-      style={{ background: "rgba(183,110,121,0.08)", borderTop: "1px solid rgba(183,110,121,0.12)" }}>
-      <span className="text-sm font-medium" style={{ color: "#B76E79" }}>Rose Gold & Blush</span>
-      <span className="text-xs transition" style={{ color: "rgba(183,110,121,0.5)" }}>View Demo →</span>
-    </div>
-    </motion.div>
-    </a>
 
       {/* Features */}
       <section className="py-24 px-6 max-w-5xl mx-auto">
