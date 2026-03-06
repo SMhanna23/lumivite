@@ -384,7 +384,7 @@ export default function Order() {
         <div className="bg-white/5 rounded-xl p-4 space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-white/40">Recipient Name</span>
-            <span className="text-white font-medium">Saadallah Mhanna</span>
+            <span className="text-white font-medium">S. Mhanna</span>
           </div>
           <div className="flex justify-between">
             <span className="text-white/40">Phone Number</span>
@@ -421,7 +421,7 @@ export default function Order() {
     <div className="flex justify-between items-center">
       <span className="text-white/40">Card Number</span>
       <div className="flex items-center gap-2">
-        <span className="text-white font-mono text-xs">4870 5220 7425 8478</span>
+        <span className="text-white font-mono text-xs">**** **** **** 8478</span>
         <button onClick={() => { navigator.clipboard.writeText("4870522074258478"); alert("Copied!") }}
           className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-2 py-0.5 hover:bg-[#c9a96e]/10 transition">
           Copy
@@ -430,7 +430,7 @@ export default function Order() {
     </div>
     <div className="flex justify-between">
       <span className="text-white/40">Name on Card</span>
-      <span className="text-white font-medium">SAADALLAH MHANNA</span>
+      <span className="text-white font-medium">S. MHANNA</span>
     </div>
     <div className="flex justify-between">
       <span className="text-white/40">Amount</span>
@@ -462,7 +462,7 @@ export default function Order() {
     </div>
     <div className="flex justify-between">
       <span className="text-white/40">Name</span>
-      <span className="text-white font-medium">SAADALLAH MHANNA</span>
+      <span className="text-white font-medium">S. MHANNA</span>
     </div>
     <div className="flex justify-between">
       <span className="text-white/40">Amount</span>
