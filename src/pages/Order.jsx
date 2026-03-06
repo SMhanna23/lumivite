@@ -1,0 +1,368 @@
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"
+import { db } from "../firebase"
+
+const packages = [
+  { id: "bronze", name: "Bronze", price: "$89", color: "#cd7f32", features: ["1 template", "RSVP dashboard", "Countdown timer", "1 shared link"] },
+  { id: "silver", name: "Silver", price: "$139", color: "#c9a96e", features: ["Personalized guest links", "Background music", "Photo gallery", "Excel import"], popular: true },
+  { id: "gold", name: "Gold", price: "$199", color: "#ffd700", features: ["2 template choices", "Google Maps embed", "Gift registry", "Priority support"] },
+]
+
+const templates = [
+  { id: "dark", name: "Dark Luxury", preview: "🌑", desc: "Elegant dark theme with gold accents", link: "/demo" },
+  { id: "botanical", name: "Botanical Garden", preview: "🌿", desc: "Fresh white & sage green", link: "/demo2" },
+  { id: "rosegold", name: "Rose Gold & Blush", preview: "🌸", desc: "Romantic blush pink tones", link: "/demo3" },
+]
+
+const steps = ["Package", "Template", "Details", "Confirm"]
+
+export default function Order() {
+  const [step, setStep] = useState(0)
+  const [status, setStatus] = useState("idle")
+  const [form, setForm] = useState({
+    package: "",
+    template: "",
+    groomName: "",
+    brideName: "",
+    weddingDate: "",
+    ceremonyPlace: "",
+    ceremonyTime: "",
+    partyPlace: "",
+    partyTime: "",
+    city: "",
+    guestCount: "",
+    music: "",
+    yourName: "",
+    yourPhone: "",
+    yourEmail: "",
+    notes: "",
+  })
+
+  const update = (k, v) => setForm(f => ({ ...f, [k]: v }))
+
+  const handleSubmit = async () => {
+    setStatus("loading")
+    try {
+      await addDoc(collection(db, "orders"), {
+        ...form,
+        createdAt: serverTimestamp()
+      })
+      // WhatsApp notification
+      const msg = `🎉 New Order on Lumivite!\n📦 ${form.package.toUpperCase()} Package\n🎨 ${form.template} Template\n💒 ${form.groomName} & ${form.brideName}\n📅 ${form.weddingDate}\n👤 Client: ${form.yourName}\n📞 ${form.yourPhone}`
+      fetch(`https://api.callmebot.com/whatsapp.php?phone=${import.meta.env.VITE_CALLMEBOT_PHONE}&text=${encodeURIComponent(msg)}&apikey=${import.meta.env.VITE_CALLMEBOT_APIKEY}`, { mode: "no-cors" }).catch(() => {})
+      setStatus("success")
+    } catch (e) {
+      setStatus("error")
+    }
+  }
+
+  if (status === "success") {
+    return (
+      <div className="min-h-screen bg-[#0a0806] flex items-center justify-center px-6 text-center">
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="max-w-md">
+          <div className="text-6xl mb-6">🎉</div>
+          <h1 className="font-serif text-4xl font-light text-white mb-4">Order Received!</h1>
+          <p className="text-white/50 mb-4">Thank you <span className="text-[#c9a96e]">{form.yourName}</span>! We've received your order and will contact you within 24 hours on WhatsApp.</p>
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8 text-left space-y-2">
+            <p className="text-white/40 text-xs uppercase tracking-widest mb-3">Order Summary</p>
+            <p className="text-white text-sm">📦 {form.package.charAt(0).toUpperCase() + form.package.slice(1)} Package</p>
+            <p className="text-white text-sm">🎨 {templates.find(t => t.id === form.template)?.name} Template</p>
+            <p className="text-white text-sm">💒 {form.groomName} & {form.brideName}</p>
+            <p className="text-white text-sm">📅 {form.weddingDate}</p>
+            <p className="text-white text-sm">📞 {form.yourPhone}</p>
+          </div>
+          <a href="/" className="inline-block bg-[#c9a96e] text-black font-semibold px-8 py-3 rounded-full text-sm">
+            Back to Home
+          </a>
+        </motion.div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-[#0a0806] text-white"
+      style={{ background: "radial-gradient(ellipse at 50% 0%, #1a0f07 0%, #0a0806 60%)" }}>
+
+      {/* Header */}
+      <div className="text-center pt-16 pb-8 px-6">
+        <a href="/" className="text-[#c9a96e] font-serif text-2xl">Lumivite</a>
+        <p className="text-white/30 text-xs mt-1 tracking-widest uppercase">Order Your Invitation</p>
+      </div>
+
+      {/* Progress Steps */}
+      <div className="flex items-center justify-center gap-2 px-6 mb-12">
+        {steps.map((s, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition ${
+              i === step ? "bg-[#c9a96e] text-black" :
+              i < step ? "bg-[#c9a96e]/20 text-[#c9a96e]" :
+              "bg-white/5 text-white/30"}`}>
+              <span>{i < step ? "✓" : i + 1}</span>
+              <span className="hidden sm:inline">{s}</span>
+            </div>
+            {i < steps.length - 1 && (
+              <div className={`w-6 h-px ${i < step ? "bg-[#c9a96e]/50" : "bg-white/10"}`} />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="max-w-2xl mx-auto px-6 pb-24">
+        <AnimatePresence mode="wait">
+
+          {/* STEP 0 - Package */}
+          {step === 0 && (
+            <motion.div key="step0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+              <h2 className="font-serif text-3xl font-light text-center mb-2">Choose Your Package</h2>
+              <p className="text-white/40 text-center text-sm mb-10">Select the package that fits your needs</p>
+              <div className="grid gap-4">
+                {packages.map(pkg => (
+                  <motion.div key={pkg.id} whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
+                    onClick={() => update("package", pkg.id)}
+                    className="relative p-6 rounded-2xl border cursor-pointer transition"
+                    style={{
+                      borderColor: form.package === pkg.id ? pkg.color : "rgba(255,255,255,0.1)",
+                      background: form.package === pkg.id ? `${pkg.color}10` : "rgba(255,255,255,0.02)"
+                    }}>
+                    {pkg.popular && (
+                      <div className="absolute -top-3 left-6 text-xs font-bold px-3 py-1 rounded-full bg-[#c9a96e] text-black">
+                        MOST POPULAR
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <p className="font-semibold tracking-wider text-sm" style={{ color: pkg.color }}>{pkg.name.toUpperCase()}</p>
+                        <p className="font-serif text-3xl font-light mt-1" style={{ color: pkg.color }}>{pkg.price}</p>
+                      </div>
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition`}
+                        style={{ borderColor: pkg.color, background: form.package === pkg.id ? pkg.color : "transparent" }}>
+                        {form.package === pkg.id && <span className="text-black text-xs">✓</span>}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {pkg.features.map((f, i) => (
+                        <span key={i} className="text-xs px-3 py-1 rounded-full bg-white/5 text-white/50">✓ {f}</span>
+                      ))}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+              <button onClick={() => setStep(1)} disabled={!form.package}
+                className="w-full mt-8 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
+                style={{ background: "#c9a96e" }}>
+                Continue →
+              </button>
+            </motion.div>
+          )}
+
+          {/* STEP 1 - Template */}
+          {step === 1 && (
+            <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+              <h2 className="font-serif text-3xl font-light text-center mb-2">Choose Your Template</h2>
+              <p className="text-white/40 text-center text-sm mb-10">Pick the style that speaks to you</p>
+              <div className="grid gap-4">
+                {templates.map(t => (
+                  <motion.div key={t.id} whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
+                    onClick={() => update("template", t.id)}
+                    className="p-6 rounded-2xl border cursor-pointer transition flex items-center gap-5"
+                    style={{
+                      borderColor: form.template === t.id ? "#c9a96e" : "rgba(255,255,255,0.1)",
+                      background: form.template === t.id ? "rgba(201,169,110,0.08)" : "rgba(255,255,255,0.02)"
+                    }}>
+                    <div className="text-4xl">{t.preview}</div>
+                    <div className="flex-1">
+                      <p className="font-medium text-white">{t.name}</p>
+                      <p className="text-white/40 text-sm">{t.desc}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <a href={t.link} target="_blank" rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">
+                        Preview
+                      </a>
+                      <div className="w-6 h-6 rounded-full border-2 border-[#c9a96e] flex items-center justify-center"
+                        style={{ background: form.template === t.id ? "#c9a96e" : "transparent" }}>
+                        {form.template === t.id && <span className="text-black text-xs">✓</span>}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+              <div className="flex gap-3 mt-8">
+                <button onClick={() => setStep(0)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">
+                  ← Back
+                </button>
+                <button onClick={() => setStep(2)} disabled={!form.template}
+                  className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
+                  style={{ background: "#c9a96e" }}>
+                  Continue →
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP 2 - Wedding Details */}
+          {step === 2 && (
+            <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+              <h2 className="font-serif text-3xl font-light text-center mb-2">Wedding Details</h2>
+              <p className="text-white/40 text-center text-sm mb-10">Tell us about your special day</p>
+              <div className="space-y-4">
+
+                <div className="grid grid-cols-2 gap-4">
+                  {[["Groom's Name", "groomName", "Christopher"], ["Bride's Name", "brideName", "Joelle"]].map(([label, key, ph]) => (
+                    <div key={key}>
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{label}</label>
+                      <input value={form[key]} onChange={e => update(key, e.target.value)}
+                        placeholder={ph} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition" />
+                    </div>
+                  ))}
+                </div>
+
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">Wedding Date</label>
+                  <input value={form.weddingDate} onChange={e => update("weddingDate", e.target.value)}
+                    type="date" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#c9a96e] transition" />
+                </div>
+
+                <div className="pt-2">
+                  <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">Ceremony Venue</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-white/40 text-xs mb-2 block">Place Name</label>
+                      <input value={form.ceremonyPlace} onChange={e => update("ceremonyPlace", e.target.value)}
+                        placeholder="Saint Georges Church" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition" />
+                    </div>
+                    <div>
+                      <label className="text-white/40 text-xs mb-2 block">Time</label>
+                      <input value={form.ceremonyTime} onChange={e => update("ceremonyTime", e.target.value)}
+                        placeholder="6:00 PM" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition" />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">Party Venue</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-white/40 text-xs mb-2 block">Place Name</label>
+                      <input value={form.partyPlace} onChange={e => update("partyPlace", e.target.value)}
+                        placeholder="Bois de Roses" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition" />
+                    </div>
+                    <div>
+                      <label className="text-white/40 text-xs mb-2 block">Time</label>
+                      <input value={form.partyTime} onChange={e => update("partyTime", e.target.value)}
+                        placeholder="8:30 PM" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">City</label>
+                    <input value={form.city} onChange={e => update("city", e.target.value)}
+                      placeholder="Feytroun, Lebanon" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition" />
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">Guest Count</label>
+                    <input value={form.guestCount} onChange={e => update("guestCount", e.target.value)}
+                      placeholder="150" type="number" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">Preferred Music (optional)</label>
+                  <input value={form.music} onChange={e => update("music", e.target.value)}
+                    placeholder="Song name or YouTube link" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition" />
+                </div>
+
+              </div>
+              <div className="flex gap-3 mt-8">
+                <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">
+                  ← Back
+                </button>
+                <button onClick={() => setStep(3)}
+                  disabled={!form.groomName || !form.brideName || !form.weddingDate}
+                  className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
+                  style={{ background: "#c9a96e" }}>
+                  Continue →
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP 3 - Contact & Confirm */}
+          {step === 3 && (
+            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+              <h2 className="font-serif text-3xl font-light text-center mb-2">Your Contact Info</h2>
+              <p className="text-white/40 text-center text-sm mb-10">We'll reach you on WhatsApp within 24 hours</p>
+
+              <div className="space-y-4 mb-8">
+                {[
+                  ["Your Full Name", "yourName", "text", "Sarah Abboud"],
+                  ["WhatsApp Number", "yourPhone", "tel", "+961 71 234 567"],
+                  ["Email (optional)", "yourEmail", "email", "sarah@email.com"],
+                ].map(([label, key, type, ph]) => (
+                  <div key={key}>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{label}</label>
+                    <input value={form[key]} onChange={e => update(key, e.target.value)}
+                      type={type} placeholder={ph}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition" />
+                  </div>
+                ))}
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">Additional Notes (optional)</label>
+                  <textarea value={form.notes} onChange={e => update("notes", e.target.value)}
+                    placeholder="Any special requests or questions..." rows={3}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
+                </div>
+              </div>
+
+              {/* Order Summary */}
+              <div className="bg-white/3 border border-white/10 rounded-2xl p-6 mb-8">
+                <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">Order Summary</p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-white/50">Package</span>
+                    <span className="text-white font-medium capitalize">{form.package} — {packages.find(p => p.id === form.package)?.price}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/50">Template</span>
+                    <span className="text-white font-medium">{templates.find(t => t.id === form.template)?.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/50">Couple</span>
+                    <span className="text-white font-medium">{form.groomName} & {form.brideName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/50">Date</span>
+                    <span className="text-white font-medium">{form.weddingDate}</span>
+                  </div>
+                  <div className="border-t border-white/10 pt-2 mt-2 flex justify-between">
+                    <span className="text-white/50">Total</span>
+                    <span className="font-semibold text-lg" style={{ color: "#c9a96e" }}>
+                      {packages.find(p => p.id === form.package)?.price}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">
+                  ← Back
+                </button>
+                <button onClick={handleSubmit}
+                  disabled={!form.yourName || !form.yourPhone || status === "loading"}
+                  className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
+                  style={{ background: "#c9a96e" }}>
+                  {status === "loading" ? "Submitting..." : "Place Order 🎉"}
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+      </div>
+    </div>
+  )
+}

@@ -75,11 +75,7 @@ export default function Landing() {
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
         style={{ background: "linear-gradient(to bottom, rgba(10,8,6,0.95), transparent)" }}>
         <span className="font-serif text-xl text-[#c9a96e]">Lumivite</span>
-        <a href="https://wa.me/96171444328?text=Hi! I want a digital wedding invitation"
-          target="_blank" rel="noopener noreferrer"
-          className="bg-[#c9a96e] text-black text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#b8965d] transition">
-          Book Now
-        </a>
+        <a href="/order">Book Now</a>
       </nav>
 
       {/* Hero */}
@@ -117,6 +113,9 @@ export default function Landing() {
               target="_blank" rel="noopener noreferrer"
               className="border border-white/20 text-white px-8 py-4 rounded-full hover:border-[#c9a96e] hover:text-[#c9a96e] transition text-sm tracking-wider">
               WHATSAPP US
+            </a>
+            <a href="/order" className="bg-[#c9a96e] text-black font-semibold px-8 py-4 rounded-full hover:bg-[#b8965d] transition text-sm tracking-wider">
+              ORDER NOW
             </a>
           </div>
         </motion.div>
@@ -369,7 +368,7 @@ export default function Landing() {
             Ready to Wow<br />Your Guests?
           </h2>
           <p className="text-white/40 mb-10">Join couples who chose Lumivite for their special day</p>
-          <a href="https://wa.me/96171444328?text=Hi! I want a digital wedding invitation"
+          <a href="/order"
             target="_blank" rel="noopener noreferrer"
             className="inline-block bg-[#c9a96e] text-black font-semibold px-10 py-4 rounded-full hover:bg-[#b8965d] transition text-sm tracking-wider">
             START YOUR INVITATION →

@@ -7,6 +7,7 @@ import Invitation2 from "./pages/Invitation2"
 import Invitation3 from "./pages/Invitation3"
 import Admin from "./pages/Admin"
 import Login from "./pages/Login"
+import Order from "./pages/Order"
 
 function ProtectedRoute({ user, children }) {
   if (user === null) return <Navigate to="/admin/login" />
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/demo" element={<Invitation />} />
         <Route path="/demo2" element={<Invitation2 />} />
         <Route path="/demo3" element={<Invitation3 />} />
+        <Route path="/order" element={<Order />} />
         <Route path="/admin/login" element={user ? <Navigate to="/admin" /> : <Login />} />
         <Route path="/admin" element={<ProtectedRoute user={user}><Admin /></ProtectedRoute>} />
       </Routes>
