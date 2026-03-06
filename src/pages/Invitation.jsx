@@ -5,14 +5,14 @@ import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
 
 const WEDDING = {
-  groom: "Marc",
-  bride: "Mariana",
+  groom: "Christopher",
+  bride: "Joelle",
   date: "2026-09-20T18:00:00",
   venues: [
     { label: "Wedding Ceremony", time: "6:00 PM", place: "Saint Georges Church", location: "Feytroun, Lebanon", map: "https://maps.google.com" },
     { label: "Wedding Party", time: "8:30 PM", place: "Bois de Roses", location: "Feytroun, Lebanon", map: "https://maps.google.com" },
   ],
-  parents: ["Fadi & Dania Fadel", "Nicolas & Marleine Louis"],
+  parents: ["Fadi & Dania Abboud", "Nicolas & Marleine Hanna"],
   quote: "We love because he first loved us.",
   quoteRef: "1 John 4:19",
   venue: "Feytroun, Lebanon",
