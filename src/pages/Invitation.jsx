@@ -233,6 +233,36 @@ export default function Invitation() {
         </motion.div>
       </section>
 
+      {/* Photo Gallery */}
+      <section className="py-24 px-6 max-w-4xl mx-auto relative z-10">
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">Our Story</p>
+            <h2 className="font-serif text-4xl font-light text-center mb-12">Moments Together</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+         {[
+          { src: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600", span: "col-span-2 row-span-2" },
+          { src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400", span: "" },
+          { src: "https://images.unsplash.com/photo-1591604021695-0c69b7c05981?w=400", span: "" },
+          { src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400", span: "" },
+          { src: "https://images.unsplash.com/photo-1529636798458-92182e662485?w=400", span: "" },
+          { src: "https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=400", span: "" },
+          ].map((photo, i) => (
+        <motion.div key={i}
+          className={`${photo.span} overflow-hidden rounded-2xl aspect-square`}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ delay: i * 0.1 }}
+          viewport={{ once: true }}
+          whileHover={{ scale: 1.02 }}
+        >
+          <img src={photo.src} alt={`moment ${i + 1}`}
+            className="w-full h-full object-cover hover:scale-110 transition duration-700" />
+        </motion.div>
+        ))}
+      </div>
+      </motion.div>
+      </section>     
+
       {/* Timeline */}
       <section className="py-24 px-6 max-w-lg mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
