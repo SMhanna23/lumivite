@@ -210,27 +210,41 @@ export default function Invitation() {
       </section>
 
       {/* Venues */}
-      <section className="py-16 px-6 max-w-2xl mx-auto relative z-10">
+        <section className="py-16 px-6 max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
           <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">Join Us</p>
           <h2 className="font-serif text-4xl font-light text-center mb-12">The Celebration</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {WEDDING.venues.map((v, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.2 }} viewport={{ once: true }}
-                className="bg-white/3 border border-white/10 rounded-2xl p-8 text-center hover:border-[#c9a96e]/30 transition">
-                <p className="text-[#c9a96e] text-xs tracking-widest uppercase mb-3">{v.label}</p>
-                <p className="font-serif text-3xl font-light mb-1">{v.time}</p>
-                <p className="text-white font-medium mb-1">{v.place}</p>
-                <p className="text-white/40 text-sm mb-4">{v.location}</p>
-                <a href={v.map} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[#c9a96e] text-sm border border-[#c9a96e]/30 rounded-full px-4 py-2 hover:bg-[#c9a96e]/10 transition">
-                  📍 View on Map
-                </a>
-              </motion.div>
-            ))}
+          <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.2 }} viewport={{ once: true }}
+          className="bg-white/3 border border-white/10 rounded-2xl overflow-hidden hover:border-[#c9a96e]/30 transition">
+          {/* Map embed */}
+          <div className="h-48 w-full overflow-hidden">
+            <iframe
+              title={v.label}
+              width="100%" height="100%"
+              style={{ border: 0, filter: "invert(90%) hue-rotate(180deg)" }}
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}&q=${encodeURIComponent(v.place + " " + v.location)}`}
+            />
+          </div>
+          <div className="p-6 text-center">
+            <p className="text-[#c9a96e] text-xs tracking-widest uppercase mb-2">{v.label}</p>
+            <p className="font-serif text-2xl font-light mb-1">{v.time}</p>
+            <p className="text-white font-medium mb-1">{v.place}</p>
+            <p className="text-white/40 text-sm mb-4">{v.location}</p>
+            <a href={v.map} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-[#c9a96e] text-sm border border-[#c9a96e]/30 rounded-full px-4 py-2 hover:bg-[#c9a96e]/10 transition">
+              📍 Open in Google Maps
+            </a>
           </div>
         </motion.div>
+        ))}
+      </div>
+      </motion.div>
       </section>
 
       {/* Photo Gallery */}
