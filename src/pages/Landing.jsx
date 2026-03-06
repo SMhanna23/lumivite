@@ -243,6 +243,71 @@ export default function Landing() {
           </div>
         </motion.div>
       </section>
+      
+        {/* Testimonials */}
+        <section className="py-24 px-6 max-w-5xl mx-auto">
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-3">Love Stories</p>
+          <h2 className="font-serif text-4xl font-light text-center mb-16">What Couples Say</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+        {
+          name: "Maya & Karim",
+          location: "Beirut, Lebanon",
+          avatar: "💍",
+          text: "Our guests couldn't stop talking about the invitation! Everyone was amazed that it had music and their names appeared automatically. Worth every penny.",
+          stars: 5,
+          package: "Silver Package"
+        },
+        {
+          name: "Sarah & Tony",
+          location: "Dubai, UAE",
+          avatar: "🌸",
+          text: "We got so many compliments. The dark luxury template was exactly our vibe. The RSVP dashboard made planning so much easier — we knew exactly who was coming.",
+          stars: 5,
+          package: "Gold Package"
+        },
+        {
+          name: "Lara & Michel",
+          location: "Paris, France",
+          avatar: "✨",
+          text: "Lumivite delivered in less than 24 hours. The botanical template was elegant and fresh. Our international guests loved being able to RSVP from anywhere!",
+          stars: 5,
+          package: "Silver Package"
+        },
+      ].map((t, i) => (
+        <motion.div key={i}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.15 }}
+          viewport={{ once: true }}
+          className="bg-white/3 border border-white/8 rounded-2xl p-8 flex flex-col gap-4 hover:border-[#c9a96e]/20 transition">
+          {/* Stars */}
+          <div className="flex gap-1">
+            {Array.from({ length: t.stars }).map((_, j) => (
+              <span key={j} className="text-[#c9a96e] text-sm">★</span>
+            ))}
+          </div>
+          {/* Quote */}
+          <p className="text-white/60 text-sm leading-relaxed flex-1">"{t.text}"</p>
+          {/* Person */}
+          <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+            <div className="w-10 h-10 rounded-full bg-[#c9a96e]/20 flex items-center justify-center text-lg">
+              {t.avatar}
+            </div>
+            <div>
+              <p className="text-white font-medium text-sm">{t.name}</p>
+              <p className="text-white/30 text-xs">{t.location}</p>
+            </div>
+            <span className="ml-auto text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1">
+              {t.package}
+            </span>
+          </div>
+        </motion.div>
+        ))}
+      </div>
+    </motion.div>
+    </section>
 
       {/* FAQ */}
       <section className="py-24 px-6 max-w-2xl mx-auto">
