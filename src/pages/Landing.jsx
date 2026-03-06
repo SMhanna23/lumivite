@@ -143,9 +143,9 @@ export default function Landing() {
           style={{ background: "radial-gradient(ellipse at 50% 0%, #3d2314, #0d0a08)" }}>
           <div className="p-10 text-center">
             <p className="text-[#c9a96e] text-xs tracking-widest uppercase mb-4">You're invited</p>
-            <p className="font-serif text-4xl font-light text-white mb-1">Marc</p>
+            <p className="font-serif text-4xl font-light text-white mb-1">Christopher</p>
             <p className="text-[#c9a96e] text-2xl font-serif italic">&</p>
-            <p className="font-serif text-4xl font-light text-white mb-6">Mariana</p>
+            <p className="font-serif text-4xl font-light text-white mb-6">Joelle</p>
             <div className="flex gap-2 justify-center mb-4">
               {["198","03","00","34"].map((v,i) => (
                 <div key={i} className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center text-sm font-bold text-white">{v}</div>
