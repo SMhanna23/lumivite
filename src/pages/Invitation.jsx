@@ -123,9 +123,8 @@ export default function Invitation() {
 
     // WhatsApp notification
     const emoji = attending ? "✅" : "❌"
-    const msg = `${emoji} New RSVP on Lumivite!%0A👤 ${name}%0A💒 ${WEDDING.groom} & ${WEDDING.bride}%0A${attending ? `✅ Attending (${persons} person${persons > 1 ? "s" : ""})` : "❌ Declined"}${wishes ? `%0A💬 "${wishes}"` : ""}`
-    
-    const waUrl = `https://api.callmebot.com/whatsapp.php?phone=${import.meta.env.VITE_CALLMEBOT_PHONE}&text=${msg}&apikey=${import.meta.env.VITE_CALLMEBOT_APIKEY}`
+    const msg = `${emoji} New RSVP on Lumivite!\n👤 ${name}\n💒 ${WEDDING.groom} & ${WEDDING.bride}\n${attending ? `✅ Attending (${persons} person${persons > 1 ? "s" : ""})` : "❌ Declined"}${wishes ? `\n💬 "${wishes}"` : ""}`
+    const waUrl = `https://api.callmebot.com/whatsapp.php?phone=${import.meta.env.VITE_CALLMEBOT_PHONE}&text=${encodeURIComponent(msg)}&apikey=${import.meta.env.VITE_CALLMEBOT_APIKEY}`
     fetch(waUrl, { mode: "no-cors" }).catch(() => {})
 
     setStatus("success")
