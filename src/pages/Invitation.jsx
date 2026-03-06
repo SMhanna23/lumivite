@@ -7,22 +7,27 @@ import { useSearchParams } from "react-router-dom"
 const WEDDING = {
   groom: "Christopher",
   bride: "Joelle",
+  groomAr: "كريستوفر",
+  brideAr: "جويل",
   date: "2026-09-20T18:00:00",
   venues: [
-    { label: "Wedding Ceremony", time: "6:00 PM", place: "Saint Georges Church", location: "Feytroun, Lebanon", map: "https://maps.google.com" },
-    { label: "Wedding Party", time: "8:30 PM", place: "Bois de Roses", location: "Feytroun, Lebanon", map: "https://maps.google.com" },
+    { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: "6:00 PM", place: "Saint Georges Church", placeAr: "كنيسة مار جرجس", location: "Feytroun, Lebanon", locationAr: "فيترون، لبنان", map: "https://maps.google.com/?q=Saint+Georges+Church+Feytroun+Lebanon" },
+    { label: "Wedding Party", labelAr: "حفل الزفاف", time: "8:30 PM", place: "Bois de Roses", placeAr: "بوا دو روز", location: "Feytroun, Lebanon", locationAr: "فيترون، لبنان", map: "https://maps.google.com/?q=Bois+de+Roses+Feytroun+Lebanon" },
   ],
   parents: ["Fadi & Dania Abboud", "Nicolas & Marleine Hanna"],
+  parentsAr: ["فادي ودانيا عبود", "نيكولا ومرلين حنا"],
   quote: "We love because he first loved us.",
+  quoteAr: "نحن نحب لأنه هو أحبنا أولاً",
   quoteRef: "1 John 4:19",
   venue: "Feytroun, Lebanon",
+  venueAr: "فيترون، لبنان",
   message: "Request the honor of your presence at the wedding of their son and daughter",
-
+  messageAr: "يطلبون شرف حضوركم حفل زفاف نجلهم وابنتهم",
   registry: [
-  { name: "Wish Money", icon: "💳", desc: "Contribute to our honeymoon fund", link: "https://www.wishmoney.io", color: "#c9a96e" },
-  { name: "ABC Store", icon: "🎁", desc: "Browse our gift registry", link: "https://www.abc.com.lb", color: "#c9a96e" },
-  { name: "Bank Transfer", icon: "🏦", desc: "iban: LB62 0099 0000 0001 0019 2000 9123", link: null, color: "#c9a96e" },
-],
+    { name: "Wish Money", icon: "💳", desc: "Contribute to our honeymoon fund", descAr: "ساهم في صندوق شهر العسل", link: "https://www.wishmoney.io", color: "#c9a96e" },
+    { name: "ABC Store", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: "https://www.abc.com.lb", color: "#c9a96e" },
+    { name: "Bank Transfer", icon: "🏦", desc: "iban: LB62 0099 0000 0001 0019 2000 9123", descAr: "iban: LB62 0099 0000 0001 0019 2000 9123", link: null, color: "#c9a96e" },
+  ],
 }
 
 function Countdown({ targetDate }) {
@@ -89,6 +94,8 @@ export default function Invitation() {
   const [status, setStatus] = useState("idle")
   const [playing, setPlaying] = useState(false)
   const [searchParams] = useSearchParams()
+  const [lang, setLang] = useState("en")
+  const ar = lang === "ar"
   const audioRef = useRef(null)
 
   const guestName = searchParams.get("gn") || ""
@@ -144,6 +151,7 @@ export default function Invitation() {
   if (!started) {
     return (
       <div className="min-h-screen bg-[#0d0a08] flex flex-col items-center justify-center text-center px-6 cursor-pointer relative overflow-hidden"
+        dir={ar ? "rtl" : "ltr"}
         style={{ background: "radial-gradient(ellipse at 50% 30%, #3d2314 0%, #0d0a08 70%)" }}
         onClick={() => {
           setStarted(true)
@@ -153,19 +161,25 @@ export default function Invitation() {
         <Petals />
         <motion.div className="relative z-10"
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.5 }}>
-          <p className="text-[#c9a96e] tracking-[0.4em] text-xs uppercase mb-8">You're invited</p>
-          <h1 className="font-serif text-7xl md:text-9xl font-light text-white mb-3">{WEDDING.groom}</h1>
+          <p className="text-[#c9a96e] tracking-[0.4em] text-xs uppercase mb-8">
+            {ar ? "أنتم مدعوون" : "You're invited"}
+          </p>
+          <h1 className="font-serif text-7xl md:text-9xl font-light text-white mb-3">
+            {ar ? WEDDING.groomAr : WEDDING.groom}
+          </h1>
           <p className="text-[#c9a96e] text-4xl font-serif italic mb-3">&</p>
-          <h1 className="font-serif text-7xl md:text-9xl font-light text-white mb-12">{WEDDING.bride}</h1>
+          <h1 className="font-serif text-7xl md:text-9xl font-light text-white mb-12">
+          {ar ? WEDDING.brideAr : WEDDING.bride}
+          </h1>
           {guestName && (
             <motion.p className="text-white/50 text-lg mb-8 font-light"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-              Dear <span className="text-[#c9a96e]">{guestName}</span>
+              {ar ? "عزيزنا" : "Dear"} <span className="text-[#c9a96e]">{guestName}</span>
             </motion.p>
           )}
           <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 2 }}
             className="flex flex-col items-center gap-2 mt-4">
-            <p className="text-white/40 text-sm tracking-widest uppercase">Tap to open</p>
+            <p className="text-white/40 text-sm tracking-widest uppercase">{ar ? "اضغط للفتح" : "Tap to open"}</p>
             <div className="w-px h-8 bg-gradient-to-b from-[#c9a96e] to-transparent" />
           </motion.div>
         </motion.div>
@@ -175,7 +189,9 @@ export default function Invitation() {
 
   // MAIN INVITATION
   return (
-    <div className="min-h-screen bg-[#0d0a08] text-white overflow-x-hidden relative">
+    <div className="min-h-screen bg-[#0d0a08] text-white overflow-x-hidden relative"
+      dir={ar ? "rtl" : "ltr"}
+      style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>
       <audio ref={audioRef} loop src="/music.mp3" preload="auto" />
       <Petals />
 
@@ -187,22 +203,31 @@ export default function Invitation() {
         {playing ? "⏸" : "🎵"}
       </motion.button>
 
+      {/* Language Toggle */}
+        <motion.button onClick={() => setLang(ar ? "en" : "ar")}
+         initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1.2 }}
+        className="fixed bottom-6 left-6 z-50 h-10 px-4 rounded-full flex items-center justify-center shadow-2xl text-sm font-medium transition"
+        style={{ background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.4)", color: "#c9a96e" }}>
+         {ar ? "EN" : "عربي"}
+        </motion.button>
+
       {/* Hero */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center z-10"
         style={{ background: "radial-gradient(ellipse at 50% 0%, #3d2314 0%, #0d0a08 70%)" }}>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5 pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full border border-white/5 pointer-events-none" />
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
-          <p className="text-[#c9a96e] tracking-[0.4em] text-xs uppercase mb-4">We're getting married</p>
-          {WEDDING.parents.map((p, i) => (
+          <p className="text-[#c9a96e] tracking-[0.4em] text-xs uppercase mb-4">{ar ? "نحن نتزوج" : "We're getting married"}</p>
+          {(ar ? WEDDING.parentsAr : WEDDING.parents).map((p, i) => (
             <p key={i} className="text-white/40 text-sm">{p}</p>
           ))}
-          <p className="text-white/30 text-sm mb-6 italic">{WEDDING.message}</p>
-          <h1 className="font-serif text-6xl md:text-8xl font-light mb-2">{WEDDING.groom}</h1>
+          <p className="text-white/30 text-sm mb-6 italic">{ar ? WEDDING.messageAr : WEDDING.message}</p>
+          <h1 className="font-serif text-6xl md:text-8xl font-light mb-2">{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
           <p className="text-[#c9a96e] text-4xl font-serif italic mb-2">&</p>
-          <h1 className="font-serif text-6xl md:text-8xl font-light mb-10">{WEDDING.bride}</h1>
-          <p className="text-white/40 text-sm tracking-widest uppercase mb-2">September 20, 2026</p>
-          <p className="text-white/40 text-sm mb-12">{WEDDING.venue}</p>
+          <h1 className="font-serif text-6xl md:text-8xl font-light mb-10">{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
+          <p className="text-white/40 text-sm tracking-widest uppercase mb-2">{ar ? "٢٠ سبتمبر ٢٠٢٦" : "September 20, 2026"}</p>
+          <p className="text-white/40 text-sm mb-12">{ar ? WEDDING.venueAr : WEDDING.venue}</p>
           <Countdown targetDate={WEDDING.date} />
         </motion.div>
         <motion.div className="absolute bottom-10 flex flex-col items-center gap-2"
@@ -216,7 +241,7 @@ export default function Invitation() {
       <section className="py-24 px-6 text-center max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
           <div className="text-[#c9a96e] text-2xl mb-6">✦</div>
-          <p className="text-white/60 text-xl leading-relaxed font-serif italic">"{WEDDING.quote}"</p>
+          <p className="text-white/60 text-xl leading-relaxed font-serif italic">"{ar ? WEDDING.quoteAr : WEDDING.quote}"</p>
           <p className="text-[#c9a96e] text-sm mt-3 tracking-widest">— {WEDDING.quoteRef}</p>
           <div className="text-[#c9a96e] text-2xl mt-6">✦</div>
         </motion.div>
@@ -225,8 +250,8 @@ export default function Invitation() {
       {/* Venues */}
         <section className="py-16 px-6 max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">Join Us</p>
-          <h2 className="font-serif text-4xl font-light text-center mb-12">The Celebration</h2>
+          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">{ar ? "انضموا إلينا" : "Join Us"}</p>
+          <h2 className="font-serif text-4xl font-light text-center mb-12">{ar ? "الاحتفال" : "The Celebration"}</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {WEDDING.venues.map((v, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
@@ -245,10 +270,10 @@ export default function Invitation() {
             />
           </div>
           <div className="p-6 text-center">
-            <p className="text-[#c9a96e] text-xs tracking-widest uppercase mb-2">{v.label}</p>
+            <p className="text-[#c9a96e] text-xs tracking-widest uppercase mb-2">{ar ? v.labelAr : v.label}</p>
             <p className="font-serif text-2xl font-light mb-1">{v.time}</p>
-            <p className="text-white font-medium mb-1">{v.place}</p>
-            <p className="text-white/40 text-sm mb-4">{v.location}</p>
+            <p className="text-white font-medium mb-1">{ar ? v.placeAr : v.place}</p>
+            <p className="text-white/40 text-sm mb-4">{ar ? v.locationAr : v.location}</p>
             <a href={v.map} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-[#c9a96e] text-sm border border-[#c9a96e]/30 rounded-full px-4 py-2 hover:bg-[#c9a96e]/10 transition">
               📍 Open in Google Maps
@@ -263,8 +288,8 @@ export default function Invitation() {
       {/* Photo Gallery */}
       <section className="py-24 px-6 max-w-4xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">Our Story</p>
-            <h2 className="font-serif text-4xl font-light text-center mb-12">Moments Together</h2>
+          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">{ar ? "قصتنا" : "Our Story"}</p>
+            <h2 className="font-serif text-4xl font-light text-center mb-12">{ar ? "لحظاتنا معاً" : "Moments Together"}</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
          {[
           { src: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600", span: "col-span-2 row-span-2" },
@@ -293,8 +318,8 @@ export default function Invitation() {
       {/* Timeline */}
       <section className="py-24 px-6 max-w-lg mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">The Day</p>
-          <h2 className="font-serif text-4xl font-light text-center mb-16">Wedding Timeline</h2>
+          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">{ar ? "اليوم" : "The Day"}</p>
+          <h2 className="font-serif text-4xl font-light text-center mb-16">{ar ? "برنامج حفل الزفاف" : "Wedding Timeline"}</h2>
           <div className="relative">
             <div className="absolute left-[88px] top-0 bottom-0 w-px bg-white/10" />
             {timeline.map((item, i) => (
@@ -320,9 +345,9 @@ export default function Invitation() {
       {/* Gift Registry */}
 <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
   <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-    <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">With Love</p>
-    <h2 className="font-serif text-4xl font-light text-center mb-4">Gift Registry</h2>
-    <p className="text-white/40 text-sm text-center mb-12">Your presence is our greatest gift. If you wish to honor us further:</p>
+    <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">{ar ? "بكل محبة" : "With Love"}</p>
+    <h2 className="font-serif text-4xl font-light text-center mb-4">{ar ? "قائمة الهدايا" : "Gift Registry"}</h2>
+    <p className="text-white/40 text-sm text-center mb-12">{ar ? "حضوركم هو أغلى هدية. إن أردتم تكريمنا أكثر:" : "Your presence is our greatest gift. If you wish to honor us further:"}</p>
     <div className="grid gap-4">
       {WEDDING.registry.map((item, i) => (
         <motion.div key={i}
@@ -336,7 +361,7 @@ export default function Invitation() {
               </div>
               <div className="flex-1 text-left">
                 <p className="font-medium text-white">{item.name}</p>
-                <p className="text-white/40 text-sm">{item.desc}</p>
+                <p className="text-white/40 text-sm">{ar ? item.descAr : item.desc}</p>
               </div>
               <span className="text-[#c9a96e] text-sm opacity-0 group-hover:opacity-100 transition">→</span>
             </a>
@@ -364,22 +389,22 @@ export default function Invitation() {
       {/* RSVP */}
       <section className="py-24 px-6 max-w-md mx-auto text-center relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
-          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-4">Kindly Reply By August 1st</p>
-          <h2 className="font-serif text-4xl font-light mb-10">Will you join us?</h2>
+          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-4">{ar ? "يرجى الرد قبل ١ أغسطس" : "Kindly Reply By August 1st"}</p>
+          <h2 className="font-serif text-4xl font-light mb-10">{ar ? "هل ستنضمون إلينا؟" : "Will you join us?"}</h2>
           <AnimatePresence mode="wait">
             {status === "success" ? (
               <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="py-16">
                 <div className="text-5xl mb-4">💌</div>
-                <p className="text-[#c9a96e] font-serif text-2xl mb-2">Thank you, {name}!</p>
-                <p className="text-white/50">Your RSVP has been received. We can't wait to celebrate with you.</p>
+                <p className="text-[#c9a96e] font-serif text-2xl mb-2">{ar ? `شكراً، ${name}!` : `Thank you, ${name}!`}</p>
+                <p className="text-white/50">{ar ? "تم استلام ردك. لا يسعنا الانتظار للاحتفال معك." : "Your RSVP has been received. We can't wait to celebrate with you."}</p>
               </motion.div>
             ) : (
               <motion.div key="form" className="space-y-4">
                 <input value={name} onChange={e => setName(e.target.value)}
-                  type="text" placeholder="Your Full Name"
+                  type="text" placeholder={ar ? "اسمك الكامل" : "Your Full Name"}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-[#c9a96e] transition" />
                 <input value={email} onChange={e => setEmail(e.target.value)}
-                  type="email" placeholder="Your Email (optional)"
+                  type="email" placeholder={ar ? "بريدك الإلكتروني (اختياري)" : "Your Email (optional)"}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-[#c9a96e] transition" />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white focus:outline-none focus:border-[#c9a96e] transition">
@@ -388,21 +413,21 @@ export default function Invitation() {
                 <div className="flex gap-3">
                   <button onClick={() => setAttending(true)}
                     className={`flex-1 py-4 rounded-lg border transition font-medium tracking-wider ${attending === true ? "bg-[#c9a96e] border-[#c9a96e] text-black" : "border-white/20 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e]"}`}>
-                    ✓ Attending
+                    {ar ? "✓ حاضر" : "✓ Attending"}
                   </button>
                   <button onClick={() => setAttending(false)}
                     className={`flex-1 py-4 rounded-lg border transition font-medium tracking-wider ${attending === false ? "bg-white/20 border-white/40 text-white" : "border-white/20 text-white/50 hover:border-white/40 hover:text-white"}`}>
-                    ✗ Decline
+                    {ar ? "✗ اعتذار" : "✗ Decline"}
                   </button>
                 </div>
                 <textarea value={wishes} onChange={e => setWishes(e.target.value)}
-                  placeholder="Share your wishes... (optional)"
+                  placeholder={ar ? "شاركنا أمنياتك... (اختياري)" : "Share your wishes... (optional)"}
                   rows={3} maxLength={200}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
                 <p className="text-white/20 text-xs text-right">{wishes.length}/200</p>
                 <button onClick={handleRSVP} disabled={status === "loading"}
                   className="w-full py-4 bg-[#c9a96e] text-black font-semibold rounded-lg hover:bg-[#b8965d] transition tracking-wider disabled:opacity-50">
-                  {status === "loading" ? "Sending..." : "SEND RSVP"}
+                  {status === "loading" ? (ar ? "جارٍ الإرسال..." : "Sending...") : (ar ? "إرسال التأكيد" : "SEND RSVP")}
                 </button>
               </motion.div>
             )}
@@ -411,7 +436,7 @@ export default function Invitation() {
       </section>
 
       <footer className="text-center py-10 text-white/20 text-sm border-t border-white/5 relative z-10">
-        Made with ✦ by <span className="text-[#c9a96e]">Lumivite</span>
+       {ar ? "صُنع بـ ✦ بواسطة" : "Made with ✦ by"}<span className="text-[#c9a96e]">Lumivite</span>
       </footer>
     </div>
   )
