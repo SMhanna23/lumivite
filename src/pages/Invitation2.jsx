@@ -106,17 +106,28 @@ export default function Invitation2() {
   }
 
   const handleRSVP = async () => {
-    if (!name || attending === null) return alert("Please enter your name and select attendance")
-    setStatus("loading")
-    try {
-      await addDoc(collection(db, "rsvps"), {
-        name, email, attending, wishes, persons,
-        wedding: `${WEDDING.groom} & ${WEDDING.bride}`,
-        createdAt: serverTimestamp()
-      })
-      setStatus("success")
-    } catch (e) { setStatus("error") }
+  if (!name || attending === null) return alert("Please enter your name and select attendance")
+  setStatus("loading")
+  try {
+    await addDoc(collection(db, "rsvps"), {
+      name, email, attending, wishes, persons,
+      wedding: `${WEDDING.groom} & ${WEDDING.bride}`,
+      createdAt: serverTimestamp()
+    })
+
+    // WhatsApp notification
+    const emoji = attending ? "✅" : "❌"
+    const msg = `${emoji} New RSVP on Lumivite!%0A👤 ${name}%0A💒 ${WEDDING.groom} & ${WEDDING.bride}%0A${attending ? `✅ Attending (${persons} person${persons > 1 ? "s" : ""})` : "❌ Declined"}${wishes ? `%0A💬 "${wishes}"` : ""}`
+    
+    const waUrl = `https://api.callmebot.com/whatsapp.php?phone=${import.meta.env.VITE_CALLMEBOT_PHONE}&text=${msg}&apikey=${import.meta.env.VITE_CALLMEBOT_APIKEY}`
+    new Image().src = waUrl
+
+    setStatus("success")
+  } catch (e) {
+    console.error(e)
+    setStatus("error")
   }
+}
 
   // SPLASH
   if (!started) {

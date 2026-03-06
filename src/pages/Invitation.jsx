@@ -125,8 +125,8 @@ export default function Invitation() {
     const emoji = attending ? "✅" : "❌"
     const msg = `${emoji} New RSVP on Lumivite!%0A👤 ${name}%0A💒 ${WEDDING.groom} & ${WEDDING.bride}%0A${attending ? `✅ Attending (${persons} person${persons > 1 ? "s" : ""})` : "❌ Declined"}${wishes ? `%0A💬 "${wishes}"` : ""}`
     
-    fetch(`https://api.callmebot.com/whatsapp.php?phone=${import.meta.env.VITE_CALLMEBOT_PHONE}&text=${msg}&apikey=${import.meta.env.VITE_CALLMEBOT_APIKEY}`)
-      .catch(() => {})
+    const waUrl = `https://api.callmebot.com/whatsapp.php?phone=${import.meta.env.VITE_CALLMEBOT_PHONE}&text=${msg}&apikey=${import.meta.env.VITE_CALLMEBOT_APIKEY}`
+    new Image().src = waUrl
 
     setStatus("success")
   } catch (e) {
