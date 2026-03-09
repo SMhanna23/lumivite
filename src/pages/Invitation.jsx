@@ -29,8 +29,6 @@ const DEFAULT_WEDDING = {
     { name: "Bank Transfer", icon: "🏦", desc: "iban: LB62 0099 0000 0001 0019 2000 9123", descAr: "iban: LB62 0099 0000 0001 0019 2000 9123", link: null, color: "#c9a96e" },
   ],
 }
-const WEDDING = override ? { ...DEFAULT_WEDDING, ...override } : DEFAULT_WEDDING
-
 function Countdown({ targetDate }) {
   const [time, setTime] = useState({})
   useEffect(() => {
@@ -86,6 +84,7 @@ const timeline = [
 ]
 
 export default function Invitation({ override = null }) {
+  const WEDDING = override ? { ...DEFAULT_WEDDING, ...override } : DEFAULT_WEDDING
   const [started, setStarted] = useState(false)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
