@@ -94,6 +94,14 @@ export default function Invitation({ override = null }) {
   const [playing, setPlaying] = useState(false)
   const [lang, setLang] = useState("en")
   const ar = lang === "ar"
+  const photos = WEDDING.photos?.length ? WEDDING.photos : [
+    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800",
+    "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600",
+    "https://images.unsplash.com/photo-1591604021695-0c69b7c05981?w=600",
+    "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600",
+    "https://images.unsplash.com/photo-1529636798458-92182e662485?w=600",
+    "https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=600",
+  ]
   const [searchParams] = useSearchParams()
   const audioRef = useRef(null)
 
@@ -293,6 +301,33 @@ export default function Invitation({ override = null }) {
         </motion.div>
       </section>
 
+      {/* Our Story — Photo 1 */}
+      <section className="py-12 px-6 max-w-xl mx-auto relative z-10">
+        <motion.div className="text-center mb-10"
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+          <p className="text-[#4a7c59] tracking-[0.3em] text-xs uppercase mb-3 font-medium">{ar ? "قصتنا" : "Our Story"}</p>
+          <h2 className="mb-3" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.5rem" : "3.8rem", color: "#2d3a2e", fontWeight: 400, lineHeight: 1.2 }}>
+            {ar ? "لحظاتنا معاً" : "Moments Together"}
+          </h2>
+          <div className="flex items-center justify-center gap-4 mb-10">
+            <div className="h-px w-20 bg-gradient-to-r from-transparent to-[#4a7c59]/50" />
+            <span className="text-[#4a7c59]">🌿</span>
+            <div className="h-px w-20 bg-gradient-to-l from-transparent to-[#4a7c59]/50" />
+          </div>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 30, rotate: -2 }}
+          whileInView={{ opacity: 1, y: 0, rotate: -2 }}
+          whileHover={{ scale: 1.03, rotate: 0, zIndex: 20 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          style={{ cursor: "pointer" }}>
+          <div className="bg-white p-3 pb-12" style={{ boxShadow: "0 12px 40px rgba(74,124,89,0.3)" }}>
+            <img src={photos[0]} alt="moment 1" className="w-full" />
+          </div>
+        </motion.div>
+      </section>
+
       {/* Venues */}
       <section className="py-16 px-6 max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
@@ -334,54 +369,23 @@ export default function Invitation({ override = null }) {
         </motion.div>
       </section>
 
-      {/* Photo Gallery */}
-      <section className="py-24 px-6 max-w-5xl mx-auto relative z-10">
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="text-[#4a7c59] tracking-[0.3em] text-xs uppercase text-center mb-3 font-medium">
-            {ar ? "قصتنا" : "Our Story"}
-          </p>
-          <h2 className="text-center mb-3" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.5rem" : "3.8rem", color: "#2d3a2e", fontWeight: 400, lineHeight: 1.2 }}>
-            {ar ? "لحظاتنا معاً" : "Moments Together"}
-          </h2>
-          <div className="flex items-center justify-center gap-4 mb-14">
-            <div className="h-px w-20 bg-gradient-to-r from-transparent to-[#4a7c59]/50" />
-            <span className="text-[#4a7c59] text-lg">🌿</span>
-            <div className="h-px w-20 bg-gradient-to-l from-transparent to-[#4a7c59]/50" />
-          </div>
-          <div className="columns-2 md:columns-3 gap-5">
-            {(WEDDING.photos?.length
-              ? WEDDING.photos
-              : [
-                  "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600",
-                  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400",
-                  "https://images.unsplash.com/photo-1591604021695-0c69b7c05981?w=400",
-                  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400",
-                  "https://images.unsplash.com/photo-1529636798458-92182e662485?w=400",
-                  "https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=400",
-                ]
-            ).map((src, i) => {
-              const rotations = [-3, 2.5, -1.5, 3, -2, 1.5]
-              const rot = rotations[i % 6]
-              return (
-                <motion.div key={i}
-                  className="break-inside-avoid mb-5 inline-block w-full relative"
-                  initial={{ opacity: 0, y: 30, rotate: rot }}
-                  whileInView={{ opacity: 1, y: 0, rotate: rot }}
-                  whileHover={{ scale: 1.04, rotate: 0, zIndex: 20 }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                  viewport={{ once: true }}
-                  style={{ cursor: "pointer" }}>
-                  <div className="bg-white p-2 pb-9" style={{ boxShadow: "0 8px 32px rgba(74,124,89,0.25)" }}>
-                    <div className="overflow-hidden" style={{ aspectRatio: i % 3 === 0 ? "3/4" : i % 3 === 1 ? "4/3" : "1/1" }}>
-                      <img src={src} alt={`moment ${i + 1}`}
-                        className="w-full h-full object-cover object-center hover:scale-110 transition duration-700" />
-                    </div>
-                  </div>
-                </motion.div>
-              )
-            })}
-          </div>
-        </motion.div>
+      {/* Photos 2-3 */}
+      <section className="py-10 px-6 max-w-4xl mx-auto relative z-10">
+        <div className="grid grid-cols-2 gap-8 md:gap-12">
+          {[{ src: photos[1], rot: 2.5 }, { src: photos[2], rot: -2 }].map(({ src, rot }, i) => (
+            <motion.div key={i}
+              initial={{ opacity: 0, y: 30, rotate: rot }}
+              whileInView={{ opacity: 1, y: 0, rotate: rot }}
+              whileHover={{ scale: 1.04, rotate: 0, zIndex: 20 }}
+              transition={{ delay: i * 0.15, duration: 0.5 }}
+              viewport={{ once: true }}
+              style={{ cursor: "pointer" }}>
+              <div className="bg-white p-2 pb-12" style={{ boxShadow: "0 10px 40px rgba(74,124,89,0.3)" }}>
+                <img src={src} alt={`moment ${i + 2}`} className="w-full" />
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       {/* Timeline */}
@@ -414,6 +418,25 @@ export default function Invitation({ override = null }) {
             ))}
           </div>
         </motion.div>
+      </section>
+
+      {/* Photos 4-6 */}
+      <section className="py-10 px-6 max-w-5xl mx-auto relative z-10">
+        <div className="grid grid-cols-3 gap-5 md:gap-8">
+          {[{ src: photos[3], rot: 3 }, { src: photos[4] || photos[1], rot: -2 }, { src: photos[5] || photos[2], rot: 1.5 }].map(({ src, rot }, i) => (
+            <motion.div key={i}
+              initial={{ opacity: 0, y: 30, rotate: rot }}
+              whileInView={{ opacity: 1, y: 0, rotate: rot }}
+              whileHover={{ scale: 1.04, rotate: 0, zIndex: 20 }}
+              transition={{ delay: i * 0.12, duration: 0.5 }}
+              viewport={{ once: true }}
+              style={{ cursor: "pointer" }}>
+              <div className="bg-white p-2 pb-10" style={{ boxShadow: "0 8px 32px rgba(74,124,89,0.25)" }}>
+                <img src={src} alt={`moment ${i + 4}`} className="w-full" />
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       {/* Gift Registry */}
