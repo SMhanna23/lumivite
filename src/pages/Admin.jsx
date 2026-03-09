@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { collection, getDocs, orderBy, query } from "firebase/firestore"
-import { db, storage } from "../firebase"
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { db } from "../firebase"
 import { getAuth, signOut } from "firebase/auth"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -29,11 +28,21 @@ function BuildInvitationModal({ order }) {
     if (!files.length) return
     setUploading(true)
     try {
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD
+      const preset = import.meta.env.VITE_CLOUDINARY_PRESET
       const urls = await Promise.all(
         Array.from(files).slice(0, 6 - photos.length).map(async (file) => {
-          const storageRef = ref(storage, `photos/${slug}/${Date.now()}-${file.name}`)
-          await uploadBytes(storageRef, file)
-          return getDownloadURL(storageRef)
+          const formData = new FormData()
+          formData.append("file", file)
+          formData.append("upload_preset", preset)
+          formData.append("folder", "lumivite")
+          const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+            method: "POST",
+            body: formData,
+          })
+          const data = await res.json()
+          if (data.error) throw new Error(data.error.message)
+          return data.secure_url
         })
       )
       setPhotos(prev => [...prev, ...urls].slice(0, 6))
