@@ -4,6 +4,160 @@ import { db } from "../firebase"
 import { getAuth, signOut } from "firebase/auth"
 import { motion, AnimatePresence } from "framer-motion"
 
+function BuildInvitationModal({ order, onClose }) {
+  const [slug, setSlug] = useState(`${order.groomName?.toLowerCase()}-${order.brideName?.toLowerCase()}`.replace(/\s/g, ""))
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [extraData, setExtraData] = useState({
+    groomAr: "", brideAr: "",
+    venue: `${order.ceremonyPlace}, ${order.city}`,
+    venueAr: "",
+    parentsEn: "", parentsAr: "",
+    quote: "We love because he first loved us.",
+    quoteAr: "نحن نحب لأنه هو أحبنا أولاً",
+    quoteRef: "1 John 4:19",
+    music: order.music || "",
+  })
+
+  const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
+
+  const handleBuild = async () => {
+    setSaving(true)
+    try {
+      const { setDoc, doc } = await import("firebase/firestore")
+      const invitationData = {
+        groom: order.groomName,
+        bride: order.brideName,
+        groomAr: extraData.groomAr || order.groomName,
+        brideAr: extraData.brideAr || order.brideName,
+        date: order.weddingDate + "T18:00:00",
+        template: order.template,
+        venue: extraData.venue,
+        venueAr: extraData.venueAr || extraData.venue,
+        quote: extraData.quote,
+        quoteAr: extraData.quoteAr,
+        quoteRef: extraData.quoteRef,
+        music: extraData.music,
+        parents: extraData.parentsEn ? extraData.parentsEn.split("\n") : [],
+        parentsAr: extraData.parentsAr ? extraData.parentsAr.split("\n") : [],
+        venues: [
+          { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: order.ceremonyTime, place: order.ceremonyPlace, placeAr: order.ceremonyPlace, location: order.city },
+          { label: "Wedding Party", labelAr: "حفل الزفاف", time: order.partyTime, place: order.partyPlace, placeAr: order.partyPlace, location: order.city },
+        ],
+        slug,
+        createdAt: new Date(),
+        orderId: order.id,
+        package: order.package,
+      }
+      await setDoc(doc(db, "invitations", slug), invitationData)
+      setSaved(true)
+    } catch (e) {
+      alert("Error: " + e.message)
+    }
+    setSaving(false)
+  }
+
+  const liveUrl = `https://lumivite.net/i/${slug}`
+
+  return (
+    <div className="border-t border-white/5 p-5">
+      <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4 font-semibold">
+        🛠️ Build Invitation
+      </p>
+
+      {saved ? (
+        <div className="bg-[#4ade80]/10 border border-[#4ade80]/20 rounded-xl p-4 text-center">
+          <p className="text-[#4ade80] font-medium mb-2">✅ Invitation is LIVE!</p>
+          <a href={liveUrl} target="_blank" rel="noopener noreferrer"
+            className="text-[#c9a96e] text-sm underline break-all">{liveUrl}</a>
+          <div className="flex gap-2 mt-3 justify-center">
+            <button onClick={() => navigator.clipboard.writeText(liveUrl).then(() => alert("Copied!"))}
+              className="text-xs px-4 py-2 rounded-xl border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
+              📋 Copy Link
+            </button>
+            <a href={`https://wa.me/${order.yourPhone?.replace(/[^0-9]/g,"")}?text=${encodeURIComponent(`Hi ${order.yourName}! 🎉 Your wedding invitation is ready!\n\n💍 ${order.groomName} & ${order.brideName}\n\nView it here: ${liveUrl}\n\nShare this link with your guests to RSVP! 🤍`)}`}
+              target="_blank" rel="noopener noreferrer"
+              className="text-xs px-4 py-2 rounded-xl text-black font-medium transition"
+              style={{ background: "#25D366" }}>
+              💬 Send to Client
+            </a>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {/* Slug */}
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Invitation URL Slug</label>
+            <div className="flex items-center gap-2">
+              <span className="text-white/20 text-sm">lumivite.net/i/</span>
+              <input value={slug} onChange={e => setSlug(e.target.value.toLowerCase().replace(/\s/g, "-"))}
+                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+          </div>
+
+          {/* Arabic names */}
+          <div className="grid grid-cols-2 gap-3">
+            {[["Groom Name (Arabic)", "groomAr", "كريستوفر"], ["Bride Name (Arabic)", "brideAr", "جويل"]].map(([label, key, ph]) => (
+              <div key={key}>
+                <label className="text-white/30 text-xs mb-1 block">{label}</label>
+                <input value={extraData[key]} onChange={e => update(key, e.target.value)}
+                  placeholder={ph} dir="rtl"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              </div>
+            ))}
+          </div>
+
+          {/* Parents */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Parents (English, one per line)</label>
+              <textarea value={extraData.parentsEn} onChange={e => update("parentsEn", e.target.value)}
+                placeholder={"Fadi & Dania Abboud\nNicolas & Marleine Hanna"} rows={2}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e] resize-none" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Parents (Arabic, one per line)</label>
+              <textarea value={extraData.parentsAr} onChange={e => update("parentsAr", e.target.value)}
+                placeholder={"فادي ودانيا عبود\nنيكولا ومرلين حنا"} rows={2} dir="rtl"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e] resize-none" />
+            </div>
+          </div>
+
+          {/* Quote */}
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Quote (English)</label>
+            <input value={extraData.quote} onChange={e => update("quote", e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Quote (Arabic)</label>
+            <input value={extraData.quoteAr} onChange={e => update("quoteAr", e.target.value)}
+              dir="rtl"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+
+          {/* Music */}
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Music URL (optional)</label>
+            <input value={extraData.music} onChange={e => update("music", e.target.value)}
+              placeholder="https://... or leave empty for default"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+
+          <button onClick={handleBuild} disabled={saving}
+            className="w-full py-3 rounded-xl font-semibold text-black transition disabled:opacity-50"
+            style={{ background: "#c9a96e" }}>
+            {saving ? "Building..." : "🚀 Build & Publish Invitation"}
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+
+
+
 export default function Admin() {
   const [tab, setTab] = useState("orders")
   const [orders, setOrders] = useState([])
@@ -196,6 +350,11 @@ export default function Admin() {
                             </motion.div>
                           )}
                         </AnimatePresence>
+                          {/* Build Invitation Button */}
+                              {selectedOrder?.id === order.id && (
+                               <BuildInvitationModal order={order} onClose={() => setSelectedOrder(null)} />
+                                )}
+
                       </motion.div>
                     ))}
                   </div>

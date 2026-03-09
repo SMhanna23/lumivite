@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
 
-const WEDDING = {
+const DEFAULT_WEDDING = {
   groom: "Christopher",
   bride: "Joelle",
   date: "2026-09-20T18:00:00",
@@ -23,6 +23,7 @@ const WEDDING = {
   { name: "Bank Transfer", icon: "🏦", desc: "iban: LB62 0099 0000 0001 0019 2000 9123", link: null, color: "#c9a96e" },
 ],
 }
+const WEDDING = override ? { ...DEFAULT_WEDDING, ...override } : DEFAULT_WEDDING
 
 function Countdown({ targetDate }) {
   const [time, setTime] = useState({})
@@ -78,7 +79,7 @@ const timeline = [
   { time: "11:00 PM", label: "Party", icon: "🎉", desc: "Dance the night away with us" },
 ]
 
-export default function Invitation2() {
+export default function Invitation({ override = null }) {
   const [started, setStarted] = useState(false)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
