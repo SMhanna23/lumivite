@@ -1,18 +1,22 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { collection, getDocs, orderBy, query } from "firebase/firestore"
-import { db } from "../firebase"
+import { db, storage } from "../firebase"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { getAuth, signOut } from "firebase/auth"
 import { motion, AnimatePresence } from "framer-motion"
 
-function BuildInvitationModal({ order, onClose }) {
+function BuildInvitationModal({ order }) {
   const [slug, setSlug] = useState(`${order.groomName?.toLowerCase()}-${order.brideName?.toLowerCase()}`.replace(/\s/g, ""))
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [photos, setPhotos] = useState([])
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef(null)
   const [extraData, setExtraData] = useState({
     groomAr: "", brideAr: "",
     venue: `${order.ceremonyPlace}, ${order.city}`,
     venueAr: "",
-    parentsEn: "", parentsAr: "",
+    parentsEn: order.parentsEn || "", parentsAr: "",
     quote: "We love because he first loved us.",
     quoteAr: "نحن نحب لأنه هو أحبنا أولاً",
     quoteRef: "1 John 4:19",
@@ -20,6 +24,24 @@ function BuildInvitationModal({ order, onClose }) {
   })
 
   const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
+
+  const handlePhotoUpload = async (files) => {
+    if (!files.length) return
+    setUploading(true)
+    try {
+      const urls = await Promise.all(
+        Array.from(files).slice(0, 6 - photos.length).map(async (file) => {
+          const storageRef = ref(storage, `photos/${slug}/${Date.now()}-${file.name}`)
+          await uploadBytes(storageRef, file)
+          return getDownloadURL(storageRef)
+        })
+      )
+      setPhotos(prev => [...prev, ...urls].slice(0, 6))
+    } catch (e) {
+      alert("Upload error: " + e.message)
+    }
+    setUploading(false)
+  }
 
   const handleBuild = async () => {
     setSaving(true)
@@ -48,6 +70,7 @@ function BuildInvitationModal({ order, onClose }) {
         createdAt: new Date(),
         orderId: order.id,
         package: order.package,
+        ...(photos.length > 0 && { photos }),
       }
       await setDoc(doc(db, "invitations", slug), invitationData)
       setSaved(true)
@@ -142,6 +165,30 @@ function BuildInvitationModal({ order, onClose }) {
             <input value={extraData.music} onChange={e => update("music", e.target.value)}
               placeholder="https://... or leave empty for default"
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+
+          {/* Photo Upload */}
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Client Photos — Gallery ({photos.length}/6)</label>
+            <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden"
+              onChange={e => handlePhotoUpload(e.target.files)} />
+            {photos.length > 0 && (
+              <div className="grid grid-cols-3 gap-2 mb-2">
+                {photos.map((url, i) => (
+                  <div key={i} className="relative aspect-square rounded-lg overflow-hidden group">
+                    <img src={url} alt={`photo ${i+1}`} className="w-full h-full object-cover" />
+                    <button onClick={() => setPhotos(p => p.filter((_, j) => j !== i))}
+                      className="absolute top-1 right-1 bg-black/70 text-white text-xs w-5 h-5 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <button onClick={() => fileInputRef.current?.click()} disabled={uploading || photos.length >= 6}
+              className="w-full py-2 rounded-lg border border-dashed border-white/20 text-white/40 text-sm hover:border-[#c9a96e]/50 hover:text-[#c9a96e]/70 transition disabled:opacity-30">
+              {uploading ? "Uploading..." : photos.length >= 6 ? "Max 6 photos" : "📷 Upload Photos"}
+            </button>
           </div>
 
           <button onClick={handleBuild} disabled={saving}
@@ -322,6 +369,7 @@ export default function Admin() {
                           {selectedOrder?.id === order.id && (
                             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
                               exit={{ height: 0, opacity: 0 }}
+                              onClick={e => e.stopPropagation()}
                               className="border-t border-white/5 overflow-hidden">
                               <div className="p-5 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                                 {[
@@ -352,7 +400,9 @@ export default function Admin() {
                         </AnimatePresence>
                           {/* Build Invitation Button */}
                               {selectedOrder?.id === order.id && (
-                               <BuildInvitationModal order={order} onClose={() => setSelectedOrder(null)} />
+                               <div onClick={e => e.stopPropagation()}>
+                                 <BuildInvitationModal order={order} onClose={() => setSelectedOrder(null)} />
+                               </div>
                                 )}
 
                       </motion.div>

@@ -25,6 +25,7 @@ export default function Order() {
     template: "",
     groomName: "",
     brideName: "",
+    parentsEn: "",
     weddingDate: "",
     ceremonyPlace: "",
     ceremonyTime: "",
@@ -217,6 +218,14 @@ export default function Order() {
                         placeholder={ph} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition" />
                     </div>
                   ))}
+                </div>
+
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">Parents Names (optional)</label>
+                  <textarea value={form.parentsEn} onChange={e => update("parentsEn", e.target.value)}
+                    placeholder={"Fadi & Dania Abboud\nNicolas & Marleine Hanna"} rows={2}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
+                  <p className="text-white/20 text-xs mt-1">One per line: Groom's parents first, then Bride's</p>
                 </div>
 
                 <div>
