@@ -218,6 +218,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [rsvpFilter, setRsvpFilter] = useState("all")
+  const [rsvpWedding, setRsvpWedding] = useState("all")
 
   useEffect(() => { fetchAll() }, [])
 
@@ -235,7 +236,7 @@ export default function Admin() {
   }
 
   const exportRSVP = () => {
-    const filtered = rsvpFilter === "all" ? rsvps : rsvps.filter(r => rsvpFilter === "attending" ? r.attending : !r.attending)
+    const filtered = filteredRsvps
     const csv = ["Name,Email,Attending,Persons,Wishes,Wedding,Date",
       ...filtered.map(r => `"${r.name}","${r.email || ""}","${r.attending ? "Yes" : "No"}","${r.persons || 1}","${r.wishes || ""}","${r.wedding || ""}","${r.createdAt?.toDate?.()?.toLocaleDateString() || ""}"`)
     ].join("\n")
@@ -253,15 +254,18 @@ export default function Admin() {
     const a = document.createElement("a"); a.href = url; a.download = "orders.csv"; a.click()
   }
 
-  const attending = rsvps.filter(r => r.attending).length
-  const declined = rsvps.filter(r => !r.attending).length
-  const totalPersons = rsvps.filter(r => r.attending).reduce((sum, r) => sum + (r.persons || 1), 0)
+  const weddings = orders.map(o => `${o.groomName} & ${o.brideName}`)
+  const weddingRsvps = rsvpWedding === "all" ? rsvps : rsvps.filter(r => r.wedding === rsvpWedding)
+
+  const attending = weddingRsvps.filter(r => r.attending).length
+  const declined = weddingRsvps.filter(r => !r.attending).length
+  const totalPersons = weddingRsvps.filter(r => r.attending).reduce((sum, r) => sum + (r.persons || 1), 0)
 
   const packageColor = { bronze: "#cd7f32", silver: "#c9a96e", gold: "#ffd700" }
   const templateIcon = { dark: "🌑", botanical: "🌿", rosegold: "🌸" }
   const templateName = { dark: "Dark Luxury", botanical: "Botanical", rosegold: "Rose Gold" }
 
-  const filteredRsvps = rsvpFilter === "all" ? rsvps : rsvps.filter(r => rsvpFilter === "attending" ? r.attending : !r.attending)
+  const filteredRsvps = weddingRsvps.filter(r => rsvpFilter === "all" ? true : rsvpFilter === "attending" ? r.attending : !r.attending)
 
   return (
     <div className="min-h-screen bg-[#0a0806] text-white">
@@ -421,10 +425,29 @@ export default function Admin() {
             {/* RSVPs TAB */}
             {tab === "rsvps" && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+
+                {/* Wedding Selector */}
+                {weddings.length > 1 && (
+                  <div className="flex gap-2 mb-4 flex-wrap">
+                    <button onClick={() => { setRsvpWedding("all"); setRsvpFilter("all") }}
+                      className="px-4 py-2 rounded-xl text-xs font-medium transition"
+                      style={{ background: rsvpWedding === "all" ? "#c9a96e" : "rgba(255,255,255,0.05)", color: rsvpWedding === "all" ? "black" : "rgba(255,255,255,0.5)" }}>
+                      💍 All Weddings
+                    </button>
+                    {weddings.map(w => (
+                      <button key={w} onClick={() => { setRsvpWedding(w); setRsvpFilter("all") }}
+                        className="px-4 py-2 rounded-xl text-xs font-medium transition"
+                        style={{ background: rsvpWedding === w ? "#c9a96e" : "rgba(255,255,255,0.05)", color: rsvpWedding === w ? "black" : "rgba(255,255,255,0.5)" }}>
+                        💒 {w}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                   <div className="flex gap-2">
                     {[
-                      { id: "all", label: `All (${rsvps.length})` },
+                      { id: "all", label: `All (${weddingRsvps.length})` },
                       { id: "attending", label: `✅ Attending (${attending})` },
                       { id: "declined", label: `❌ Declined (${declined})` },
                     ].map(f => (
