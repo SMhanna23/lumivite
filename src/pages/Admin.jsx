@@ -1,8 +1,15 @@
 import { useState, useEffect, useRef } from "react"
-import { collection, getDocs, orderBy, query } from "firebase/firestore"
+import { collection, getDocs, orderBy, query, updateDoc, doc } from "firebase/firestore"
 import { db } from "../firebase"
 import { getAuth, signOut } from "firebase/auth"
 import { motion, AnimatePresence } from "framer-motion"
+
+const STATUS_CONFIG = {
+  pending_payment: { label: "Awaiting Payment", color: "#f97316", bg: "#f9731620" },
+  paid:            { label: "Paid ✓",           color: "#60a5fa", bg: "#60a5fa20" },
+  in_progress:     { label: "In Progress",      color: "#a78bfa", bg: "#a78bfa20" },
+  delivered:       { label: "Delivered 🎉",     color: "#4ade80", bg: "#4ade8020" },
+}
 
 function BuildInvitationModal({ order }) {
   const [slug, setSlug] = useState(`${order.groomName?.toLowerCase()}-${order.brideName?.toLowerCase()}`.replace(/\s/g, ""))
@@ -79,6 +86,8 @@ function BuildInvitationModal({ order }) {
         ...(photos.length > 0 && { photos }),
       }
       await setDoc(doc(db, "invitations", slug), invitationData)
+      // Auto-mark order as delivered
+      await updateDoc(doc(db, "orders", order.id), { status: "delivered" })
       setSaved(true)
     } catch (e) {
       alert("Error: " + e.message)
@@ -250,6 +259,13 @@ export default function Admin() {
     setLoading(false)
   }
 
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      await updateDoc(doc(db, "orders", orderId), { status: newStatus })
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o))
+    } catch (e) { alert("Error: " + e.message) }
+  }
+
   const exportRSVP = () => {
     const filtered = filteredRsvps
     const csv = ["Name,Email,Attending,Persons,Wishes,Wedding,Date",
@@ -365,7 +381,7 @@ export default function Admin() {
                         <div className="p-5 flex items-center gap-4">
                           <div className="text-2xl">{templateIcon[order.template] || "💍"}</div>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
+                            <div className="flex items-center gap-2 mb-1 flex-wrap">
                               <p className="font-medium text-white">{order.groomName} & {order.brideName}</p>
                               <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                                 style={{ background: `${packageColor[order.package]}20`, color: packageColor[order.package] }}>
@@ -374,6 +390,15 @@ export default function Admin() {
                               <span className="text-xs text-white/30">
                                 {templateName[order.template]}
                               </span>
+                              {(() => {
+                                const s = STATUS_CONFIG[order.status || "pending_payment"]
+                                return (
+                                  <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                                    style={{ background: s.bg, color: s.color }}>
+                                    {s.label}
+                                  </span>
+                                )
+                              })()}
                             </div>
                             <p className="text-white/40 text-sm truncate">
                               👤 {order.yourName} · 📞 {order.yourPhone} · 📅 {order.weddingDate}
@@ -412,6 +437,25 @@ export default function Admin() {
                                   </div>
                                 ))}
                               </div>
+                              {/* Status buttons */}
+                              <div className="px-5 pb-3">
+                                <p className="text-white/30 text-xs mb-2 uppercase tracking-widest">Order Status</p>
+                                <div className="flex gap-2 flex-wrap">
+                                  {Object.entries(STATUS_CONFIG).map(([key, cfg]) => (
+                                    <button key={key}
+                                      onClick={() => handleStatusChange(order.id, key)}
+                                      className="text-xs px-3 py-1.5 rounded-xl font-medium transition border"
+                                      style={{
+                                        background: (order.status || "pending_payment") === key ? cfg.bg : "transparent",
+                                        color: (order.status || "pending_payment") === key ? cfg.color : "rgba(255,255,255,0.3)",
+                                        borderColor: (order.status || "pending_payment") === key ? cfg.color : "rgba(255,255,255,0.1)",
+                                      }}>
+                                      {cfg.label}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+
                               <div className="px-5 pb-5 flex gap-3">
                                 <a href={`https://wa.me/${order.yourPhone?.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Hi ${order.yourName}! 👋 Thank you for ordering your wedding invitation with Lumivite! We're working on ${order.groomName} & ${order.brideName}'s invitation and will send you a preview soon. 💍`)}`}
                                   target="_blank" rel="noopener noreferrer"
