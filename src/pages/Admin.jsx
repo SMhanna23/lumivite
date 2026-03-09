@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { collection, getDocs, orderBy, query, updateDoc, doc } from "firebase/firestore"
+import { collection, getDocs, orderBy, query, updateDoc, doc, deleteDoc } from "firebase/firestore"
 import { db } from "../firebase"
 import { getAuth, signOut } from "firebase/auth"
 import { motion, AnimatePresence } from "framer-motion"
@@ -325,6 +325,23 @@ export default function Admin() {
     } catch (e) { alert("Error: " + e.message) }
   }
 
+  const handleDeleteOrder = async (orderId) => {
+    if (!confirm("Delete this order? This cannot be undone.")) return
+    try {
+      await deleteDoc(doc(db, "orders", orderId))
+      setOrders(prev => prev.filter(o => o.id !== orderId))
+      if (selectedOrder?.id === orderId) setSelectedOrder(null)
+    } catch (e) { alert("Error: " + e.message) }
+  }
+
+  const handleDeleteRsvp = async (rsvpId) => {
+    if (!confirm("Remove this RSVP?")) return
+    try {
+      await deleteDoc(doc(db, "rsvps", rsvpId))
+      setRsvps(prev => prev.filter(r => r.id !== rsvpId))
+    } catch (e) { alert("Error: " + e.message) }
+  }
+
   const exportRSVP = () => {
     const filtered = filteredRsvps
     const csv = ["Name,Email,Attending,Persons,Wishes,Wedding,Date",
@@ -522,6 +539,10 @@ export default function Admin() {
                                   style={{ background: "#25D366" }}>
                                   💬 WhatsApp Client
                                 </a>
+                                <button onClick={() => handleDeleteOrder(order.id)}
+                                  className="text-sm px-4 py-2 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 transition">
+                                  🗑 Delete Order
+                                </button>
                               </div>
                             </motion.div>
                           )}
@@ -612,13 +633,17 @@ export default function Admin() {
                           </div>
                           {rsvp.wishes && <p className="text-white/40 text-xs mt-1 italic">"{rsvp.wishes}"</p>}
                         </div>
-                        <div className="text-right flex-shrink-0">
+                        <div className="text-right flex-shrink-0 flex flex-col items-end gap-1">
                           <span className={`text-xs px-2 py-1 rounded-full font-medium ${rsvp.attending ? "bg-[#4ade80]/15 text-[#4ade80]" : "bg-red-400/15 text-red-400"}`}>
                             {rsvp.attending ? `✓ ${rsvp.persons || 1} person${(rsvp.persons || 1) > 1 ? "s" : ""}` : "Declined"}
                           </span>
-                          <p className="text-white/20 text-xs mt-1">
+                          <p className="text-white/20 text-xs">
                             {rsvp.createdAt?.toDate?.()?.toLocaleDateString() || ""}
                           </p>
+                          <button onClick={() => handleDeleteRsvp(rsvp.id)}
+                            className="text-xs text-red-400/50 hover:text-red-400 transition">
+                            🗑
+                          </button>
                         </div>
                       </motion.div>
                     ))}
