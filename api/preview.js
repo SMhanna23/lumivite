@@ -1,6 +1,8 @@
 export default async function handler(req, res) {
-  const { slug } = req.query
+  const slug = req.query.slug
   const invitationUrl = `https://www.lumivite.net/i/${slug}`
+
+  if (!slug) return res.redirect(302, "https://www.lumivite.net")
 
   try {
     const projectId = process.env.VITE_FIREBASE_PROJECT_ID
