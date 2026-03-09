@@ -7,23 +7,29 @@ import { useSearchParams } from "react-router-dom"
 const DEFAULT_WEDDING = {
   groom: "Christopher",
   bride: "Joelle",
+  groomAr: "كريستوفر",
+  brideAr: "جويل",
   date: "2026-09-20T18:00:00",
   venues: [
-    { label: "Wedding Ceremony", time: "6:00 PM", place: "Saint Georges Church", location: "Feytroun, Lebanon", map: "https://maps.google.com/?q=Saint+Georges+Church+Feytroun+Lebanon" },
-    { label: "Wedding Party", time: "8:30 PM", place: "Bois de Roses", location: "Feytroun, Lebanon", map: "https://maps.google.com/?q=Bois+de+Roses+Feytroun+Lebanon" },
+    { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: "6:00 PM", place: "Saint Georges Church", placeAr: "كنيسة مار جرجس", location: "Feytroun, Lebanon", locationAr: "فيترون، لبنان", map: "https://maps.google.com/?q=Saint+Georges+Church+Feytroun+Lebanon" },
+    { label: "Wedding Party", labelAr: "حفل الزفاف", time: "8:30 PM", place: "Bois de Roses", placeAr: "بوا دو روز", location: "Feytroun, Lebanon", locationAr: "فيترون، لبنان", map: "https://maps.google.com/?q=Bois+de+Roses+Feytroun+Lebanon" },
   ],
   parents: ["Fadi & Dania Abboud", "Nicolas & Marleine Hanna"],
+  parentsAr: ["فادي ودانيا عبود", "نيكولا ومرلين حنا"],
   quote: "You are my today and all of my tomorrows.",
+  quoteAr: "أنتَ حاضري وكلّ غدٍ لي.",
   quoteRef: "Leo Christopher",
   venue: "Feytroun, Lebanon",
+  venueAr: "فيترون، لبنان",
   message: "Together with their families",
-
+  messageAr: "معاً مع عائلتيهما",
   registry: [
-  { name: "Wish Money", icon: "💳", desc: "Contribute to our honeymoon fund", link: "https://www.wishmoney.io", color: "#c9a96e" },
-  { name: "ABC Store", icon: "🎁", desc: "Browse our gift registry", link: "https://www.abc.com.lb", color: "#c9a96e" },
-  { name: "Bank Transfer", icon: "🏦", desc: "iban: LB62 0099 0000 0001 0019 2000 9123", link: null, color: "#c9a96e" },
-],
+    { name: "Wish Money", icon: "💳", desc: "Contribute to our honeymoon fund", descAr: "ساهم في صندوق شهر العسل", link: "https://www.wishmoney.io", color: "#c9a96e" },
+    { name: "ABC Store", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: "https://www.abc.com.lb", color: "#c9a96e" },
+    { name: "Bank Transfer", icon: "🏦", desc: "iban: LB62 0099 0000 0001 0019 2000 9123", descAr: "iban: LB62 0099 0000 0001 0019 2000 9123", link: null, color: "#c9a96e" },
+  ],
 }
+
 function Countdown({ targetDate }) {
   const [time, setTime] = useState({})
   useEffect(() => {
@@ -96,6 +102,8 @@ export default function Invitation({ override = null }) {
   const [persons, setPersons] = useState(1)
   const [status, setStatus] = useState("idle")
   const [playing, setPlaying] = useState(false)
+  const [lang, setLang] = useState("en")
+  const ar = lang === "ar"
   const [searchParams] = useSearchParams()
   const audioRef = useRef(null)
 
@@ -135,6 +143,7 @@ export default function Invitation({ override = null }) {
   if (!started) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 cursor-pointer relative overflow-hidden"
+        dir={ar ? "rtl" : "ltr"}
         style={{ background: `linear-gradient(160deg, ${cream} 0%, #F9E8E8 40%, #F5D5D5 100%)` }}
         onClick={() => { setStarted(true); setTimeout(() => startMusic(), 800) }}>
         <audio ref={audioRef} loop src="/music.mp3" preload="auto" />
@@ -151,26 +160,32 @@ export default function Invitation({ override = null }) {
           <motion.div animate={{ rotate: [0, 5, -5, 0] }} transition={{ repeat: Infinity, duration: 4 }}
             className="text-4xl mb-6">💍</motion.div>
           <p className="tracking-[0.5em] text-xs uppercase mb-8 font-medium" style={{ color: roseGold }}>
-            You're Invited
+            {ar ? "أنتم مدعوون" : "You're Invited"}
           </p>
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", color: dark }}
-            className="text-7xl md:text-9xl font-light mb-2">{WEDDING.groom}</h1>
+            className="text-7xl md:text-9xl font-light mb-2">
+            {ar ? WEDDING.groomAr : WEDDING.groom}
+          </h1>
           <div className="flex items-center justify-center gap-4 my-3">
             <div className="h-px w-12" style={{ background: roseGold }} />
             <span className="text-3xl" style={{ color: roseGold, fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>&</span>
             <div className="h-px w-12" style={{ background: roseGold }} />
           </div>
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", color: dark }}
-            className="text-7xl md:text-9xl font-light mb-12">{WEDDING.bride}</h1>
+            className="text-7xl md:text-9xl font-light mb-12">
+            {ar ? WEDDING.brideAr : WEDDING.bride}
+          </h1>
           {guestName && (
             <motion.p className="text-lg mb-8 font-light" style={{ color: "#8B4D3B" }}
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-              Dear <span className="font-medium" style={{ color: roseGold }}>{guestName}</span>
+              {ar ? "عزيزنا" : "Dear"} <span className="font-medium" style={{ color: roseGold }}>{guestName}</span>
             </motion.p>
           )}
           <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 2 }}
             className="flex flex-col items-center gap-2">
-            <p className="text-sm tracking-widest uppercase" style={{ color: `${roseGold}80` }}>Tap to open</p>
+            <p className="text-sm tracking-widest uppercase" style={{ color: `${roseGold}80` }}>
+              {ar ? "اضغط للفتح" : "Tap to open"}
+            </p>
             <div className="w-px h-8" style={{ background: `linear-gradient(to bottom, ${roseGold}, transparent)` }} />
           </motion.div>
         </motion.div>
@@ -180,7 +195,9 @@ export default function Invitation({ override = null }) {
 
   // MAIN
   return (
-    <div className="min-h-screen overflow-x-hidden relative" style={{ background: cream, color: dark }}>
+    <div className="min-h-screen overflow-x-hidden relative"
+      dir={ar ? "rtl" : "ltr"}
+      style={{ background: cream, color: dark, fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>
       <audio ref={audioRef} loop src="/music.mp3" preload="auto" />
       <Roses />
 
@@ -195,6 +212,15 @@ export default function Invitation({ override = null }) {
         {playing ? "⏸" : "🎵"}
       </motion.button>
 
+      {/* Language Toggle */}
+      <motion.button onClick={() => setLang(ar ? "en" : "ar")}
+        initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1.2 }}
+        className="fixed bottom-6 left-6 z-50 h-10 px-4 rounded-full flex items-center justify-center shadow-xl text-sm font-medium transition"
+        style={{ background: `${roseGold}20`, border: `1px solid ${roseGold}60`, color: roseGold }}>
+        {ar ? "EN" : "عربي"}
+      </motion.button>
+
       {/* Hero */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center z-10"
         style={{ background: `radial-gradient(ellipse at 50% 0%, #F9E0E0 0%, ${cream} 65%)` }}>
@@ -207,12 +233,12 @@ export default function Invitation({ override = null }) {
 
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
           <p className="tracking-[0.4em] text-xs uppercase mb-6 font-medium" style={{ color: roseGold }}>
-            We're getting married
+            {ar ? "نحن نتزوج" : "We're getting married"}
           </p>
-          {WEDDING.parents.map((p, i) => (
+          {(ar ? WEDDING.parentsAr : WEDDING.parents).map((p, i) => (
             <p key={i} className="text-sm opacity-50">{p}</p>
           ))}
-          <p className="text-sm mb-8 italic opacity-40">{WEDDING.message}</p>
+          <p className="text-sm mb-8 italic opacity-40">{ar ? WEDDING.messageAr : WEDDING.message}</p>
 
           {/* Ornamental divider */}
           <div className="flex items-center justify-center gap-3 mb-4">
@@ -222,18 +248,24 @@ export default function Invitation({ override = null }) {
           </div>
 
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", color: dark }}
-            className="text-6xl md:text-8xl font-light mb-1">{WEDDING.groom}</h1>
+            className="text-6xl md:text-8xl font-light mb-1">
+            {ar ? WEDDING.groomAr : WEDDING.groom}
+          </h1>
           <p className="text-3xl italic my-2" style={{ color: roseGold, fontFamily: "'Cormorant Garamond', serif" }}>&</p>
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", color: dark }}
-            className="text-6xl md:text-8xl font-light mb-8">{WEDDING.bride}</h1>
+            className="text-6xl md:text-8xl font-light mb-8">
+            {ar ? WEDDING.brideAr : WEDDING.bride}
+          </h1>
 
           <div className="flex items-center justify-center gap-3 mb-6">
             <div className="h-px w-16" style={{ background: `${roseGold}50` }} />
-            <p className="text-sm tracking-widest uppercase opacity-60">September 20 · 2026</p>
+            <p className="text-sm tracking-widest uppercase opacity-60">
+              {ar ? "٢٠ سبتمبر · ٢٠٢٦" : "September 20 · 2026"}
+            </p>
             <div className="h-px w-16" style={{ background: `${roseGold}50` }} />
           </div>
 
-          <p className="text-sm mb-10 opacity-50">{WEDDING.venue}</p>
+          <p className="text-sm mb-10 opacity-50">{ar ? WEDDING.venueAr : WEDDING.venue}</p>
           <Countdown targetDate={WEDDING.date} />
         </motion.div>
 
@@ -253,7 +285,9 @@ export default function Invitation({ override = null }) {
             <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
           </div>
           <p className="text-xl leading-relaxed italic opacity-70"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>"{WEDDING.quote}"</p>
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            "{ar ? WEDDING.quoteAr : WEDDING.quote}"
+          </p>
           <p className="text-sm mt-4 tracking-widest" style={{ color: roseGold }}>— {WEDDING.quoteRef}</p>
           <div className="flex items-center gap-4 justify-center mt-8">
             <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
@@ -266,8 +300,12 @@ export default function Invitation({ override = null }) {
       {/* Venues */}
       <section className="py-16 px-6 max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>Join Us</p>
-          <h2 className="text-4xl font-light text-center mb-12" style={{ fontFamily: "'Cormorant Garamond', serif" }}>The Celebration</h2>
+          <p className="tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>
+            {ar ? "انضموا إلينا" : "Join Us"}
+          </p>
+          <h2 className="text-4xl font-light text-center mb-12" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            {ar ? "الاحتفال" : "The Celebration"}
+          </h2>
           <div className="grid md:grid-cols-2 gap-6">
             {WEDDING.venues.map((v, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
@@ -282,14 +320,16 @@ export default function Invitation({ override = null }) {
                   />
                 </div>
                 <div className="p-6 text-center">
-                  <p className="text-xs tracking-widest uppercase mb-2 font-medium" style={{ color: roseGold }}>{v.label}</p>
+                  <p className="text-xs tracking-widest uppercase mb-2 font-medium" style={{ color: roseGold }}>
+                    {ar ? v.labelAr : v.label}
+                  </p>
                   <p className="text-3xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{v.time}</p>
-                  <p className="font-medium mb-1">{v.place}</p>
-                  <p className="text-sm mb-4 opacity-50">{v.location}</p>
+                  <p className="font-medium mb-1">{ar ? v.placeAr : v.place}</p>
+                  <p className="text-sm mb-4 opacity-50">{ar ? v.locationAr : v.location}</p>
                   <a href={v.map} target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm rounded-full px-4 py-2 transition"
                     style={{ color: roseGold, border: `1px solid ${roseGold}40` }}>
-                    📍 Open in Google Maps
+                    📍 {ar ? "افتح في خرائط جوجل" : "Open in Google Maps"}
                   </a>
                 </div>
               </motion.div>
@@ -301,8 +341,12 @@ export default function Invitation({ override = null }) {
       {/* Photo Gallery */}
       <section className="py-24 px-6 max-w-4xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>Our Story</p>
-          <h2 className="text-4xl font-light text-center mb-12" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Moments Together</h2>
+          <p className="tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>
+            {ar ? "قصتنا" : "Our Story"}
+          </p>
+          <h2 className="text-4xl font-light text-center mb-12" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            {ar ? "لحظاتنا معاً" : "Moments Together"}
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {(WEDDING.photos?.length
               ? WEDDING.photos.map((src, i) => ({ src, span: i === 0 ? "col-span-2 row-span-2" : "" }))
@@ -329,8 +373,12 @@ export default function Invitation({ override = null }) {
       {/* Timeline */}
       <section className="py-24 px-6 max-w-lg mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>The Day</p>
-          <h2 className="text-4xl font-light text-center mb-16" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Wedding Timeline</h2>
+          <p className="tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>
+            {ar ? "اليوم" : "The Day"}
+          </p>
+          <h2 className="text-4xl font-light text-center mb-16" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            {ar ? "برنامج حفل الزفاف" : "Wedding Timeline"}
+          </h2>
           <div className="relative">
             <div className="absolute left-[88px] top-0 bottom-0 w-px" style={{ background: `${roseGold}25` }} />
             {timeline.map((item, i) => (
@@ -355,73 +403,88 @@ export default function Invitation({ override = null }) {
       </section>
 
       {/* Gift Registry */}
-<section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
-  <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-    <p className="tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>With Love</p>
-    <h2 className="text-4xl font-light text-center mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", color: dark }}>Gift Registry</h2>
-    <p className="text-sm text-center mb-12 opacity-40">Your presence is our greatest gift. If you wish to honor us further:</p>
-    <div className="grid gap-4">
-      {WEDDING.registry.map((item, i) => (
-        <motion.div key={i}
-          initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
-          {item.link ? (
-            <a href={item.link} target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-5 p-5 rounded-2xl bg-white shadow-sm hover:shadow-md transition group"
-              style={{ border: `1px solid ${roseGold}20` }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
-                style={{ background: `${roseGold}10` }}>
-                {item.icon}
-              </div>
-              <div className="flex-1 text-left">
-                <p className="font-medium" style={{ color: dark }}>{item.name}</p>
-                <p className="text-sm opacity-50">{item.desc}</p>
-              </div>
-              <span className="text-sm opacity-0 group-hover:opacity-100 transition" style={{ color: roseGold }}>→</span>
-            </a>
-          ) : (
-            <div className="flex items-center gap-5 p-5 rounded-2xl bg-white shadow-sm"
-              style={{ border: `1px solid ${roseGold}20` }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
-                style={{ background: `${roseGold}10` }}>
-                {item.icon}
-              </div>
-              <div className="flex-1 text-left">
-                <p className="font-medium" style={{ color: dark }}>{item.name}</p>
-                <p className="text-xs font-mono mt-0.5 opacity-40">{item.desc}</p>
-              </div>
-              <button onClick={() => navigator.clipboard.writeText(item.desc.replace("iban: ", ""))}
-                className="text-xs rounded-full px-3 py-1 transition"
-                style={{ color: roseGold, border: `1px solid ${roseGold}40` }}>
-                Copy
-              </button>
-            </div>
-          )}
+      <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+          <p className="tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>
+            {ar ? "بكل محبة" : "With Love"}
+          </p>
+          <h2 className="text-4xl font-light text-center mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", color: dark }}>
+            {ar ? "قائمة الهدايا" : "Gift Registry"}
+          </h2>
+          <p className="text-sm text-center mb-12 opacity-40">
+            {ar ? "حضوركم هو أغلى هدية. إن أردتم تكريمنا أكثر:" : "Your presence is our greatest gift. If you wish to honor us further:"}
+          </p>
+          <div className="grid gap-4">
+            {WEDDING.registry.map((item, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
+                {item.link ? (
+                  <a href={item.link} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-5 p-5 rounded-2xl bg-white shadow-sm hover:shadow-md transition group"
+                    style={{ border: `1px solid ${roseGold}20` }}>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+                      style={{ background: `${roseGold}10` }}>
+                      {item.icon}
+                    </div>
+                    <div className="flex-1 text-left">
+                      <p className="font-medium" style={{ color: dark }}>{item.name}</p>
+                      <p className="text-sm opacity-50">{ar ? item.descAr : item.desc}</p>
+                    </div>
+                    <span className="text-sm opacity-0 group-hover:opacity-100 transition" style={{ color: roseGold }}>→</span>
+                  </a>
+                ) : (
+                  <div className="flex items-center gap-5 p-5 rounded-2xl bg-white shadow-sm"
+                    style={{ border: `1px solid ${roseGold}20` }}>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+                      style={{ background: `${roseGold}10` }}>
+                      {item.icon}
+                    </div>
+                    <div className="flex-1 text-left">
+                      <p className="font-medium" style={{ color: dark }}>{item.name}</p>
+                      <p className="text-xs font-mono mt-0.5 opacity-40">{item.desc}</p>
+                    </div>
+                    <button onClick={() => navigator.clipboard.writeText(item.desc.replace("iban: ", ""))}
+                      className="text-xs rounded-full px-3 py-1 transition"
+                      style={{ color: roseGold, border: `1px solid ${roseGold}40` }}>
+                      {ar ? "نسخ" : "Copy"}
+                    </button>
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
-      ))}
-    </div>
-  </motion.div>
-</section>
+      </section>
 
       {/* RSVP */}
       <section className="py-24 px-6 max-w-md mx-auto text-center relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }} viewport={{ once: true }}>
-          <p className="tracking-[0.3em] text-xs uppercase mb-4 font-medium" style={{ color: roseGold }}>Kindly Reply By August 1st</p>
-          <h2 className="text-4xl font-light mb-10" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Will you join us?</h2>
+          <p className="tracking-[0.3em] text-xs uppercase mb-4 font-medium" style={{ color: roseGold }}>
+            {ar ? "يرجى الرد قبل ١ أغسطس" : "Kindly Reply By August 1st"}
+          </p>
+          <h2 className="text-4xl font-light mb-10" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            {ar ? "هل ستنضمون إلينا؟" : "Will you join us?"}
+          </h2>
           <AnimatePresence mode="wait">
             {status === "success" ? (
               <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="py-16">
                 <div className="text-5xl mb-4">💌</div>
-                <p className="text-2xl mb-2" style={{ fontFamily: "'Cormorant Garamond', serif", color: roseGold }}>Thank you, {name}!</p>
-                <p className="opacity-50">Your RSVP has been received. We can't wait to celebrate with you.</p>
+                <p className="text-2xl mb-2" style={{ fontFamily: "'Cormorant Garamond', serif", color: roseGold }}>
+                  {ar ? `شكراً، ${name}!` : `Thank you, ${name}!`}
+                </p>
+                <p className="opacity-50">
+                  {ar ? "تم استلام ردك. لا يسعنا الانتظار للاحتفال معك." : "Your RSVP has been received. We can't wait to celebrate with you."}
+                </p>
               </motion.div>
             ) : (
               <motion.div key="form" className="space-y-4">
                 {["text", "email"].map((type, idx) => (
                   <input key={idx} value={idx === 0 ? name : email}
                     onChange={e => idx === 0 ? setName(e.target.value) : setEmail(e.target.value)}
-                    type={type} placeholder={idx === 0 ? "Your Full Name" : "Your Email (optional)"}
+                    type={type}
+                    placeholder={idx === 0 ? (ar ? "اسمك الكامل" : "Your Full Name") : (ar ? "بريدك الإلكتروني (اختياري)" : "Your Email (optional)")}
                     className="w-full rounded-xl px-5 py-4 focus:outline-none transition"
                     style={{ background: "white", border: `1px solid ${roseGold}30`, color: dark,
                       boxShadow: "0 1px 4px rgba(183,110,121,0.08)" }} />
@@ -435,23 +498,24 @@ export default function Invitation({ override = null }) {
                   <button onClick={() => setAttending(true)}
                     className="flex-1 py-4 rounded-xl font-medium tracking-wider transition"
                     style={{ background: attending === true ? roseGold : "white", color: attending === true ? "white" : roseGold, border: `1px solid ${roseGold}50` }}>
-                    ✓ Attending
+                    {ar ? "✓ حاضر" : "✓ Attending"}
                   </button>
                   <button onClick={() => setAttending(false)}
                     className="flex-1 py-4 rounded-xl font-medium tracking-wider transition"
                     style={{ background: attending === false ? dark : "white", color: attending === false ? "white" : `${dark}60`, border: `1px solid ${dark}20` }}>
-                    ✗ Decline
+                    {ar ? "✗ اعتذار" : "✗ Decline"}
                   </button>
                 </div>
                 <textarea value={wishes} onChange={e => setWishes(e.target.value)}
-                  placeholder="Share your wishes... (optional)" rows={3} maxLength={200}
+                  placeholder={ar ? "شاركنا أمنياتك... (اختياري)" : "Share your wishes... (optional)"}
+                  rows={3} maxLength={200}
                   className="w-full rounded-xl px-5 py-4 focus:outline-none transition resize-none"
                   style={{ background: "white", border: `1px solid ${roseGold}30`, color: dark }} />
                 <p className="text-xs text-right opacity-30">{wishes.length}/200</p>
                 <button onClick={handleRSVP} disabled={status === "loading"}
                   className="w-full py-4 font-semibold rounded-xl tracking-wider text-white disabled:opacity-50 transition"
                   style={{ background: `linear-gradient(135deg, ${roseGold}, #C4566A)` }}>
-                  {status === "loading" ? "Sending..." : "SEND RSVP"}
+                  {status === "loading" ? (ar ? "جارٍ الإرسال..." : "Sending...") : (ar ? "إرسال التأكيد" : "SEND RSVP")}
                 </button>
               </motion.div>
             )}
@@ -461,7 +525,7 @@ export default function Invitation({ override = null }) {
 
       <footer className="text-center py-10 text-sm border-t relative z-10"
         style={{ color: `${roseGold}60`, borderColor: `${roseGold}15` }}>
-        Made with 🌹 by <span style={{ color: roseGold }}>Lumivite</span>
+        {ar ? "صُنع بـ 🌹 بواسطة" : "Made with 🌹 by"} <span style={{ color: roseGold }}>Lumivite</span>
       </footer>
     </div>
   )
