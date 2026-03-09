@@ -11,6 +11,78 @@ const STATUS_CONFIG = {
   delivered:       { label: "Delivered 🎉",     color: "#4ade80", bg: "#4ade8020" },
 }
 
+function OrderEditSection({ order, onSave }) {
+  const [editing, setEditing] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [fields, setFields] = useState({
+    groomName: order.groomName || "",
+    brideName: order.brideName || "",
+    yourName: order.yourName || "",
+    yourPhone: order.yourPhone || "",
+    yourEmail: order.yourEmail || "",
+    weddingDate: order.weddingDate || "",
+    city: order.city || "",
+    guestCount: order.guestCount || "",
+    ceremonyPlace: order.ceremonyPlace || "",
+    ceremonyTime: order.ceremonyTime || "",
+    partyPlace: order.partyPlace || "",
+    partyTime: order.partyTime || "",
+    music: order.music || "",
+    notes: order.notes || "",
+  })
+  const set = (k, v) => setFields(p => ({ ...p, [k]: v }))
+
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      await updateDoc(doc(db, "orders", order.id), fields)
+      onSave(fields)
+      setEditing(false)
+    } catch (e) { alert("Error: " + e.message) }
+    setSaving(false)
+  }
+
+  const inp = "w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-[#c9a96e]"
+
+  return (
+    <div className="p-5 border-b border-white/5">
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-white/30 text-xs uppercase tracking-widest">Order Details</p>
+        {editing ? (
+          <div className="flex gap-2">
+            <button onClick={() => setEditing(false)} className="text-xs px-3 py-1 rounded-lg border border-white/10 text-white/40 hover:text-white transition">Cancel</button>
+            <button onClick={handleSave} disabled={saving} className="text-xs px-3 py-1 rounded-lg font-medium text-black transition" style={{ background: "#c9a96e" }}>
+              {saving ? "Saving..." : "Save"}
+            </button>
+          </div>
+        ) : (
+          <button onClick={() => setEditing(true)} className="text-xs px-3 py-1 rounded-lg border border-white/10 text-white/40 hover:text-white hover:border-white/30 transition">
+            ✏️ Edit
+          </button>
+        )}
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+        {[
+          ["Groom", "groomName"], ["Bride", "brideName"],
+          ["Client Name", "yourName"], ["Phone", "yourPhone"], ["Email", "yourEmail"],
+          ["Wedding Date", "weddingDate"], ["City", "city"], ["Guests", "guestCount"],
+          ["Ceremony Place", "ceremonyPlace"], ["Ceremony Time", "ceremonyTime"],
+          ["Party Place", "partyPlace"], ["Party Time", "partyTime"],
+          ["Music", "music"], ["Notes", "notes"],
+        ].map(([label, key]) => (
+          <div key={key}>
+            <p className="text-white/30 text-xs mb-1">{label}</p>
+            {editing
+              ? <input value={fields[key]} onChange={e => set(key, e.target.value)} className={inp} />
+              : <p className="text-white/70">{fields[key] || "—"}</p>
+            }
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function BuildInvitationModal({ order }) {
   const [slug, setSlug] = useState(`${order.groomName?.toLowerCase()}-${order.brideName?.toLowerCase()}`.replace(/\s/g, ""))
   const [saving, setSaving] = useState(false)
@@ -511,22 +583,7 @@ export default function Admin() {
                               exit={{ height: 0, opacity: 0 }}
                               onClick={e => e.stopPropagation()}
                               className="border-t border-white/5 overflow-hidden">
-                              <div className="p-5 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                                {[
-                                  ["🏛️ Ceremony", `${order.ceremonyPlace} at ${order.ceremonyTime}`],
-                                  ["🎉 Party", `${order.partyPlace} at ${order.partyTime}`],
-                                  ["📍 City", order.city],
-                                  ["👥 Guests", order.guestCount],
-                                  ["🎵 Music", order.music || "Not specified"],
-                                  ["📝 Notes", order.notes || "None"],
-                                  ["📧 Email", order.yourEmail || "Not provided"],
-                                ].map(([label, val]) => (
-                                  <div key={label}>
-                                    <p className="text-white/30 text-xs mb-1">{label}</p>
-                                    <p className="text-white/70">{val}</p>
-                                  </div>
-                                ))}
-                              </div>
+                              <OrderEditSection order={order} onSave={updated => setOrders(prev => prev.map(o => o.id === order.id ? { ...o, ...updated } : o))} />
                               {/* Status buttons */}
                               <div className="px-5 pb-3">
                                 <p className="text-white/30 text-xs mb-2 uppercase tracking-widest">Order Status</p>
