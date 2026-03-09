@@ -110,6 +110,11 @@ function BuildInvitationModal({ order }) {
     registryLink1: "",
     registryLink2: "",
     registryIban: "",
+    tl0: "5:00 PM",
+    tl1: "7:00 PM",
+    tl2: "8:30 PM",
+    tl3: "10:00 PM",
+    tl4: "11:00 PM",
   })
 
   const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
@@ -142,6 +147,11 @@ function BuildInvitationModal({ order }) {
             registryLink1: d.registry?.[0]?.link || "",
             registryLink2: d.registry?.[1]?.link || "",
             registryIban: d.registry?.[2]?.desc?.replace("iban: ", "") || "",
+            tl0: d.timeline?.[0]?.time || "5:00 PM",
+            tl1: d.timeline?.[1]?.time || "7:00 PM",
+            tl2: d.timeline?.[2]?.time || "8:30 PM",
+            tl3: d.timeline?.[3]?.time || "10:00 PM",
+            tl4: d.timeline?.[4]?.time || "11:00 PM",
           })
           if (d.photos?.length) setPhotos(d.photos)
           setSaved(true)
@@ -213,6 +223,13 @@ function BuildInvitationModal({ order }) {
           { name: "Wish Money", icon: "💳", desc: "Contribute to our honeymoon fund", descAr: "ساهم في صندوق شهر العسل", link: extraData.registryLink1 || null, color: "#c9a96e" },
           ...(extraData.registryLink2 ? [{ name: "Gift Registry", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: extraData.registryLink2, color: "#c9a96e" }] : []),
           ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", desc: `iban: ${extraData.registryIban}`, descAr: `iban: ${extraData.registryIban}`, link: null, color: "#c9a96e" }] : []),
+        ],
+        timeline: [
+          { time: extraData.tl0, label: "Ceremony", icon: "💒", desc: "Join us as we say our vows" },
+          { time: extraData.tl1, label: "Cocktail Hour", icon: "🥂", desc: "Celebrate with drinks & canapés" },
+          { time: extraData.tl2, label: "Dinner", icon: "🍽️", desc: "A feast prepared with love" },
+          { time: extraData.tl3, label: "First Dance", icon: "💃", desc: "Watch us dance for the first time" },
+          { time: extraData.tl4, label: "Party", icon: "🎉", desc: "Dance the night away with us" },
         ],
         slug,
         createdAt: new Date(),
@@ -416,6 +433,19 @@ function BuildInvitationModal({ order }) {
             <input value={extraData.registryIban} onChange={e => update("registryIban", e.target.value)}
               placeholder="LB62 0099 0000 0001 0019 2000 9123"
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+
+          {/* Wedding Timeline */}
+          <p className="text-white/20 text-xs uppercase tracking-widest pt-1">🕐 Wedding Day Timeline</p>
+          <div className="grid grid-cols-2 gap-3">
+            {[["Ceremony", "tl0"], ["Cocktail Hour", "tl1"], ["Dinner", "tl2"], ["First Dance", "tl3"], ["Party", "tl4"]].map(([label, key]) => (
+              <div key={key}>
+                <label className="text-white/30 text-xs mb-1 block">{label}</label>
+                <input value={extraData[key]} onChange={e => update(key, e.target.value)}
+                  placeholder="6:00 PM"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              </div>
+            ))}
           </div>
 
           {/* Photo Upload */}

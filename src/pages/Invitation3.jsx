@@ -403,7 +403,7 @@ export default function Invitation({ override = null }) {
           </h2>
           <div className="relative">
             <div className="absolute left-[88px] top-0 bottom-0 w-px" style={{ background: `${roseGold}25` }} />
-            {timeline.map((item, i) => (
+            {(WEDDING.timeline || timeline).map((item, i) => (
               <motion.div key={i} className="flex gap-6 mb-10 items-start"
                 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
