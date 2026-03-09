@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { collection, getDocs, orderBy, query, updateDoc, doc, deleteDoc } from "firebase/firestore"
+import { collection, getDocs, orderBy, query, updateDoc, doc, deleteDoc, where } from "firebase/firestore"
 import { db } from "../firebase"
 import { getAuth, signOut } from "firebase/auth"
 import { motion, AnimatePresence } from "framer-motion"
@@ -336,8 +336,7 @@ export default function Admin() {
       await deleteDoc(doc(db, "invitations", slug)).catch(() => {})
 
       // Delete all RSVPs for this wedding
-      const { getDocs: getD, collection: col, query: q, where } = await import("firebase/firestore")
-      const rsvpSnap = await getD(q(col(db, "rsvps"), where("wedding", "==", weddingName)))
+      const rsvpSnap = await getDocs(query(collection(db, "rsvps"), where("wedding", "==", weddingName)))
       await Promise.all(rsvpSnap.docs.map(d => deleteDoc(doc(db, "rsvps", d.id))))
 
       // Delete the order
