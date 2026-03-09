@@ -258,7 +258,7 @@ export default function Landing() {
                     </li>
                   ))}
                 </ul>
-                <a href="https://wa.me/96171444328?text=Hi! I want the ${pkg.name} package"
+                <a href={`https://wa.me/96171444328?text=${encodeURIComponent(`Hi! I want the ${pkg.name} package`)}`}
                   target="_blank" rel="noopener noreferrer"
                   className="block text-center py-3 rounded-xl font-semibold text-sm transition"
                   style={{ background: pkg.popular ? "#c9a96e" : "transparent", color: pkg.popular ? "black" : "#c9a96e", border: `1px solid ${pkg.color}` }}>
