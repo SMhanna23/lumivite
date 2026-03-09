@@ -100,6 +100,7 @@ function BuildInvitationModal({ order }) {
     quoteAr: "نحن نحب لأنه هو أحبنا أولاً",
     quoteRef: "1 John 4:19",
     music: order.music || "",
+    rsvpDeadline: "",
   })
 
   const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
@@ -122,6 +123,7 @@ function BuildInvitationModal({ order }) {
             quoteAr: d.quoteAr || "نحن نحب لأنه هو أحبنا أولاً",
             quoteRef: d.quoteRef || "1 John 4:19",
             music: d.music || "",
+            rsvpDeadline: d.rsvpDeadline || "",
           })
           if (d.photos?.length) setPhotos(d.photos)
           setSaved(true)
@@ -180,6 +182,7 @@ function BuildInvitationModal({ order }) {
         quoteAr: extraData.quoteAr,
         quoteRef: extraData.quoteRef,
         music: extraData.music,
+        rsvpDeadline: extraData.rsvpDeadline || "",
         parents: extraData.parentsEn ? extraData.parentsEn.split("\n") : [],
         parentsAr: extraData.parentsAr ? extraData.parentsAr.split("\n") : [],
         venues: [
@@ -308,6 +311,13 @@ function BuildInvitationModal({ order }) {
             <label className="text-white/30 text-xs mb-1 block">Music URL (optional)</label>
             <input value={extraData.music} onChange={e => update("music", e.target.value)}
               placeholder="https://... or leave empty for default"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+
+          {/* RSVP Deadline */}
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">RSVP Deadline</label>
+            <input type="date" value={extraData.rsvpDeadline} onChange={e => update("rsvpDeadline", e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
 

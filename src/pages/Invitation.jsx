@@ -432,7 +432,11 @@ export default function Invitation({ override = null }) {
       {/* RSVP */}
       <section className="py-24 px-6 max-w-md mx-auto text-center relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
-          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-4">{ar ? "يرجى الرد قبل ١ أغسطس" : "Kindly Reply By August 1st"}</p>
+          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-4">
+            {ar
+              ? `يرجى الرد قبل ${WEDDING.rsvpDeadline ? new Date(WEDDING.rsvpDeadline + "T12:00:00").toLocaleDateString("ar-EG", { month: "long", day: "numeric" }) : "١ أغسطس"}`
+              : `Kindly Reply By ${WEDDING.rsvpDeadline ? new Date(WEDDING.rsvpDeadline + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" }) : "August 1st"}`}
+          </p>
           <h2 className="mb-10" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3.5rem", fontWeight: 400, color: "white", lineHeight: 1.2 }}>{ar ? "هل ستنضمون إلينا؟" : "Will you join us?"}</h2>
           <AnimatePresence mode="wait">
             {status === "success" ? (

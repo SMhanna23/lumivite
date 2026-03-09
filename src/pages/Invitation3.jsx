@@ -503,7 +503,9 @@ export default function Invitation({ override = null }) {
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }} viewport={{ once: true }}>
           <p className="tracking-[0.3em] text-xs uppercase mb-4 font-medium" style={{ color: roseGold }}>
-            {ar ? "يرجى الرد قبل ١ أغسطس" : "Kindly Reply By August 1st"}
+            {ar
+              ? `يرجى الرد قبل ${WEDDING.rsvpDeadline ? new Date(WEDDING.rsvpDeadline + "T12:00:00").toLocaleDateString("ar-EG", { month: "long", day: "numeric" }) : "١ أغسطس"}`
+              : `Kindly Reply By ${WEDDING.rsvpDeadline ? new Date(WEDDING.rsvpDeadline + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" }) : "August 1st"}`}
           </p>
           <h2 className="mb-10" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3.5rem", fontWeight: 400, color: dark, lineHeight: 1.2 }}>
             {ar ? "هل ستنضمون إلينا؟" : "Will you join us?"}
