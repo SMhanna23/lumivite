@@ -96,7 +96,7 @@ function BuildInvitationModal({ order }) {
   }
 
   const liveUrl = `https://www.lumivite.net/i/${slug}`
-  const previewUrl = `https://www.lumivite.net/api/preview/${slug}`
+  const previewUrl = `https://www.lumivite.net/api/preview/${slug}?v=1`
   const dashboardUrl = `https://www.lumivite.net/dashboard/${slug}`
 
   return (
