@@ -47,10 +47,11 @@ export default async function handler(req, res) {
   <meta name="twitter:title" content="${title}">
   <meta name="twitter:description" content="${description}">
   <meta name="twitter:image" content="${photo}">
-  <meta http-equiv="refresh" content="0; url=${invitationUrl}">
   <script>window.location.replace("${invitationUrl}")</script>
 </head>
-<body></body>
+<body style="background:#0a0806;margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;">
+  <p style="color:#c9a96e;font-family:serif;font-size:1.2rem;">Opening your invitation...</p>
+</body>
 </html>`
 
     res.setHeader("Content-Type", "text/html; charset=utf-8")
