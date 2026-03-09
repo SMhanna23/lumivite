@@ -17,6 +17,7 @@ function BuildInvitationModal({ order }) {
   const [saved, setSaved] = useState(false)
   const [photos, setPhotos] = useState([])
   const [uploading, setUploading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const fileInputRef = useRef(null)
   const [extraData, setExtraData] = useState({
     groomAr: "", brideAr: "",
@@ -30,6 +31,40 @@ function BuildInvitationModal({ order }) {
   })
 
   const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
+
+  useEffect(() => {
+    const loadExisting = async () => {
+      try {
+        const { getDoc, doc: firestoreDoc } = await import("firebase/firestore")
+        const snap = await getDoc(firestoreDoc(db, "invitations", slug))
+        if (snap.exists()) {
+          const d = snap.data()
+          setExtraData({
+            groomAr: d.groomAr || "",
+            brideAr: d.brideAr || "",
+            venue: d.venue || `${order.ceremonyPlace}, ${order.city}`,
+            venueAr: d.venueAr || "",
+            parentsEn: (d.parents || []).join("\n"),
+            parentsAr: (d.parentsAr || []).join("\n"),
+            quote: d.quote || "We love because he first loved us.",
+            quoteAr: d.quoteAr || "نحن نحب لأنه هو أحبنا أولاً",
+            quoteRef: d.quoteRef || "1 John 4:19",
+            music: d.music || "",
+          })
+          if (d.photos?.length) setPhotos(d.photos)
+          setSaved(true)
+        }
+      } catch (e) { /* no existing invitation */ }
+      setLoading(false)
+    }
+    loadExisting()
+  }, [])
+
+  if (loading) return (
+    <div className="border-t border-white/5 p-5">
+      <p className="text-white/20 text-xs text-center animate-pulse">Loading...</p>
+    </div>
+  )
 
   const handlePhotoUpload = async (files) => {
     if (!files.length) return
@@ -107,7 +142,13 @@ function BuildInvitationModal({ order }) {
 
       {saved ? (
         <div className="bg-[#4ade80]/10 border border-[#4ade80]/20 rounded-xl p-4">
-          <p className="text-[#4ade80] font-medium mb-3 text-center">✅ Invitation is LIVE!</p>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[#4ade80] font-medium">✅ Invitation is LIVE!</p>
+            <button onClick={() => setSaved(false)}
+              className="text-xs px-3 py-1 rounded-lg border border-white/10 text-white/40 hover:text-white hover:border-white/30 transition">
+              ✏️ Edit
+            </button>
+          </div>
           <div className="space-y-2 mb-3">
             <div>
               <p className="text-white/30 text-xs mb-1">💌 Invitation Link (share with guests)</p>
