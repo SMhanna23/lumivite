@@ -311,7 +311,7 @@ export default function Invitation({ override = null }) {
           whileHover={{ scale: 1.02 }}
         >
           <img src={photo.src} alt={`moment ${i + 1}`}
-            className="w-full h-full object-cover hover:scale-110 transition duration-700" />
+            className="w-full h-full object-cover object-top hover:scale-110 transition duration-700" />
         </motion.div>
         ))}
       </div>

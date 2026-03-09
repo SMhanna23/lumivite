@@ -312,7 +312,7 @@ export default function Invitation({ override = null }) {
                 initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }} whileHover={{ scale: 1.02 }}>
                 <img src={photo.src} alt={`moment ${i + 1}`}
-                  className="w-full h-full object-cover hover:scale-110 transition duration-700" />
+                  className="w-full h-full object-cover object-top hover:scale-110 transition duration-700" />
               </motion.div>
             ))}
           </div>
