@@ -241,14 +241,31 @@ function BuildInvitationModal({ order }) {
 
           {/* Photo Upload */}
           <div>
-            <label className="text-white/30 text-xs mb-1 block">Client Photos — Gallery ({photos.length}/6)</label>
+            <label className="text-white/30 text-xs mb-1 block">Client Photos — Gallery ({photos.length}/6) · drag to reorder</label>
             <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden"
               onChange={e => handlePhotoUpload(e.target.files)} />
             {photos.length > 0 && (
               <div className="grid grid-cols-3 gap-2 mb-2">
                 {photos.map((url, i) => (
-                  <div key={i} className="relative aspect-square rounded-lg overflow-hidden group">
-                    <img src={url} alt={`photo ${i+1}`} className="w-full h-full object-cover" />
+                  <div key={url} draggable
+                    onDragStart={e => e.dataTransfer.setData("text/plain", i)}
+                    onDragOver={e => e.preventDefault()}
+                    onDrop={e => {
+                      e.preventDefault()
+                      const from = parseInt(e.dataTransfer.getData("text/plain"))
+                      if (from === i) return
+                      setPhotos(p => {
+                        const arr = [...p]
+                        arr.splice(i, 0, arr.splice(from, 1)[0])
+                        return arr
+                      })
+                    }}
+                    className="relative aspect-square rounded-lg overflow-hidden group cursor-grab active:cursor-grabbing">
+                    <img src={url} alt={`photo ${i+1}`} className="w-full h-full object-cover object-top pointer-events-none" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition" />
+                    <div className="absolute top-1 left-1 bg-black/60 text-white/60 text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
+                      {i + 1}
+                    </div>
                     <button onClick={() => setPhotos(p => p.filter((_, j) => j !== i))}
                       className="absolute top-1 right-1 bg-black/70 text-white text-xs w-5 h-5 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                       ×
