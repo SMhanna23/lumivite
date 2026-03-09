@@ -96,6 +96,7 @@ function BuildInvitationModal({ order }) {
   }
 
   const liveUrl = `https://www.lumivite.net/i/${slug}`
+  const previewUrl = `https://www.lumivite.net/api/preview/${slug}`
   const dashboardUrl = `https://www.lumivite.net/dashboard/${slug}`
 
   return (
@@ -120,7 +121,7 @@ function BuildInvitationModal({ order }) {
             </div>
           </div>
           <div className="flex gap-2 justify-center flex-wrap">
-            <button onClick={() => navigator.clipboard.writeText(liveUrl).then(() => alert("Invitation link copied!"))}
+            <button onClick={() => navigator.clipboard.writeText(previewUrl).then(() => alert("Invitation link copied!"))}
               className="text-xs px-3 py-2 rounded-xl border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
               📋 Copy Invitation
             </button>
@@ -128,7 +129,7 @@ function BuildInvitationModal({ order }) {
               className="text-xs px-3 py-2 rounded-xl border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
               📊 Copy Dashboard
             </button>
-            <a href={`https://wa.me/${order.yourPhone?.replace(/[^0-9]/g,"")}?text=${encodeURIComponent(`Hi ${order.yourName}! 🎉 Your wedding invitation is ready!\n\n💍 ${order.groomName} & ${order.brideName}\n\n📩 Invitation link (share with guests):\n${liveUrl}\n\n📊 Your RSVP dashboard (see who's attending):\n${dashboardUrl}\n\n🤍 Lumivite`)}`}
+            <a href={`https://wa.me/${order.yourPhone?.replace(/[^0-9]/g,"")}?text=${encodeURIComponent(`Hi ${order.yourName}! 🎉 Your wedding invitation is ready!\n\n💍 ${order.groomName} & ${order.brideName}\n\n📩 Invitation link (share with guests):\n${previewUrl}\n\n📊 Your RSVP dashboard (see who's attending):\n${dashboardUrl}\n\n🤍 Lumivite`)}`}
               target="_blank" rel="noopener noreferrer"
               className="text-xs px-3 py-2 rounded-xl text-black font-medium transition"
               style={{ background: "#25D366" }}>
