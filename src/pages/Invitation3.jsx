@@ -566,7 +566,7 @@ export default function Invitation({ override = null }) {
 
       <footer className="text-center py-10 text-sm border-t relative z-10"
         style={{ color: `${roseGold}60`, borderColor: `${roseGold}15` }}>
-        {ar ? "صُنع بـ 🌹 بواسطة" : "Made with 🌹 by"} <span style={{ color: roseGold }}>Lumivite</span>
+        {ar ? "صُنع بـ 🌹 بواسطة" : "Made with 🌹 by"} <span style={{ color: roseGold }}> Lumivite</span>
       </footer>
     </div>
   )

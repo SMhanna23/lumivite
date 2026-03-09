@@ -479,7 +479,7 @@ export default function Invitation({ override = null }) {
       </section>
 
       <footer className="text-center py-10 text-white/20 text-sm border-t border-white/5 relative z-10">
-       {ar ? "صُنع بـ ✦ بواسطة" : "Made with ✦ by"}<span className="text-[#c9a96e]">Lumivite</span>
+       {ar ? "صُنع بـ ✦ بواسطة" : "Made with ✦ by"}<span className="text-[#c9a96e]"> Lumivite</span>
       </footer>
     </div>
   )
