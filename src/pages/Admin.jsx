@@ -326,10 +326,25 @@ export default function Admin() {
   }
 
   const handleDeleteOrder = async (orderId) => {
-    if (!confirm("Delete this order? This cannot be undone.")) return
+    if (!confirm("Delete this order? This will also delete the invitation and all RSVPs. Cannot be undone.")) return
     try {
+      const order = orders.find(o => o.id === orderId)
+      const slug = `${order.groomName?.toLowerCase()}-${order.brideName?.toLowerCase()}`.replace(/\s/g, "")
+      const weddingName = `${order.groomName} & ${order.brideName}`
+
+      // Delete invitation
+      await deleteDoc(doc(db, "invitations", slug)).catch(() => {})
+
+      // Delete all RSVPs for this wedding
+      const { getDocs: getD, collection: col, query: q, where } = await import("firebase/firestore")
+      const rsvpSnap = await getD(q(col(db, "rsvps"), where("wedding", "==", weddingName)))
+      await Promise.all(rsvpSnap.docs.map(d => deleteDoc(doc(db, "rsvps", d.id))))
+
+      // Delete the order
       await deleteDoc(doc(db, "orders", orderId))
+
       setOrders(prev => prev.filter(o => o.id !== orderId))
+      setRsvps(prev => prev.filter(r => r.wedding !== weddingName))
       if (selectedOrder?.id === orderId) setSelectedOrder(null)
     } catch (e) { alert("Error: " + e.message) }
   }
