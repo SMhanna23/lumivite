@@ -87,6 +87,7 @@ function BuildInvitationModal({ order }) {
   }
 
   const liveUrl = `https://lumivite.net/i/${slug}`
+  const dashboardUrl = `https://lumivite.net/dashboard/${slug}`
 
   return (
     <div className="border-t border-white/5 p-5">
@@ -95,20 +96,34 @@ function BuildInvitationModal({ order }) {
       </p>
 
       {saved ? (
-        <div className="bg-[#4ade80]/10 border border-[#4ade80]/20 rounded-xl p-4 text-center">
-          <p className="text-[#4ade80] font-medium mb-2">✅ Invitation is LIVE!</p>
-          <a href={liveUrl} target="_blank" rel="noopener noreferrer"
-            className="text-[#c9a96e] text-sm underline break-all">{liveUrl}</a>
-          <div className="flex gap-2 mt-3 justify-center">
-            <button onClick={() => navigator.clipboard.writeText(liveUrl).then(() => alert("Copied!"))}
-              className="text-xs px-4 py-2 rounded-xl border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
-              📋 Copy Link
+        <div className="bg-[#4ade80]/10 border border-[#4ade80]/20 rounded-xl p-4">
+          <p className="text-[#4ade80] font-medium mb-3 text-center">✅ Invitation is LIVE!</p>
+          <div className="space-y-2 mb-3">
+            <div>
+              <p className="text-white/30 text-xs mb-1">💌 Invitation Link (share with guests)</p>
+              <a href={liveUrl} target="_blank" rel="noopener noreferrer"
+                className="text-[#c9a96e] text-xs underline break-all">{liveUrl}</a>
+            </div>
+            <div>
+              <p className="text-white/30 text-xs mb-1">📊 RSVP Dashboard (for the couple)</p>
+              <a href={dashboardUrl} target="_blank" rel="noopener noreferrer"
+                className="text-[#c9a96e] text-xs underline break-all">{dashboardUrl}</a>
+            </div>
+          </div>
+          <div className="flex gap-2 justify-center flex-wrap">
+            <button onClick={() => navigator.clipboard.writeText(liveUrl).then(() => alert("Invitation link copied!"))}
+              className="text-xs px-3 py-2 rounded-xl border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
+              📋 Copy Invitation
             </button>
-            <a href={`https://wa.me/${order.yourPhone?.replace(/[^0-9]/g,"")}?text=${encodeURIComponent(`Hi ${order.yourName}! 🎉 Your wedding invitation is ready!\n\n💍 ${order.groomName} & ${order.brideName}\n\nView it here: ${liveUrl}\n\nShare this link with your guests to RSVP! 🤍`)}`}
+            <button onClick={() => navigator.clipboard.writeText(dashboardUrl).then(() => alert("Dashboard link copied!"))}
+              className="text-xs px-3 py-2 rounded-xl border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
+              📊 Copy Dashboard
+            </button>
+            <a href={`https://wa.me/${order.yourPhone?.replace(/[^0-9]/g,"")}?text=${encodeURIComponent(`Hi ${order.yourName}! 🎉 Your wedding invitation is ready!\n\n💍 ${order.groomName} & ${order.brideName}\n\n📩 Invitation link (share with guests):\n${liveUrl}\n\n📊 Your RSVP dashboard (see who's attending):\n${dashboardUrl}\n\n🤍 Lumivite`)}`}
               target="_blank" rel="noopener noreferrer"
-              className="text-xs px-4 py-2 rounded-xl text-black font-medium transition"
+              className="text-xs px-3 py-2 rounded-xl text-black font-medium transition"
               style={{ background: "#25D366" }}>
-              💬 Send to Client
+              💬 Send Both to Client
             </a>
           </div>
         </div>
