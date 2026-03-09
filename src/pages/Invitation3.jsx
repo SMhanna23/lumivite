@@ -284,8 +284,8 @@ export default function Invitation({ override = null }) {
             <span className="text-2xl">🌹</span>
             <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
           </div>
-          <p className="text-xl leading-relaxed italic opacity-70"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-2xl md:text-3xl leading-relaxed opacity-80"
+            style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
             "{ar ? WEDDING.quoteAr : WEDDING.quote}"
           </p>
           <p className="text-sm mt-4 tracking-widest" style={{ color: roseGold }}>— {WEDDING.quoteRef}</p>
@@ -339,33 +339,51 @@ export default function Invitation({ override = null }) {
       </section>
 
       {/* Photo Gallery */}
-      <section className="py-24 px-6 max-w-4xl mx-auto relative z-10">
+      <section className="py-24 px-6 max-w-5xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>
+          <p className="tracking-[0.3em] text-xs uppercase text-center mb-3 font-medium" style={{ color: roseGold }}>
             {ar ? "قصتنا" : "Our Story"}
           </p>
-          <h2 className="text-4xl font-light text-center mb-12" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <h2 className="text-center mb-3" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.5rem" : "3.8rem", color: dark, fontWeight: 400, lineHeight: 1.2 }}>
             {ar ? "لحظاتنا معاً" : "Moments Together"}
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="flex items-center justify-center gap-4 mb-14">
+            <div className="h-px w-20" style={{ background: `linear-gradient(to right, transparent, ${roseGold}60)` }} />
+            <span className="text-xl">🌸</span>
+            <div className="h-px w-20" style={{ background: `linear-gradient(to left, transparent, ${roseGold}60)` }} />
+          </div>
+          <div className="columns-2 md:columns-3 gap-5">
             {(WEDDING.photos?.length
-              ? WEDDING.photos.map((src, i) => ({ src, span: i === 0 ? "col-span-2 row-span-2" : "" }))
+              ? WEDDING.photos
               : [
-                  { src: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600", span: "col-span-2 row-span-2" },
-                  { src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400", span: "" },
-                  { src: "https://images.unsplash.com/photo-1591604021695-0c69b7c05981?w=400", span: "" },
-                  { src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400", span: "" },
-                  { src: "https://images.unsplash.com/photo-1529636798458-92182e662485?w=400", span: "" },
-                  { src: "https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=400", span: "" },
+                  "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600",
+                  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400",
+                  "https://images.unsplash.com/photo-1591604021695-0c69b7c05981?w=400",
+                  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400",
+                  "https://images.unsplash.com/photo-1529636798458-92182e662485?w=400",
+                  "https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=400",
                 ]
-            ).map((photo, i) => (
-              <motion.div key={i} className={`${photo.span} overflow-hidden rounded-2xl aspect-square`}
-                initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.1 }} viewport={{ once: true }} whileHover={{ scale: 1.02 }}>
-                <img src={photo.src} alt={`moment ${i + 1}`}
-                  className="w-full h-full object-cover object-top hover:scale-110 transition duration-700" />
-              </motion.div>
-            ))}
+            ).map((src, i) => {
+              const rotations = [-3, 2.5, -1.5, 3, -2, 1.5]
+              const rot = rotations[i % 6]
+              return (
+                <motion.div key={i}
+                  className="break-inside-avoid mb-5 inline-block w-full relative"
+                  initial={{ opacity: 0, y: 30, rotate: rot }}
+                  whileInView={{ opacity: 1, y: 0, rotate: rot }}
+                  whileHover={{ scale: 1.04, rotate: 0, zIndex: 20 }}
+                  transition={{ delay: i * 0.1, duration: 0.5 }}
+                  viewport={{ once: true }}
+                  style={{ cursor: "pointer" }}>
+                  <div className="bg-white p-2 pb-9" style={{ boxShadow: `0 8px 32px ${roseGold}40` }}>
+                    <div className="overflow-hidden" style={{ aspectRatio: i % 3 === 0 ? "3/4" : i % 3 === 1 ? "4/3" : "1/1" }}>
+                      <img src={src} alt={`moment ${i + 1}`}
+                        className="w-full h-full object-cover object-center hover:scale-110 transition duration-700" />
+                    </div>
+                  </div>
+                </motion.div>
+              )
+            })}
           </div>
         </motion.div>
       </section>
@@ -464,7 +482,7 @@ export default function Invitation({ override = null }) {
           <p className="tracking-[0.3em] text-xs uppercase mb-4 font-medium" style={{ color: roseGold }}>
             {ar ? "يرجى الرد قبل ١ أغسطس" : "Kindly Reply By August 1st"}
           </p>
-          <h2 className="text-4xl font-light mb-10" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <h2 className="mb-10" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3.5rem", fontWeight: 400, color: dark, lineHeight: 1.2 }}>
             {ar ? "هل ستنضمون إلينا؟" : "Will you join us?"}
           </h2>
           <AnimatePresence mode="wait">
