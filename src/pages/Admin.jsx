@@ -107,6 +107,7 @@ function BuildInvitationModal({ order }) {
     partyMapUrl: "",
     music: order.music || "",
     rsvpDeadline: "",
+    registryWishMoneyAcc: "",
     registryLink1: "",
     registryLink2: "",
     registryIban: "",
@@ -144,6 +145,7 @@ function BuildInvitationModal({ order }) {
             partyMapUrl: d.venues?.[1]?.map || "",
             music: d.music || "",
             rsvpDeadline: d.rsvpDeadline || "",
+            registryWishMoneyAcc: d.registry?.[0]?.acc || "",
             registryLink1: d.registry?.[0]?.link || "",
             registryLink2: d.registry?.[1]?.link || "",
             registryIban: d.registry?.[2]?.desc?.replace("iban: ", "") || "",
@@ -220,7 +222,14 @@ function BuildInvitationModal({ order }) {
           { label: "Wedding Party", labelAr: "حفل الزفاف", time: order.partyTime, place: order.partyPlace, placeAr: extraData.partyPlaceAr || order.partyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.partyMapUrl || null },
         ],
         registry: [
-          { name: "Wish Money", icon: "💳", desc: "Contribute to our honeymoon fund", descAr: "ساهم في صندوق شهر العسل", link: extraData.registryLink1 || null, color: "#c9a96e" },
+          ...(extraData.registryLink1 || extraData.registryWishMoneyAcc ? [{
+            name: "Wish Money", icon: "💳",
+            desc: extraData.registryWishMoneyAcc ? `Acc# ${extraData.registryWishMoneyAcc}` : "Contribute to our honeymoon fund",
+            descAr: extraData.registryWishMoneyAcc ? `Acc# ${extraData.registryWishMoneyAcc}` : "ساهم في صندوق شهر العسل",
+            link: extraData.registryLink1 || null,
+            acc: extraData.registryWishMoneyAcc || null,
+            color: "#c9a96e",
+          }] : []),
           ...(extraData.registryLink2 ? [{ name: "Gift Registry", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: extraData.registryLink2, color: "#c9a96e" }] : []),
           ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", desc: `iban: ${extraData.registryIban}`, descAr: `iban: ${extraData.registryIban}`, link: null, color: "#c9a96e" }] : []),
         ],
@@ -416,11 +425,19 @@ function BuildInvitationModal({ order }) {
 
           {/* Gift Registry */}
           <p className="text-white/20 text-xs uppercase tracking-widest pt-1">🎁 Gift Registry</p>
-          <div>
-            <label className="text-white/30 text-xs mb-1 block">Honeymoon Fund Link (e.g. Wish Money URL)</label>
-            <input value={extraData.registryLink1} onChange={e => update("registryLink1", e.target.value)}
-              placeholder="https://www.wishmoney.io/..."
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Wish Money Account #</label>
+              <input value={extraData.registryWishMoneyAcc} onChange={e => update("registryWishMoneyAcc", e.target.value)}
+                placeholder="21055323"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Wish Money Link (optional)</label>
+              <input value={extraData.registryLink1} onChange={e => update("registryLink1", e.target.value)}
+                placeholder="https://www.wishmoney.io/..."
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
           </div>
           <div>
             <label className="text-white/30 text-xs mb-1 block">Gift Store Link (optional)</label>
