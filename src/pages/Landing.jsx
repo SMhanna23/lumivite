@@ -131,7 +131,7 @@ export default function Landing() {
       <section className="py-24 px-6 text-center">
       <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
       <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-3">Choose Your Style</p>
-      <h2 className="font-serif text-4xl font-light mb-4">Two Stunning Templates</h2>
+      <h2 className="font-serif text-4xl font-light mb-4">Three Stunning Templates</h2>
       <p className="text-white/40 mb-12 text-sm">Click any template to see a live demo</p>
       <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
 
