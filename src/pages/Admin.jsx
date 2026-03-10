@@ -126,10 +126,23 @@ function BuildInvitationModal({ order }) {
   useEffect(() => {
     const loadExisting = async () => {
       try {
-        const { getDoc, doc: firestoreDoc } = await import("firebase/firestore")
-        const snap = await getDoc(firestoreDoc(db, "invitations", slug))
-        if (snap.exists()) {
-          const d = snap.data()
+        const { getDocs, getDoc, query, collection: col, where, doc: firestoreDoc } = await import("firebase/firestore")
+
+        // Always query by orderId — reliable even if slug was changed
+        let d = null, docId = null
+        const q = query(col(db, "invitations"), where("orderId", "==", order.id))
+        const qSnap = await getDocs(q)
+        if (!qSnap.empty) {
+          docId = qSnap.docs[0].id
+          d = qSnap.docs[0].data()
+          setSlug(docId) // restore the real slug
+        } else {
+          // Fallback: try current slug directly (legacy / first-time load)
+          const snap = await getDoc(firestoreDoc(db, "invitations", slug))
+          if (snap.exists()) { d = snap.data(); docId = slug }
+        }
+
+        if (d) {
           setExtraData({
             groomAr: d.groomAr || "",
             brideAr: d.brideAr || "",
