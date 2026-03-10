@@ -176,7 +176,7 @@ function BuildInvitationModal({ order }) {
     try {
       const apiKey = import.meta.env.VITE_IMGBB_KEY
       const urls = await Promise.all(
-        Array.from(files).slice(0, 6 - photos.length).map(async (file) => {
+        Array.from(files).slice(0, 9 - photos.length).map(async (file) => {
           const formData = new FormData()
           formData.append("image", file)
           const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
@@ -188,7 +188,7 @@ function BuildInvitationModal({ order }) {
           return data.data.url
         })
       )
-      setPhotos(prev => [...prev, ...urls].slice(0, 6))
+      setPhotos(prev => [...prev, ...urls].slice(0, 9))
     } catch (e) {
       alert("Upload error: " + e.message)
     }
@@ -481,7 +481,7 @@ function BuildInvitationModal({ order }) {
 
           {/* Photo Upload */}
           <div>
-            <label className="text-white/30 text-xs mb-1 block">Client Photos — Gallery ({photos.length}/6) · drag to reorder</label>
+            <label className="text-white/30 text-xs mb-1 block">Client Photos — Gallery ({photos.length}/9) · drag to reorder</label>
             <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden"
               onChange={e => handlePhotoUpload(e.target.files)} />
             {photos.length > 0 && (
@@ -514,9 +514,9 @@ function BuildInvitationModal({ order }) {
                 ))}
               </div>
             )}
-            <button onClick={() => fileInputRef.current?.click()} disabled={uploading || photos.length >= 6}
+            <button onClick={() => fileInputRef.current?.click()} disabled={uploading || photos.length >= 9}
               className="w-full py-2 rounded-lg border border-dashed border-white/20 text-white/40 text-sm hover:border-[#c9a96e]/50 hover:text-[#c9a96e]/70 transition disabled:opacity-30">
-              {uploading ? "Uploading..." : photos.length >= 6 ? "Max 6 photos" : "📷 Upload Photos"}
+              {uploading ? "Uploading..." : photos.length >= 9 ? "Max 9 photos" : "📷 Upload Photos"}
             </button>
           </div>
 

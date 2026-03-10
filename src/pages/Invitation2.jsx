@@ -453,7 +453,7 @@ export default function Invitation({ override = null }) {
       {/* Photos 4-6 */}
       <section className="py-10 px-6 max-w-5xl mx-auto relative z-10">
         <div className="grid grid-cols-3 gap-5 md:gap-8">
-          {[{ src: photos[4] || photos[0], rot: 3 }, { src: photos[5] || photos[1], rot: -2 }, { src: photos[6] || photos[0], rot: 1.5 }].map(({ src, rot }, i) => (
+          {[{ src: photos[6] || photos[4] || photos[0], rot: 3 }, { src: photos[7] || photos[5] || photos[1], rot: -2 }, { src: photos[8] || photos[4] || photos[0], rot: 1.5 }].map(({ src, rot }, i) => (
             <motion.div key={i}
               initial={{ opacity: 0, y: 30, rotate: rot }}
               whileInView={{ opacity: 1, y: 0, rotate: rot }}
