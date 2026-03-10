@@ -84,7 +84,7 @@ function OrderEditSection({ order, onSave }) {
 }
 
 function BuildInvitationModal({ order }) {
-  const [slug, setSlug] = useState(`${order.groomName?.toLowerCase()}-${order.brideName?.toLowerCase()}`.replace(/\s/g, ""))
+  const [slug, setSlug] = useState(order.slug || `${order.groomName?.toLowerCase()}-${order.brideName?.toLowerCase()}`.replace(/\s/g, ""))
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [photos, setPhotos] = useState([])
@@ -245,6 +245,8 @@ function BuildInvitationModal({ order }) {
         ...(photos.length > 0 && { photos }),
       }
       await setDoc(firestoreDoc(db, "invitations", slug), draftData, { merge: true })
+      // Persist the slug back to the order so it reloads correctly
+      await updateDoc(firestoreDoc(db, "orders", order.id), { slug })
       setDraftSaved(true)
       setTimeout(() => setDraftSaved(false), 3000)
     } catch (e) {
