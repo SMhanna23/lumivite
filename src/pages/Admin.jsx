@@ -90,6 +90,8 @@ function BuildInvitationModal({ order }) {
   const [photos, setPhotos] = useState([])
   const [uploading, setUploading] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [draftSaving, setDraftSaving] = useState(false)
+  const [draftSaved,  setDraftSaved]  = useState(false)
   const fileInputRef = useRef(null)
   const [extraData, setExtraData] = useState({
     groomAr: "", brideAr: "",
@@ -196,9 +198,6 @@ function BuildInvitationModal({ order }) {
     }
     setUploading(false)
   }
-
-  const [draftSaving, setDraftSaving] = useState(false)
-  const [draftSaved,  setDraftSaved]  = useState(false)
 
   const handleSaveDraft = async () => {
     if (!slug) return alert("Please enter an Invitation URL Slug first")
