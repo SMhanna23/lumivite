@@ -234,7 +234,11 @@ export default function Invitation({ override = null }) {
           <h1 className="font-serif text-6xl md:text-8xl font-light mb-2">{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
           <p className="text-[#c9a96e] text-4xl font-serif italic mb-2">&</p>
           <h1 className="font-serif text-6xl md:text-8xl font-light mb-10">{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
-          <p className="text-white/40 text-sm tracking-widest uppercase mb-2">{ar ? "٢٠ سبتمبر ٢٠٢٦" : "September 20, 2026"}</p>
+          <p className="text-white/40 text-sm tracking-widest uppercase mb-2">
+            {ar
+              ? new Date(WEDDING.date).toLocaleDateString("ar-EG", { day: "numeric", month: "long", year: "numeric" })
+              : new Date(WEDDING.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+          </p>
           <p className="text-white/40 text-sm mb-12">{ar ? WEDDING.venueAr : WEDDING.venue}</p>
           <Countdown targetDate={WEDDING.date} />
         </motion.div>

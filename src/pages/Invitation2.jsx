@@ -264,7 +264,9 @@ export default function Invitation({ override = null }) {
           <div className="flex items-center justify-center gap-6 mb-8">
             <div className="h-px w-16 bg-[#4a7c59]/30" />
             <p className="text-[#4a7c59]/60 text-sm tracking-widest uppercase">
-              {ar ? "٢٠ سبتمبر · ٢٠٢٦" : "September 20 · 2026"}
+              {ar
+                ? new Date(WEDDING.date).toLocaleDateString("ar-EG", { day: "numeric", month: "long", year: "numeric" })
+                : new Date(WEDDING.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
             </p>
             <div className="h-px w-16 bg-[#4a7c59]/30" />
           </div>
