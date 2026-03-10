@@ -267,13 +267,9 @@ export default function Invitation({ override = null }) {
         <div className="absolute bottom-24 right-8 text-2xl opacity-30">🌷</div>
 
         <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
-          <p className="tracking-[0.4em] text-xs uppercase mb-6 font-medium" style={{ color: roseGold }}>
+          <p className="tracking-[0.4em] text-xs uppercase mb-8 font-medium" style={{ color: roseGold }}>
             {ar ? "نحن نتزوج" : "We're getting married"}
           </p>
-          {(ar ? WEDDING.parentsAr : WEDDING.parents).map((p, i) => (
-            <p key={i} className="text-sm opacity-50">{p}</p>
-          ))}
-          <p className="text-sm mb-8 italic opacity-40">{ar ? WEDDING.messageAr : WEDDING.message}</p>
 
           {/* Ornamental divider */}
           <div className="flex items-center justify-center gap-3 mb-4">
@@ -313,8 +309,8 @@ export default function Invitation({ override = null }) {
         </motion.div>
       </section>
 
-      {/* Quote */}
-      <section className="py-24 px-6 text-center max-w-2xl mx-auto relative z-10">
+      {/* Quote + Parents */}
+      <section className="py-16 px-6 text-center max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
           <div className="flex items-center gap-4 justify-center mb-8">
             <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
@@ -326,11 +322,26 @@ export default function Invitation({ override = null }) {
             "{ar ? WEDDING.quoteAr : WEDDING.quote}"
           </p>
           <p className="text-sm mt-4 tracking-widest" style={{ color: roseGold }}>— {WEDDING.quoteRef}</p>
-          <div className="flex items-center gap-4 justify-center mt-8">
+          <div className="flex items-center gap-4 justify-center mt-8 mb-10">
             <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
             <span className="text-2xl">💮</span>
             <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
           </div>
+
+          {/* Parents cards */}
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            {(ar ? WEDDING.parentsAr : WEDDING.parents).map((p, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.15 }} viewport={{ once: true }}
+                className="rounded-xl px-4 py-5 text-center"
+                style={{ border: `1px solid ${roseGold}35`, background: `rgba(183,110,121,0.05)` }}>
+                <p className="text-xs tracking-[0.3em] uppercase mb-2" style={{ color: roseGold }}>{ar ? "السادة" : "Mr. & Mrs."}</p>
+                <p className="font-light text-sm leading-relaxed" style={{ color: dark, fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>{p}</p>
+              </motion.div>
+            ))}
+          </div>
+          <p className="text-sm italic opacity-40">{ar ? WEDDING.messageAr : WEDDING.message}</p>
         </motion.div>
       </section>
 

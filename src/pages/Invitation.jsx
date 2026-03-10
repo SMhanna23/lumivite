@@ -259,11 +259,7 @@ export default function Invitation({ override = null }) {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5 pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full border border-white/5 pointer-events-none" />
         <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
-          <p className="text-[#c9a96e] tracking-[0.4em] text-xs uppercase mb-4">{ar ? "نحن نتزوج" : "We're getting married"}</p>
-          {(ar ? WEDDING.parentsAr : WEDDING.parents).map((p, i) => (
-            <p key={i} className="text-white/40 text-sm">{p}</p>
-          ))}
-          <p className="text-white/30 text-sm mb-6 italic">{ar ? WEDDING.messageAr : WEDDING.message}</p>
+          <p className="text-[#c9a96e] tracking-[0.4em] text-xs uppercase mb-8">{ar ? "نحن نتزوج" : "We're getting married"}</p>
           <h1 className="font-serif text-6xl md:text-8xl font-light mb-2">{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
           <p className="text-[#c9a96e] text-4xl font-serif italic mb-2">&</p>
           <h1 className="font-serif text-6xl md:text-8xl font-light mb-10">{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
@@ -282,13 +278,28 @@ export default function Invitation({ override = null }) {
         </motion.div>
       </section>
 
-      {/* Quote */}
-      <section className="py-24 px-6 text-center max-w-2xl mx-auto relative z-10">
+      {/* Quote + Parents */}
+      <section className="py-16 px-6 text-center max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
           <div className="text-[#c9a96e] text-2xl mb-6">✦</div>
           <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>"{ar ? WEDDING.quoteAr : WEDDING.quote}"</p>
           <p className="text-[#c9a96e] text-sm mt-3 tracking-widest">— {WEDDING.quoteRef}</p>
-          <div className="text-[#c9a96e] text-2xl mt-6">✦</div>
+          <div className="text-[#c9a96e] text-2xl mt-8 mb-10">✦</div>
+
+          {/* Parents cards */}
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            {(ar ? WEDDING.parentsAr : WEDDING.parents).map((p, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.15 }} viewport={{ once: true }}
+                className="border border-[#c9a96e]/30 rounded-xl px-4 py-5 text-center"
+                style={{ background: "rgba(201,169,110,0.05)" }}>
+                <p className="text-[#c9a96e] text-xs tracking-[0.3em] uppercase mb-2">{ar ? "السادة" : "Mr. & Mrs."}</p>
+                <p className="text-white font-light text-sm leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>{p}</p>
+              </motion.div>
+            ))}
+          </div>
+          <p className="text-white/40 text-sm italic">{ar ? WEDDING.messageAr : WEDDING.message}</p>
         </motion.div>
       </section>
 
