@@ -187,9 +187,9 @@ export default function Invitation({ override = null }) {
             {/* Outer glow ring */}
             <div className="absolute -inset-4 rounded-full border border-[#c9a96e]/20 pointer-events-none" />
             <div className="absolute -inset-2 rounded-full border border-[#c9a96e]/35 pointer-events-none" />
-            <div className="w-56 h-56 md:w-64 md:h-64 rounded-full overflow-hidden border-2 border-[#c9a96e]/80"
+            <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-[#c9a96e]/80"
               style={{ boxShadow: "0 0 40px rgba(201,169,110,0.25), 0 24px 64px rgba(0,0,0,0.7)" }}>
-              <img src={photos[0]} alt="Couple" className="w-full h-full object-cover" />
+              <img src={photos[0]} alt="Couple" className="w-full h-full object-cover object-top" />
             </div>
           </motion.div>
 

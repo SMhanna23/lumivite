@@ -180,11 +180,11 @@ export default function Invitation({ override = null }) {
             initial={{ opacity: 0, scale: 0.75 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.3, delay: 0.3 }}>
             <div className="absolute -inset-4 rounded-full border pointer-events-none" style={{ borderColor: `${roseGold}25` }} />
             <div className="absolute -inset-2 rounded-full border pointer-events-none" style={{ borderColor: `${roseGold}50` }} />
-            <div className="w-56 h-56 md:w-64 md:h-64 rounded-full overflow-hidden border-2" style={{
+            <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-2" style={{
               borderColor: `${roseGold}cc`,
               boxShadow: `0 0 40px rgba(183,110,121,0.3), 0 24px 64px rgba(0,0,0,0.7)`
             }}>
-              <img src={photos[0]} alt="Couple" className="w-full h-full object-cover" />
+              <img src={photos[0]} alt="Couple" className="w-full h-full object-cover object-top" />
             </div>
           </motion.div>
 
