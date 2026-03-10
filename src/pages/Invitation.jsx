@@ -346,7 +346,8 @@ export default function Invitation({ override = null }) {
             <p className="font-serif text-2xl font-light mb-1">{v.time}</p>
             <p className="text-white font-medium mb-1">{ar ? v.placeAr : v.place}</p>
             <p className="text-white/40 text-sm mb-4">{ar ? v.locationAr : v.location}</p>
-            <a href={v.map} target="_blank" rel="noopener noreferrer"
+            <a href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
+              target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-[#c9a96e] text-sm border border-[#c9a96e]/30 rounded-full px-4 py-2 hover:bg-[#c9a96e]/10 transition">
               📍 Open in Google Maps
             </a>

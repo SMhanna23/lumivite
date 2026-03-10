@@ -390,7 +390,8 @@ export default function Invitation({ override = null }) {
                   <p className="text-3xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{v.time}</p>
                   <p className="font-medium mb-1">{ar ? v.placeAr : v.place}</p>
                   <p className="text-sm mb-4 opacity-50">{ar ? v.locationAr : v.location}</p>
-                  <a href={v.map} target="_blank" rel="noopener noreferrer"
+                  <a href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
+                    target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm rounded-full px-4 py-2 transition"
                     style={{ color: roseGold, border: `1px solid ${roseGold}40` }}>
                     📍 {ar ? "افتح في خرائط جوجل" : "Open in Google Maps"}

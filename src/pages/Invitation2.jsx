@@ -387,7 +387,8 @@ export default function Invitation({ override = null }) {
                     style={{ fontFamily: "'Cormorant Garamond', serif" }}>{v.time}</p>
                   <p className="text-[#2d3a2e] font-medium mb-1">{ar ? v.placeAr : v.place}</p>
                   <p className="text-[#4a7c59]/60 text-sm mb-4">{ar ? v.locationAr : v.location}</p>
-                  <a href={v.map} target="_blank" rel="noopener noreferrer"
+                  <a href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
+                    target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-[#4a7c59] text-sm border border-[#4a7c59]/30 rounded-full px-4 py-2 hover:bg-[#4a7c59]/10 transition">
                     📍 {ar ? "افتح في خرائط جوجل" : "Open in Google Maps"}
                   </a>
