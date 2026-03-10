@@ -250,8 +250,14 @@ export default function Invitation({ override = null }) {
       </motion.button>
 
       {/* Hero */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center z-10"
-        style={{ background: `radial-gradient(ellipse at 50% 0%, #F9E0E0 0%, ${cream} 65%)` }}>
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center z-10">
+        {/* Photo background */}
+        <div className="absolute inset-0 z-0" style={{
+          backgroundImage: `url(${photos[1] || photos[0]})`,
+          backgroundSize: "cover", backgroundPosition: "center",
+          filter: "blur(3px) brightness(0.6)", transform: "scale(1.05)"
+        }} />
+        <div className="absolute inset-0 z-0" style={{ background: `radial-gradient(ellipse at 50% 0%, rgba(249,224,224,0.82) 0%, rgba(253,246,240,0.88) 70%)` }} />
 
         {/* Corner roses */}
         <div className="absolute top-8 left-8 text-3xl opacity-40">🌹</div>
@@ -259,7 +265,7 @@ export default function Invitation({ override = null }) {
         <div className="absolute bottom-24 left-8 text-2xl opacity-30">🌷</div>
         <div className="absolute bottom-24 right-8 text-2xl opacity-30">🌷</div>
 
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
+        <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
           <p className="tracking-[0.4em] text-xs uppercase mb-6 font-medium" style={{ color: roseGold }}>
             {ar ? "نحن نتزوج" : "We're getting married"}
           </p>
@@ -299,7 +305,7 @@ export default function Invitation({ override = null }) {
           <Countdown targetDate={WEDDING.date} />
         </motion.div>
 
-        <motion.div className="absolute bottom-10 flex flex-col items-center gap-2"
+        <motion.div className="absolute bottom-10 flex flex-col items-center gap-2 z-10"
           animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
           <span className="text-xs tracking-widest opacity-30">SCROLL</span>
           <div className="w-px h-10" style={{ background: `linear-gradient(to bottom, ${roseGold}60, transparent)` }} />

@@ -243,9 +243,16 @@ export default function Invitation({ override = null }) {
       </motion.button>
 
       {/* Hero */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center z-10"
-        style={{ background: "radial-gradient(ellipse at 50% 0%, #e0ede2 0%, #faf8f3 60%)" }}>
-        <div className="absolute top-0 left-0 right-0 h-2 bg-[#4a7c59]" />
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center z-10">
+        {/* Photo background */}
+        <div className="absolute inset-0 z-0" style={{
+          backgroundImage: `url(${photos[1] || photos[0]})`,
+          backgroundSize: "cover", backgroundPosition: "center",
+          filter: "blur(3px) brightness(0.6)", transform: "scale(1.05)"
+        }} />
+        <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(224,237,226,0.82) 0%, rgba(245,248,240,0.88) 70%)" }} />
+
+        <div className="absolute top-0 left-0 right-0 h-2 bg-[#4a7c59] z-10" />
 
         {/* Corner decorations */}
         <div className="absolute top-8 left-8 text-4xl opacity-30">🌿</div>
@@ -253,7 +260,7 @@ export default function Invitation({ override = null }) {
         <div className="absolute bottom-24 left-8 text-4xl opacity-20">🍃</div>
         <div className="absolute bottom-24 right-8 text-4xl opacity-20 scale-x-[-1]">🍃</div>
 
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
+        <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
           <p className="text-[#4a7c59] tracking-[0.4em] text-xs uppercase mb-6 font-medium">
             {ar ? "نحن نتزوج" : "We're getting married"}
           </p>
@@ -294,7 +301,7 @@ export default function Invitation({ override = null }) {
           <Countdown targetDate={WEDDING.date} />
         </motion.div>
 
-        <motion.div className="absolute bottom-10 flex flex-col items-center gap-2"
+        <motion.div className="absolute bottom-10 flex flex-col items-center gap-2 z-10"
           animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
           <span className="text-[#4a7c59]/40 text-xs tracking-widest">SCROLL</span>
           <div className="w-px h-10 bg-gradient-to-b from-[#4a7c59]/40 to-transparent" />
