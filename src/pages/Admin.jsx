@@ -398,6 +398,20 @@ function BuildInvitationModal({ order }) {
           <p className="text-white/20 text-xs uppercase tracking-widest pt-1">📍 Venue Details</p>
           <div className="grid grid-cols-2 gap-3">
             <div>
+              <label className="text-white/30 text-xs mb-1 block">Hero Location Text (English)</label>
+              <input value={extraData.venue} onChange={e => update("venue", e.target.value)}
+                placeholder="Saint Georges Church, Feytroun, Lebanon"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Hero Location Text (Arabic)</label>
+              <input value={extraData.venueAr} onChange={e => update("venueAr", e.target.value)}
+                placeholder="كنيسة مار جرجس، فيترون، لبنان" dir="rtl"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
               <label className="text-white/30 text-xs mb-1 block">Ceremony Place (Arabic)</label>
               <input value={extraData.ceremonyPlaceAr} onChange={e => update("ceremonyPlaceAr", e.target.value)}
                 placeholder="كنيسة مار جرجس" dir="rtl"
