@@ -44,127 +44,111 @@ const getVimeoId = url => {
 }
 const isDirectVideo = url => /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(url || "")
 
-// ── WHITE ENVELOPE SCREEN ────────────────────────────────────────────────────
+// ── FULL-SCREEN WHITE ENVELOPE ───────────────────────────────────────────────
 function EnvelopeScreen({ w, guestName, onOpen, ar, setLang }) {
   const [opened, setOpened] = useState(false)
-  const tap = () => { if (opened) return; setOpened(true); setTimeout(onOpen, 1100) }
+  const tap = () => { if (opened) return; setOpened(true); setTimeout(onOpen, 1300) }
 
   return (
     <motion.div
-      className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center cursor-pointer select-none overflow-hidden"
+      className="absolute inset-0 cursor-pointer select-none overflow-hidden"
       dir={ar ? "rtl" : "ltr"}
       style={{ background: "#faf5ee" }}
       onClick={tap}
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9 }}>
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.0 }}>
 
-      {/* Subtle grid paper lines */}
+      {/* Subtle grid paper texture */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.035]"
-        style={{ backgroundImage: "repeating-linear-gradient(0deg, #8c6b3a 0, #8c6b3a 1px, transparent 0, transparent 28px), repeating-linear-gradient(90deg, #8c6b3a 0, #8c6b3a 1px, transparent 0, transparent 28px)" }} />
+        style={{ backgroundImage: "repeating-linear-gradient(0deg,#8c6b3a 0,#8c6b3a 1px,transparent 0,transparent 28px),repeating-linear-gradient(90deg,#8c6b3a 0,#8c6b3a 1px,transparent 0,transparent 28px)" }} />
+
+      {/* Static envelope flaps: bottom, left, right */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}
+        viewBox="0 0 100 100" preserveAspectRatio="none">
+        <polygon points="0,100 100,100 50,50" fill="#f2e8d5" />
+        <polygon points="0,0 0,100 50,50"     fill="#ede5d5" />
+        <polygon points="100,0 100,100 50,50" fill="#ede5d5" />
+        <line x1="0"   y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.35" strokeWidth="0.2" />
+        <line x1="100" y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.35" strokeWidth="0.2" />
+        <line x1="0"   y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.25" strokeWidth="0.2" />
+        <line x1="100" y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.25" strokeWidth="0.2" />
+      </svg>
+
+      {/* Top flap — 3D fold open on tap */}
+      <div className="absolute inset-0 overflow-hidden" style={{ perspective: 900, zIndex: 2 }}>
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)",
+            background: "linear-gradient(175deg, #ffffff 0%, #f5ede0 55%, #ede0cc 100%)",
+            transformOrigin: "50% 0%",
+            transformStyle: "preserve-3d",
+            backfaceVisibility: "hidden",
+          }}
+          animate={{ rotateX: opened ? -172 : 0 }}
+          transition={{ duration: 1.15, ease: [0.4, 0, 0.2, 1] }}
+        />
+      </div>
+
+      {/* Gold wax seal — screen center */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        style={{ zIndex: 10 }}
+        animate={{ scale: opened ? 0.75 : 1, opacity: opened ? 0 : 1 }}
+        transition={{ duration: 0.4 }}>
+        <div className="rounded-full flex items-center justify-center text-3xl"
+          style={{
+            width: 80, height: 80,
+            background: "radial-gradient(circle at 38% 35%, #d4ab4a, #b8903a 55%, #7a5818)",
+            boxShadow: "0 4px 24px rgba(140,107,58,0.4), inset 0 1px 3px rgba(255,255,255,0.22)"
+          }}>
+          💍
+        </div>
+      </motion.div>
+
+      {/* Couple names + date — lower area */}
+      <motion.div
+        className="absolute left-0 right-0 flex flex-col items-center text-center px-6 pointer-events-none"
+        style={{ top: "60%", zIndex: 10 }}
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: opened ? 0 : 1, y: opened ? -6 : 0 }}
+        transition={{ duration: opened ? 0.3 : 1.3, delay: opened ? 0 : 0.7 }}>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2rem,7vw,3rem)", fontWeight: 300, color: "#2c1f10", lineHeight: 1.1 }}>
+          {ar ? w.groomAr : w.groom}
+        </h1>
+        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "1.9rem", color: GOLD, margin: "2px 0" }}>
+          {ar ? "و" : "and"}
+        </p>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2rem,7vw,3rem)", fontWeight: 300, color: "#2c1f10", lineHeight: 1.1 }}>
+          {ar ? w.brideAr : w.bride}
+        </h1>
+        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.6rem", letterSpacing: "0.42em", color: GOLD, marginTop: 10, textTransform: "uppercase" }}>
+          {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", { month: "long", day: "numeric", year: "numeric" })}
+        </p>
+        {guestName && (
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "0.85rem", color: "#7a5c3a88", fontStyle: "italic", marginTop: 8 }}>
+            {ar ? "عزيزنا" : "Dear"} <span style={{ color: GOLD }}>{guestName}</span>
+          </p>
+        )}
+      </motion.div>
+
+      {/* Tap to open hint */}
+      <motion.div
+        className="absolute bottom-10 left-0 right-0 flex flex-col items-center pointer-events-none"
+        style={{ zIndex: 10 }}
+        animate={opened ? { opacity: 0 } : { opacity: [0.3, 1, 0.3] }}
+        transition={opened ? { duration: 0.25 } : { repeat: Infinity, duration: 2.5 }}>
+        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.56rem", letterSpacing: "0.48em", color: "#2c1f1055", textTransform: "uppercase" }}>
+          {ar ? "انقر لفتح" : "Tap to Open"}
+        </p>
+        <div className="w-px h-7 mt-2" style={{ background: `linear-gradient(to bottom, ${GOLD}70, transparent)` }} />
+      </motion.div>
 
       {/* Language toggle */}
       <button onClick={e => { e.stopPropagation(); setLang(ar ? "en" : "ar") }}
-        className="absolute top-5 right-5 z-20 h-9 px-4 rounded-full text-xs transition"
+        className="absolute top-5 right-5 z-30 h-9 px-4 rounded-full text-xs transition"
         style={{ background: `${GOLD}18`, border: `1px solid ${GOLD}55`, color: GOLD, fontFamily: "'Jost', sans-serif", letterSpacing: "0.1em" }}>
         {ar ? "EN" : "عربي"}
       </button>
-
-      <motion.div className="flex flex-col items-center relative z-10"
-        initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.3, ease: "easeOut" }}>
-
-        {/* ── ENVELOPE SVG ── */}
-        <div className="relative mb-8" style={{ perspective: 800 }}>
-          {/* Envelope body */}
-          <div className="relative"
-            style={{ width: 300, height: 200, background: "white", borderRadius: 3,
-              boxShadow: "0 24px 64px rgba(140,107,58,0.2), 0 4px 18px rgba(0,0,0,0.06)",
-              border: "1px solid rgba(196,163,90,0.35)" }}>
-
-            {/* Bottom V fold */}
-            <div className="absolute inset-x-0 bottom-0 pointer-events-none">
-              <svg viewBox="0 0 300 100" width="300" height="100">
-                <polygon points="0,0 300,0 150,100" fill="#f2e9d8" />
-                <line x1="0" y1="0" x2="150" y2="100" stroke={`${GOLD}55`} strokeWidth="0.7" />
-                <line x1="300" y1="0" x2="150" y2="100" stroke={`${GOLD}55`} strokeWidth="0.7" />
-              </svg>
-            </div>
-            {/* Left fold */}
-            <div className="absolute inset-y-0 left-0 pointer-events-none">
-              <svg viewBox="0 0 150 200" width="150" height="200">
-                <line x1="0" y1="0" x2="150" y2="100" stroke={`${GOLD}40`} strokeWidth="0.7" />
-              </svg>
-            </div>
-            {/* Right fold */}
-            <div className="absolute inset-y-0 right-0 pointer-events-none">
-              <svg viewBox="0 0 150 200" width="150" height="200">
-                <line x1="150" y1="0" x2="0" y2="100" stroke={`${GOLD}40`} strokeWidth="0.7" />
-              </svg>
-            </div>
-
-            {/* Inner names (visible when flap is up) */}
-            <div className="absolute inset-x-0 top-5 flex flex-col items-center gap-0.5" style={{ zIndex: 1 }}>
-              <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "1.15rem", color: `${GOLD}bb` }}>
-                {ar ? `${w.groomAr} & ${w.brideAr}` : `${w.groom} & ${w.bride}`}
-              </p>
-              <p className="text-xs tracking-widest" style={{ color: "#a08050aa", fontFamily: "'Jost', sans-serif" }}>
-                {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", { month: "long", day: "numeric", year: "numeric" })}
-              </p>
-            </div>
-          </div>
-
-          {/* ── FLAP that folds back on open ── */}
-          <motion.div
-            className="absolute top-0 left-0 pointer-events-none overflow-hidden"
-            style={{ width: 300, height: 102, transformOrigin: "top center", transformStyle: "preserve-3d", zIndex: 10 }}
-            animate={{ rotateX: opened ? -175 : 0 }}
-            transition={{ duration: 0.95, ease: [0.4, 0, 0.2, 1] }}>
-            <svg viewBox="0 0 300 102" width="300" height="102">
-              <polygon points="0,0 300,0 150,102" fill="white" />
-              <line x1="0" y1="0" x2="150" y2="102" stroke={`${GOLD}50`} strokeWidth="0.7" />
-              <line x1="300" y1="0" x2="150" y2="102" stroke={`${GOLD}50`} strokeWidth="0.7" />
-              <line x1="0" y1="0" x2="300" y2="0" stroke={`${GOLD}30`} strokeWidth="0.7" />
-            </svg>
-            {/* Wax seal */}
-            <div className="absolute"
-              style={{ bottom: 10, left: "50%", transform: "translateX(-50%)" }}>
-              <div className="w-11 h-11 rounded-full flex items-center justify-center text-lg"
-                style={{ background: "radial-gradient(circle at 38% 35%, #d4ab4a, #b8903a 55%, #7a5818)",
-                  boxShadow: "0 3px 14px rgba(0,0,0,0.28), inset 0 1px 2px rgba(255,255,255,0.22)" }}>
-                💍
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Names & date below envelope */}
-        <motion.div animate={{ opacity: opened ? 0 : 1, y: opened ? -8 : 0 }} transition={{ duration: 0.4 }}>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2rem,7vw,2.8rem)", fontWeight: 300, color: "#2c1f10", lineHeight: 1.1 }}>
-            {ar ? w.groomAr : w.groom}
-          </h1>
-          <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "1.8rem", color: GOLD, margin: "2px 0" }}>
-            {ar ? "و" : "and"}
-          </p>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2rem,7vw,2.8rem)", fontWeight: 300, color: "#2c1f10", lineHeight: 1.1 }}>
-            {ar ? w.brideAr : w.bride}
-          </h1>
-          <p className="mt-3 text-xs tracking-[0.4em] uppercase" style={{ color: GOLD, fontFamily: "'Jost', sans-serif" }}>
-            {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", { month: "long", day: "numeric", year: "numeric" })}
-          </p>
-          {guestName && (
-            <motion.p className="mt-3 text-sm italic"
-              style={{ color: "#7a5c3a99", fontFamily: "'Cormorant Garamond', serif" }}
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
-              {ar ? "عزيزنا" : "Dear"} <span style={{ color: GOLD }}>{guestName}</span>
-            </motion.p>
-          )}
-          <motion.div className="flex flex-col items-center mt-7 gap-2"
-            animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2.5 }}>
-            <p className="text-xs tracking-[0.45em] uppercase" style={{ color: "#2c1f1055", fontFamily: "'Jost', sans-serif" }}>
-              {ar ? "انقر لفتح" : "Tap to Open"}
-            </p>
-            <div className="w-px h-7" style={{ background: `linear-gradient(to bottom, ${GOLD}70, transparent)` }} />
-          </motion.div>
-        </motion.div>
-      </motion.div>
     </motion.div>
   )
 }
