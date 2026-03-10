@@ -5,6 +5,7 @@ import Landing from "./pages/Landing"
 import Invitation from "./pages/Invitation"
 import Invitation2 from "./pages/Invitation2"
 import Invitation3 from "./pages/Invitation3"
+import Invitation4 from "./pages/Invitation4"
 import Invitation_Live from "./pages/Invitation_Live"
 import Admin from "./pages/Admin"
 import Login from "./pages/Login"
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/demo" element={<Invitation />} />
         <Route path="/demo2" element={<Invitation2 />} />
         <Route path="/demo3" element={<Invitation3 />} />
+        <Route path="/demo4" element={<Invitation4 />} />
         <Route path="/i/:slug" element={<Invitation_Live />} />
         <Route path="/order" element={<Order />} />
         <Route path="/dashboard/:slug" element={<Dashboard />} />

@@ -106,6 +106,7 @@ function BuildInvitationModal({ order }) {
     ceremonyMapUrl: "",
     partyMapUrl: "",
     music: order.music || "",
+    video: "",
     rsvpDeadline: "",
     registryWishMoneyAcc: "",
     registryLink1: "",
@@ -144,6 +145,7 @@ function BuildInvitationModal({ order }) {
             ceremonyMapUrl: d.venues?.[0]?.map || "",
             partyMapUrl: d.venues?.[1]?.map || "",
             music: d.music || "",
+            video: d.video || "",
             rsvpDeadline: d.rsvpDeadline || "",
             registryWishMoneyAcc: d.registry?.[0]?.acc || "",
             registryLink1: d.registry?.[0]?.link || "",
@@ -214,6 +216,7 @@ function BuildInvitationModal({ order }) {
         quoteAr: extraData.quoteAr,
         quoteRef: extraData.quoteRef,
         music: extraData.music,
+        video: extraData.video || "",
         rsvpDeadline: extraData.rsvpDeadline || "",
         parents: extraData.parentsEn ? extraData.parentsEn.split("\n") : [],
         parentsAr: extraData.parentsAr ? extraData.parentsAr.split("\n") : [],
@@ -393,6 +396,16 @@ function BuildInvitationModal({ order }) {
             <input type="date" value={extraData.rsvpDeadline} onChange={e => update("rsvpDeadline", e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
+
+          {/* Video URL — for Cinematic (template 4) */}
+          {order.template === "sand" && (
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">🎬 Wedding Video URL <span className="text-white/20">(YouTube, Vimeo, or direct MP4 — template 4 only)</span></label>
+              <input value={extraData.video || ""} onChange={e => update("video", e.target.value)}
+                placeholder="https://youtu.be/... or https://vimeo.com/... or https://example.com/video.mp4"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+          )}
 
           {/* Venue details */}
           <p className="text-white/20 text-xs uppercase tracking-widest pt-1">📍 Venue Details</p>
@@ -623,8 +636,8 @@ export default function Admin() {
   const totalPersons = weddingRsvps.filter(r => r.attending).reduce((sum, r) => sum + (r.persons || 1), 0)
 
   const packageColor = { bronze: "#cd7f32", silver: "#c9a96e", gold: "#ffd700" }
-  const templateIcon = { dark: "🌑", botanical: "🌿", rosegold: "🌸" }
-  const templateName = { dark: "Dark Luxury", botanical: "Botanical", rosegold: "Rose Gold" }
+  const templateIcon = { dark: "🌑", botanical: "🌿", rosegold: "🌸", sand: "🏺" }
+  const templateName = { dark: "Dark Luxury", botanical: "Botanical", rosegold: "Rose Gold", sand: "Cinematic Sand & Seal" }
 
   const filteredRsvps = weddingRsvps.filter(r => rsvpFilter === "all" ? true : rsvpFilter === "attending" ? r.attending : !r.attending)
 

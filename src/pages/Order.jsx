@@ -13,6 +13,7 @@ const templates = [
   { id: "dark", name: "Dark Luxury", preview: "🌑", desc: "Elegant dark theme with gold accents", link: "/demo" },
   { id: "botanical", name: "Botanical Garden", preview: "🌿", desc: "Fresh white & sage green", link: "/demo2" },
   { id: "rosegold", name: "Rose Gold & Blush", preview: "🌸", desc: "Romantic blush pink tones", link: "/demo3" },
+  { id: "sand", name: "Cinematic Sand & Seal", preview: "🏺", desc: "Warm sand tones with cinematic elegance", link: "/demo4" },
 ]
 
 const steps = ["Package", "Template", "Details", "Contact", "Payment"]

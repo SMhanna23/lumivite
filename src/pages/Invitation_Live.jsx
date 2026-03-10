@@ -5,6 +5,7 @@ import { db } from "../firebase"
 import Invitation from "./Invitation"
 import Invitation2 from "./Invitation2"
 import Invitation3 from "./Invitation3"
+import Invitation4 from "./Invitation4"
 
 export default function Invitation_Live() {
   const { slug } = useParams()
@@ -50,5 +51,6 @@ export default function Invitation_Live() {
   const template = data.template || "dark"
   if (template === "botanical") return <Invitation2 override={data} />
   if (template === "rosegold") return <Invitation3 override={data} />
+  if (template === "sand") return <Invitation4 override={data} />
   return <Invitation override={data} />
 }
