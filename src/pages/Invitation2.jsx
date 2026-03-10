@@ -248,9 +248,10 @@ export default function Invitation({ override = null }) {
         <div className="absolute inset-0 z-0" style={{
           backgroundImage: `url(${photos[1] || photos[0]})`,
           backgroundSize: "cover", backgroundPosition: "center",
-          filter: "blur(3px) brightness(0.6)", transform: "scale(1.05)"
+          filter: "brightness(0.7)"
         }} />
-        <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(224,237,226,0.82) 0%, rgba(245,248,240,0.88) 70%)" }} />
+        {/* Light botanical overlay — keeps dark text readable */}
+        <div className="absolute inset-0 z-0" style={{ background: "linear-gradient(to bottom, rgba(232,242,234,0.78) 0%, rgba(232,242,234,0.55) 30%, rgba(232,242,234,0.55) 65%, rgba(232,242,234,0.85) 100%)" }} />
 
         <div className="absolute top-0 left-0 right-0 h-2 bg-[#4a7c59] z-10" />
 

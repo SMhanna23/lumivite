@@ -255,9 +255,10 @@ export default function Invitation({ override = null }) {
         <div className="absolute inset-0 z-0" style={{
           backgroundImage: `url(${photos[1] || photos[0]})`,
           backgroundSize: "cover", backgroundPosition: "center",
-          filter: "blur(3px) brightness(0.6)", transform: "scale(1.05)"
+          filter: "brightness(0.7)"
         }} />
-        <div className="absolute inset-0 z-0" style={{ background: `radial-gradient(ellipse at 50% 0%, rgba(249,224,224,0.82) 0%, rgba(253,246,240,0.88) 70%)` }} />
+        {/* Light rose overlay — keeps dark text readable */}
+        <div className="absolute inset-0 z-0" style={{ background: "linear-gradient(to bottom, rgba(253,240,240,0.78) 0%, rgba(253,240,240,0.55) 30%, rgba(253,240,240,0.55) 65%, rgba(253,240,240,0.85) 100%)" }} />
 
         {/* Corner roses */}
         <div className="absolute top-8 left-8 text-3xl opacity-40">🌹</div>

@@ -249,9 +249,12 @@ export default function Invitation({ override = null }) {
         <div className="absolute inset-0 z-0" style={{
           backgroundImage: `url(${photos[1] || photos[0]})`,
           backgroundSize: "cover", backgroundPosition: "center",
-          filter: "blur(3px) brightness(0.35)", transform: "scale(1.05)"
+          filter: "brightness(0.6)"
         }} />
-        <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(61,35,20,0.55) 0%, rgba(10,8,6,0.88) 100%)" }} />
+        {/* Vignette: dark top & bottom for text, transparent centre so photo shows */}
+        <div className="absolute inset-0 z-0" style={{ background: "linear-gradient(to bottom, rgba(10,8,6,0.75) 0%, rgba(10,8,6,0.05) 28%, rgba(10,8,6,0.05) 65%, rgba(10,8,6,0.85) 100%)" }} />
+        {/* Edge vignette */}
+        <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(10,8,6,0.65) 100%)" }} />
 
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5 pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full border border-white/5 pointer-events-none" />
