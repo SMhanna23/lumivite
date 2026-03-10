@@ -51,7 +51,7 @@ function EnvelopeScreen({ w, guestName, onOpen, ar, setLang }) {
 
   return (
     <motion.div
-      className="min-h-screen flex flex-col items-center justify-center px-6 text-center cursor-pointer select-none relative overflow-hidden"
+      className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center cursor-pointer select-none overflow-hidden"
       dir={ar ? "rtl" : "ltr"}
       style={{ background: "#faf5ee" }}
       onClick={tap}
@@ -273,38 +273,176 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
 }
 
 // ── PHOTO FILM FALLBACK (when no video URL is set) ───────────────────────────
-// A cinematic auto-playing slideshow that feels like a wedding film
-const SLIDES = [
-  { idx: 1, duration: 5500 },
-  { idx: 2, duration: 5500 },
-  { idx: 3, duration: 5500 },
-  { idx: 4, duration: 5000 },
-  { idx: 5, duration: 5000 },
-  { idx: 6, duration: 5000 },
-  { idx: 7, duration: 5000 },
-  { idx: 8, duration: 5000 },
-]
+// Cinematic slideshow: one photo per slide, each showing a different invitation section
+const SLIDE_DURATION = 5500
+const CONTENT_SECTIONS = ["opening", "quote", "ceremony", "party", "timeline", "closing"]
+
 function PhotoFilm({ photos, w, onEnded, ar }) {
   const [slide, setSlide] = useState(0)
   const [prog,  setProg]  = useState(0)
   const rafRef = useRef(null)
+  const totalSlides = photos.length
 
   useEffect(() => {
     cancelAnimationFrame(rafRef.current)
-    const dur   = SLIDES[slide].duration
     const start = performance.now()
     const tick  = (now) => {
-      const pct = Math.min(((now - start) / dur) * 100, 100)
+      const pct = Math.min(((now - start) / SLIDE_DURATION) * 100, 100)
       setProg(pct)
       if (pct < 100) { rafRef.current = requestAnimationFrame(tick) }
-      else if (slide < SLIDES.length - 1) { setSlide(s => s + 1); setProg(0) }
+      else if (slide < totalSlides - 1) { setSlide(s => s + 1); setProg(0) }
       else { onEnded() }
     }
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [slide])
+  }, [slide, totalSlides])
 
-  const photoSrc = photos[SLIDES[slide].idx] || photos[0]
+  const photoSrc = photos[slide] || photos[0]
+
+  // Map each photo to a content section
+  const getSection = (idx, total) => {
+    if (total <= CONTENT_SECTIONS.length) return CONTENT_SECTIONS[Math.min(idx, CONTENT_SECTIONS.length - 1)]
+    return CONTENT_SECTIONS[Math.min(Math.floor((idx / total) * CONTENT_SECTIONS.length), CONTENT_SECTIONS.length - 1)]
+  }
+  const section = getSection(slide, totalSlides)
+
+  const venue0 = w.venues?.[0]
+  const venue1 = w.venues?.[1]
+  const defaultTimeline = [
+    { time: "5:00 PM",  label: ar ? "مراسم الزواج" : "Ceremony",      icon: "💒" },
+    { time: "7:00 PM",  label: ar ? "ساعة الكوكتيل" : "Cocktail Hour", icon: "🥂" },
+    { time: "8:30 PM",  label: ar ? "العشاء" : "Dinner",               icon: "🍽️" },
+    { time: "10:00 PM", label: ar ? "الرقصة الأولى" : "First Dance",   icon: "💃" },
+    { time: "11:00 PM", label: ar ? "الحفلة" : "Party",                icon: "🎉" },
+  ]
+  const tl = w.timeline || defaultTimeline
+
+  const overlayStyle = { fontFamily: "'Jost', sans-serif" }
+
+  const renderOverlay = () => {
+    if (section === "opening") return (
+      <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 px-8 pointer-events-none"
+        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 1.0 }}>
+        <p style={{ ...overlayStyle, fontSize: "0.6rem", letterSpacing: "0.5em", color: GOLD, marginBottom: 22, textTransform: "uppercase" }}>
+          {ar ? "أنتم مدعوون" : "You're Invited"}
+        </p>
+        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(2.5rem,8vw,4rem)", color: "white", textShadow: "0 2px 28px rgba(0,0,0,0.7)", lineHeight: 1.1 }}>
+          {ar ? w.groomAr : w.groom}
+        </p>
+        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "1.8rem", color: GOLD, margin: "4px 0" }}>&</p>
+        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(2.5rem,8vw,4rem)", color: "white", textShadow: "0 2px 28px rgba(0,0,0,0.7)", lineHeight: 1.1 }}>
+          {ar ? w.brideAr : w.bride}
+        </p>
+        <p style={{ ...overlayStyle, fontSize: "0.65rem", letterSpacing: "0.4em", color: GOLD, marginTop: 18, textTransform: "uppercase" }}>
+          {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", { month: "long", day: "numeric", year: "numeric" })}
+        </p>
+        {w.venue && (
+          <p style={{ ...overlayStyle, fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", marginTop: 6 }}>
+            {ar ? w.venueAr : w.venue}
+          </p>
+        )}
+      </motion.div>
+    )
+
+    if (section === "quote") return (
+      <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 px-10 pointer-events-none"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 1.0 }}>
+        <p style={{ color: GOLD, fontSize: "1.2rem", marginBottom: 18 }}>✦</p>
+        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(1.5rem,5vw,2.2rem)", color: "white", textShadow: "0 2px 20px rgba(0,0,0,0.8)", lineHeight: 1.55, marginBottom: 10 }}>
+          "{ar ? w.quoteAr : w.quote}"
+        </p>
+        {w.quoteRef && (
+          <p style={{ ...overlayStyle, fontSize: "0.62rem", letterSpacing: "0.28em", color: GOLD, marginBottom: 24 }}>— {w.quoteRef}</p>
+        )}
+        <p style={{ color: GOLD, fontSize: "1.1rem", marginBottom: 22 }}>✦</p>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center", maxWidth: 320 }}>
+          {(ar ? w.parentsAr : w.parents)?.map((p, i) => (
+            <div key={i} style={{ background: "rgba(196,163,90,0.12)", border: `1px solid ${GOLD}35`, borderRadius: 12, padding: "10px 16px" }}>
+              <p style={{ ...overlayStyle, fontSize: "0.55rem", letterSpacing: "0.25em", color: GOLD, textTransform: "uppercase", marginBottom: 4 }}>{ar ? "السادة" : "Mr. & Mrs."}</p>
+              <p style={{ color: "rgba(255,255,255,0.88)", fontSize: "0.78rem", fontFamily: "'Cormorant Garamond', serif" }}>{p}</p>
+            </div>
+          ))}
+        </div>
+        {w.message && (
+          <p style={{ color: "rgba(255,255,255,0.42)", fontSize: "0.72rem", fontStyle: "italic", marginTop: 14, fontFamily: "'Cormorant Garamond', serif", maxWidth: 290, lineHeight: 1.6 }}>
+            {ar ? w.messageAr : w.message}
+          </p>
+        )}
+      </motion.div>
+    )
+
+    if (section === "ceremony" || section === "party") {
+      const vn = section === "ceremony" ? (venue0 || venue1) : (venue1 || venue0)
+      if (!vn) return renderFallbackOverlay()
+      return (
+        <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 px-8 pointer-events-none"
+          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 1.0 }}>
+          <p style={{ ...overlayStyle, fontSize: "0.58rem", letterSpacing: "0.48em", color: GOLD, textTransform: "uppercase", marginBottom: 20 }}>
+            {ar ? vn.labelAr : vn.label}
+          </p>
+          <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(1.8rem,6vw,2.8rem)", color: "white", textShadow: "0 2px 24px rgba(0,0,0,0.8)", marginBottom: 8, lineHeight: 1.2 }}>
+            {ar ? vn.placeAr : vn.place}
+          </p>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.8rem,9vw,4.2rem)", color: GOLD, fontWeight: 300, lineHeight: 1, marginBottom: 14 }}>
+            {vn.time}
+          </p>
+          <p style={{ ...overlayStyle, fontSize: "0.68rem", letterSpacing: "0.18em", color: "rgba(255,255,255,0.52)", marginBottom: 22 }}>
+            {ar ? vn.locationAr : vn.location}
+          </p>
+          {vn.map && (
+            <a href={vn.map} target="_blank" rel="noopener noreferrer"
+              className="pointer-events-auto"
+              style={{ ...overlayStyle, fontSize: "0.68rem", letterSpacing: "0.18em", color: GOLD, border: `1px solid ${GOLD}45`, borderRadius: 999, padding: "8px 22px", textDecoration: "none" }}>
+              📍 {ar ? "خريطة" : "View Map"}
+            </a>
+          )}
+        </motion.div>
+      )
+    }
+
+    if (section === "timeline") return (
+      <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 px-8 pointer-events-none"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1.0 }}>
+        <p style={{ ...overlayStyle, fontSize: "0.58rem", letterSpacing: "0.48em", color: GOLD, textTransform: "uppercase", marginBottom: 8 }}>
+          {ar ? "اليوم" : "The Day"}
+        </p>
+        <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.6rem,5vw,2.5rem)", fontWeight: 300, color: "white", marginBottom: 18, lineHeight: 1 }}>
+          {ar ? "برنامج الاحتفال" : "Wedding Timeline"}
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%", maxWidth: 280 }}>
+          {tl.slice(0, 5).map((item, i) => (
+            <motion.div key={i}
+              initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.8 + i * 0.14 }}
+              style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(196,163,90,0.09)", border: `1px solid ${GOLD}25`, borderRadius: 10, padding: "8px 14px", textAlign: "left" }}>
+              <span style={{ fontSize: "0.9rem" }}>{item.icon}</span>
+              <span style={{ ...overlayStyle, fontSize: "0.6rem", color: GOLD, letterSpacing: "0.08em", width: 52, flexShrink: 0 }}>{item.time}</span>
+              <span style={{ color: "rgba(255,255,255,0.88)", fontSize: "0.78rem", fontFamily: "'Cormorant Garamond', serif" }}>{item.label}</span>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    )
+
+    // closing / default
+    return renderFallbackOverlay()
+  }
+
+  const renderFallbackOverlay = () => (
+    <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 px-8 pointer-events-none"
+      initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 1.0 }}>
+      <p style={{ color: GOLD, fontSize: "1.3rem", marginBottom: 22 }}>✦ ✦ ✦</p>
+      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.1rem,3.5vw,1.5rem)", fontWeight: 300, color: "rgba(255,255,255,0.72)", lineHeight: 1.75, maxWidth: 300, marginBottom: 24 }}>
+        {ar ? "يسعدنا أن نشاركك أجمل لحظات حياتنا" : "We can't wait to celebrate with you"}
+      </p>
+      <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(2rem,7vw,3rem)", color: "white", textShadow: "0 2px 20px rgba(0,0,0,0.6)", marginBottom: 10 }}>
+        {ar ? `${w.groomAr} & ${w.brideAr}` : `${w.groom} & ${w.bride}`}
+      </p>
+      <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.65rem", letterSpacing: "0.38em", color: GOLD, textTransform: "uppercase" }}>
+        {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", { month: "long", day: "numeric", year: "numeric" })}
+      </p>
+    </motion.div>
+  )
 
   return (
     <div className="fixed inset-0 overflow-hidden" style={{ background: DARK }}>
@@ -328,34 +466,30 @@ function PhotoFilm({ photos, w, onEnded, ar }) {
           transition={{ duration: 1.0 }}>
           <motion.div className="absolute inset-0"
             initial={{ scale: 1.08 }} animate={{ scale: 1.0 }}
-            transition={{ duration: SLIDES[slide].duration / 1000, ease: "linear" }}
-            style={{ backgroundImage: `url(${photoSrc})`, backgroundSize: "cover", backgroundPosition: "center", filter: "brightness(0.52)" }}
+            transition={{ duration: SLIDE_DURATION / 1000, ease: "linear" }}
+            style={{ backgroundImage: `url(${photoSrc})`, backgroundSize: "cover", backgroundPosition: "center", filter: "brightness(0.48)" }}
           />
         </motion.div>
       </AnimatePresence>
 
       {/* Cinematic vignette */}
-      <div className="fixed inset-0 pointer-events-none"
-        style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 25%, transparent 70%, rgba(0,0,0,0.85) 100%)" }} />
-      <div className="fixed inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0,0,0,0.55) 100%)" }} />
+      <div className="fixed inset-0 pointer-events-none z-[5]"
+        style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, transparent 22%, transparent 68%, rgba(0,0,0,0.80) 100%)" }} />
+      <div className="fixed inset-0 pointer-events-none z-[5]"
+        style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 42%, rgba(0,0,0,0.52) 100%)" }} />
 
-      {/* Couple names — cinematic overlay */}
-      <motion.div className="fixed bottom-14 left-0 right-0 text-center pointer-events-none z-10"
-        initial={{ opacity: 0, y: 16 }} animate={{ opacity: 0.85, y: 0 }} transition={{ delay: 0.8, duration: 1.2 }}>
-        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(2rem,7vw,3.5rem)", color: "white",
-          textShadow: "0 2px 24px rgba(0,0,0,0.6)", lineHeight: 1.2 }}>
-          {ar ? `${w.groomAr} & ${w.brideAr}` : `${w.groom} & ${w.bride}`}
-        </p>
-        <p className="text-xs tracking-[0.4em] uppercase mt-2"
-          style={{ color: GOLD, fontFamily: "'Jost', sans-serif", textShadow: "0 2px 12px rgba(0,0,0,0.8)" }}>
-          {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", { month: "long", day: "numeric", year: "numeric" })}
-        </p>
-      </motion.div>
+      {/* Content overlay — changes per slide */}
+      <AnimatePresence mode="wait">
+        <motion.div key={`content-${slide}`} className="absolute inset-0 z-10"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          transition={{ duration: 0.7 }}>
+          {renderOverlay()}
+        </motion.div>
+      </AnimatePresence>
 
       {/* Slide dots */}
       <div className="fixed bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
-        {SLIDES.map((_, i) => (
+        {photos.map((_, i) => (
           <div key={i} className="rounded-full transition-all duration-500"
             style={{ width: i === slide ? 18 : 5, height: 5,
               background: i === slide ? GOLD : "rgba(255,255,255,0.2)" }} />
