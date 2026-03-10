@@ -158,36 +158,59 @@ export default function Invitation({ override = null }) {
   // SPLASH SCREEN
   if (!started) {
     return (
-      <div className="min-h-screen bg-[#0d0a08] flex flex-col items-center justify-center text-center px-6 cursor-pointer relative overflow-hidden"
+      <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 cursor-pointer relative overflow-hidden"
         dir={ar ? "rtl" : "ltr"}
-        style={{ background: "radial-gradient(ellipse at 50% 30%, #3d2314 0%, #0d0a08 70%)" }}
-        onClick={() => {
-          setStarted(true)
-          setTimeout(() => startMusic(), 800)
-        }}>
+        onClick={() => { setStarted(true); setTimeout(() => startMusic(), 800) }}>
         <audio ref={audioRef} loop src="/music.mp3" preload="auto" />
+
+        {/* Full-screen blurred photo background */}
+        <div className="absolute inset-0 z-0" style={{
+          backgroundImage: `url(${photos[0]})`,
+          backgroundSize: "cover", backgroundPosition: "center",
+          filter: "blur(12px) brightness(0.35)", transform: "scale(1.1)"
+        }} />
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 40%, rgba(61,35,20,0.4) 0%, rgba(10,8,6,0.88) 100%)" }} />
+
         <Petals />
-        <motion.div className="relative z-10"
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.5 }}>
-          <p className="text-[#c9a96e] tracking-[0.4em] text-xs uppercase mb-8">
-            {ar ? "أنتم مدعوون" : "You're invited"}
+
+        <motion.div className="relative z-10 flex flex-col items-center"
+          initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.6 }}>
+
+          <p className="text-[#c9a96e] tracking-[0.5em] text-xs uppercase mb-7">
+            {ar ? "أنتم مدعوون" : "You're Invited"}
           </p>
-          <h1 className="font-serif text-7xl md:text-9xl font-light text-white mb-3">
+
+          {/* Circular couple photo */}
+          <motion.div className="relative mb-8"
+            initial={{ opacity: 0, scale: 0.75 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.3, delay: 0.3 }}>
+            {/* Outer glow ring */}
+            <div className="absolute -inset-4 rounded-full border border-[#c9a96e]/20 pointer-events-none" />
+            <div className="absolute -inset-2 rounded-full border border-[#c9a96e]/35 pointer-events-none" />
+            <div className="w-56 h-56 md:w-64 md:h-64 rounded-full overflow-hidden border-2 border-[#c9a96e]/80"
+              style={{ boxShadow: "0 0 40px rgba(201,169,110,0.25), 0 24px 64px rgba(0,0,0,0.7)" }}>
+              <img src={photos[0]} alt="Couple" className="w-full h-full object-cover" />
+            </div>
+          </motion.div>
+
+          <h1 className="font-serif text-5xl md:text-7xl font-light text-white mb-2 tracking-wide">
             {ar ? WEDDING.groomAr : WEDDING.groom}
           </h1>
-          <p className="text-[#c9a96e] text-4xl font-serif italic mb-3">&</p>
-          <h1 className="font-serif text-7xl md:text-9xl font-light text-white mb-12">
-          {ar ? WEDDING.brideAr : WEDDING.bride}
+          <p className="text-[#c9a96e] text-3xl font-serif italic my-1">&</p>
+          <h1 className="font-serif text-5xl md:text-7xl font-light text-white mb-8 tracking-wide">
+            {ar ? WEDDING.brideAr : WEDDING.bride}
           </h1>
+
           {guestName && (
-            <motion.p className="text-white/50 text-lg mb-8 font-light"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-              {ar ? "عزيزنا" : "Dear"} <span className="text-[#c9a96e]">{guestName}</span>
+            <motion.p className="text-white/50 text-base mb-6 font-light"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1 }}>
+              {ar ? "عزيزنا" : "Dear"} <span className="text-[#c9a96e] font-normal">{guestName}</span>
             </motion.p>
           )}
-          <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ repeat: Infinity, duration: 2 }}
-            className="flex flex-col items-center gap-2 mt-4">
-            <p className="text-white/40 text-sm tracking-widest uppercase">{ar ? "اضغط للفتح" : "Tap to open"}</p>
+
+          <motion.div animate={{ opacity: [0.35, 1, 0.35] }} transition={{ repeat: Infinity, duration: 2.2 }}
+            className="flex flex-col items-center gap-2 mt-2">
+            <p className="text-white/40 text-xs tracking-[0.35em] uppercase">{ar ? "اضغط للفتح" : "Tap to Open"}</p>
             <div className="w-px h-8 bg-gradient-to-b from-[#c9a96e] to-transparent" />
           </motion.div>
         </motion.div>
