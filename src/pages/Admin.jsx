@@ -197,6 +197,63 @@ function BuildInvitationModal({ order }) {
     setUploading(false)
   }
 
+  const [draftSaving, setDraftSaving] = useState(false)
+  const [draftSaved,  setDraftSaved]  = useState(false)
+
+  const handleSaveDraft = async () => {
+    if (!slug) return alert("Please enter an Invitation URL Slug first")
+    setDraftSaving(true)
+    try {
+      const { setDoc, doc: firestoreDoc } = await import("firebase/firestore")
+      const draftData = {
+        groom: order.groomName,
+        bride: order.brideName,
+        groomAr: extraData.groomAr || order.groomName,
+        brideAr: extraData.brideAr || order.brideName,
+        message: extraData.messageEn,
+        messageAr: extraData.messageAr,
+        date: order.weddingDate + "T18:00:00",
+        template: order.template,
+        venue: extraData.venue,
+        venueAr: extraData.venueAr || extraData.venue,
+        quote: extraData.quote,
+        quoteAr: extraData.quoteAr,
+        quoteRef: extraData.quoteRef,
+        music: extraData.music,
+        video: extraData.video || "",
+        rsvpDeadline: extraData.rsvpDeadline || "",
+        parents: extraData.parentsEn ? extraData.parentsEn.split("\n") : [],
+        parentsAr: extraData.parentsAr ? extraData.parentsAr.split("\n") : [],
+        venues: [
+          { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: order.ceremonyTime, place: order.ceremonyPlace, placeAr: extraData.ceremonyPlaceAr || order.ceremonyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.ceremonyMapUrl || null },
+          { label: "Wedding Party", labelAr: "حفل الزفاف", time: order.partyTime, place: order.partyPlace, placeAr: extraData.partyPlaceAr || order.partyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.partyMapUrl || null },
+        ],
+        registry: [
+          ...(extraData.registryLink1 || extraData.registryWishMoneyAcc ? [{ name: "Wish Money", icon: "💳", desc: extraData.registryWishMoneyAcc ? `Acc# ${extraData.registryWishMoneyAcc}` : "Contribute to our honeymoon fund", descAr: extraData.registryWishMoneyAcc ? `Acc# ${extraData.registryWishMoneyAcc}` : "ساهم في صندوق شهر العسل", link: extraData.registryLink1 || null, acc: extraData.registryWishMoneyAcc || null, color: "#c9a96e" }] : []),
+          ...(extraData.registryLink2 ? [{ name: "Gift Registry", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: extraData.registryLink2, color: "#c9a96e" }] : []),
+          ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", desc: `iban: ${extraData.registryIban}`, descAr: `iban: ${extraData.registryIban}`, link: null, color: "#c9a96e" }] : []),
+        ],
+        timeline: [
+          { time: extraData.tl0, label: "Ceremony",     icon: "💒", desc: "Join us as we say our vows" },
+          { time: extraData.tl1, label: "Cocktail Hour",icon: "🥂", desc: "Celebrate with drinks & canapés" },
+          { time: extraData.tl2, label: "Dinner",       icon: "🍽️", desc: "A feast prepared with love" },
+          { time: extraData.tl3, label: "First Dance",  icon: "💃", desc: "Watch us dance for the first time" },
+          { time: extraData.tl4, label: "Party",        icon: "🎉", desc: "Dance the night away with us" },
+        ],
+        orderId: order.id,
+        package: order.package,
+        _draft: true,
+        ...(photos.length > 0 && { photos }),
+      }
+      await setDoc(firestoreDoc(db, "invitations", slug), draftData, { merge: true })
+      setDraftSaved(true)
+      setTimeout(() => setDraftSaved(false), 3000)
+    } catch (e) {
+      alert("Save draft error: " + e.message)
+    }
+    setDraftSaving(false)
+  }
+
   const handleBuild = async () => {
     setSaving(true)
     try {
@@ -265,9 +322,14 @@ function BuildInvitationModal({ order }) {
 
   return (
     <div className="border-t border-white/5 p-5">
-      <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4 font-semibold">
-        🛠️ Build Invitation
-      </p>
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-[#c9a96e] text-xs uppercase tracking-widest font-semibold">🛠️ Build Invitation</p>
+        <button onClick={handleSaveDraft} disabled={draftSaving}
+          className="text-xs px-4 py-1.5 rounded-full font-medium transition disabled:opacity-50"
+          style={{ background: draftSaved ? "rgba(74,222,128,0.15)" : "rgba(201,169,110,0.12)", border: `1px solid ${draftSaved ? "rgba(74,222,128,0.4)" : "rgba(201,169,110,0.35)"}`, color: draftSaved ? "#4ade80" : "#c9a96e" }}>
+          {draftSaving ? "Saving…" : draftSaved ? "✓ Saved" : "💾 Save Draft"}
+        </button>
+      </div>
 
       {saved ? (
         <div className="bg-[#4ade80]/10 border border-[#4ade80]/20 rounded-xl p-4">
