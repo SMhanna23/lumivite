@@ -329,16 +329,12 @@ export default function Invitation({ override = null }) {
           <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.2 }} viewport={{ once: true }}
           className="bg-white/3 border border-white/10 rounded-2xl overflow-hidden hover:border-[#c9a96e]/30 transition">
-          {/* Map embed */}
-          <div className="h-48 w-full overflow-hidden">
-            <iframe
-              title={v.label}
-              width="100%" height="100%"
-              style={{ border: 0, filter: "invert(90%) hue-rotate(180deg)" }}
-              loading="lazy"
-              allowFullScreen
-              referrerPolicy="no-referrer-when-downgrade"
-              src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}&q=${encodeURIComponent(v.place + " " + v.location)}`}
+          {/* Venue photo */}
+          <div className="h-52 w-full overflow-hidden">
+            <img
+              src={photos[i + 2] || photos[0]}
+              alt={v.place}
+              className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
             />
           </div>
           <div className="p-6 text-center">
