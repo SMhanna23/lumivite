@@ -222,21 +222,29 @@ function BuildInvitationModal({ order }) {
     setUploading(false)
   }
 
-  const handleVideoUpload = (file) => {
+  const handleVideoUpload = async (file) => {
     if (!file) return
     setVideoUploading(true)
     setVideoProgress(0)
-    const storageRef = ref(storage, `videos/${order.id}/${Date.now()}_${file.name}`)
-    const task = uploadBytesResumable(storageRef, file)
-    task.on("state_changed",
-      (snap) => setVideoProgress(Math.round(snap.bytesTransferred / snap.totalBytes * 100)),
-      (err) => { alert("Video upload error: " + err.message); setVideoUploading(false) },
-      async () => {
-        const url = await getDownloadURL(task.snapshot.ref)
-        update("video", url)
-        setVideoUploading(false)
-      }
-    )
+    try {
+      const storageRef = ref(storage, `videos/${order.id}/${Date.now()}_${file.name}`)
+      const task = uploadBytesResumable(storageRef, file)
+      await new Promise((resolve, reject) => {
+        task.on(
+          "state_changed",
+          (snap) => setVideoProgress(snap.totalBytes > 0 ? Math.round((snap.bytesTransferred / snap.totalBytes) * 100) : 0),
+          reject,
+          resolve
+        )
+      })
+      const url = await getDownloadURL(task.snapshot.ref)
+      update("video", url)
+    } catch (err) {
+      console.error("Video upload error:", err)
+      alert(`Video upload failed:\n${err.code || err.message}\n\nMake sure Firebase Storage is enabled and rules allow writes.`)
+    } finally {
+      setVideoUploading(false)
+    }
   }
 
   const handleSaveDraft = async () => {
