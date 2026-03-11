@@ -45,36 +45,62 @@ const getVimeoId = url => {
 const isDirectVideo = url => /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(url || "")
 
 // ── FULL-SCREEN WHITE ENVELOPE ───────────────────────────────────────────────
-function EnvelopeScreen({ w, guestName, onOpen, ar, setLang }) {
-  const [opened, setOpened] = useState(false)
-  const tap = () => { if (opened) return; setOpened(true); setTimeout(onOpen, 1300) }
+function EnvelopeScreen({ w, guestName, onOpen, ar, setLang, opening }) {
+  const [tapped, setTapped] = useState(false)
+  const tap = () => { if (tapped) return; setTapped(true); onOpen() }
+
+  // When `opening` becomes true the envelope animates open and reveals the video behind it
+  const isOpen = opening || tapped
 
   return (
     <motion.div
       className="absolute inset-0 cursor-pointer select-none overflow-hidden"
       dir={ar ? "rtl" : "ltr"}
-      style={{ background: "#faf5ee" }}
       onClick={tap}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.0 }}>
 
-      {/* Subtle grid paper texture */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.035]"
-        style={{ backgroundImage: "repeating-linear-gradient(0deg,#8c6b3a 0,#8c6b3a 1px,transparent 0,transparent 28px),repeating-linear-gradient(90deg,#8c6b3a 0,#8c6b3a 1px,transparent 0,transparent 28px)" }} />
+      {/* Cream background — fades away revealing the video behind */}
+      <motion.div className="absolute inset-0 pointer-events-none"
+        style={{ background: "#faf5ee" }}
+        animate={{ opacity: isOpen ? 0 : 1 }}
+        transition={{ delay: 0.5, duration: 1.1 }} />
 
-      {/* Static envelope flaps: bottom, left, right */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}
-        viewBox="0 0 100 100" preserveAspectRatio="none">
-        <polygon points="0,100 100,100 50,50" fill="#f2e8d5" />
-        <polygon points="0,0 0,100 50,50"     fill="#ede5d5" />
-        <polygon points="100,0 100,100 50,50" fill="#ede5d5" />
+      {/* Subtle grid paper texture */}
+      <motion.div className="absolute inset-0 pointer-events-none opacity-[0.035]"
+        style={{ backgroundImage: "repeating-linear-gradient(0deg,#8c6b3a 0,#8c6b3a 1px,transparent 0,transparent 28px),repeating-linear-gradient(90deg,#8c6b3a 0,#8c6b3a 1px,transparent 0,transparent 28px)" }}
+        animate={{ opacity: isOpen ? 0 : 0.035 }} transition={{ duration: 0.4 }} />
+
+      {/* Bottom flap — becomes dark silhouette frame then fades */}
+      <motion.div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}
+        animate={{ background: isOpen ? "#1a1008" : "#f2e8d5", opacity: isOpen ? [1, 1, 0] : 1 }}
+        transition={{ duration: isOpen ? 1.8 : 0, delay: isOpen ? 0.3 : 0, times: isOpen ? [0, 0.6, 1] : undefined }}
+        initial={{ clipPath: "polygon(0% 100%, 100% 100%, 50% 50%)", background: "#f2e8d5" }}
+      />
+      {/* Left flap */}
+      <motion.div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}
+        animate={{ background: isOpen ? "#14100a" : "#ede5d5", opacity: isOpen ? [1, 1, 0] : 1 }}
+        transition={{ duration: isOpen ? 1.8 : 0, delay: isOpen ? 0.3 : 0, times: isOpen ? [0, 0.6, 1] : undefined }}
+        initial={{ clipPath: "polygon(0% 0%, 0% 100%, 50% 50%)", background: "#ede5d5" }}
+      />
+      {/* Right flap */}
+      <motion.div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}
+        animate={{ background: isOpen ? "#14100a" : "#ede5d5", opacity: isOpen ? [1, 1, 0] : 1 }}
+        transition={{ duration: isOpen ? 1.8 : 0, delay: isOpen ? 0.3 : 0, times: isOpen ? [0, 0.6, 1] : undefined }}
+        initial={{ clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)", background: "#ede5d5" }}
+      />
+
+      {/* Fold lines */}
+      <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 2 }}
+        viewBox="0 0 100 100" preserveAspectRatio="none"
+        animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.5, delay: isOpen ? 1.0 : 0 }}>
         <line x1="0"   y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.35" strokeWidth="0.2" />
         <line x1="100" y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.35" strokeWidth="0.2" />
         <line x1="0"   y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.25" strokeWidth="0.2" />
         <line x1="100" y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.25" strokeWidth="0.2" />
-      </svg>
+      </motion.svg>
 
       {/* Top flap — 3D fold open on tap */}
-      <div className="absolute inset-0 overflow-hidden" style={{ perspective: 900, zIndex: 2 }}>
+      <div className="absolute inset-0 overflow-hidden" style={{ perspective: 900, zIndex: 3 }}>
         <motion.div
           className="absolute inset-0"
           style={{
@@ -84,34 +110,38 @@ function EnvelopeScreen({ w, guestName, onOpen, ar, setLang }) {
             transformStyle: "preserve-3d",
             backfaceVisibility: "hidden",
           }}
-          animate={{ rotateX: opened ? -172 : 0 }}
-          transition={{ duration: 1.15, ease: [0.4, 0, 0.2, 1] }}
+          animate={{ rotateX: isOpen ? -172 : 0 }}
+          transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1] }}
         />
       </div>
 
-      {/* Gold wax seal — screen center */}
+      {/* Gold wax seal */}
       <motion.div
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
         style={{ zIndex: 10 }}
-        animate={{ scale: opened ? 0.75 : 1, opacity: opened ? 0 : 1 }}
-        transition={{ duration: 0.4 }}>
-        <div className="rounded-full flex items-center justify-center text-3xl"
+        animate={{ scale: isOpen ? 0.7 : 1, opacity: isOpen ? 0 : 1 }}
+        transition={{ duration: 0.5, delay: isOpen ? 0.1 : 0 }}>
+        <div className="rounded-full flex items-center justify-center"
           style={{
-            width: 80, height: 80,
+            width: 88, height: 88,
             background: "radial-gradient(circle at 38% 35%, #d4ab4a, #b8903a 55%, #7a5818)",
-            boxShadow: "0 4px 24px rgba(140,107,58,0.4), inset 0 1px 3px rgba(255,255,255,0.22)"
+            boxShadow: "0 6px 32px rgba(140,107,58,0.5), inset 0 1px 3px rgba(255,255,255,0.22)"
           }}>
-          💍
+          <svg viewBox="0 0 60 60" width="48" height="48" fill="none">
+            <circle cx="22" cy="30" r="11" stroke="rgba(255,255,255,0.7)" strokeWidth="2.2" fill="none"/>
+            <circle cx="38" cy="30" r="11" stroke="rgba(255,255,255,0.7)" strokeWidth="2.2" fill="none"/>
+            <path d="M30 18 L33 12 L37 15 L30 12 L23 15 L27 12 Z" fill="rgba(255,255,255,0.7)" />
+          </svg>
         </div>
       </motion.div>
 
-      {/* Couple names + date — lower area */}
+      {/* Couple names + date */}
       <motion.div
         className="absolute left-0 right-0 flex flex-col items-center text-center px-6 pointer-events-none"
         style={{ top: "60%", zIndex: 10 }}
         initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: opened ? 0 : 1, y: opened ? -6 : 0 }}
-        transition={{ duration: opened ? 0.3 : 1.3, delay: opened ? 0 : 0.7 }}>
+        animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? -6 : 0 }}
+        transition={{ duration: isOpen ? 0.3 : 1.3, delay: isOpen ? 0 : 0.7 }}>
         <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2rem,7vw,3rem)", fontWeight: 300, color: "#2c1f10", lineHeight: 1.1 }}>
           {ar ? w.groomAr : w.groom}
         </h1>
@@ -135,8 +165,8 @@ function EnvelopeScreen({ w, guestName, onOpen, ar, setLang }) {
       <motion.div
         className="absolute bottom-10 left-0 right-0 flex flex-col items-center pointer-events-none"
         style={{ zIndex: 10 }}
-        animate={opened ? { opacity: 0 } : { opacity: [0.3, 1, 0.3] }}
-        transition={opened ? { duration: 0.25 } : { repeat: Infinity, duration: 2.5 }}>
+        animate={isOpen ? { opacity: 0 } : { opacity: [0.3, 1, 0.3] }}
+        transition={isOpen ? { duration: 0.25 } : { repeat: Infinity, duration: 2.5 }}>
         <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.56rem", letterSpacing: "0.48em", color: "#2c1f1055", textTransform: "uppercase" }}>
           {ar ? "انقر لفتح" : "Tap to Open"}
         </p>
@@ -703,7 +733,11 @@ export default function Invitation4({ override = null }) {
 
   const startMusic = () => { if (audioRef.current) { audioRef.current.play().catch(() => {}) } }
 
-  const openEnvelope = () => { setPhase("video"); if (W.muteVideo) startMusic() }
+  const openEnvelope = () => {
+    setPhase("opening")
+    if (W.muteVideo) startMusic()
+    setTimeout(() => setPhase("video"), 2400)
+  }
   const onVideoEnded = useCallback(() => setPhase("rsvp"), [])
   const onReplay = useCallback(() => setPhase("video"), [])
 
@@ -714,23 +748,31 @@ export default function Invitation4({ override = null }) {
         style={{ display: "none" }}
       />
 
-      <AnimatePresence mode="wait">
-        {phase === "envelope" && (
-          <motion.div key="env" className="fixed inset-0" exit={{ opacity: 0, scale: 1.03 }} transition={{ duration: 0.6 }}>
-            <EnvelopeScreen w={W} guestName={guestName} onOpen={openEnvelope} ar={ar} setLang={setLang} />
-          </motion.div>
-        )}
-
-        {phase === "video" && (
-          <motion.div key="vid" className="fixed inset-0"
+      {/* Video — pre-rendered behind envelope during opening, full-screen after */}
+      <AnimatePresence>
+        {(phase === "opening" || phase === "video") && (
+          <motion.div key="vid" className="fixed inset-0 z-0"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.8 }}>
+            transition={{ duration: 0.6 }}>
             <VideoPlayer videoUrl={W.video} photos={photos} w={W} onEnded={onVideoEnded} ar={ar} />
           </motion.div>
         )}
+      </AnimatePresence>
 
+      {/* Envelope — stays on top during opening, fades away as video shows through */}
+      <AnimatePresence>
+        {(phase === "envelope" || phase === "opening") && (
+          <motion.div key="env" className="fixed inset-0 z-10"
+            exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
+            <EnvelopeScreen w={W} guestName={guestName} onOpen={openEnvelope} ar={ar} setLang={setLang} opening={phase === "opening"} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* RSVP */}
+      <AnimatePresence>
         {phase === "rsvp" && (
-          <motion.div key="rsvp" className="fixed inset-0 overflow-y-auto"
+          <motion.div key="rsvp" className="fixed inset-0 z-20 overflow-y-auto"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             transition={{ duration: 0.9 }}>
             <RSVPScreen w={W} ar={ar} setLang={setLang} onReplay={onReplay} />
