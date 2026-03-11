@@ -184,94 +184,207 @@ const SLIDE_DURATION = 5500
 const CONTENT_SECTIONS = ["opening", "quote", "ceremony", "party", "timeline", "closing"]
 
 function renderSectionOverlay(section, w, ar) {
-  const J = { fontFamily: "'Jost', sans-serif" }
+  const J  = { fontFamily: "'Jost', sans-serif" }
   const CG = { fontFamily: "'Cormorant Garamond', serif" }
   const GV = { fontFamily: "'Great Vibes', cursive" }
   const venue0 = w.venues?.[0]
   const venue1 = w.venues?.[1]
   const defaultTimeline = [
-    { time: "5:00 PM",  label: ar ? "مراسم الزواج" : "Ceremony",      icon: "💍" },
-    { time: "7:00 PM",  label: ar ? "ساعة الكوكتيل" : "Cocktail Hour", icon: "🥂" },
-    { time: "8:30 PM",  label: ar ? "العشاء" : "Dinner",               icon: "🍽️" },
-    { time: "10:00 PM", label: ar ? "الرقصة الأولى" : "First Dance",   icon: "💃" },
-    { time: "11:00 PM", label: ar ? "الحفلة" : "Party",                icon: "🎉" },
+    { time: "5:00 PM",  label: ar ? "مراسم الزواج"   : "Ceremony",      labelAr: "مراسم الزواج",   icon: "💍" },
+    { time: "7:00 PM",  label: ar ? "ساعة الكوكتيل" : "Cocktail Hour",  labelAr: "ساعة الكوكتيل", icon: "🥂" },
+    { time: "8:30 PM",  label: ar ? "العشاء"         : "Dinner",         labelAr: "العشاء",         icon: "🍽️" },
+    { time: "10:00 PM", label: ar ? "الرقصة الأولى" : "First Dance",    labelAr: "الرقصة الأولى", icon: "💃" },
+    { time: "11:00 PM", label: ar ? "الحفلة"         : "Party",          labelAr: "الحفلة",         icon: "🎉" },
   ]
   const tl = w.timeline || defaultTimeline
 
   // Shared text shadow for text directly on video
-  const ts = "0 2px 16px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.9)"
+  const ts = "0 2px 20px rgba(0,0,0,0.75), 0 1px 6px rgba(0,0,0,0.95)"
 
-  // ── OPENING: couple names + date directly on video, names big ──────────────
-  if (section === "opening") return (
-    <motion.div className="absolute inset-0 flex flex-col items-center justify-end text-center pointer-events-none"
-      style={{ paddingBottom: "clamp(80px,18vh,140px)" }}
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 1.2 }}>
-      <p style={{ ...J, fontSize: "0.55rem", letterSpacing: "0.55em", color: "rgba(255,255,255,0.75)", marginBottom: 18, textTransform: "uppercase", textShadow: ts }}>
-        {ar ? "يسعدنا دعوتكم" : "Together with their families"}
+  // ── SHARED HEADER: "The / PROGRAM" or "The / DETAILS" ─────────────────────
+  const SectionHeader = ({ title }) => (
+    <div style={{ textAlign: "center", marginBottom: 22 }}>
+      <p style={{ ...GV, fontSize: "clamp(2rem,6.5vw,2.8rem)", color: GOLD, lineHeight: 0.85 }}>
+        {ar ? "" : "The"}
       </p>
-      <p style={{ ...GV, fontSize: "clamp(3rem,11vw,5rem)", color: "white", textShadow: ts, lineHeight: 1.05 }}>
-        {ar ? w.groomAr : w.groom}
+      <p style={{ ...CG, fontSize: "clamp(1.4rem,4.5vw,1.9rem)", fontWeight: 400, color: "#1a140a",
+        letterSpacing: "0.38em", textTransform: "uppercase", lineHeight: 1.1, marginTop: 2 }}>
+        {title}
       </p>
-      <p style={{ ...J, fontSize: "0.7rem", letterSpacing: "0.3em", color: GOLD, margin: "6px 0 8px", textShadow: ts }}>
-        {ar ? "و" : "and"}
-      </p>
-      <p style={{ ...GV, fontSize: "clamp(3rem,11vw,5rem)", color: "white", textShadow: ts, lineHeight: 1.05 }}>
-        {ar ? w.brideAr : w.bride}
-      </p>
-      <p style={{ ...J, fontSize: "0.55rem", letterSpacing: "0.4em", color: "rgba(255,255,255,0.7)", marginTop: 16, textTransform: "uppercase", textShadow: ts }}>
-        {ar ? "يدعوانكم لحضور زفافهما" : "Invite you to their wedding celebration"}
-      </p>
-      <div style={{ width: 40, height: 1, background: GOLD, margin: "18px auto 10px", opacity: 0.7 }} />
-      <p style={{ ...CG, fontSize: "clamp(2rem,7vw,3.2rem)", color: "white", fontWeight: 300, letterSpacing: "0.05em", textShadow: ts, lineHeight: 1 }}>
-        {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", { month: "long", day: "numeric", year: "numeric" })}
-      </p>
-      {w.venue && <p style={{ ...J, fontSize: "0.55rem", letterSpacing: "0.22em", color: "rgba(255,255,255,0.65)", marginTop: 8, textShadow: ts }}>{ar ? w.venueAr : w.venue}</p>}
+    </div>
+  )
+
+  // ── SHARED DOT-LINE WRAPPER ────────────────────────────────────────────────
+  const DotLine = ({ children }) => (
+    <div style={{ width: "100%", maxWidth: 360, position: "relative" }}>
+      <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1,
+        background: "#c8b99a66", transform: "translateX(-50%)" }} />
+      {children}
+    </div>
+  )
+
+  const DotRow = ({ side, label, sub, desc, icon, delay = 0 }) => (
+    <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
+      style={{ display: "flex", alignItems: "center", padding: "11px 0", position: "relative" }}>
+      {side === "left" ? (
+        <>
+          <div style={{ flex: 1, textAlign: "right", paddingRight: 18 }}>
+            {label && <p style={{ ...J, fontSize: "0.44rem", letterSpacing: "0.42em", color: GOLD,
+              textTransform: "uppercase", marginBottom: 4 }}>{label}</p>}
+            {sub && <p style={{ ...CG, fontSize: "clamp(0.85rem,2.8vw,1.05rem)", color: "#1a140a",
+              lineHeight: 1.25, fontStyle: "italic" }}>{sub}</p>}
+            {desc && <p style={{ ...J, fontSize: "0.4rem", letterSpacing: "0.12em", color: "#1a140a66",
+              marginTop: 3, lineHeight: 1.5 }}>{desc}</p>}
+            {icon && <span style={{ fontSize: "1.1rem" }}>{icon}</span>}
+          </div>
+          <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#c4a35a44",
+            border: "1.5px solid #c4a35a99", flexShrink: 0, position: "relative", zIndex: 1 }} />
+          <div style={{ flex: 1 }} />
+        </>
+      ) : (
+        <>
+          <div style={{ flex: 1 }} />
+          <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#c4a35a44",
+            border: "1.5px solid #c4a35a99", flexShrink: 0, position: "relative", zIndex: 1 }} />
+          <div style={{ flex: 1, textAlign: "left", paddingLeft: 18 }}>
+            {label && <p style={{ ...J, fontSize: "0.44rem", letterSpacing: "0.42em", color: GOLD,
+              textTransform: "uppercase", marginBottom: 4 }}>{label}</p>}
+            {sub && <p style={{ ...CG, fontSize: "clamp(0.85rem,2.8vw,1.05rem)", color: "#1a140a",
+              lineHeight: 1.25, fontStyle: "italic" }}>{sub}</p>}
+            {desc && <p style={{ ...J, fontSize: "0.4rem", letterSpacing: "0.12em", color: "#1a140a66",
+              marginTop: 3, lineHeight: 1.5 }}>{desc}</p>}
+            {icon && <span style={{ fontSize: "1.1rem" }}>{icon}</span>}
+          </div>
+        </>
+      )}
     </motion.div>
   )
 
-  // ── QUOTE: light wash full screen, dark text, video shows through ───────────
+  // ── OPENING: bottom-anchored panel — names in serif caps + date ─────────────
+  if (section === "opening") {
+    const d        = new Date(w.date)
+    const month    = d.toLocaleString("en-US", { month: "long" }).toUpperCase()
+    const dayName  = d.toLocaleString("en-US", { weekday: "long" }).toUpperCase()
+    const day      = d.getDate()
+    const year     = d.getFullYear()
+    const time     = d.toLocaleString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
+    const monthAr  = d.toLocaleString("ar-EG", { month: "long" })
+    const dayNameAr= d.toLocaleString("ar-EG", { weekday: "long" })
+    const timeAr   = d.toLocaleString("ar-EG", { hour: "numeric", minute: "2-digit" })
+
+    return (
+      <motion.div className="absolute inset-0 flex flex-col items-center justify-end text-center pointer-events-none"
+        style={{ paddingBottom: "clamp(48px,11vh,88px)" }}
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7, duration: 1.3 }}>
+
+        {/* Small top label */}
+        <p style={{ ...J, fontSize: "0.47rem", letterSpacing: "0.55em", color: "rgba(255,255,255,0.68)",
+          marginBottom: 18, textTransform: "uppercase", textShadow: ts }}>
+          {ar ? "يسعدنا دعوتكم" : "Together with their families"}
+        </p>
+
+        {/* Groom — large serif uppercase */}
+        <p style={{ ...CG, fontSize: "clamp(2rem,8.5vw,3.8rem)", color: "white", lineHeight: 1.0,
+          fontWeight: 300, letterSpacing: "0.14em", textTransform: "uppercase", textShadow: ts }}>
+          {ar ? w.groomAr : w.groom}
+        </p>
+
+        {/* "and" in script */}
+        <p style={{ ...GV, fontSize: "clamp(1.3rem,4vw,1.9rem)", color: GOLD, margin: "3px 0 5px", textShadow: ts }}>
+          {ar ? "و" : "and"}
+        </p>
+
+        {/* Bride — large serif uppercase */}
+        <p style={{ ...CG, fontSize: "clamp(2rem,8.5vw,3.8rem)", color: "white", lineHeight: 1.0,
+          fontWeight: 300, letterSpacing: "0.14em", textTransform: "uppercase", textShadow: ts }}>
+          {ar ? w.brideAr : w.bride}
+        </p>
+
+        {/* Invite text */}
+        <p style={{ ...J, fontSize: "0.44rem", letterSpacing: "0.44em", color: "rgba(255,255,255,0.58)",
+          marginTop: 16, marginBottom: 18, textTransform: "uppercase", textShadow: ts }}>
+          {ar ? "يدعوانكم لحضور زفافهما" : "Invite you to their wedding celebration"}
+        </p>
+
+        {/* Date line with horizontal rules */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, width: "100%",
+          maxWidth: "min(340px, 82vw)", justifyContent: "center", padding: "0 16px" }}>
+          <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.28)" }} />
+          <p style={{ ...J, fontSize: "0.41rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.72)",
+            textTransform: "uppercase", whiteSpace: "nowrap", textShadow: ts }}>
+            {ar
+              ? `${monthAr} / ${dayNameAr} ${day} · ${timeAr} / ${year}`
+              : `${month} / ${dayName} ${day} AT ${time} / ${year}`}
+          </p>
+          <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.28)" }} />
+        </div>
+      </motion.div>
+    )
+  }
+
+  // ── QUOTE: cream wash, italic quote + parents ───────────────────────────────
   if (section === "quote") return (
     <motion.div className="absolute inset-0 pointer-events-none"
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1.0 }}>
-      <div className="absolute inset-0" style={{ background: "rgba(250,245,238,0.82)" }} />
+      <div className="absolute inset-0" style={{ background: "rgba(250,245,238,0.88)" }} />
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-10">
-        <p style={{ ...CG, fontSize: "clamp(1.4rem,5vw,2rem)", fontStyle: "italic", color: "#1a140a", lineHeight: 1.65, marginBottom: 14, fontWeight: 400 }}>
+        {/* Decorative top line */}
+        <div style={{ width: 38, height: 1, background: GOLD, opacity: 0.5, marginBottom: 22 }} />
+        <p style={{ ...CG, fontSize: "clamp(1.2rem,4.5vw,1.85rem)", fontStyle: "italic", color: "#1a140a",
+          lineHeight: 1.7, marginBottom: 12, fontWeight: 400, maxWidth: 320 }}>
           "{ar ? w.quoteAr : w.quote}"
         </p>
-        {w.quoteRef && <p style={{ ...J, fontSize: "0.6rem", letterSpacing: "0.28em", color: GOLD, marginBottom: 28 }}>— {w.quoteRef}</p>}
-        <div style={{ width: 1, height: 30, background: "#1a140a33", margin: "0 auto 20px" }} />
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+        {w.quoteRef && <p style={{ ...J, fontSize: "0.52rem", letterSpacing: "0.28em", color: GOLD, marginBottom: 26 }}>— {w.quoteRef}</p>}
+        {/* Vertical dot */}
+        <div style={{ width: 1, height: 28, background: "#1a140a22", margin: "0 auto 20px" }} />
+        {/* Parents */}
+        <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center" }}>
           {(ar ? w.parentsAr : w.parents)?.map((p, i) => (
             <div key={i} style={{ textAlign: "center" }}>
-              <p style={{ ...J, fontSize: "0.5rem", letterSpacing: "0.25em", color: GOLD, textTransform: "uppercase", marginBottom: 3 }}>{ar ? "السادة" : "Mr. & Mrs."}</p>
-              <p style={{ ...CG, color: "#1a140a", fontSize: "0.85rem", fontWeight: 500 }}>{p}</p>
+              <p style={{ ...J, fontSize: "0.44rem", letterSpacing: "0.28em", color: GOLD,
+                textTransform: "uppercase", marginBottom: 3 }}>{ar ? "السادة" : "Mr. & Mrs."}</p>
+              <p style={{ ...CG, color: "#1a140a", fontSize: "0.92rem", fontWeight: 500 }}>{p}</p>
             </div>
           ))}
         </div>
-        {w.message && <p style={{ ...CG, color: "#1a140a99", fontSize: "0.75rem", fontStyle: "italic", marginTop: 18, maxWidth: 300, lineHeight: 1.65 }}>{ar ? w.messageAr : w.message}</p>}
+        {w.message && <p style={{ ...CG, color: "#1a140a77", fontSize: "0.72rem", fontStyle: "italic",
+          marginTop: 18, maxWidth: 300, lineHeight: 1.7 }}>{ar ? w.messageAr : w.message}</p>}
+        <div style={{ width: 38, height: 1, background: GOLD, opacity: 0.5, marginTop: 22 }} />
       </div>
     </motion.div>
   )
 
-  // ── CEREMONY / PARTY: light wash, dark text, venue details ─────────────────
-  if (section === "ceremony" || section === "party") {
-    const vn = section === "ceremony" ? (venue0 || venue1) : (venue1 || venue0)
+  // ── CEREMONY: "The DETAILS" — venue 1 info in dot-line style ────────────────
+  if (section === "ceremony") {
+    const vn = venue0 || venue1
     if (!vn) return renderSectionOverlay("closing", w, ar)
     return (
       <motion.div className="absolute inset-0 pointer-events-none"
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1.0 }}>
-        <div className="absolute inset-0" style={{ background: "rgba(250,245,238,0.84)" }} />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-10">
-          <p style={{ ...J, fontSize: "0.5rem", letterSpacing: "0.55em", color: GOLD, textTransform: "uppercase", marginBottom: 8 }}>{ar ? vn.labelAr : vn.label}</p>
-          <div style={{ width: 32, height: 1, background: GOLD, margin: "0 auto 24px", opacity: 0.6 }} />
-          <p style={{ ...GV, fontSize: "clamp(2.2rem,8vw,3.5rem)", color: "#1a140a", lineHeight: 1.1, marginBottom: 6 }}>{ar ? vn.placeAr : vn.place}</p>
-          <p style={{ ...CG, fontSize: "clamp(3rem,10vw,4.5rem)", color: GOLD, fontWeight: 300, lineHeight: 1, marginBottom: 10 }}>{vn.time}</p>
-          <div style={{ width: 1, height: 20, background: "#1a140a22", margin: "0 auto 12px" }} />
-          <p style={{ ...J, fontSize: "0.6rem", letterSpacing: "0.2em", color: "#1a140a88", marginBottom: vn.map ? 22 : 0 }}>{ar ? vn.locationAr : vn.location}</p>
+        <div className="absolute inset-0" style={{ background: "rgba(250,245,238,0.88)" }} />
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-8">
+          <SectionHeader title={ar ? "التفاصيل" : "Details"} />
+          <DotLine>
+            <DotRow side="left" delay={0.5}
+              label={ar ? vn.labelAr : vn.label}
+              sub={ar ? vn.placeAr : vn.place}
+              desc={vn.time} />
+            <DotRow side="right" delay={0.6}
+              label={ar ? "الموقع" : "Location"}
+              sub={ar ? vn.locationAr : vn.location}
+              desc={vn.map ? (ar ? "انقر للخريطة" : "Tap for map") : undefined} />
+            {w.dressCode && (
+              <DotRow side="left" delay={0.7}
+                label={ar ? "اللباس" : "Dress Code"}
+                sub={w.dressCode} />
+            )}
+          </DotLine>
           {vn.map && (
-            <a href={vn.map} target="_blank" rel="noopener noreferrer" className="pointer-events-auto"
-              style={{ ...J, fontSize: "0.6rem", letterSpacing: "0.18em", color: GOLD, border: `1px solid ${GOLD}66`, borderRadius: 999, padding: "9px 24px", textDecoration: "none" }}>
-              📍 {ar ? "خريطة" : "View Map"}
+            <a href={vn.map} target="_blank" rel="noopener noreferrer" className="pointer-events-auto mt-5"
+              style={{ ...J, fontSize: "0.48rem", letterSpacing: "0.22em", color: GOLD,
+                border: `1px solid ${GOLD}55`, borderRadius: 999, padding: "8px 22px",
+                textDecoration: "none", textTransform: "uppercase" }}>
+              📍 {ar ? "عرض الخريطة" : "View on Map"}
             </a>
           )}
         </div>
@@ -279,57 +392,120 @@ function renderSectionOverlay(section, w, ar) {
     )
   }
 
-  // ── TIMELINE: light wash, "The PROGRAM" style, vertical timeline ────────────
+  // ── PARTY: "The DETAILS" — venue 2 info ────────────────────────────────────
+  if (section === "party") {
+    const vn = venue1 || venue0
+    if (!vn) return renderSectionOverlay("closing", w, ar)
+    return (
+      <motion.div className="absolute inset-0 pointer-events-none"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1.0 }}>
+        <div className="absolute inset-0" style={{ background: "rgba(250,245,238,0.88)" }} />
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-8">
+          <SectionHeader title={ar ? "التفاصيل" : "Details"} />
+          <DotLine>
+            <DotRow side="right" delay={0.5}
+              label={ar ? vn.labelAr : vn.label}
+              sub={ar ? vn.placeAr : vn.place}
+              desc={vn.time} />
+            <DotRow side="left" delay={0.6}
+              label={ar ? "الموقع" : "Location"}
+              sub={ar ? vn.locationAr : vn.location} />
+            {w.transport && (
+              <DotRow side="right" delay={0.7}
+                label={ar ? "المواصلات" : "Transportation"}
+                sub={w.transport} />
+            )}
+          </DotLine>
+          {vn.map && (
+            <a href={vn.map} target="_blank" rel="noopener noreferrer" className="pointer-events-auto mt-5"
+              style={{ ...J, fontSize: "0.48rem", letterSpacing: "0.22em", color: GOLD,
+                border: `1px solid ${GOLD}55`, borderRadius: 999, padding: "8px 22px",
+                textDecoration: "none", textTransform: "uppercase" }}>
+              📍 {ar ? "عرض الخريطة" : "View on Map"}
+            </a>
+          )}
+        </div>
+      </motion.div>
+    )
+  }
+
+  // ── TIMELINE: "The PROGRAM" — alternating left/right dot-line ───────────────
   if (section === "timeline") return (
     <motion.div className="absolute inset-0 pointer-events-none"
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 1.0 }}>
-      <div className="absolute inset-0" style={{ background: "rgba(250,245,238,0.84)" }} />
+      <div className="absolute inset-0" style={{ background: "rgba(250,245,238,0.88)" }} />
       <div className="absolute inset-0 flex flex-col items-center justify-center px-8">
-        <p style={{ ...J, fontSize: "0.5rem", letterSpacing: "0.55em", color: GOLD, textTransform: "uppercase", marginBottom: 4 }}>{ar ? "اليوم" : "The"}</p>
-        <p style={{ ...CG, fontSize: "clamp(1.8rem,6vw,2.8rem)", fontWeight: 400, color: "#1a140a", marginBottom: 22, lineHeight: 1 }}>
-          {ar ? "برنامج الاحتفال" : "Program"}
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", maxWidth: 340, gap: 0 }}>
+        <SectionHeader title={ar ? "البرنامج" : "Program"} />
+        <DotLine>
           {tl.slice(0, 5).map((item, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.1 }}
-              style={{ display: "flex", alignItems: "center", width: "100%", position: "relative", padding: "6px 0" }}>
-              {/* Left: time */}
-              <div style={{ width: "38%", textAlign: "right", paddingRight: 14 }}>
-                <p style={{ ...CG, fontSize: "clamp(1rem,3.5vw,1.3rem)", color: "#1a140a", fontWeight: 400, lineHeight: 1 }}>{item.time}</p>
-              </div>
-              {/* Center: dot */}
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
-                {i > 0 && <div style={{ width: 1, height: 16, background: "#1a140a33" }} />}
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#1a140a", flexShrink: 0 }} />
-                {i < tl.slice(0,5).length - 1 && <div style={{ width: 1, height: 16, background: "#1a140a33" }} />}
-              </div>
-              {/* Right: label + icon */}
-              <div style={{ width: "38%", paddingLeft: 14 }}>
-                <p style={{ ...J, fontSize: "0.62rem", letterSpacing: "0.12em", color: "#1a140a", textTransform: "uppercase", lineHeight: 1.2 }}>{item.label}</p>
-              </div>
+            <motion.div key={i}
+              initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.08 }}
+              style={{ display: "flex", alignItems: "center", padding: "9px 0", position: "relative" }}>
+              {i % 2 === 0 ? (
+                <>
+                  {/* Even: text left / icon right */}
+                  <div style={{ flex: 1, textAlign: "right", paddingRight: 18 }}>
+                    <p style={{ ...CG, fontSize: "clamp(0.88rem,2.9vw,1.08rem)", color: "#1a140a",
+                      fontWeight: 500, lineHeight: 1.1 }}>{item.time}</p>
+                    <p style={{ ...J, fontSize: "0.4rem", letterSpacing: "0.2em", color: GOLD,
+                      textTransform: "uppercase", marginTop: 2 }}>
+                      {ar ? (item.labelAr || item.label) : item.label}
+                    </p>
+                    {item.location && <p style={{ ...J, fontSize: "0.36rem", letterSpacing: "0.1em",
+                      color: "#1a140a44", marginTop: 1 }}>{item.location}</p>}
+                  </div>
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#1a140a",
+                    flexShrink: 0, position: "relative", zIndex: 1 }} />
+                  <div style={{ flex: 1, paddingLeft: 16, textAlign: "left" }}>
+                    <span style={{ fontSize: "1rem" }}>{item.icon || "✦"}</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Odd: icon left / text right */}
+                  <div style={{ flex: 1, paddingRight: 16, textAlign: "right" }}>
+                    <span style={{ fontSize: "1rem" }}>{item.icon || "✦"}</span>
+                  </div>
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#1a140a",
+                    flexShrink: 0, position: "relative", zIndex: 1 }} />
+                  <div style={{ flex: 1, textAlign: "left", paddingLeft: 18 }}>
+                    <p style={{ ...CG, fontSize: "clamp(0.88rem,2.9vw,1.08rem)", color: "#1a140a",
+                      fontWeight: 500, lineHeight: 1.1 }}>{item.time}</p>
+                    <p style={{ ...J, fontSize: "0.4rem", letterSpacing: "0.2em", color: GOLD,
+                      textTransform: "uppercase", marginTop: 2 }}>
+                      {ar ? (item.labelAr || item.label) : item.label}
+                    </p>
+                    {item.location && <p style={{ ...J, fontSize: "0.36rem", letterSpacing: "0.1em",
+                      color: "#1a140a44", marginTop: 1 }}>{item.location}</p>}
+                  </div>
+                </>
+              )}
             </motion.div>
           ))}
-        </div>
+        </DotLine>
       </div>
     </motion.div>
   )
 
-  // ── CLOSING: large date directly on video, no overlay ──────────────────────
-  const d = new Date(w.date)
-  const mm = String(d.getMonth() + 1).padStart(2, "0")
-  const dd = String(d.getDate()).padStart(2, "0")
+  // ── CLOSING: large date directly on video ───────────────────────────────────
+  const d    = new Date(w.date)
+  const mm   = String(d.getMonth() + 1).padStart(2, "0")
+  const dd   = String(d.getDate()).padStart(2, "0")
   const yyyy = d.getFullYear()
   return (
     <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none"
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1.2 }}>
-      <p style={{ ...CG, fontSize: "clamp(4rem,18vw,7rem)", color: "white", fontWeight: 300, lineHeight: 1, textShadow: ts, letterSpacing: "0.04em" }}>
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1.3 }}>
+      <p style={{ ...CG, fontSize: "clamp(5rem,20vw,8.5rem)", color: "white", fontWeight: 300,
+        lineHeight: 0.9, textShadow: ts, letterSpacing: "0.04em" }}>
         {ar ? `${dd}.${mm}` : `${mm}.${dd}`}
       </p>
-      <p style={{ ...CG, fontSize: "clamp(2.5rem,10vw,4.5rem)", color: "white", fontWeight: 300, lineHeight: 1, textShadow: ts, marginBottom: 16 }}>
+      <div style={{ width: 56, height: 1, background: "rgba(255,255,255,0.38)", margin: "14px auto" }} />
+      <p style={{ ...CG, fontSize: "clamp(3rem,12vw,5.5rem)", color: "white", fontWeight: 300,
+        lineHeight: 1, textShadow: ts }}>
         {yyyy}
       </p>
-      <div style={{ width: 40, height: 1, background: "rgba(255,255,255,0.5)", margin: "0 auto 18px" }} />
-      <p style={{ ...GV, fontSize: "clamp(1.8rem,6vw,2.8rem)", color: "white", textShadow: ts }}>
+      <div style={{ width: 38, height: 1, background: "rgba(255,255,255,0.28)", margin: "16px auto 14px" }} />
+      <p style={{ ...GV, fontSize: "clamp(1.9rem,6.5vw,3rem)", color: "white", textShadow: ts }}>
         {ar ? `${w.groomAr} & ${w.brideAr}` : `${w.groom} & ${w.bride}`}
       </p>
     </motion.div>
