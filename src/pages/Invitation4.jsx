@@ -170,7 +170,7 @@ function renderSectionOverlay(section, w, ar) {
   ]
   const tl = w.timeline || defaultTimeline
 
-  const pill = { background: "rgba(0,0,0,0.45)", backdropFilter: "blur(6px)", borderRadius: 20, padding: "22px 32px", display: "flex", flexDirection: "column", alignItems: "center" }
+  const pill = { background: "rgba(10,8,6,0.60)", backdropFilter: "blur(10px)", borderRadius: 4, padding: "28px 38px", display: "flex", flexDirection: "column", alignItems: "center", border: "1px solid rgba(196,163,90,0.22)", boxShadow: "0 8px 40px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.04)" }
 
   if (section === "opening") return (
     <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 pointer-events-none"
@@ -284,10 +284,6 @@ function renderSectionOverlay(section, w, ar) {
 // ── VIDEO PLAYER ─────────────────────────────────────────────────────────────
 function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
   const videoRef = useRef(null)
-  const [playing, setPlaying] = useState(true)
-  const [muted,   setMuted]   = useState(false)
-  const [elapsed, setElapsed] = useState(0)
-  const [duration, setDur]    = useState(0)
   const [sectionIdx, setSectionIdx] = useState(0)
   const [startupCover, setStartupCover] = useState(true)
 
@@ -324,15 +320,6 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
     videoRef.current.muted = !!(w.muteVideo)
   }, [isDirect])
 
-  const togglePlay = () => {
-    if (!videoRef.current) return
-    if (playing) videoRef.current.pause(); else videoRef.current.play()
-    setPlaying(p => !p)
-  }
-  const toggleMute = () => {
-    if (!videoRef.current) return
-    videoRef.current.muted = !muted; setMuted(m => !m)
-  }
 
   if (!hasVideo) return <PhotoFilm photos={photos} w={w} onEnded={onEnded} ar={ar} />
 
@@ -359,20 +346,15 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
       {/* Video */}
       {isDirect ? (
         <video ref={videoRef} autoPlay playsInline
-          className="absolute inset-0 w-full h-full object-contain"
+          className="absolute inset-0 w-full h-full object-cover"
           style={{ background: DARK }}
           onLoadedMetadata={e => {
             if (w.videoStart != null) e.target.currentTime = w.videoStart
-            setDur(e.target.duration || 0)
           }}
           onTimeUpdate={e => {
-            const ct = e.target.currentTime
-            setElapsed(ct)
-            setDur(e.target.duration || 0)
-            if (w.videoEnd != null && ct >= w.videoEnd) onEnded()
+            if (w.videoEnd != null && e.target.currentTime >= w.videoEnd) onEnded()
           }}
-          onEnded={onEnded}
-          onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)}>
+          onEnded={onEnded}>
           <source src={videoUrl} />
         </video>
       ) : (
@@ -401,11 +383,17 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
         )}
       </AnimatePresence>
 
-      {/* Cinematic vignette */}
+      {/* Cinematic vignette + corner watermark cover */}
       <div className="absolute inset-0 pointer-events-none z-[6]"
-        style={{ background: "linear-gradient(to bottom,rgba(0,0,0,0.62) 0%,transparent 22%,transparent 65%,rgba(0,0,0,0.80) 100%)" }} />
+        style={{ background: "linear-gradient(to bottom,rgba(0,0,0,0.82) 0%,transparent 28%,transparent 62%,rgba(0,0,0,0.85) 100%)" }} />
       <div className="absolute inset-0 pointer-events-none z-[6]"
-        style={{ background: "radial-gradient(ellipse at 50% 50%,transparent 38%,rgba(0,0,0,0.52) 100%)" }} />
+        style={{ background: "radial-gradient(ellipse at 50% 50%,transparent 35%,rgba(0,0,0,0.58) 100%)" }} />
+      {/* Top-right corner — covers Instagram/watermark logos */}
+      <div className="absolute inset-0 pointer-events-none z-[6]"
+        style={{ background: "radial-gradient(ellipse at 100% 0%,rgba(0,0,0,0.90) 0%,transparent 32%)" }} />
+      {/* Top-left corner */}
+      <div className="absolute inset-0 pointer-events-none z-[6]"
+        style={{ background: "radial-gradient(ellipse at 0% 0%,rgba(0,0,0,0.90) 0%,transparent 32%)" }} />
 
       {/* Content section overlay — cycles every ~20 sec */}
       <AnimatePresence mode="wait">
@@ -415,31 +403,6 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
         </motion.div>
       </AnimatePresence>
 
-      {/* Direct video custom controls */}
-      {isDirect && (
-        <div className="absolute bottom-16 left-4 right-4 z-20">
-          <div className="w-full h-0.5 rounded-full mb-3 cursor-pointer" style={{ background: "rgba(255,255,255,0.15)" }}
-            onClick={e => {
-              const rect = e.currentTarget.getBoundingClientRect()
-              if (videoRef.current) videoRef.current.currentTime = ((e.clientX - rect.left) / rect.width) * duration
-            }}>
-            <div className="h-full rounded-full" style={{ width: duration ? `${(elapsed / duration) * 100}%` : "0%", background: GOLD }} />
-          </div>
-          <div className="flex items-center gap-3">
-            <button onClick={togglePlay} className="text-white text-xl w-9 h-9 flex items-center justify-center rounded-full" style={{ background: "rgba(255,255,255,0.12)" }}>
-              {playing ? "⏸" : "▶"}
-            </button>
-            <button onClick={toggleMute} className="text-white text-base w-9 h-9 flex items-center justify-center rounded-full" style={{ background: "rgba(255,255,255,0.12)" }}>
-              {muted ? "🔇" : "🔊"}
-            </button>
-            {duration > 0 && (
-              <span className="text-xs ml-1" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "'Jost', sans-serif" }}>
-                {Math.floor(elapsed/60)}:{String(Math.floor(elapsed%60)).padStart(2,"0")} / {Math.floor(duration/60)}:{String(Math.floor(duration%60)).padStart(2,"0")}
-              </span>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Skip to RSVP */}
       <button onClick={onEnded}
