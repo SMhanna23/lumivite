@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { collection, getDocs, orderBy, query, updateDoc, doc, deleteDoc, where } from "firebase/firestore"
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
-import { db, storage } from "../firebase"
+import { db } from "../firebase"
 import { getAuth, signOut } from "firebase/auth"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -227,21 +226,27 @@ function BuildInvitationModal({ order }) {
     setVideoUploading(true)
     setVideoProgress(0)
     try {
-      const storageRef = ref(storage, `videos/${order.id}/${Date.now()}_${file.name}`)
-      const task = uploadBytesResumable(storageRef, file)
+      const formData = new FormData()
+      formData.append("reqtype", "fileupload")
+      formData.append("fileToUpload", file)
+      const xhr = new XMLHttpRequest()
       await new Promise((resolve, reject) => {
-        task.on(
-          "state_changed",
-          (snap) => setVideoProgress(snap.totalBytes > 0 ? Math.round((snap.bytesTransferred / snap.totalBytes) * 100) : 0),
-          reject,
-          resolve
-        )
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) setVideoProgress(Math.round((e.loaded / e.total) * 100))
+        }
+        xhr.onload = () => {
+          if (xhr.status === 200) resolve(xhr.responseText.trim())
+          else reject(new Error(`Upload failed: ${xhr.status}`))
+        }
+        xhr.onerror = () => reject(new Error("Network error"))
+        xhr.open("POST", "https://catbox.moe/user.php")
+        xhr.send(formData)
       })
-      const url = await getDownloadURL(task.snapshot.ref)
+      const url = xhr.responseText.trim()
       update("video", url)
     } catch (err) {
       console.error("Video upload error:", err)
-      alert(`Video upload failed:\n${err.code || err.message}\n\nMake sure Firebase Storage is enabled and rules allow writes.`)
+      alert(`Video upload failed:\n${err.message}`)
     } finally {
       setVideoUploading(false)
     }
