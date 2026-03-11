@@ -170,44 +170,50 @@ function renderSectionOverlay(section, w, ar) {
   ]
   const tl = w.timeline || defaultTimeline
 
+  const pill = { background: "rgba(0,0,0,0.45)", backdropFilter: "blur(6px)", borderRadius: 20, padding: "22px 32px", display: "flex", flexDirection: "column", alignItems: "center" }
+
   if (section === "opening") return (
     <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 pointer-events-none"
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 1.0 }}>
-      <p style={{ ...J, fontSize: "0.6rem", letterSpacing: "0.5em", color: GOLD, marginBottom: 22, textTransform: "uppercase" }}>
-        {ar ? "أنتم مدعوون" : "You're Invited"}
-      </p>
-      <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(2.5rem,8vw,4rem)", color: "white", textShadow: "0 2px 28px rgba(0,0,0,0.7)", lineHeight: 1.1 }}>
-        {ar ? w.groomAr : w.groom}
-      </p>
-      <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "1.8rem", color: GOLD, margin: "4px 0" }}>&</p>
-      <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(2.5rem,8vw,4rem)", color: "white", textShadow: "0 2px 28px rgba(0,0,0,0.7)", lineHeight: 1.1 }}>
-        {ar ? w.brideAr : w.bride}
-      </p>
-      <p style={{ ...J, fontSize: "0.65rem", letterSpacing: "0.4em", color: GOLD, marginTop: 18, textTransform: "uppercase" }}>
-        {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", { month: "long", day: "numeric", year: "numeric" })}
-      </p>
-      {w.venue && <p style={{ ...J, fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.45)", marginTop: 6 }}>{ar ? w.venueAr : w.venue}</p>}
+      <div style={pill}>
+        <p style={{ ...J, fontSize: "0.6rem", letterSpacing: "0.5em", color: GOLD, marginBottom: 22, textTransform: "uppercase" }}>
+          {ar ? "أنتم مدعوون" : "You're Invited"}
+        </p>
+        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(2.5rem,8vw,4rem)", color: "white", textShadow: "0 2px 16px rgba(0,0,0,0.9)", lineHeight: 1.1 }}>
+          {ar ? w.groomAr : w.groom}
+        </p>
+        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "1.8rem", color: GOLD, margin: "4px 0" }}>&</p>
+        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(2.5rem,8vw,4rem)", color: "white", textShadow: "0 2px 16px rgba(0,0,0,0.9)", lineHeight: 1.1 }}>
+          {ar ? w.brideAr : w.bride}
+        </p>
+        <p style={{ ...J, fontSize: "0.65rem", letterSpacing: "0.4em", color: GOLD, marginTop: 18, textTransform: "uppercase" }}>
+          {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", { month: "long", day: "numeric", year: "numeric" })}
+        </p>
+        {w.venue && <p style={{ ...J, fontSize: "0.6rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.65)", marginTop: 6 }}>{ar ? w.venueAr : w.venue}</p>}
+      </div>
     </motion.div>
   )
 
   if (section === "quote") return (
     <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center px-10 pointer-events-none"
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1.0 }}>
-      <p style={{ color: GOLD, fontSize: "1.2rem", marginBottom: 18 }}>✦</p>
-      <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(1.5rem,5vw,2.2rem)", color: "white", textShadow: "0 2px 20px rgba(0,0,0,0.8)", lineHeight: 1.55, marginBottom: 10 }}>
-        "{ar ? w.quoteAr : w.quote}"
-      </p>
-      {w.quoteRef && <p style={{ ...J, fontSize: "0.62rem", letterSpacing: "0.28em", color: GOLD, marginBottom: 24 }}>— {w.quoteRef}</p>}
-      <p style={{ color: GOLD, fontSize: "1.1rem", marginBottom: 22 }}>✦</p>
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center", maxWidth: 320 }}>
-        {(ar ? w.parentsAr : w.parents)?.map((p, i) => (
-          <div key={i} style={{ background: "rgba(196,163,90,0.12)", border: `1px solid ${GOLD}35`, borderRadius: 12, padding: "10px 16px" }}>
-            <p style={{ ...J, fontSize: "0.55rem", letterSpacing: "0.25em", color: GOLD, textTransform: "uppercase", marginBottom: 4 }}>{ar ? "السادة" : "Mr. & Mrs."}</p>
-            <p style={{ color: "rgba(255,255,255,0.88)", fontSize: "0.78rem", fontFamily: "'Cormorant Garamond', serif" }}>{p}</p>
-          </div>
-        ))}
+      <div style={{ ...pill, maxWidth: 360 }}>
+        <p style={{ color: GOLD, fontSize: "1.2rem", marginBottom: 18 }}>✦</p>
+        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(1.5rem,5vw,2.2rem)", color: "white", textShadow: "0 2px 12px rgba(0,0,0,0.9)", lineHeight: 1.55, marginBottom: 10 }}>
+          "{ar ? w.quoteAr : w.quote}"
+        </p>
+        {w.quoteRef && <p style={{ ...J, fontSize: "0.62rem", letterSpacing: "0.28em", color: GOLD, marginBottom: 24 }}>— {w.quoteRef}</p>}
+        <p style={{ color: GOLD, fontSize: "1.1rem", marginBottom: 22 }}>✦</p>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+          {(ar ? w.parentsAr : w.parents)?.map((p, i) => (
+            <div key={i} style={{ background: "rgba(196,163,90,0.18)", border: `1px solid ${GOLD}45`, borderRadius: 12, padding: "10px 16px" }}>
+              <p style={{ ...J, fontSize: "0.55rem", letterSpacing: "0.25em", color: GOLD, textTransform: "uppercase", marginBottom: 4 }}>{ar ? "السادة" : "Mr. & Mrs."}</p>
+              <p style={{ color: "rgba(255,255,255,0.92)", fontSize: "0.78rem", fontFamily: "'Cormorant Garamond', serif" }}>{p}</p>
+            </div>
+          ))}
+        </div>
+        {w.message && <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "0.72rem", fontStyle: "italic", marginTop: 14, fontFamily: "'Cormorant Garamond', serif", maxWidth: 290, lineHeight: 1.6 }}>{ar ? w.messageAr : w.message}</p>}
       </div>
-      {w.message && <p style={{ color: "rgba(255,255,255,0.42)", fontSize: "0.72rem", fontStyle: "italic", marginTop: 14, fontFamily: "'Cormorant Garamond', serif", maxWidth: 290, lineHeight: 1.6 }}>{ar ? w.messageAr : w.message}</p>}
     </motion.div>
   )
 
@@ -217,16 +223,18 @@ function renderSectionOverlay(section, w, ar) {
     return (
       <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 pointer-events-none"
         initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 1.0 }}>
-        <p style={{ ...J, fontSize: "0.58rem", letterSpacing: "0.48em", color: GOLD, textTransform: "uppercase", marginBottom: 20 }}>{ar ? vn.labelAr : vn.label}</p>
-        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(1.8rem,6vw,2.8rem)", color: "white", textShadow: "0 2px 24px rgba(0,0,0,0.8)", marginBottom: 8, lineHeight: 1.2 }}>{ar ? vn.placeAr : vn.place}</p>
-        <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.8rem,9vw,4.2rem)", color: GOLD, fontWeight: 300, lineHeight: 1, marginBottom: 14 }}>{vn.time}</p>
-        <p style={{ ...J, fontSize: "0.68rem", letterSpacing: "0.18em", color: "rgba(255,255,255,0.52)", marginBottom: 22 }}>{ar ? vn.locationAr : vn.location}</p>
-        {vn.map && (
-          <a href={vn.map} target="_blank" rel="noopener noreferrer" className="pointer-events-auto"
-            style={{ ...J, fontSize: "0.68rem", letterSpacing: "0.18em", color: GOLD, border: `1px solid ${GOLD}45`, borderRadius: 999, padding: "8px 22px", textDecoration: "none" }}>
-            📍 {ar ? "خريطة" : "View Map"}
-          </a>
-        )}
+        <div style={{ ...pill, minWidth: 260 }}>
+          <p style={{ ...J, fontSize: "0.58rem", letterSpacing: "0.48em", color: GOLD, textTransform: "uppercase", marginBottom: 20 }}>{ar ? vn.labelAr : vn.label}</p>
+          <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(1.8rem,6vw,2.8rem)", color: "white", textShadow: "0 2px 12px rgba(0,0,0,0.9)", marginBottom: 8, lineHeight: 1.2 }}>{ar ? vn.placeAr : vn.place}</p>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.8rem,9vw,4.2rem)", color: GOLD, fontWeight: 300, lineHeight: 1, marginBottom: 14 }}>{vn.time}</p>
+          <p style={{ ...J, fontSize: "0.68rem", letterSpacing: "0.18em", color: "rgba(255,255,255,0.72)", marginBottom: vn.map ? 18 : 0 }}>{ar ? vn.locationAr : vn.location}</p>
+          {vn.map && (
+            <a href={vn.map} target="_blank" rel="noopener noreferrer" className="pointer-events-auto"
+              style={{ ...J, fontSize: "0.68rem", letterSpacing: "0.18em", color: GOLD, border: `1px solid ${GOLD}55`, borderRadius: 999, padding: "8px 22px", textDecoration: "none" }}>
+              📍 {ar ? "خريطة" : "View Map"}
+            </a>
+          )}
+        </div>
       </motion.div>
     )
   }
@@ -234,19 +242,21 @@ function renderSectionOverlay(section, w, ar) {
   if (section === "timeline") return (
     <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 pointer-events-none"
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 1.0 }}>
-      <p style={{ ...J, fontSize: "0.58rem", letterSpacing: "0.48em", color: GOLD, textTransform: "uppercase", marginBottom: 8 }}>{ar ? "اليوم" : "The Day"}</p>
-      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.6rem,5vw,2.5rem)", fontWeight: 300, color: "white", marginBottom: 18, lineHeight: 1 }}>
-        {ar ? "برنامج الاحتفال" : "Wedding Timeline"}
-      </p>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%", maxWidth: 280 }}>
-        {tl.slice(0, 5).map((item, i) => (
-          <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.7 + i * 0.13 }}
-            style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(196,163,90,0.09)", border: `1px solid ${GOLD}25`, borderRadius: 10, padding: "8px 14px", textAlign: "left" }}>
-            <span style={{ fontSize: "0.9rem" }}>{item.icon}</span>
-            <span style={{ ...J, fontSize: "0.6rem", color: GOLD, letterSpacing: "0.08em", width: 52, flexShrink: 0 }}>{item.time}</span>
-            <span style={{ color: "rgba(255,255,255,0.88)", fontSize: "0.78rem", fontFamily: "'Cormorant Garamond', serif" }}>{item.label}</span>
-          </motion.div>
-        ))}
+      <div style={{ ...pill, width: "100%", maxWidth: 320 }}>
+        <p style={{ ...J, fontSize: "0.58rem", letterSpacing: "0.48em", color: GOLD, textTransform: "uppercase", marginBottom: 8 }}>{ar ? "اليوم" : "The Day"}</p>
+        <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.6rem,5vw,2.5rem)", fontWeight: 300, color: "white", marginBottom: 18, lineHeight: 1 }}>
+          {ar ? "برنامج الاحتفال" : "Wedding Timeline"}
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%" }}>
+          {tl.slice(0, 5).map((item, i) => (
+            <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.7 + i * 0.13 }}
+              style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(196,163,90,0.15)", border: `1px solid ${GOLD}35`, borderRadius: 10, padding: "8px 14px", textAlign: "left" }}>
+              <span style={{ fontSize: "0.9rem" }}>{item.icon}</span>
+              <span style={{ ...J, fontSize: "0.6rem", color: GOLD, letterSpacing: "0.08em", width: 52, flexShrink: 0 }}>{item.time}</span>
+              <span style={{ color: "rgba(255,255,255,0.92)", fontSize: "0.78rem", fontFamily: "'Cormorant Garamond', serif" }}>{item.label}</span>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </motion.div>
   )
@@ -255,16 +265,18 @@ function renderSectionOverlay(section, w, ar) {
   return (
     <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 pointer-events-none"
       initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 1.0 }}>
-      <p style={{ color: GOLD, fontSize: "1.3rem", marginBottom: 22 }}>✦ ✦ ✦</p>
-      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.1rem,3.5vw,1.5rem)", fontWeight: 300, color: "rgba(255,255,255,0.72)", lineHeight: 1.75, maxWidth: 300, marginBottom: 24 }}>
-        {ar ? "يسعدنا أن نشاركك أجمل لحظات حياتنا" : "We can't wait to celebrate with you"}
-      </p>
-      <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(2rem,7vw,3rem)", color: "white", textShadow: "0 2px 20px rgba(0,0,0,0.6)", marginBottom: 10 }}>
-        {ar ? `${w.groomAr} & ${w.brideAr}` : `${w.groom} & ${w.bride}`}
-      </p>
-      <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.65rem", letterSpacing: "0.38em", color: GOLD, textTransform: "uppercase" }}>
-        {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", { month: "long", day: "numeric", year: "numeric" })}
-      </p>
+      <div style={pill}>
+        <p style={{ color: GOLD, fontSize: "1.3rem", marginBottom: 22 }}>✦ ✦ ✦</p>
+        <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.1rem,3.5vw,1.5rem)", fontWeight: 300, color: "rgba(255,255,255,0.85)", lineHeight: 1.75, maxWidth: 300, marginBottom: 24 }}>
+          {ar ? "يسعدنا أن نشاركك أجمل لحظات حياتنا" : "We can't wait to celebrate with you"}
+        </p>
+        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(2rem,7vw,3rem)", color: "white", textShadow: "0 2px 12px rgba(0,0,0,0.9)", marginBottom: 10 }}>
+          {ar ? `${w.groomAr} & ${w.brideAr}` : `${w.groom} & ${w.bride}`}
+        </p>
+        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.65rem", letterSpacing: "0.38em", color: GOLD, textTransform: "uppercase" }}>
+          {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", { month: "long", day: "numeric", year: "numeric" })}
+        </p>
+      </div>
     </motion.div>
   )
 }
@@ -277,20 +289,40 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
   const [elapsed, setElapsed] = useState(0)
   const [duration, setDur]    = useState(0)
   const [sectionIdx, setSectionIdx] = useState(0)
+  const [startupCover, setStartupCover] = useState(true)
 
   const ytId     = getYouTubeId(videoUrl)
   const vimeoId  = getVimeoId(videoUrl)
   const isDirect = isDirectVideo(videoUrl)
   const hasVideo = !!(ytId || vimeoId || isDirect)
 
-  // For iframe videos, cycle content sections on a timer
+  // Detect mobile — YouTube needs mute=1 to autoplay on mobile
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  // Mute the video if admin checked muteVideo, OR if mobile + iframe (autoplay requirement)
+  const videoMuted = !!(w.muteVideo || (isMobile && (ytId || vimeoId)))
+
+  // Cycle content sections for ALL video types
   useEffect(() => {
-    if (!ytId && !vimeoId) return
+    if (!hasVideo) return
     const clipDur = (w.videoEnd != null && w.videoStart != null) ? (w.videoEnd - w.videoStart) : null
     const interval = clipDur ? Math.max(8000, Math.floor((clipDur / CONTENT_SECTIONS.length) * 1000)) : 20000
     const timer = setInterval(() => setSectionIdx(i => Math.min(i + 1, CONTENT_SECTIONS.length - 1)), interval)
     return () => clearInterval(timer)
-  }, [ytId, vimeoId])
+  }, [hasVideo])
+
+  // Startup cover: hide YouTube/Vimeo branding flash (title top-left, logo bottom-right)
+  useEffect(() => {
+    if (isDirect) { setStartupCover(false); return }
+    const t = setTimeout(() => setStartupCover(false), 3800)
+    return () => clearTimeout(t)
+  }, [isDirect])
+
+  // Direct video: seek to start, apply mute from admin setting
+  useEffect(() => {
+    if (!videoRef.current || !isDirect) return
+    if (w.videoStart != null) videoRef.current.currentTime = w.videoStart
+    videoRef.current.muted = !!(w.muteVideo)
+  }, [isDirect])
 
   const togglePlay = () => {
     if (!videoRef.current) return
@@ -308,10 +340,14 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
   const ytParts = [
     "autoplay=1", "rel=0", "controls=0", "modestbranding=1",
     "showinfo=0", "iv_load_policy=3", "disablekb=1", "fs=0", "playsinline=1",
+    videoMuted ? "mute=1" : null,
     w.videoStart != null ? `start=${Math.floor(w.videoStart)}` : null,
     w.videoEnd   != null ? `end=${Math.floor(w.videoEnd)}`   : null,
   ].filter(Boolean).join("&")
-  const vimeoParts = "autoplay=1&color=c4a35a&controls=0&title=0&byline=0&portrait=0&playsinline=1"
+  const vimeoParts = [
+    "autoplay=1", "color=c4a35a", "controls=0", "title=0", "byline=0", "portrait=0", "playsinline=1",
+    videoMuted ? "muted=1" : null,
+  ].filter(Boolean).join("&")
   const iframeSrc = ytId
     ? `https://www.youtube-nocookie.com/embed/${ytId}?${ytParts}`
     : `https://player.vimeo.com/video/${vimeoId}?${vimeoParts}`
@@ -325,8 +361,17 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
         <video ref={videoRef} autoPlay playsInline
           className="absolute inset-0 w-full h-full object-contain"
           style={{ background: DARK }}
+          onLoadedMetadata={e => {
+            if (w.videoStart != null) e.target.currentTime = w.videoStart
+            setDur(e.target.duration || 0)
+          }}
+          onTimeUpdate={e => {
+            const ct = e.target.currentTime
+            setElapsed(ct)
+            setDur(e.target.duration || 0)
+            if (w.videoEnd != null && ct >= w.videoEnd) onEnded()
+          }}
           onEnded={onEnded}
-          onTimeUpdate={e => { setElapsed(e.target.currentTime); setDur(e.target.duration || 0) }}
           onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)}>
           <source src={videoUrl} />
         </video>
@@ -340,14 +385,27 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
         />
       )}
 
-      {/* Transparent blocker — prevents clicking YouTube's UI */}
+      {/* Transparent blocker — prevents clicking YouTube/Vimeo UI */}
       {(ytId || vimeoId) && <div className="absolute inset-0 z-[5]" />}
+
+      {/* Startup cover — hides YouTube title & logo flash for first ~3.8s */}
+      <AnimatePresence>
+        {startupCover && (
+          <motion.div className="absolute inset-0 z-[9] flex items-center justify-center"
+            style={{ background: DARK }}
+            exit={{ opacity: 0 }} transition={{ duration: 1.0 }}>
+            <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.8 }}>
+              <span style={{ color: GOLD, fontSize: "1.6rem" }}>✦</span>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Cinematic vignette */}
       <div className="absolute inset-0 pointer-events-none z-[6]"
-        style={{ background: "linear-gradient(to bottom,rgba(0,0,0,0.55) 0%,transparent 20%,transparent 68%,rgba(0,0,0,0.72) 100%)" }} />
+        style={{ background: "linear-gradient(to bottom,rgba(0,0,0,0.62) 0%,transparent 22%,transparent 65%,rgba(0,0,0,0.80) 100%)" }} />
       <div className="absolute inset-0 pointer-events-none z-[6]"
-        style={{ background: "radial-gradient(ellipse at 50% 50%,transparent 44%,rgba(0,0,0,0.42) 100%)" }} />
+        style={{ background: "radial-gradient(ellipse at 50% 50%,transparent 38%,rgba(0,0,0,0.52) 100%)" }} />
 
       {/* Content section overlay — cycles every ~20 sec */}
       <AnimatePresence mode="wait">
@@ -682,7 +740,7 @@ export default function Invitation4({ override = null }) {
 
   const startMusic = () => { if (audioRef.current) { audioRef.current.play().catch(() => {}) } }
 
-  const openEnvelope = () => { setPhase("video"); startMusic() }
+  const openEnvelope = () => { setPhase("video"); if (W.muteVideo) startMusic() }
   const onVideoEnded = useCallback(() => setPhase("rsvp"), [])
   const onReplay = useCallback(() => setPhase("video"), [])
 

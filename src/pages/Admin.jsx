@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { collection, getDocs, orderBy, query, updateDoc, doc, deleteDoc, where } from "firebase/firestore"
-import { db } from "../firebase"
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
+import { db, storage } from "../firebase"
 import { getAuth, signOut } from "firebase/auth"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -89,10 +90,13 @@ function BuildInvitationModal({ order }) {
   const [saved, setSaved] = useState(false)
   const [photos, setPhotos] = useState([])
   const [uploading, setUploading] = useState(false)
+  const [videoUploading, setVideoUploading] = useState(false)
+  const [videoProgress, setVideoProgress] = useState(0)
   const [loading, setLoading] = useState(true)
   const [draftSaving, setDraftSaving] = useState(false)
   const [draftSaved,  setDraftSaved]  = useState(false)
   const fileInputRef = useRef(null)
+  const videoInputRef = useRef(null)
   const [extraData, setExtraData] = useState({
     groomAr: "", brideAr: "",
     messageEn: "Together with their families",
@@ -109,6 +113,9 @@ function BuildInvitationModal({ order }) {
     partyMapUrl: "",
     music: order.music || "",
     video: "",
+    videoStart: null,
+    videoEnd: null,
+    muteVideo: false,
     rsvpDeadline: "",
     registryWishMoneyAcc: "",
     registryLink1: "",
@@ -161,6 +168,9 @@ function BuildInvitationModal({ order }) {
             partyMapUrl: d.venues?.[1]?.map || "",
             music: d.music || "",
             video: d.video || "",
+            videoStart: d.videoStart ?? null,
+            videoEnd: d.videoEnd ?? null,
+            muteVideo: d.muteVideo ?? false,
             rsvpDeadline: d.rsvpDeadline || "",
             registryWishMoneyAcc: d.registry?.[0]?.acc || "",
             registryLink1: d.registry?.[0]?.link || "",
@@ -212,6 +222,23 @@ function BuildInvitationModal({ order }) {
     setUploading(false)
   }
 
+  const handleVideoUpload = (file) => {
+    if (!file) return
+    setVideoUploading(true)
+    setVideoProgress(0)
+    const storageRef = ref(storage, `videos/${order.id}/${Date.now()}_${file.name}`)
+    const task = uploadBytesResumable(storageRef, file)
+    task.on("state_changed",
+      (snap) => setVideoProgress(Math.round(snap.bytesTransferred / snap.totalBytes * 100)),
+      (err) => { alert("Video upload error: " + err.message); setVideoUploading(false) },
+      async () => {
+        const url = await getDownloadURL(task.snapshot.ref)
+        update("video", url)
+        setVideoUploading(false)
+      }
+    )
+  }
+
   const handleSaveDraft = async () => {
     if (!slug) return alert("Please enter an Invitation URL Slug first")
     setDraftSaving(true)
@@ -233,6 +260,9 @@ function BuildInvitationModal({ order }) {
         quoteRef: extraData.quoteRef,
         music: extraData.music,
         video: extraData.video || "",
+        videoStart: extraData.videoStart ?? null,
+        videoEnd: extraData.videoEnd ?? null,
+        muteVideo: extraData.muteVideo ?? false,
         rsvpDeadline: extraData.rsvpDeadline || "",
         parents: extraData.parentsEn ? extraData.parentsEn.split("\n") : [],
         parentsAr: extraData.parentsAr ? extraData.parentsAr.split("\n") : [],
@@ -288,6 +318,9 @@ function BuildInvitationModal({ order }) {
         quoteRef: extraData.quoteRef,
         music: extraData.music,
         video: extraData.video || "",
+        videoStart: extraData.videoStart ?? null,
+        videoEnd: extraData.videoEnd ?? null,
+        muteVideo: extraData.muteVideo ?? false,
         rsvpDeadline: extraData.rsvpDeadline || "",
         parents: extraData.parentsEn ? extraData.parentsEn.split("\n") : [],
         parentsAr: extraData.parentsAr ? extraData.parentsAr.split("\n") : [],
@@ -473,17 +506,43 @@ function BuildInvitationModal({ order }) {
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
 
-          {/* Video URL + Clip — for Cinematic (template 4) */}
+          {/* Video + Clip + Mute — for Cinematic Sand template */}
           {order.template === "sand" && (
             <>
               <div>
-                <label className="text-white/30 text-xs mb-1 block">🎬 Wedding Video URL <span className="text-white/20">(YouTube, Vimeo, or direct MP4)</span></label>
+                <label className="text-white/30 text-xs mb-1 block">🎬 Wedding Video URL <span className="text-white/20">(YouTube, Vimeo, or direct MP4 link)</span></label>
                 <input value={extraData.video || ""} onChange={e => update("video", e.target.value)}
                   placeholder="https://youtu.be/... or https://vimeo.com/... or https://example.com/video.mp4"
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
               </div>
+
+              {/* Video file upload */}
               <div>
-                <label className="text-white/30 text-xs mb-1 block">✂️ Video Clip (optional) <span className="text-white/20">— enter start &amp; end in seconds to show only a highlight (e.g. start 30, end 50 = plays seconds 30–50)</span></label>
+                <label className="text-white/30 text-xs mb-2 block">📁 Or Upload Video File <span className="text-white/20">(stored securely — replaces URL above)</span></label>
+                <input ref={videoInputRef} type="file" accept="video/*" className="hidden"
+                  onChange={e => { if (e.target.files?.[0]) handleVideoUpload(e.target.files[0]) }} />
+                <div className="flex items-center gap-3">
+                  <button onClick={() => videoInputRef.current?.click()} disabled={videoUploading}
+                    className="px-4 py-2 rounded-lg text-sm transition disabled:opacity-50"
+                    style={{ background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)", color: "#c9a96e" }}>
+                    {videoUploading ? `Uploading… ${videoProgress}%` : "Choose Video"}
+                  </button>
+                  {extraData.video && !videoUploading && (
+                    <span className="text-xs text-white/30 truncate max-w-[200px]">
+                      {extraData.video.startsWith("https://firebasestorage") ? "✓ Video uploaded" : extraData.video.slice(0, 40) + (extraData.video.length > 40 ? "…" : "")}
+                    </span>
+                  )}
+                </div>
+                {videoUploading && (
+                  <div className="mt-2 h-1 rounded-full bg-white/10">
+                    <div className="h-full rounded-full transition-all" style={{ width: `${videoProgress}%`, background: "#c9a96e" }} />
+                  </div>
+                )}
+              </div>
+
+              {/* Clip start/end */}
+              <div>
+                <label className="text-white/30 text-xs mb-1 block">✂️ Video Clip (optional) <span className="text-white/20">— start &amp; end in seconds (e.g. 30 → 90 plays only that segment)</span></label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-white/20 text-xs mb-1 block">Start (seconds)</label>
@@ -494,11 +553,21 @@ function BuildInvitationModal({ order }) {
                   <div>
                     <label className="text-white/20 text-xs mb-1 block">End (seconds)</label>
                     <input type="number" min="0" value={extraData.videoEnd ?? ""} onChange={e => update("videoEnd", e.target.value === "" ? null : Number(e.target.value))}
-                      placeholder="e.g. 50"
+                      placeholder="e.g. 90"
                       className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
                   </div>
                 </div>
               </div>
+
+              {/* Mute video checkbox */}
+              <label className="flex items-center gap-3 cursor-pointer select-none py-1">
+                <input type="checkbox" checked={extraData.muteVideo ?? false} onChange={e => update("muteVideo", e.target.checked)}
+                  className="w-4 h-4 rounded accent-[#c9a96e]" />
+                <div>
+                  <p className="text-white/60 text-sm">🔇 Mute video &amp; play background music</p>
+                  <p className="text-white/25 text-xs mt-0.5">Check this if the couple wants their chosen music instead of the original video audio</p>
+                </div>
+              </label>
             </>
           )}
 
