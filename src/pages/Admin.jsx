@@ -120,11 +120,14 @@ function BuildInvitationModal({ order }) {
     registryLink1: "",
     registryLink2: "",
     registryIban: "",
-    tl0: "5:00 PM",
-    tl1: "7:00 PM",
-    tl2: "8:30 PM",
-    tl3: "10:00 PM",
-    tl4: "11:00 PM",
+    tl0: "5:00 PM",    tl0loc: "",
+    tl1: "7:00 PM",    tl1loc: "",
+    tl2: "8:30 PM",    tl2loc: "",
+    tl3: "10:00 PM",   tl3loc: "",
+    tl4: "11:00 PM",   tl4loc: "",
+    dressCode: "",
+    transport: "",
+    accommodation: "",
   })
 
   const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
@@ -175,11 +178,14 @@ function BuildInvitationModal({ order }) {
             registryLink1: d.registry?.[0]?.link || "",
             registryLink2: d.registry?.[1]?.link || "",
             registryIban: d.registry?.[2]?.desc?.replace("iban: ", "") || "",
-            tl0: d.timeline?.[0]?.time || "5:00 PM",
-            tl1: d.timeline?.[1]?.time || "7:00 PM",
-            tl2: d.timeline?.[2]?.time || "8:30 PM",
-            tl3: d.timeline?.[3]?.time || "10:00 PM",
-            tl4: d.timeline?.[4]?.time || "11:00 PM",
+            tl0: d.timeline?.[0]?.time || "5:00 PM",    tl0loc: d.timeline?.[0]?.location || "",
+            tl1: d.timeline?.[1]?.time || "7:00 PM",    tl1loc: d.timeline?.[1]?.location || "",
+            tl2: d.timeline?.[2]?.time || "8:30 PM",    tl2loc: d.timeline?.[2]?.location || "",
+            tl3: d.timeline?.[3]?.time || "10:00 PM",   tl3loc: d.timeline?.[3]?.location || "",
+            tl4: d.timeline?.[4]?.time || "11:00 PM",   tl4loc: d.timeline?.[4]?.location || "",
+            dressCode: d.dressCode || "",
+            transport: d.transport || "",
+            accommodation: d.accommodation || "",
           })
           if (d.photos?.length) setPhotos(d.photos)
           setSaved(true)
@@ -289,12 +295,15 @@ function BuildInvitationModal({ order }) {
           ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", desc: `iban: ${extraData.registryIban}`, descAr: `iban: ${extraData.registryIban}`, link: null, color: "#c9a96e" }] : []),
         ],
         timeline: [
-          { time: extraData.tl0, label: "Ceremony",     icon: "💒", desc: "Join us as we say our vows" },
-          { time: extraData.tl1, label: "Cocktail Hour",icon: "🥂", desc: "Celebrate with drinks & canapés" },
-          { time: extraData.tl2, label: "Dinner",       icon: "🍽️", desc: "A feast prepared with love" },
-          { time: extraData.tl3, label: "First Dance",  icon: "💃", desc: "Watch us dance for the first time" },
-          { time: extraData.tl4, label: "Party",        icon: "🎉", desc: "Dance the night away with us" },
+          { time: extraData.tl0, label: "Ceremony",     labelAr: "مراسم الزواج",   location: extraData.tl0loc },
+          { time: extraData.tl1, label: "Cocktail Hour",labelAr: "ساعة الكوكتيل", location: extraData.tl1loc },
+          { time: extraData.tl2, label: "Photos",       labelAr: "جلسة التصوير",   location: extraData.tl2loc },
+          { time: extraData.tl3, label: "Dinner",       labelAr: "العشاء",         location: extraData.tl3loc },
+          { time: extraData.tl4, label: "Party",        labelAr: "الحفلة",         location: extraData.tl4loc },
         ],
+        dressCode: extraData.dressCode || "",
+        transport: extraData.transport || "",
+        accommodation: extraData.accommodation || "",
         orderId: order.id,
         package: order.package,
         _draft: true,
@@ -354,12 +363,15 @@ function BuildInvitationModal({ order }) {
           ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", desc: `iban: ${extraData.registryIban}`, descAr: `iban: ${extraData.registryIban}`, link: null, color: "#c9a96e" }] : []),
         ],
         timeline: [
-          { time: extraData.tl0, label: "Ceremony", icon: "💒", desc: "Join us as we say our vows" },
-          { time: extraData.tl1, label: "Cocktail Hour", icon: "🥂", desc: "Celebrate with drinks & canapés" },
-          { time: extraData.tl2, label: "Dinner", icon: "🍽️", desc: "A feast prepared with love" },
-          { time: extraData.tl3, label: "First Dance", icon: "💃", desc: "Watch us dance for the first time" },
-          { time: extraData.tl4, label: "Party", icon: "🎉", desc: "Dance the night away with us" },
+          { time: extraData.tl0, label: "Ceremony",     labelAr: "مراسم الزواج",   location: extraData.tl0loc },
+          { time: extraData.tl1, label: "Cocktail Hour",labelAr: "ساعة الكوكتيل", location: extraData.tl1loc },
+          { time: extraData.tl2, label: "Photos",       labelAr: "جلسة التصوير",   location: extraData.tl2loc },
+          { time: extraData.tl3, label: "Dinner",       labelAr: "العشاء",         location: extraData.tl3loc },
+          { time: extraData.tl4, label: "Party",        labelAr: "الحفلة",         location: extraData.tl4loc },
         ],
+        dressCode: extraData.dressCode || "",
+        transport: extraData.transport || "",
+        accommodation: extraData.accommodation || "",
         slug,
         createdAt: new Date(),
         orderId: order.id,
@@ -658,15 +670,42 @@ function BuildInvitationModal({ order }) {
 
           {/* Wedding Timeline */}
           <p className="text-white/20 text-xs uppercase tracking-widest pt-1">🕐 Wedding Day Timeline</p>
-          <div className="grid grid-cols-2 gap-3">
-            {[["Ceremony", "tl0"], ["Cocktail Hour", "tl1"], ["Dinner", "tl2"], ["First Dance", "tl3"], ["Party", "tl4"]].map(([label, key]) => (
-              <div key={key}>
-                <label className="text-white/30 text-xs mb-1 block">{label}</label>
+          {[["Ceremony", "tl0"], ["Cocktail Hour", "tl1"], ["Photos", "tl2"], ["Dinner", "tl3"], ["Party", "tl4"]].map(([label, key]) => (
+            <div key={key} className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-white/30 text-xs mb-1 block">{label} — Time</label>
                 <input value={extraData[key]} onChange={e => update(key, e.target.value)}
                   placeholder="6:00 PM"
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
               </div>
-            ))}
+              <div>
+                <label className="text-white/30 text-xs mb-1 block">{label} — Location</label>
+                <input value={extraData[key + "loc"]} onChange={e => update(key + "loc", e.target.value)}
+                  placeholder="Venue name"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              </div>
+            </div>
+          ))}
+
+          {/* Details slide fields */}
+          <p className="text-white/20 text-xs uppercase tracking-widest pt-1">📋 Details Slide</p>
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Dress Code</label>
+            <input value={extraData.dressCode} onChange={e => update("dressCode", e.target.value)}
+              placeholder="Black Tie"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Transportation</label>
+            <input value={extraData.transport} onChange={e => update("transport", e.target.value)}
+              placeholder="Shuttle from Jounieh at 6:00 PM"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Accommodation</label>
+            <input value={extraData.accommodation} onChange={e => update("accommodation", e.target.value)}
+              placeholder="Kempinski Hotel — special rates"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
 
           {/* Photo Upload */}
