@@ -48,6 +48,8 @@ const isDirectVideo = url => /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(url || "")
 function EnvelopeScreen({ w, guestName, onOpen, ar, setLang, opening }) {
   const [tapped, setTapped] = useState(false)
   const tap = () => { if (tapped) return; setTapped(true); onOpen() }
+
+  // When `opening` becomes true the envelope animates open and reveals the video behind it
   const isOpen = opening || tapped
 
   return (
@@ -55,264 +57,122 @@ function EnvelopeScreen({ w, guestName, onOpen, ar, setLang, opening }) {
       className="absolute inset-0 cursor-pointer select-none overflow-hidden"
       dir={ar ? "rtl" : "ltr"}
       onClick={tap}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1.0 }}
-      style={{ background: "#faf5ee" }}   // cream background stays
-    >
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.0 }}>
 
-      {/* ── CREAM BACKGROUND — fades to reveal video underneath ── */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
+      {/* Cream background — fades revealing the video */}
+      <motion.div className="absolute inset-0 pointer-events-none"
         style={{ background: "#faf5ee" }}
         animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: 1.2, duration: 0.9 }}
-      />
+        transition={{ delay: 0.3, duration: 1.0 }} />
 
-      {/* ══════════════════════════════════════════════════════════
-          ENVELOPE BODY  (dark charcoal / near-black)
-          The four triangular panels that make up the envelope back.
-          They stay in place; only the top flap animates.
-      ══════════════════════════════════════════════════════════ */}
+      {/* Subtle grid paper texture */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ opacity: 0.035, backgroundImage: "repeating-linear-gradient(0deg,#8c6b3a 0,#8c6b3a 1px,transparent 0,transparent 28px),repeating-linear-gradient(90deg,#8c6b3a 0,#8c6b3a 1px,transparent 0,transparent 28px)" }} />
 
-      {/* Left panel */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          clipPath: "polygon(0% 0%, 50% 50%, 0% 100%)",
-          background: "linear-gradient(135deg, #1a1814 0%, #111009 100%)",
-          zIndex: 2,
-        }}
+      {/* Left flap — fades quickly */}
+      <motion.div className="absolute inset-0 pointer-events-none"
+        style={{ clipPath: "polygon(0% 0%, 0% 100%, 50% 50%)", background: "#ede5d5", zIndex: 1 }}
         animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 1.0 : 0, duration: 0.5 }}
-      />
-
-      {/* Right panel */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          clipPath: "polygon(100% 0%, 50% 50%, 100% 100%)",
-          background: "linear-gradient(225deg, #1a1814 0%, #111009 100%)",
-          zIndex: 2,
-        }}
+        transition={{ delay: isOpen ? 0.15 : 0, duration: 0.65 }} />
+      {/* Right flap — fades quickly */}
+      <motion.div className="absolute inset-0 pointer-events-none"
+        style={{ clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)", background: "#ede5d5", zIndex: 1 }}
         animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 1.0 : 0, duration: 0.5 }}
-      />
-
-      {/* Bottom panel */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          clipPath: "polygon(0% 100%, 50% 50%, 100% 100%)",
-          background: "linear-gradient(0deg, #0e0d0b 0%, #161410 100%)",
-          zIndex: 2,
-        }}
+        transition={{ delay: isOpen ? 0.15 : 0, duration: 0.65 }} />
+      {/* Bottom flap — stays as V-frame, fades last */}
+      <motion.div className="absolute inset-0 pointer-events-none"
+        style={{ clipPath: "polygon(0% 100%, 100% 100%, 50% 50%)", background: "#f2e8d5", zIndex: 1 }}
         animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 1.0 : 0, duration: 0.5 }}
-      />
+        transition={{ delay: isOpen ? 1.1 : 0, duration: 0.7 }} />
 
-      {/* ══════════════════════════════════════════════════════════
-          TOP FLAP  — 3-D fold-open on tap (rotates around top edge)
-          This is the hero animation: the flap peels BACK, revealing
-          the video/photo that is rendering beneath the envelope.
-      ══════════════════════════════════════════════════════════ */}
-      <div
-        className="absolute inset-0 overflow-visible"
-        style={{ perspective: 1200, zIndex: 5 }}
-      >
+      {/* Fold lines */}
+      <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 2 }}
+        viewBox="0 0 100 100" preserveAspectRatio="none"
+        animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.5, delay: isOpen ? 1.0 : 0 }}>
+        <line x1="0"   y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.35" strokeWidth="0.2" />
+        <line x1="100" y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.35" strokeWidth="0.2" />
+        <line x1="0"   y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.25" strokeWidth="0.2" />
+        <line x1="100" y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.25" strokeWidth="0.2" />
+      </motion.svg>
+
+      {/* Top flap — 3D fold open on tap */}
+      <div className="absolute inset-0 overflow-hidden" style={{ perspective: 900, zIndex: 3 }}>
         <motion.div
           className="absolute inset-0"
           style={{
             clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)",
-            background: "linear-gradient(170deg, #232018 0%, #191611 55%, #131109 100%)",
+            background: "linear-gradient(175deg, #ffffff 0%, #f5ede0 55%, #ede0cc 100%)",
             transformOrigin: "50% 0%",
             transformStyle: "preserve-3d",
             backfaceVisibility: "hidden",
           }}
-          animate={{ rotateX: isOpen ? -175 : 0 }}
-          transition={{ duration: 1.3, ease: [0.4, 0, 0.2, 1] }}
-        />
-
-        {/* Inner face of the top flap (slightly lighter — gives depth) */}
-        <motion.div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)",
-            background: "linear-gradient(170deg, #2e2a23 0%, #1e1b16 100%)",
-            transformOrigin: "50% 0%",
-            transformStyle: "preserve-3d",
-            backfaceVisibility: "visible",
-            transform: "rotateX(180deg)",
-          }}
-          animate={{ rotateX: isOpen ? -175 : 0 }}
-          transition={{ duration: 1.3, ease: [0.4, 0, 0.2, 1] }}
+          animate={{ rotateX: isOpen ? -172 : 0 }}
+          transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1] }}
         />
       </div>
 
-      {/* ══════════════════════════════════════════════════════════
-          DIAGONAL FOLD LINES  (subtle gold lines like a real envelope)
-      ══════════════════════════════════════════════════════════ */}
-      <motion.svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{ zIndex: 3 }}
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        animate={{ opacity: isOpen ? 0 : 0.6 }}
-        transition={{ duration: 0.4, delay: isOpen ? 0.8 : 0 }}
-      >
-        {/* top-left to center */}
-        <line x1="0"   y1="0"   x2="50" y2="50" stroke={GOLD} strokeOpacity="0.25" strokeWidth="0.18" />
-        {/* top-right to center */}
-        <line x1="100" y1="0"   x2="50" y2="50" stroke={GOLD} strokeOpacity="0.25" strokeWidth="0.18" />
-        {/* bottom-left to center */}
-        <line x1="0"   y1="100" x2="50" y2="50" stroke={GOLD} strokeOpacity="0.18" strokeWidth="0.18" />
-        {/* bottom-right to center */}
-        <line x1="100" y1="100" x2="50" y2="50" stroke={GOLD} strokeOpacity="0.18" strokeWidth="0.18" />
-      </motion.svg>
-
-      {/* ══════════════════════════════════════════════════════════
-          WAX SEAL  — gold interlocked rings, sits at the flap center
-      ══════════════════════════════════════════════════════════ */}
+      {/* Gold wax seal */}
       <motion.div
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
         style={{ zIndex: 10 }}
-        animate={{
-          scale:   isOpen ? 0.75 : 1,
-          opacity: isOpen ? 0    : 1,
-          y:       isOpen ? -12  : 0,
-        }}
-        transition={{ duration: 0.55, delay: isOpen ? 0.05 : 0 }}
-      >
-        <div
-          className="rounded-full flex items-center justify-center"
+        animate={{ scale: isOpen ? 0.7 : 1, opacity: isOpen ? 0 : 1 }}
+        transition={{ duration: 0.5, delay: isOpen ? 0.1 : 0 }}>
+        <div className="rounded-full flex items-center justify-center"
           style={{
-            width: 96, height: 96,
-            background: "radial-gradient(circle at 36% 32%, #d4ab4a, #b8903a 55%, #7a5818)",
-            boxShadow: "0 6px 36px rgba(140,107,58,0.55), inset 0 1px 4px rgba(255,255,255,0.25)",
-          }}
-        >
-          {/* Interlocked rings icon — matches screenshots */}
-          <svg viewBox="0 0 60 60" width="52" height="52" fill="none">
-            {/* left ring */}
-            <circle cx="21" cy="30" r="12" stroke="rgba(255,255,255,0.72)" strokeWidth="2.4" fill="none"/>
-            {/* right ring */}
-            <circle cx="39" cy="30" r="12" stroke="rgba(255,255,255,0.72)" strokeWidth="2.4" fill="none"/>
-            {/* tiny diamond on top */}
-            <path d="M30 10 L33 6 L36 10 L33 14 Z" fill="rgba(255,255,255,0.65)" />
-            {/* highlight glint */}
-            <circle cx="15" cy="24" r="2.5" fill="rgba(255,255,255,0.25)" />
+            width: 88, height: 88,
+            background: "radial-gradient(circle at 38% 35%, #d4ab4a, #b8903a 55%, #7a5818)",
+            boxShadow: "0 6px 32px rgba(140,107,58,0.5), inset 0 1px 3px rgba(255,255,255,0.22)"
+          }}>
+          <svg viewBox="0 0 60 60" width="48" height="48" fill="none">
+            <circle cx="22" cy="30" r="11" stroke="rgba(255,255,255,0.7)" strokeWidth="2.2" fill="none"/>
+            <circle cx="38" cy="30" r="11" stroke="rgba(255,255,255,0.7)" strokeWidth="2.2" fill="none"/>
+            <path d="M30 18 L33 12 L37 15 L30 12 L23 15 L27 12 Z" fill="rgba(255,255,255,0.7)" />
           </svg>
         </div>
       </motion.div>
 
-      {/* ══════════════════════════════════════════════════════════
-          COUPLE NAMES + DATE  (appear below seal, fade on open)
-      ══════════════════════════════════════════════════════════ */}
+      {/* Couple names + date */}
       <motion.div
         className="absolute left-0 right-0 flex flex-col items-center text-center px-6 pointer-events-none"
         style={{ top: "60%", zIndex: 10 }}
         initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? -8 : 0 }}
-        transition={{ duration: isOpen ? 0.25 : 1.3, delay: isOpen ? 0 : 0.8 }}
-      >
-        <h1 style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: "clamp(2rem,7vw,3rem)",
-          fontWeight: 300,
-          color: "#2c1f10",
-          lineHeight: 1.1,
-        }}>
+        animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? -6 : 0 }}
+        transition={{ duration: isOpen ? 0.3 : 1.3, delay: isOpen ? 0 : 0.7 }}>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2rem,7vw,3rem)", fontWeight: 300, color: "#2c1f10", lineHeight: 1.1 }}>
           {ar ? w.groomAr : w.groom}
         </h1>
-        <p style={{
-          fontFamily: "'Great Vibes', cursive",
-          fontSize: "1.9rem",
-          color: GOLD,
-          margin: "2px 0",
-        }}>
+        <p style={{ fontFamily: "'Great Vibes', cursive", fontSize: "1.9rem", color: GOLD, margin: "2px 0" }}>
           {ar ? "و" : "and"}
         </p>
-        <h1 style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: "clamp(2rem,7vw,3rem)",
-          fontWeight: 300,
-          color: "#2c1f10",
-          lineHeight: 1.1,
-        }}>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2rem,7vw,3rem)", fontWeight: 300, color: "#2c1f10", lineHeight: 1.1 }}>
           {ar ? w.brideAr : w.bride}
         </h1>
-        <p style={{
-          fontFamily: "'Jost', sans-serif",
-          fontSize: "0.6rem",
-          letterSpacing: "0.42em",
-          color: GOLD,
-          marginTop: 10,
-          textTransform: "uppercase",
-        }}>
-          {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", {
-            month: "long", day: "numeric", year: "numeric",
-          })}
+        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.6rem", letterSpacing: "0.42em", color: GOLD, marginTop: 10, textTransform: "uppercase" }}>
+          {new Date(w.date).toLocaleDateString(ar ? "ar-EG" : "en-US", { month: "long", day: "numeric", year: "numeric" })}
         </p>
         {guestName && (
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: "0.85rem",
-            color: "#7a5c3a88",
-            fontStyle: "italic",
-            marginTop: 8,
-          }}>
-            {ar ? "عزيزنا" : "Dear"}{" "}
-            <span style={{ color: GOLD }}>{guestName}</span>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "0.85rem", color: "#7a5c3a88", fontStyle: "italic", marginTop: 8 }}>
+            {ar ? "عزيزنا" : "Dear"} <span style={{ color: GOLD }}>{guestName}</span>
           </p>
         )}
       </motion.div>
 
-      {/* ══════════════════════════════════════════════════════════
-          TAP TO OPEN  hint
-      ══════════════════════════════════════════════════════════ */}
+      {/* Tap to open hint */}
       <motion.div
         className="absolute bottom-10 left-0 right-0 flex flex-col items-center pointer-events-none"
         style={{ zIndex: 10 }}
-        animate={
-          isOpen
-            ? { opacity: 0 }
-            : { opacity: [0.3, 1, 0.3] }
-        }
-        transition={
-          isOpen
-            ? { duration: 0.2 }
-            : { repeat: Infinity, duration: 2.5 }
-        }
-      >
-        <p style={{
-          fontFamily: "'Jost', sans-serif",
-          fontSize: "0.56rem",
-          letterSpacing: "0.48em",
-          color: "#2c1f1066",
-          textTransform: "uppercase",
-        }}>
+        animate={isOpen ? { opacity: 0 } : { opacity: [0.3, 1, 0.3] }}
+        transition={isOpen ? { duration: 0.25 } : { repeat: Infinity, duration: 2.5 }}>
+        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.56rem", letterSpacing: "0.48em", color: "#2c1f1055", textTransform: "uppercase" }}>
           {ar ? "انقر لفتح" : "Tap to Open"}
         </p>
-        <div
-          className="w-px h-7 mt-2"
-          style={{ background: `linear-gradient(to bottom, ${GOLD}70, transparent)` }}
-        />
+        <div className="w-px h-7 mt-2" style={{ background: `linear-gradient(to bottom, ${GOLD}70, transparent)` }} />
       </motion.div>
 
-      {/* ══════════════════════════════════════════════════════════
-          LANGUAGE TOGGLE
-      ══════════════════════════════════════════════════════════ */}
-      <button
-        onClick={e => { e.stopPropagation(); setLang(ar ? "en" : "ar") }}
+      {/* Language toggle */}
+      <button onClick={e => { e.stopPropagation(); setLang(ar ? "en" : "ar") }}
         className="absolute top-5 right-5 z-30 h-9 px-4 rounded-full text-xs transition"
-        style={{
-          background: `${GOLD}18`,
-          border: `1px solid ${GOLD}55`,
-          color: GOLD,
-          fontFamily: "'Jost', sans-serif",
-          letterSpacing: "0.1em",
-        }}
-      >
+        style={{ background: `${GOLD}18`, border: `1px solid ${GOLD}55`, color: GOLD, fontFamily: "'Jost', sans-serif", letterSpacing: "0.1em" }}>
         {ar ? "EN" : "عربي"}
       </button>
     </motion.div>
