@@ -67,47 +67,39 @@ function EnvelopeScreen({ guestName, onOpen, ar, setLang, opening }) {
         animate={{ opacity: isOpen ? 0 : 1 }}
         transition={{ delay: isOpen ? 0.3 : 0, duration: 1.0 }} />
 
-      {/* Left flap */}
+      {/* Left flap — slides left on open */}
       <motion.div className="absolute inset-0 pointer-events-none"
         style={{ clipPath: "polygon(0% 0%, 0% 100%, 50% 50%)", background: "#222019", zIndex: 1 }}
-        animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.9 : 0, duration: 0.65 }} />
-      {/* Right flap */}
+        animate={{ x: isOpen ? "-100%" : "0%" }}
+        transition={{ delay: isOpen ? 0.05 : 0, duration: 0.75, ease: [0.4, 0, 0.2, 1] }} />
+
+      {/* Right flap — slides right on open */}
       <motion.div className="absolute inset-0 pointer-events-none"
         style={{ clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)", background: "#222019", zIndex: 1 }}
+        animate={{ x: isOpen ? "100%" : "0%" }}
+        transition={{ delay: isOpen ? 0.05 : 0, duration: 0.75, ease: [0.4, 0, 0.2, 1] }} />
+
+      {/* Top flap — fades */}
+      <motion.div className="absolute inset-0 pointer-events-none"
+        style={{ clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)", background: "#2a2720", zIndex: 1 }}
         animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.9 : 0, duration: 0.65 }} />
-      {/* Bottom flap */}
+        transition={{ delay: isOpen ? 0.4 : 0, duration: 0.5 }} />
+
+      {/* Bottom flap — fades */}
       <motion.div className="absolute inset-0 pointer-events-none"
         style={{ clipPath: "polygon(0% 100%, 100% 100%, 50% 50%)", background: "#1e1c19", zIndex: 1 }}
         animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 1.2 : 0, duration: 0.7 }} />
+        transition={{ delay: isOpen ? 0.4 : 0, duration: 0.5 }} />
 
-      {/* Fold lines */}
+      {/* Fold lines — fade as flaps leave */}
       <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 2 }}
         viewBox="0 0 100 100" preserveAspectRatio="none"
-        animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.5, delay: isOpen ? 0.8 : 0 }}>
+        animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.4, delay: isOpen ? 0.05 : 0 }}>
         <line x1="0"   y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.25" strokeWidth="0.2" />
         <line x1="100" y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.25" strokeWidth="0.2" />
         <line x1="0"   y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.18" strokeWidth="0.2" />
         <line x1="100" y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.18" strokeWidth="0.2" />
       </motion.svg>
-
-      {/* Top flap — 3D fold open on tap */}
-      <div className="absolute inset-0 overflow-hidden" style={{ perspective: 900, zIndex: 3 }}>
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)",
-            background: "linear-gradient(175deg, #2a2720 0%, #232118 55%, #1e1c17 100%)",
-            transformOrigin: "50% 0%",
-            transformStyle: "preserve-3d",
-            backfaceVisibility: "hidden",
-          }}
-          animate={{ rotateX: isOpen ? -172 : 0 }}
-          transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1] }}
-        />
-      </div>
 
       {/* Gold wax seal */}
       <motion.div
