@@ -473,14 +473,33 @@ function BuildInvitationModal({ order }) {
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
 
-          {/* Video URL — for Cinematic (template 4) */}
+          {/* Video URL + Clip — for Cinematic (template 4) */}
           {order.template === "sand" && (
-            <div>
-              <label className="text-white/30 text-xs mb-1 block">🎬 Wedding Video URL <span className="text-white/20">(YouTube, Vimeo, or direct MP4 — template 4 only)</span></label>
-              <input value={extraData.video || ""} onChange={e => update("video", e.target.value)}
-                placeholder="https://youtu.be/... or https://vimeo.com/... or https://example.com/video.mp4"
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
-            </div>
+            <>
+              <div>
+                <label className="text-white/30 text-xs mb-1 block">🎬 Wedding Video URL <span className="text-white/20">(YouTube, Vimeo, or direct MP4)</span></label>
+                <input value={extraData.video || ""} onChange={e => update("video", e.target.value)}
+                  placeholder="https://youtu.be/... or https://vimeo.com/... or https://example.com/video.mp4"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              </div>
+              <div>
+                <label className="text-white/30 text-xs mb-1 block">✂️ Video Clip (optional) <span className="text-white/20">— enter start &amp; end in seconds to show only a highlight (e.g. start 30, end 50 = plays seconds 30–50)</span></label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-white/20 text-xs mb-1 block">Start (seconds)</label>
+                    <input type="number" min="0" value={extraData.videoStart ?? ""} onChange={e => update("videoStart", e.target.value === "" ? null : Number(e.target.value))}
+                      placeholder="e.g. 30"
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                  </div>
+                  <div>
+                    <label className="text-white/20 text-xs mb-1 block">End (seconds)</label>
+                    <input type="number" min="0" value={extraData.videoEnd ?? ""} onChange={e => update("videoEnd", e.target.value === "" ? null : Number(e.target.value))}
+                      placeholder="e.g. 50"
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                  </div>
+                </div>
+              </div>
+            </>
           )}
 
           {/* Venue details */}
