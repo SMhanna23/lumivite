@@ -59,35 +59,31 @@ function EnvelopeScreen({ w, guestName, onOpen, ar, setLang, opening }) {
       onClick={tap}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.0 }}>
 
-      {/* Cream background — fades away revealing the video behind */}
+      {/* Cream background — fades revealing the video */}
       <motion.div className="absolute inset-0 pointer-events-none"
         style={{ background: "#faf5ee" }}
         animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: 0.5, duration: 1.1 }} />
+        transition={{ delay: 0.3, duration: 1.0 }} />
 
       {/* Subtle grid paper texture */}
-      <motion.div className="absolute inset-0 pointer-events-none opacity-[0.035]"
-        style={{ backgroundImage: "repeating-linear-gradient(0deg,#8c6b3a 0,#8c6b3a 1px,transparent 0,transparent 28px),repeating-linear-gradient(90deg,#8c6b3a 0,#8c6b3a 1px,transparent 0,transparent 28px)" }}
-        animate={{ opacity: isOpen ? 0 : 0.035 }} transition={{ duration: 0.4 }} />
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ opacity: 0.035, backgroundImage: "repeating-linear-gradient(0deg,#8c6b3a 0,#8c6b3a 1px,transparent 0,transparent 28px),repeating-linear-gradient(90deg,#8c6b3a 0,#8c6b3a 1px,transparent 0,transparent 28px)" }} />
 
-      {/* Bottom flap — becomes dark silhouette frame then fades */}
-      <motion.div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}
-        animate={{ background: isOpen ? "#1a1008" : "#f2e8d5", opacity: isOpen ? [1, 1, 0] : 1 }}
-        transition={{ duration: isOpen ? 1.8 : 0, delay: isOpen ? 0.3 : 0, times: isOpen ? [0, 0.6, 1] : undefined }}
-        initial={{ clipPath: "polygon(0% 100%, 100% 100%, 50% 50%)", background: "#f2e8d5" }}
-      />
-      {/* Left flap */}
-      <motion.div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}
-        animate={{ background: isOpen ? "#14100a" : "#ede5d5", opacity: isOpen ? [1, 1, 0] : 1 }}
-        transition={{ duration: isOpen ? 1.8 : 0, delay: isOpen ? 0.3 : 0, times: isOpen ? [0, 0.6, 1] : undefined }}
-        initial={{ clipPath: "polygon(0% 0%, 0% 100%, 50% 50%)", background: "#ede5d5" }}
-      />
-      {/* Right flap */}
-      <motion.div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}
-        animate={{ background: isOpen ? "#14100a" : "#ede5d5", opacity: isOpen ? [1, 1, 0] : 1 }}
-        transition={{ duration: isOpen ? 1.8 : 0, delay: isOpen ? 0.3 : 0, times: isOpen ? [0, 0.6, 1] : undefined }}
-        initial={{ clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)", background: "#ede5d5" }}
-      />
+      {/* Left flap — fades quickly */}
+      <motion.div className="absolute inset-0 pointer-events-none"
+        style={{ clipPath: "polygon(0% 0%, 0% 100%, 50% 50%)", background: "#ede5d5", zIndex: 1 }}
+        animate={{ opacity: isOpen ? 0 : 1 }}
+        transition={{ delay: isOpen ? 0.15 : 0, duration: 0.65 }} />
+      {/* Right flap — fades quickly */}
+      <motion.div className="absolute inset-0 pointer-events-none"
+        style={{ clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)", background: "#ede5d5", zIndex: 1 }}
+        animate={{ opacity: isOpen ? 0 : 1 }}
+        transition={{ delay: isOpen ? 0.15 : 0, duration: 0.65 }} />
+      {/* Bottom flap — stays as V-frame, fades last */}
+      <motion.div className="absolute inset-0 pointer-events-none"
+        style={{ clipPath: "polygon(0% 100%, 100% 100%, 50% 50%)", background: "#f2e8d5", zIndex: 1 }}
+        animate={{ opacity: isOpen ? 0 : 1 }}
+        transition={{ delay: isOpen ? 1.1 : 0, duration: 0.7 }} />
 
       {/* Fold lines */}
       <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 2 }}
