@@ -63,42 +63,57 @@ function EnvelopeScreen({ guestName, onOpen, ar, setLang, opening }) {
 
       {/* Dark background — fades revealing the video */}
       <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ background: "#1c1a17" }}
+        style={{ background: "#161411" }}
         animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.3 : 0, duration: 1.0 }} />
+        transition={{ delay: isOpen ? 0.5 : 0, duration: 1.3 }} />
+
+      {/* Paper texture overlay */}
+      <motion.div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0 }}
+        animate={{ opacity: isOpen ? 0 : 1 }}
+        transition={{ delay: isOpen ? 0.05 : 0, duration: 0.5 }}>
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <filter id="paper">
+            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+            <feColorMatrix type="saturate" values="0"/>
+            <feBlend in="SourceGraphic" mode="overlay" result="blend"/>
+            <feComposite in="blend" in2="SourceGraphic" operator="in"/>
+          </filter>
+          <rect width="100%" height="100%" filter="url(#paper)" opacity="0.07"/>
+        </svg>
+      </motion.div>
 
       {/* Left flap — slides left on open */}
       <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ clipPath: "polygon(0% 0%, 0% 100%, 50% 50%)", background: "#222019", zIndex: 1 }}
+        style={{ clipPath: "polygon(0% 0%, 0% 100%, 50% 50%)", background: "#201e1b", zIndex: 1 }}
         animate={{ x: isOpen ? "-100%" : "0%" }}
-        transition={{ delay: isOpen ? 0.05 : 0, duration: 0.75, ease: [0.4, 0, 0.2, 1] }} />
+        transition={{ delay: isOpen ? 0.05 : 0, duration: 1.4, ease: [0.4, 0, 0.2, 1] }} />
 
       {/* Right flap — slides right on open */}
       <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)", background: "#222019", zIndex: 1 }}
+        style={{ clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)", background: "#201e1b", zIndex: 1 }}
         animate={{ x: isOpen ? "100%" : "0%" }}
-        transition={{ delay: isOpen ? 0.05 : 0, duration: 0.75, ease: [0.4, 0, 0.2, 1] }} />
+        transition={{ delay: isOpen ? 0.05 : 0, duration: 1.4, ease: [0.4, 0, 0.2, 1] }} />
 
       {/* Top flap — fades */}
       <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)", background: "#2a2720", zIndex: 1 }}
+        style={{ clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)", background: "#2c2a26", zIndex: 1 }}
         animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.4 : 0, duration: 0.5 }} />
+        transition={{ delay: isOpen ? 0.6 : 0, duration: 0.9 }} />
 
       {/* Bottom flap — fades */}
       <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ clipPath: "polygon(0% 100%, 100% 100%, 50% 50%)", background: "#1e1c19", zIndex: 1 }}
+        style={{ clipPath: "polygon(0% 100%, 100% 100%, 50% 50%)", background: "#1a1816", zIndex: 1 }}
         animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.4 : 0, duration: 0.5 }} />
+        transition={{ delay: isOpen ? 0.6 : 0, duration: 0.9 }} />
 
       {/* Fold lines — fade as flaps leave */}
       <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 2 }}
         viewBox="0 0 100 100" preserveAspectRatio="none"
-        animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.4, delay: isOpen ? 0.05 : 0 }}>
-        <line x1="0"   y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.25" strokeWidth="0.2" />
-        <line x1="100" y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.25" strokeWidth="0.2" />
-        <line x1="0"   y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.18" strokeWidth="0.2" />
-        <line x1="100" y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.18" strokeWidth="0.2" />
+        animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.6, delay: isOpen ? 0.05 : 0 }}>
+        <line x1="0"   y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.45" strokeWidth="0.35" />
+        <line x1="100" y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.45" strokeWidth="0.35" />
+        <line x1="0"   y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.32" strokeWidth="0.28" />
+        <line x1="100" y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.32" strokeWidth="0.28" />
       </motion.svg>
 
       {/* Gold wax seal */}

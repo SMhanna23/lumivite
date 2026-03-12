@@ -97,12 +97,15 @@ export default function Invitation({ override = null }) {
   const [lang, setLang] = useState("en")
   const ar = lang === "ar"
   const photos = WEDDING.photos?.length ? WEDDING.photos : [
-    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800",
-    "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600",
-    "https://images.unsplash.com/photo-1591604021695-0c69b7c05981?w=600",
-    "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600",
-    "https://images.unsplash.com/photo-1529636798458-92182e662485?w=600",
-    "https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=600",
+    "/photo1.jpg",
+    "/photo2.jpg",
+    "/photo3.jpg",
+    "/photo4.jpg",
+    "/photo5.jpg",
+    "/photo6.jpg",
+    "/photo7.jpg",
+    "/photo8.jpg",
+    "/photo9.jpg",
   ]
   const audioRef = useRef(null)
 
