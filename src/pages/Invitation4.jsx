@@ -224,9 +224,17 @@ function renderSectionOverlay(section, w, ar) {
 
         {/* Together with their families */}
         <p style={{ ...J, fontSize: "0.47rem", letterSpacing: "0.55em", color: "rgba(255,255,255,0.65)",
-          marginBottom: 14, textTransform: "uppercase", textShadow: ts }}>
+          marginBottom: 10, textTransform: "uppercase", textShadow: ts }}>
           {ar ? "يسعدنا دعوتكم" : "Together with their families"}
         </p>
+
+        {/* Parents names */}
+        {((ar ? w.parentsAr : w.parents) || []).filter(Boolean).length > 0 && (
+          <p style={{ ...J, fontSize: "0.4rem", letterSpacing: "0.18em", color: "rgba(255,255,255,0.52)",
+            marginBottom: 12, textShadow: ts }}>
+            {(ar ? w.parentsAr : w.parents).filter(Boolean).join("  ·  ")}
+          </p>
+        )}
 
         {/* Names on ONE LINE: GROOM "and" BRIDE */}
         <div style={{ display: "flex", alignItems: "baseline", gap: "clamp(6px,2vw,12px)",
@@ -244,10 +252,10 @@ function renderSectionOverlay(section, w, ar) {
           </p>
         </div>
 
-        {/* Invite you */}
+        {/* Invite message */}
         <p style={{ ...J, fontSize: "0.44rem", letterSpacing: "0.44em", color: "rgba(255,255,255,0.55)",
           marginTop: 14, marginBottom: 20, textTransform: "uppercase", textShadow: ts }}>
-          {ar ? "يدعوانكم لحضور زفافهما" : "Invite you · to their wedding celebration"}
+          {ar ? (w.messageAr || "يدعوانكم لحضور زفافهما") : (w.message || "Invite you · to their wedding celebration")}
         </p>
 
         {/* Date block: MONTH / line / WEEKDAY | DAY | AT TIME / line / YEAR */}
@@ -471,6 +479,21 @@ function renderSectionOverlay(section, w, ar) {
       <p style={{ ...GV, fontSize: "clamp(1.8rem,6vw,2.8rem)", color: "white", textShadow: ts, marginTop: 12 }}>
         {ar ? `${w.groomAr} & ${w.brideAr}` : `${w.groom} & ${w.bride}`}
       </p>
+
+      {/* Quote */}
+      {(ar ? w.quoteAr : w.quote) && (
+        <p style={{ ...GV, fontSize: "clamp(0.82rem,2.6vw,1.05rem)", color: GOLD,
+          textShadow: ts, marginTop: 18, fontStyle: "italic",
+          maxWidth: "72vw", lineHeight: 1.5 }}>
+          "{ar ? (w.quoteAr || w.quote) : (w.quote || w.quoteAr)}"
+        </p>
+      )}
+      {w.quoteRef && (
+        <p style={{ ...J, fontSize: "0.36rem", letterSpacing: "0.32em", color: "rgba(255,255,255,0.42)",
+          textShadow: ts, marginTop: 5 }}>
+          — {w.quoteRef}
+        </p>
+      )}
     </motion.div>
   )
 }
@@ -908,7 +931,7 @@ export default function Invitation4({ override = null }) {
   return (
     <>
       {/* Background music (quiet during video phase) */}
-      <audio ref={audioRef} loop src="/music.mp3" preload="auto"
+      <audio ref={audioRef} loop src={W.music || "/music.mp3"} preload="auto"
         style={{ display: "none" }}
       />
 
