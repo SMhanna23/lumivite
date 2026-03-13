@@ -687,26 +687,28 @@ function BuildInvitationModal({ order }) {
             </div>
           ))}
 
-          {/* Details slide fields */}
-          <p className="text-white/20 text-xs uppercase tracking-widest pt-1">📋 Details Slide</p>
-          <div>
-            <label className="text-white/30 text-xs mb-1 block">Dress Code</label>
-            <input value={extraData.dressCode} onChange={e => update("dressCode", e.target.value)}
-              placeholder="Black Tie"
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
-          </div>
-          <div>
-            <label className="text-white/30 text-xs mb-1 block">Transportation</label>
-            <input value={extraData.transport} onChange={e => update("transport", e.target.value)}
-              placeholder="Shuttle from Jounieh at 6:00 PM"
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
-          </div>
-          <div>
-            <label className="text-white/30 text-xs mb-1 block">Accommodation</label>
-            <input value={extraData.accommodation} onChange={e => update("accommodation", e.target.value)}
-              placeholder="Kempinski Hotel — special rates"
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
-          </div>
+          {/* Details slide — only for Cinematic Sand & Seal (invitation4) */}
+          {order.template === "sand" && (<>
+            <p className="text-white/20 text-xs uppercase tracking-widest pt-1">📋 Details Slide</p>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Dress Code</label>
+              <input value={extraData.dressCode} onChange={e => update("dressCode", e.target.value)}
+                placeholder="Black Tie"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Transportation</label>
+              <input value={extraData.transport} onChange={e => update("transport", e.target.value)}
+                placeholder="Shuttle from Jounieh at 6:00 PM"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Accommodation</label>
+              <input value={extraData.accommodation} onChange={e => update("accommodation", e.target.value)}
+                placeholder="Kempinski Hotel — special rates"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+          </>)}
 
           {/* Photo Upload */}
           <div>
