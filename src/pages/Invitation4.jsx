@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from "react"
+import { flushSync } from "react-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
@@ -910,14 +911,16 @@ export default function Invitation4({ override = null }) {
   ]
 
   const videoPlayerRef = useRef(null)
-  const isDirect = isDirectVideo(W.video)
 
   const startMusic = () => { if (audioRef.current) { audioRef.current.play().catch(() => {}) } }
 
   const openEnvelope = () => {
-    // MUST call play() SYNCHRONOUSLY here — iOS Safari only allows audio in the gesture handler
+    // flushSync forces React to commit VideoPlayer to the DOM synchronously,
+    // so videoPlayerRef.current is set before we call play() below.
+    // This keeps play() inside the same JS call stack as the user tap —
+    // the only way iOS Safari allows video audio without a separate user tap.
+    flushSync(() => setPhase("opening"))
     videoPlayerRef.current?.play()
-    setPhase("opening")
     if (W.muteVideo) startMusic()
     setTimeout(() => setPhase("video"), 2400)
   }
@@ -931,31 +934,16 @@ export default function Invitation4({ override = null }) {
         style={{ display: "none" }}
       />
 
-      {/* Direct video: ALWAYS in DOM so video.play() can be called in the gesture handler.
-          iOS Safari only permits audio if play() is synchronous with the user tap. */}
-      {isDirect && phase !== "rsvp" && (
-        <div className="fixed inset-0" style={{
-          zIndex: phase === "video" ? 10 : 0,
-          opacity: phase === "envelope" ? 0 : 1,
-          transition: "opacity 0.6s ease",
-          pointerEvents: phase === "video" ? "auto" : "none",
-        }}>
-          <VideoPlayer ref={videoPlayerRef} videoUrl={W.video} photos={photos} w={W} onEnded={onVideoEnded} ar={ar} />
-        </div>
-      )}
-
-      {/* YouTube / Vimeo / PhotoFilm: mount only when needed */}
-      {!isDirect && (
-        <AnimatePresence>
-          {(phase === "opening" || phase === "video") && (
-            <motion.div key="vid" className="fixed inset-0 z-0"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              transition={{ duration: 0.6 }}>
-              <VideoPlayer videoUrl={W.video} photos={photos} w={W} onEnded={onVideoEnded} ar={ar} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      )}
+      {/* Video — mounts during opening, plays immediately via ref */}
+      <AnimatePresence>
+        {(phase === "opening" || phase === "video") && (
+          <motion.div key="vid" className="fixed inset-0 z-0"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}>
+            <VideoPlayer ref={videoPlayerRef} videoUrl={W.video} photos={photos} w={W} onEnded={onVideoEnded} ar={ar} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Envelope — stays on top during opening, fades away as video shows through */}
       <AnimatePresence>
