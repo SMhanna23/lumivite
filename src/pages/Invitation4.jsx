@@ -480,17 +480,17 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
   const videoRef = useRef(null)
   const [sectionIdx, setSectionIdx] = useState(0)
   const [startupCover, setStartupCover] = useState(true)
-  const [showUnmute, setShowUnmute] = useState(false)
-
   const ytId     = getYouTubeId(videoUrl)
   const vimeoId  = getVimeoId(videoUrl)
   const isDirect = isDirectVideo(videoUrl)
   const hasVideo = !!(ytId || vimeoId || isDirect)
 
-  // Detect mobile — YouTube needs mute=1 to autoplay on mobile
+  // Detect mobile — autoplay requires muted on mobile
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-  // Mute the video if admin checked muteVideo, OR if mobile + iframe (autoplay requirement)
+  // Mute iframes on mobile for autoplay; admin muteVideo always mutes
   const videoMuted = !!(w.muteVideo || (isMobile && (ytId || vimeoId)))
+  // On mobile with a direct video that has audio, we start muted and show a tap-to-unmute button
+  const [mobileMuted, setMobileMuted] = useState(isMobile && isDirect && !w.muteVideo)
 
   // Cycle content sections for ALL video types
   useEffect(() => {
@@ -508,11 +508,9 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
     return () => clearTimeout(t)
   }, [isDirect])
 
-  // Direct video: set muted (needed for mobile autoplay), seek, then play
+  // Direct video: seek to start and trigger play (muted already set in ref callback)
   useEffect(() => {
     if (!videoRef.current || !isDirect) return
-    // Mobile browsers block autoplay unless muted — set via DOM property (React muted prop is buggy)
-    videoRef.current.muted = isMobile ? true : !!(w.muteVideo)
     if (w.videoStart != null) videoRef.current.currentTime = w.videoStart
     videoRef.current.play().catch(() => {})
   }, [isDirect])
@@ -546,8 +544,8 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
           ref={el => {
             videoRef.current = el
             if (el) {
-              // Set muted via DOM property before browser decides autoplay (React muted prop is unreliable)
-              el.muted = isMobile ? true : !!(w.muteVideo)
+              // Must set muted via DOM property — React's muted prop is ignored by browsers
+              el.muted = (isMobile || !!(w.muteVideo))
             }
           }}
           autoPlay playsInline preload="auto"
@@ -556,15 +554,6 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
           onLoadedMetadata={e => {
             if (w.videoStart != null) e.target.currentTime = w.videoStart
             e.target.play().catch(() => {})
-          }}
-          onPlaying={e => {
-            // Try to unmute after autoplay starts (works on Android; iOS needs a tap)
-            if (isMobile && !w.muteVideo) {
-              e.target.muted = false
-              setTimeout(() => {
-                if (videoRef.current && videoRef.current.muted) setShowUnmute(true)
-              }, 100)
-            }
           }}
           onTimeUpdate={e => {
             if (w.videoEnd != null && e.target.currentTime >= w.videoEnd) onEnded()
@@ -619,10 +608,16 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
       </AnimatePresence>
 
 
-      {/* Unmute button — iOS blocks programmatic unmute, user must tap */}
-      {showUnmute && (
+      {/* Tap for Sound — mobile starts muted for autoplay; one tap unmutes */}
+      {mobileMuted && (
         <button
-          onClick={() => { if (videoRef.current) { videoRef.current.muted = false; setShowUnmute(false) } }}
+          onClick={() => {
+            if (videoRef.current) {
+              videoRef.current.muted = false
+              videoRef.current.play().catch(() => {})
+            }
+            setMobileMuted(false)
+          }}
           className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 px-5 py-2.5 rounded-full text-xs tracking-widest uppercase transition"
           style={{ background: "rgba(196,163,90,0.18)", border: `1px solid ${GOLD}66`, color: GOLD, fontFamily: "'Jost', sans-serif", backdropFilter: "blur(8px)" }}>
           🔊 {ar ? "انقر للصوت" : "Tap for Sound"}
