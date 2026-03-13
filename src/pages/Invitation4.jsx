@@ -223,14 +223,14 @@ function renderSectionOverlay(section, w, ar) {
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7, duration: 1.3 }}>
 
         {/* Together with their families */}
-        <p style={{ ...J, fontSize: "0.47rem", letterSpacing: "0.55em", color: "rgba(255,255,255,0.65)",
+        <p style={{ ...J, fontSize: "0.62rem", letterSpacing: "0.55em", color: "rgba(255,255,255,0.65)",
           marginBottom: 10, textTransform: "uppercase", textShadow: ts }}>
           {ar ? "يسعدنا دعوتكم" : "Together with their families"}
         </p>
 
         {/* Parents names */}
         {((ar ? w.parentsAr : w.parents) || []).filter(Boolean).length > 0 && (
-          <p style={{ ...J, fontSize: "0.4rem", letterSpacing: "0.18em", color: "rgba(255,255,255,0.52)",
+          <p style={{ ...J, fontSize: "0.55rem", letterSpacing: "0.18em", color: "rgba(255,255,255,0.52)",
             marginBottom: 12, textShadow: ts }}>
             {(ar ? w.parentsAr : w.parents).filter(Boolean).join("  ·  ")}
           </p>
@@ -253,21 +253,21 @@ function renderSectionOverlay(section, w, ar) {
         </div>
 
         {/* Invite message */}
-        <p style={{ ...J, fontSize: "0.44rem", letterSpacing: "0.44em", color: "rgba(255,255,255,0.55)",
+        <p style={{ ...J, fontSize: "0.58rem", letterSpacing: "0.44em", color: "rgba(255,255,255,0.55)",
           marginTop: 14, marginBottom: 20, textTransform: "uppercase", textShadow: ts }}>
           {ar ? (w.messageAr || "يدعوانكم لحضور زفافهما") : (w.message || "Invite you · to their wedding celebration")}
         </p>
 
         {/* Date block: MONTH / line / WEEKDAY | DAY | AT TIME / line / YEAR */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <p style={{ ...J, fontSize: "0.43rem", letterSpacing: "0.38em", color: "rgba(255,255,255,0.62)",
+          <p style={{ ...J, fontSize: "0.58rem", letterSpacing: "0.38em", color: "rgba(255,255,255,0.62)",
             textTransform: "uppercase", textShadow: ts, marginBottom: 8 }}>
             {ar ? monthAr : month}
           </p>
           <div style={{ width: "min(200px,56vw)", height: 1, background: "rgba(255,255,255,0.28)" }} />
           <div style={{ display: "flex", alignItems: "center", gap: "clamp(8px,3vw,18px)",
             padding: "8px clamp(8px,3vw,16px)" }}>
-            <p style={{ ...J, fontSize: "0.38rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.58)",
+            <p style={{ ...J, fontSize: "0.52rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.58)",
               textTransform: "uppercase", textShadow: ts }}>
               {ar ? dayNameAr : dayName}
             </p>
@@ -275,13 +275,13 @@ function renderSectionOverlay(section, w, ar) {
               lineHeight: 1, textShadow: ts }}>
               {day}
             </p>
-            <p style={{ ...J, fontSize: "0.38rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.58)",
+            <p style={{ ...J, fontSize: "0.52rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.58)",
               textTransform: "uppercase", textShadow: ts }}>
               {ar ? `الساعة ${timeAr}` : `AT ${time}`}
             </p>
           </div>
           <div style={{ width: "min(200px,56vw)", height: 1, background: "rgba(255,255,255,0.28)" }} />
-          <p style={{ ...J, fontSize: "0.43rem", letterSpacing: "0.38em", color: "rgba(255,255,255,0.62)",
+          <p style={{ ...J, fontSize: "0.58rem", letterSpacing: "0.38em", color: "rgba(255,255,255,0.62)",
             textTransform: "uppercase", textShadow: ts, marginTop: 8 }}>
             {year}
           </p>
@@ -358,13 +358,13 @@ function renderSectionOverlay(section, w, ar) {
                   <>
                     {/* Text LEFT, icon RIGHT */}
                     <div style={{ flex: 1, textAlign: "right", paddingRight: 16 }}>
-                      <p style={{ ...J, fontSize: "0.41rem", letterSpacing: "0.28em", color: GOLD,
+                      <p style={{ ...J, fontSize: "0.55rem", letterSpacing: "0.28em", color: GOLD,
                         textTransform: "uppercase" }}>{item.time}</p>
-                      <p style={{ ...CG, fontSize: "clamp(0.8rem,2.7vw,0.98rem)", color: "white",
+                      <p style={{ ...CG, fontSize: "clamp(0.95rem,3.2vw,1.15rem)", color: "white",
                         fontWeight: 400, lineHeight: 1.15, marginTop: 1 }}>
                         {ar ? (item.labelAr || item.label) : item.label}
                       </p>
-                      {item.location && <p style={{ ...J, fontSize: "0.33rem", letterSpacing: "0.1em",
+                      {item.location && <p style={{ ...J, fontSize: "0.46rem", letterSpacing: "0.1em",
                         color: "rgba(255,255,255,0.42)", marginTop: 2 }}>{item.location}</p>}
                     </div>
                     <div style={{ width: 7, height: 7, borderRadius: "50%", background: GOLD,
@@ -384,13 +384,13 @@ function renderSectionOverlay(section, w, ar) {
                     <div style={{ width: 7, height: 7, borderRadius: "50%", background: GOLD,
                       flexShrink: 0, position: "relative", zIndex: 1 }} />
                     <div style={{ flex: 1, textAlign: "left", paddingLeft: 16 }}>
-                      <p style={{ ...J, fontSize: "0.41rem", letterSpacing: "0.28em", color: GOLD,
+                      <p style={{ ...J, fontSize: "0.55rem", letterSpacing: "0.28em", color: GOLD,
                         textTransform: "uppercase" }}>{item.time}</p>
-                      <p style={{ ...CG, fontSize: "clamp(0.8rem,2.7vw,0.98rem)", color: "white",
+                      <p style={{ ...CG, fontSize: "clamp(0.95rem,3.2vw,1.15rem)", color: "white",
                         fontWeight: 400, lineHeight: 1.15, marginTop: 1 }}>
                         {ar ? (item.labelAr || item.label) : item.label}
                       </p>
-                      {item.location && <p style={{ ...J, fontSize: "0.33rem", letterSpacing: "0.1em",
+                      {item.location && <p style={{ ...J, fontSize: "0.46rem", letterSpacing: "0.1em",
                         color: "rgba(255,255,255,0.42)", marginTop: 2 }}>{item.location}</p>}
                     </div>
                   </>
@@ -435,9 +435,9 @@ function renderSectionOverlay(section, w, ar) {
                   initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + i * 0.12 }}
                   style={{ marginBottom: 18 }}>
-                  <p style={{ ...J, fontSize: "0.37rem", letterSpacing: "0.4em", color: GOLD,
+                  <p style={{ ...J, fontSize: "0.52rem", letterSpacing: "0.4em", color: GOLD,
                     textTransform: "uppercase", marginBottom: 4 }}>{sec.label}</p>
-                  <p style={{ ...CG, fontSize: "clamp(0.88rem,3vw,1.08rem)", color: "white",
+                  <p style={{ ...CG, fontSize: "clamp(1rem,3.3vw,1.2rem)", color: "white",
                     fontWeight: 300, lineHeight: 1.45 }}>{sec.value}</p>
                 </motion.div>
               ))}
@@ -482,14 +482,14 @@ function renderSectionOverlay(section, w, ar) {
 
       {/* Quote */}
       {(ar ? w.quoteAr : w.quote) && (
-        <p style={{ ...GV, fontSize: "clamp(0.82rem,2.6vw,1.05rem)", color: GOLD,
+        <p style={{ ...GV, fontSize: "clamp(1rem,3.2vw,1.3rem)", color: GOLD,
           textShadow: ts, marginTop: 18, fontStyle: "italic",
           maxWidth: "72vw", lineHeight: 1.5 }}>
           "{ar ? (w.quoteAr || w.quote) : (w.quote || w.quoteAr)}"
         </p>
       )}
       {w.quoteRef && (
-        <p style={{ ...J, fontSize: "0.36rem", letterSpacing: "0.32em", color: "rgba(255,255,255,0.42)",
+        <p style={{ ...J, fontSize: "0.52rem", letterSpacing: "0.32em", color: "rgba(255,255,255,0.42)",
           textShadow: ts, marginTop: 5 }}>
           — {w.quoteRef}
         </p>
