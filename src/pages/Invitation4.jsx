@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from "react"
-import { flushSync } from "react-dom"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
@@ -477,27 +476,20 @@ function renderSectionOverlay(section, w, ar) {
 }
 
 // ── VIDEO PLAYER ─────────────────────────────────────────────────────────────
-const VideoPlayer = forwardRef(function VideoPlayer({ videoUrl, photos, w, onEnded, ar }, imperativeRef) {
-  const videoRef     = useRef(null)
-  const shouldPlayRef = useRef(false)   // only play after explicit trigger (preserves gesture context)
+function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
+  const videoRef = useRef(null)
   const [sectionIdx, setSectionIdx] = useState(0)
   const [startupCover, setStartupCover] = useState(true)
+
   const ytId     = getYouTubeId(videoUrl)
   const vimeoId  = getVimeoId(videoUrl)
   const isDirect = isDirectVideo(videoUrl)
   const hasVideo = !!(ytId || vimeoId || isDirect)
 
+  // Detect mobile — YouTube needs mute=1 to autoplay on mobile
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  // Mute the video if admin checked muteVideo, OR if mobile + iframe (autoplay requirement)
   const videoMuted = !!(w.muteVideo || (isMobile && (ytId || vimeoId)))
-
-  // Exposed methods — parent calls play() synchronously inside the tap gesture handler
-  useImperativeHandle(imperativeRef, () => ({
-    play: () => {
-      shouldPlayRef.current = true
-      videoRef.current?.play().catch(() => {})
-    },
-    pause: () => videoRef.current?.pause(),
-  }))
 
   // Cycle content sections for ALL video types
   useEffect(() => {
@@ -515,8 +507,12 @@ const VideoPlayer = forwardRef(function VideoPlayer({ videoUrl, photos, w, onEnd
     return () => clearTimeout(t)
   }, [isDirect])
 
-  // Direct video: nothing to do here — muted+src+load handled in ref callback
-  // play() is called from onCanPlay after data is ready
+  // Direct video: seek to start, apply mute from admin setting
+  useEffect(() => {
+    if (!videoRef.current || !isDirect) return
+    if (w.videoStart != null) videoRef.current.currentTime = w.videoStart
+    videoRef.current.muted = !!(w.muteVideo)
+  }, [isDirect])
 
 
   if (!hasVideo) return <PhotoFilm photos={photos} w={w} onEnded={onEnded} ar={ar} />
@@ -543,34 +539,23 @@ const VideoPlayer = forwardRef(function VideoPlayer({ videoUrl, photos, w, onEnd
     <div className="fixed inset-0 z-10" style={{ background: DARK }}>
       {/* Video */}
       {isDirect ? (
-        <video
-          ref={el => {
-            if (!el) { videoRef.current = null; return }
-            videoRef.current = el
-            el.muted = !!(w.muteVideo)  // respect admin setting only — no force-mute
-            el.src = videoUrl
-            el.load()
-          }}
-          playsInline
+        <video ref={videoRef} autoPlay playsInline
           className="absolute inset-0 w-full h-full object-cover"
           style={{ background: DARK }}
-          onCanPlay={e => {
-            if (shouldPlayRef.current) e.target.play().catch(() => {})
-          }}
           onLoadedMetadata={e => {
             if (w.videoStart != null) e.target.currentTime = w.videoStart
-            if (shouldPlayRef.current) e.target.play().catch(() => {})
           }}
           onTimeUpdate={e => {
             if (w.videoEnd != null && e.target.currentTime >= w.videoEnd) onEnded()
           }}
-          onEnded={onEnded}
-        />
+          onEnded={onEnded}>
+          <source src={videoUrl} />
+        </video>
       ) : (
         <iframe
           className="absolute inset-0 w-full h-full"
           src={iframeSrc}
-          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+          allow="autoplay; fullscreen; picture-in-picture"
           title="Wedding Video"
           style={{ border: "none" }}
         />
@@ -621,7 +606,7 @@ const VideoPlayer = forwardRef(function VideoPlayer({ videoUrl, photos, w, onEnd
       </button>
     </div>
   )
-})
+}
 
 // ── PHOTO FILM FALLBACK (when no video URL is set) ───────────────────────────
 // Cinematic slideshow: one photo per slide, each showing a different invitation section
@@ -910,17 +895,10 @@ export default function Invitation4({ override = null }) {
     "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800",
   ]
 
-  const videoPlayerRef = useRef(null)
-
   const startMusic = () => { if (audioRef.current) { audioRef.current.play().catch(() => {}) } }
 
   const openEnvelope = () => {
-    // flushSync forces React to commit VideoPlayer to the DOM synchronously,
-    // so videoPlayerRef.current is set before we call play() below.
-    // This keeps play() inside the same JS call stack as the user tap —
-    // the only way iOS Safari allows video audio without a separate user tap.
-    flushSync(() => setPhase("opening"))
-    videoPlayerRef.current?.play()
+    setPhase("opening")
     if (W.muteVideo) startMusic()
     setTimeout(() => setPhase("video"), 2400)
   }
@@ -934,13 +912,13 @@ export default function Invitation4({ override = null }) {
         style={{ display: "none" }}
       />
 
-      {/* Video — mounts during opening, plays immediately via ref */}
+      {/* Video — pre-rendered behind envelope during opening, full-screen after */}
       <AnimatePresence>
         {(phase === "opening" || phase === "video") && (
           <motion.div key="vid" className="fixed inset-0 z-0"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.6 }}>
-            <VideoPlayer ref={videoPlayerRef} videoUrl={W.video} photos={photos} w={W} onEnded={onVideoEnded} ar={ar} />
+            <VideoPlayer videoUrl={W.video} photos={photos} w={W} onEnded={onVideoEnded} ar={ar} />
           </motion.div>
         )}
       </AnimatePresence>
