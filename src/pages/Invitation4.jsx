@@ -84,27 +84,27 @@ function EnvelopeScreen({ guestName, onOpen, ar, setLang, opening }) {
 
       {/* Left flap — slides left on open */}
       <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ clipPath: "polygon(0% 0%, 0% 100%, 50% 50%)", background: "#201e1b", zIndex: 1 }}
+        style={{ clipPath: "polygon(0% 0%, 0% 100%, 50% 50%)", background: "linear-gradient(to right, #28251f, #1c1a16)", zIndex: 1 }}
         animate={{ x: isOpen ? "-100%" : "0%" }}
         transition={{ delay: isOpen ? 0.05 : 0, duration: 1.4, ease: [0.4, 0, 0.2, 1] }} />
 
       {/* Right flap — slides right on open */}
       <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)", background: "#201e1b", zIndex: 1 }}
+        style={{ clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)", background: "linear-gradient(to left, #28251f, #1c1a16)", zIndex: 1 }}
         animate={{ x: isOpen ? "100%" : "0%" }}
         transition={{ delay: isOpen ? 0.05 : 0, duration: 1.4, ease: [0.4, 0, 0.2, 1] }} />
 
-      {/* Top flap — fades */}
+      {/* Top flap — slides up on open */}
       <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)", background: "#2c2a26", zIndex: 1 }}
-        animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.6 : 0, duration: 0.9 }} />
+        style={{ clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)", background: "linear-gradient(to bottom, #32302b, #1e1c18)", zIndex: 1 }}
+        animate={{ y: isOpen ? "-100%" : "0%", opacity: isOpen ? 0 : 1 }}
+        transition={{ delay: isOpen ? 0.6 : 0, duration: 1.1, ease: [0.4, 0, 0.2, 1] }} />
 
-      {/* Bottom flap — fades */}
+      {/* Bottom flap — slides down on open */}
       <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ clipPath: "polygon(0% 100%, 100% 100%, 50% 50%)", background: "#1a1816", zIndex: 1 }}
-        animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.6 : 0, duration: 0.9 }} />
+        style={{ clipPath: "polygon(0% 100%, 100% 100%, 50% 50%)", background: "linear-gradient(to top, #191714, #1e1c18)", zIndex: 1 }}
+        animate={{ y: isOpen ? "100%" : "0%", opacity: isOpen ? 0 : 1 }}
+        transition={{ delay: isOpen ? 0.6 : 0, duration: 1.1, ease: [0.4, 0, 0.2, 1] }} />
 
       {/* Fold lines — fade as flaps leave */}
       <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 2 }}
@@ -120,18 +120,31 @@ function EnvelopeScreen({ guestName, onOpen, ar, setLang, opening }) {
       <motion.div
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
         style={{ zIndex: 10 }}
-        animate={{ scale: isOpen ? 0.7 : 1, opacity: isOpen ? 0 : 1 }}
-        transition={{ duration: 0.5, delay: isOpen ? 0.1 : 0 }}>
+        animate={{ scale: isOpen ? 0.6 : 1, opacity: isOpen ? 0 : 1 }}
+        transition={{ duration: 0.6, delay: isOpen ? 0.05 : 0 }}>
+        {/* Outer glow ring */}
+        <div className="absolute rounded-full" style={{
+          width: 108, height: 108,
+          background: "radial-gradient(circle, rgba(196,163,90,0.18) 0%, transparent 70%)",
+        }}/>
         <div className="rounded-full flex items-center justify-center"
           style={{
-            width: 88, height: 88,
-            background: "radial-gradient(circle at 38% 35%, #d4ab4a, #b8903a 55%, #7a5818)",
-            boxShadow: "0 6px 32px rgba(140,107,58,0.5), inset 0 1px 3px rgba(255,255,255,0.22)"
+            width: 92, height: 92,
+            background: "radial-gradient(circle at 36% 32%, #e0bc60, #c49a38 45%, #8c6420 80%, #5a3e10)",
+            boxShadow: "0 4px 24px rgba(140,107,58,0.6), 0 0 40px rgba(196,163,90,0.2), inset 0 2px 4px rgba(255,255,255,0.28), inset 0 -2px 4px rgba(0,0,0,0.3)"
           }}>
-          <svg viewBox="0 0 60 60" width="48" height="48" fill="none">
-            <circle cx="22" cy="30" r="11" stroke="rgba(255,255,255,0.7)" strokeWidth="2.2" fill="none"/>
-            <circle cx="38" cy="30" r="11" stroke="rgba(255,255,255,0.7)" strokeWidth="2.2" fill="none"/>
-            <path d="M30 18 L33 12 L37 15 L30 12 L23 15 L27 12 Z" fill="rgba(255,255,255,0.7)" />
+          {/* Seal border ring */}
+          <div className="absolute rounded-full" style={{
+            width: 82, height: 82,
+            border: "1.5px solid rgba(255,255,255,0.2)",
+            borderRadius: "50%"
+          }}/>
+          <svg viewBox="0 0 60 60" width="50" height="50" fill="none">
+            {/* Two interlocking wedding rings */}
+            <circle cx="23" cy="31" r="10" stroke="rgba(255,255,255,0.75)" strokeWidth="2.5" fill="none"/>
+            <circle cx="37" cy="31" r="10" stroke="rgba(255,255,255,0.75)" strokeWidth="2.5" fill="none"/>
+            {/* Small diamond above */}
+            <path d="M30 17 L32.5 20 L30 23 L27.5 20 Z" fill="rgba(255,255,255,0.8)" />
           </svg>
         </div>
       </motion.div>
