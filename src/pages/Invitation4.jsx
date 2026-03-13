@@ -480,6 +480,7 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
   const videoRef = useRef(null)
   const [sectionIdx, setSectionIdx] = useState(0)
   const [startupCover, setStartupCover] = useState(true)
+  const [showUnmute, setShowUnmute] = useState(false)
 
   const ytId     = getYouTubeId(videoUrl)
   const vimeoId  = getVimeoId(videoUrl)
@@ -556,6 +557,15 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
             if (w.videoStart != null) e.target.currentTime = w.videoStart
             e.target.play().catch(() => {})
           }}
+          onPlaying={e => {
+            // Try to unmute after autoplay starts (works on Android; iOS needs a tap)
+            if (isMobile && !w.muteVideo) {
+              e.target.muted = false
+              setTimeout(() => {
+                if (videoRef.current && videoRef.current.muted) setShowUnmute(true)
+              }, 100)
+            }
+          }}
           onTimeUpdate={e => {
             if (w.videoEnd != null && e.target.currentTime >= w.videoEnd) onEnded()
           }}
@@ -608,6 +618,16 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
         </motion.div>
       </AnimatePresence>
 
+
+      {/* Unmute button — iOS blocks programmatic unmute, user must tap */}
+      {showUnmute && (
+        <button
+          onClick={() => { if (videoRef.current) { videoRef.current.muted = false; setShowUnmute(false) } }}
+          className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 px-5 py-2.5 rounded-full text-xs tracking-widest uppercase transition"
+          style={{ background: "rgba(196,163,90,0.18)", border: `1px solid ${GOLD}66`, color: GOLD, fontFamily: "'Jost', sans-serif", backdropFilter: "blur(8px)" }}>
+          🔊 {ar ? "انقر للصوت" : "Tap for Sound"}
+        </button>
+      )}
 
       {/* Skip to RSVP */}
       <button onClick={onEnded}
