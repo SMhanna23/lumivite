@@ -508,12 +508,8 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
     return () => clearTimeout(t)
   }, [isDirect])
 
-  // Direct video: seek to start and trigger play (muted already set in ref callback)
-  useEffect(() => {
-    if (!videoRef.current || !isDirect) return
-    if (w.videoStart != null) videoRef.current.currentTime = w.videoStart
-    videoRef.current.play().catch(() => {})
-  }, [isDirect])
+  // Direct video: nothing to do here — muted+src+load handled in ref callback
+  // play() is called from onCanPlay after data is ready
 
 
   if (!hasVideo) return <PhotoFilm photos={photos} w={w} onEnded={onEnded} ar={ar} />
@@ -542,15 +538,20 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
       {isDirect ? (
         <video
           ref={el => {
+            if (!el) { videoRef.current = null; return }
             videoRef.current = el
-            if (el) {
-              // Must set muted via DOM property — React's muted prop is ignored by browsers
-              el.muted = (isMobile || !!(w.muteVideo))
-            }
+            // CRITICAL: set muted BEFORE src so browser sees muted=true before deciding autoplay
+            el.muted = isMobile || !!(w.muteVideo)
+            el.src = videoUrl   // set src directly (not via <source> child)
+            el.load()           // start loading
           }}
-          autoPlay playsInline preload="auto"
+          playsInline
           className="absolute inset-0 w-full h-full object-cover"
           style={{ background: DARK }}
+          onCanPlay={e => {
+            // Play as soon as we have enough data — this is the reliable trigger
+            e.target.play().catch(() => {})
+          }}
           onLoadedMetadata={e => {
             if (w.videoStart != null) e.target.currentTime = w.videoStart
             e.target.play().catch(() => {})
@@ -558,9 +559,8 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
           onTimeUpdate={e => {
             if (w.videoEnd != null && e.target.currentTime >= w.videoEnd) onEnded()
           }}
-          onEnded={onEnded}>
-          <source src={videoUrl} />
-        </video>
+          onEnded={onEnded}
+        />
       ) : (
         <iframe
           className="absolute inset-0 w-full h-full"
