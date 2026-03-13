@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
@@ -476,8 +476,9 @@ function renderSectionOverlay(section, w, ar) {
 }
 
 // ── VIDEO PLAYER ─────────────────────────────────────────────────────────────
-function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
-  const videoRef = useRef(null)
+const VideoPlayer = forwardRef(function VideoPlayer({ videoUrl, photos, w, onEnded, ar }, imperativeRef) {
+  const videoRef     = useRef(null)
+  const shouldPlayRef = useRef(false)   // only play after explicit trigger (preserves gesture context)
   const [sectionIdx, setSectionIdx] = useState(0)
   const [startupCover, setStartupCover] = useState(true)
   const ytId     = getYouTubeId(videoUrl)
@@ -485,12 +486,17 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
   const isDirect = isDirectVideo(videoUrl)
   const hasVideo = !!(ytId || vimeoId || isDirect)
 
-  // Detect mobile — autoplay requires muted on mobile
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-  // Mute iframes on mobile for autoplay; admin muteVideo always mutes
   const videoMuted = !!(w.muteVideo || (isMobile && (ytId || vimeoId)))
-  // On mobile with a direct video that has audio, we start muted and show a tap-to-unmute button
-  const [mobileMuted, setMobileMuted] = useState(isMobile && isDirect && !w.muteVideo)
+
+  // Exposed methods — parent calls play() synchronously inside the tap gesture handler
+  useImperativeHandle(imperativeRef, () => ({
+    play: () => {
+      shouldPlayRef.current = true
+      videoRef.current?.play().catch(() => {})
+    },
+    pause: () => videoRef.current?.pause(),
+  }))
 
   // Cycle content sections for ALL video types
   useEffect(() => {
@@ -540,21 +546,19 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
           ref={el => {
             if (!el) { videoRef.current = null; return }
             videoRef.current = el
-            // CRITICAL: set muted BEFORE src so browser sees muted=true before deciding autoplay
-            el.muted = isMobile || !!(w.muteVideo)
-            el.src = videoUrl   // set src directly (not via <source> child)
-            el.load()           // start loading
+            el.muted = !!(w.muteVideo)  // respect admin setting only — no force-mute
+            el.src = videoUrl
+            el.load()
           }}
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
           style={{ background: DARK }}
           onCanPlay={e => {
-            // Play as soon as we have enough data — this is the reliable trigger
-            e.target.play().catch(() => {})
+            if (shouldPlayRef.current) e.target.play().catch(() => {})
           }}
           onLoadedMetadata={e => {
             if (w.videoStart != null) e.target.currentTime = w.videoStart
-            e.target.play().catch(() => {})
+            if (shouldPlayRef.current) e.target.play().catch(() => {})
           }}
           onTimeUpdate={e => {
             if (w.videoEnd != null && e.target.currentTime >= w.videoEnd) onEnded()
@@ -608,22 +612,6 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
       </AnimatePresence>
 
 
-      {/* Tap for Sound — mobile starts muted for autoplay; one tap unmutes */}
-      {mobileMuted && (
-        <button
-          onClick={() => {
-            if (videoRef.current) {
-              videoRef.current.muted = false
-              videoRef.current.play().catch(() => {})
-            }
-            setMobileMuted(false)
-          }}
-          className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 px-5 py-2.5 rounded-full text-xs tracking-widest uppercase transition"
-          style={{ background: "rgba(196,163,90,0.18)", border: `1px solid ${GOLD}66`, color: GOLD, fontFamily: "'Jost', sans-serif", backdropFilter: "blur(8px)" }}>
-          🔊 {ar ? "انقر للصوت" : "Tap for Sound"}
-        </button>
-      )}
-
       {/* Skip to RSVP */}
       <button onClick={onEnded}
         className="absolute top-5 right-5 z-30 text-xs tracking-widest uppercase px-5 py-2.5 rounded-full transition"
@@ -632,7 +620,7 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
       </button>
     </div>
   )
-}
+})
 
 // ── PHOTO FILM FALLBACK (when no video URL is set) ───────────────────────────
 // Cinematic slideshow: one photo per slide, each showing a different invitation section
@@ -921,9 +909,14 @@ export default function Invitation4({ override = null }) {
     "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800",
   ]
 
+  const videoPlayerRef = useRef(null)
+  const isDirect = isDirectVideo(W.video)
+
   const startMusic = () => { if (audioRef.current) { audioRef.current.play().catch(() => {}) } }
 
   const openEnvelope = () => {
+    // MUST call play() SYNCHRONOUSLY here — iOS Safari only allows audio in the gesture handler
+    videoPlayerRef.current?.play()
     setPhase("opening")
     if (W.muteVideo) startMusic()
     setTimeout(() => setPhase("video"), 2400)
@@ -938,16 +931,31 @@ export default function Invitation4({ override = null }) {
         style={{ display: "none" }}
       />
 
-      {/* Video — pre-rendered behind envelope during opening, full-screen after */}
-      <AnimatePresence>
-        {(phase === "opening" || phase === "video") && (
-          <motion.div key="vid" className="fixed inset-0 z-0"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}>
-            <VideoPlayer videoUrl={W.video} photos={photos} w={W} onEnded={onVideoEnded} ar={ar} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Direct video: ALWAYS in DOM so video.play() can be called in the gesture handler.
+          iOS Safari only permits audio if play() is synchronous with the user tap. */}
+      {isDirect && phase !== "rsvp" && (
+        <div className="fixed inset-0" style={{
+          zIndex: phase === "video" ? 10 : 0,
+          opacity: phase === "envelope" ? 0 : 1,
+          transition: "opacity 0.6s ease",
+          pointerEvents: phase === "video" ? "auto" : "none",
+        }}>
+          <VideoPlayer ref={videoPlayerRef} videoUrl={W.video} photos={photos} w={W} onEnded={onVideoEnded} ar={ar} />
+        </div>
+      )}
+
+      {/* YouTube / Vimeo / PhotoFilm: mount only when needed */}
+      {!isDirect && (
+        <AnimatePresence>
+          {(phase === "opening" || phase === "video") && (
+            <motion.div key="vid" className="fixed inset-0 z-0"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.6 }}>
+              <VideoPlayer videoUrl={W.video} photos={photos} w={W} onEnded={onVideoEnded} ar={ar} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
 
       {/* Envelope — stays on top during opening, fades away as video shows through */}
       <AnimatePresence>
