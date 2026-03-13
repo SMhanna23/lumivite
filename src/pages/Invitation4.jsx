@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
@@ -476,8 +476,9 @@ function renderSectionOverlay(section, w, ar) {
 }
 
 // ── VIDEO PLAYER ─────────────────────────────────────────────────────────────
-function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
-  const videoRef = useRef(null)
+const VideoPlayer = forwardRef(function VideoPlayer({ videoUrl, photos, w, onEnded, ar }, imperativeRef) {
+  const videoRef     = useRef(null)
+  const shouldPlayRef = useRef(false)
   const [sectionIdx, setSectionIdx] = useState(0)
   const [startupCover, setStartupCover] = useState(true)
 
@@ -486,10 +487,16 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
   const isDirect = isDirectVideo(videoUrl)
   const hasVideo = !!(ytId || vimeoId || isDirect)
 
-  // Detect mobile — YouTube needs mute=1 to autoplay on mobile
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-  // Mute the video if admin checked muteVideo, OR if mobile + iframe (autoplay requirement)
   const videoMuted = !!(w.muteVideo || (isMobile && (ytId || vimeoId)))
+
+  // Expose play() so parent can call it directly inside the tap gesture handler
+  useImperativeHandle(imperativeRef, () => ({
+    play: () => {
+      shouldPlayRef.current = true
+      videoRef.current?.play().catch(() => {})
+    },
+  }))
 
   // Cycle content sections for ALL video types
   useEffect(() => {
@@ -507,12 +514,7 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
     return () => clearTimeout(t)
   }, [isDirect])
 
-  // Direct video: seek to start, apply mute from admin setting
-  useEffect(() => {
-    if (!videoRef.current || !isDirect) return
-    if (w.videoStart != null) videoRef.current.currentTime = w.videoStart
-    videoRef.current.muted = !!(w.muteVideo)
-  }, [isDirect])
+  // (direct video play/seek handled via ref callback + shouldPlayRef)
 
 
   if (!hasVideo) return <PhotoFilm photos={photos} w={w} onEnded={onEnded} ar={ar} />
@@ -539,18 +541,27 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
     <div className="fixed inset-0 z-10" style={{ background: DARK }}>
       {/* Video */}
       {isDirect ? (
-        <video ref={videoRef} autoPlay playsInline
+        <video
+          ref={el => {
+            if (!el) { videoRef.current = null; return }
+            videoRef.current = el
+            el.muted = !!(w.muteVideo)   // set BEFORE src so iOS sees muted state immediately
+            el.src   = videoUrl
+            el.load()                    // start buffering — data ready before user taps
+          }}
+          playsInline preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
           style={{ background: DARK }}
-          onLoadedMetadata={e => {
+          onCanPlay={e => {
+            if (!shouldPlayRef.current) return
             if (w.videoStart != null) e.target.currentTime = w.videoStart
+            e.target.play().catch(() => {})
           }}
           onTimeUpdate={e => {
             if (w.videoEnd != null && e.target.currentTime >= w.videoEnd) onEnded()
           }}
-          onEnded={onEnded}>
-          <source src={videoUrl} />
-        </video>
+          onEnded={onEnded}
+        />
       ) : (
         <iframe
           className="absolute inset-0 w-full h-full"
@@ -606,7 +617,7 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
       </button>
     </div>
   )
-}
+})
 
 // ── PHOTO FILM FALLBACK (when no video URL is set) ───────────────────────────
 // Cinematic slideshow: one photo per slide, each showing a different invitation section
@@ -895,9 +906,15 @@ export default function Invitation4({ override = null }) {
     "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800",
   ]
 
+  const videoPlayerRef = useRef(null)
+  const isDirect = isDirectVideo(W.video)
+
   const startMusic = () => { if (audioRef.current) { audioRef.current.play().catch(() => {}) } }
 
   const openEnvelope = () => {
+    // play() MUST be called synchronously in the tap handler — iOS only allows audio this way.
+    // VideoPlayer is already in the DOM (pre-mounted below), so videoRef has data buffered.
+    videoPlayerRef.current?.play()
     setPhase("opening")
     if (W.muteVideo) startMusic()
     setTimeout(() => setPhase("video"), 2400)
@@ -907,21 +924,39 @@ export default function Invitation4({ override = null }) {
 
   return (
     <>
-      {/* Background music (quiet during video phase) */}
+      {/* Background music */}
       <audio ref={audioRef} loop src="/music.mp3" preload="auto"
         style={{ display: "none" }}
       />
 
-      {/* Video — pre-rendered behind envelope during opening, full-screen after */}
-      <AnimatePresence>
-        {(phase === "opening" || phase === "video") && (
-          <motion.div key="vid" className="fixed inset-0 z-0"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}>
-            <VideoPlayer videoUrl={W.video} photos={photos} w={W} onEnded={onVideoEnded} ar={ar} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Direct MP4: always in DOM so video data is buffered before the tap.
+          transform:translateZ(0) makes this div the CSS containing block for VideoPlayer's
+          fixed children — so VideoPlayer's internal z-10 is relative to THIS div,
+          keeping it below the envelope (z-10 globally) during opening. */}
+      {isDirect && phase !== "rsvp" && (
+        <div className="fixed inset-0" style={{
+          transform: "translateZ(0)",
+          zIndex: phase === "video" ? 10 : 0,
+          opacity: phase === "envelope" ? 0 : 1,
+          transition: "opacity 0.6s ease",
+          pointerEvents: phase === "video" ? "auto" : "none",
+        }}>
+          <VideoPlayer ref={videoPlayerRef} videoUrl={W.video} photos={photos} w={W} onEnded={onVideoEnded} ar={ar} />
+        </div>
+      )}
+
+      {/* YouTube / Vimeo / PhotoFilm — mount only when needed */}
+      {!isDirect && (
+        <AnimatePresence>
+          {(phase === "opening" || phase === "video") && (
+            <motion.div key="vid" className="fixed inset-0 z-0"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.6 }}>
+              <VideoPlayer videoUrl={W.video} photos={photos} w={W} onEnded={onVideoEnded} ar={ar} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
 
       {/* Envelope — stays on top during opening, fades away as video shows through */}
       <AnimatePresence>
