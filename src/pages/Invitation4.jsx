@@ -507,11 +507,13 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
     return () => clearTimeout(t)
   }, [isDirect])
 
-  // Direct video: seek to start, apply mute from admin setting
+  // Direct video: set muted (needed for mobile autoplay), seek, then play
   useEffect(() => {
     if (!videoRef.current || !isDirect) return
+    // Mobile browsers block autoplay unless muted — set via DOM property (React muted prop is buggy)
+    videoRef.current.muted = isMobile ? true : !!(w.muteVideo)
     if (w.videoStart != null) videoRef.current.currentTime = w.videoStart
-    videoRef.current.muted = !!(w.muteVideo)
+    videoRef.current.play().catch(() => {})
   }, [isDirect])
 
 
@@ -539,11 +541,20 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
     <div className="fixed inset-0 z-10" style={{ background: DARK }}>
       {/* Video */}
       {isDirect ? (
-        <video ref={videoRef} autoPlay playsInline
+        <video
+          ref={el => {
+            videoRef.current = el
+            if (el) {
+              // Set muted via DOM property before browser decides autoplay (React muted prop is unreliable)
+              el.muted = isMobile ? true : !!(w.muteVideo)
+            }
+          }}
+          autoPlay playsInline preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
           style={{ background: DARK }}
           onLoadedMetadata={e => {
             if (w.videoStart != null) e.target.currentTime = w.videoStart
+            e.target.play().catch(() => {})
           }}
           onTimeUpdate={e => {
             if (w.videoEnd != null && e.target.currentTime >= w.videoEnd) onEnded()
@@ -555,7 +566,7 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
         <iframe
           className="absolute inset-0 w-full h-full"
           src={iframeSrc}
-          allow="autoplay; fullscreen; picture-in-picture"
+          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
           title="Wedding Video"
           style={{ border: "none" }}
         />
