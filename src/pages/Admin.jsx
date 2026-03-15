@@ -89,13 +89,10 @@ function BuildInvitationModal({ order }) {
   const [saved, setSaved] = useState(false)
   const [photos, setPhotos] = useState([])
   const [uploading, setUploading] = useState(false)
-  const [videoUploading, setVideoUploading] = useState(false)
-  const [videoProgress, setVideoProgress] = useState(0)
   const [loading, setLoading] = useState(true)
   const [draftSaving, setDraftSaving] = useState(false)
   const [draftSaved,  setDraftSaved]  = useState(false)
   const fileInputRef = useRef(null)
-  const videoInputRef = useRef(null)
   const [extraData, setExtraData] = useState({
     groomAr: "", brideAr: "",
     messageEn: "Together with their families",
@@ -227,36 +224,6 @@ function BuildInvitationModal({ order }) {
     setUploading(false)
   }
 
-  const handleVideoUpload = async (file) => {
-    if (!file) return
-    setVideoUploading(true)
-    setVideoProgress(0)
-    try {
-      const formData = new FormData()
-      formData.append("reqtype", "fileupload")
-      formData.append("fileToUpload", file)
-      const xhr = new XMLHttpRequest()
-      await new Promise((resolve, reject) => {
-        xhr.upload.onprogress = (e) => {
-          if (e.lengthComputable) setVideoProgress(Math.round((e.loaded / e.total) * 100))
-        }
-        xhr.onload = () => {
-          if (xhr.status === 200) resolve(xhr.responseText.trim())
-          else reject(new Error(`Upload failed: ${xhr.status}`))
-        }
-        xhr.onerror = () => reject(new Error("Network error"))
-        xhr.open("POST", "https://catbox.moe/user.php")
-        xhr.send(formData)
-      })
-      const url = xhr.responseText.trim()
-      update("video", url)
-    } catch (err) {
-      console.error("Video upload error:", err)
-      alert(`Video upload failed:\n${err.message}`)
-    } finally {
-      setVideoUploading(false)
-    }
-  }
 
   const handleSaveDraft = async () => {
     if (!slug) return alert("Please enter an Invitation URL Slug first")
@@ -541,29 +508,6 @@ function BuildInvitationModal({ order }) {
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
               </div>
 
-              {/* Video file upload */}
-              <div>
-                <label className="text-white/30 text-xs mb-2 block">📁 Or Upload Video File <span className="text-white/20">(stored securely — replaces URL above)</span></label>
-                <input ref={videoInputRef} type="file" accept="video/*" className="hidden"
-                  onChange={e => { if (e.target.files?.[0]) handleVideoUpload(e.target.files[0]) }} />
-                <div className="flex items-center gap-3">
-                  <button onClick={() => videoInputRef.current?.click()} disabled={videoUploading}
-                    className="px-4 py-2 rounded-lg text-sm transition disabled:opacity-50"
-                    style={{ background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.3)", color: "#c9a96e" }}>
-                    {videoUploading ? `Uploading… ${videoProgress}%` : "Choose Video"}
-                  </button>
-                  {extraData.video && !videoUploading && (
-                    <span className="text-xs text-white/30 truncate max-w-[200px]">
-                      {extraData.video.startsWith("https://firebasestorage") ? "✓ Video uploaded" : extraData.video.slice(0, 40) + (extraData.video.length > 40 ? "…" : "")}
-                    </span>
-                  )}
-                </div>
-                {videoUploading && (
-                  <div className="mt-2 h-1 rounded-full bg-white/10">
-                    <div className="h-full rounded-full transition-all" style={{ width: `${videoProgress}%`, background: "#c9a96e" }} />
-                  </div>
-                )}
-              </div>
 
               {/* Clip start/end */}
               <div>
