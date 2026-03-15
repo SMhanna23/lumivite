@@ -2,10 +2,12 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 
 const features = [
-  { icon: "💍", title: "Stunning Templates", desc: "Luxury designs that make guests say WOW the moment they open their invitation" },
+  { icon: "💍", title: "Stunning Templates", desc: "4 luxury designs that make guests say WOW the moment they open their invitation" },
+  { icon: "🎬", title: "Cinematic Video", desc: "Envelope opening animation + full pre-wedding video support via YouTube, Vimeo, or direct upload" },
   { icon: "🎵", title: "Background Music", desc: "Set the mood with romantic music that plays automatically when guests open" },
   { icon: "📊", title: "RSVP Dashboard", desc: "Track every response in real time. Know exactly who's coming to your big day" },
   { icon: "👤", title: "Personalized Links", desc: "Each guest gets their own link with their name — a truly personal touch" },
+  { icon: "🌍", title: "Bilingual (AR / EN)", desc: "Full Arabic and English support with right-to-left layout for all your guests" },
   { icon: "🌸", title: "Animations", desc: "Floating petals, smooth transitions, and cinematic reveals that impress everyone" },
   { icon: "📍", title: "Venue & Timeline", desc: "Interactive maps, wedding timeline, and all details beautifully presented" },
 ]
@@ -46,7 +48,7 @@ const packages = [
     color: "#ffd700",
     features: [
       "Everything in Silver",
-      "2 template choices",
+      "All 4 template choices",
       "Google Maps embed",
       "Gift registry section",
       "Priority support",
@@ -60,6 +62,8 @@ const faqs = [
   { q: "How long does it take to get my invitation?", a: "Within 24-48 hours after you provide your details and payment." },
   { q: "Can guests RSVP directly from the invitation?", a: "Yes! Guests tap Attending or Decline and you get notified instantly." },
   { q: "Can I share it on WhatsApp?", a: "Absolutely — just share the link. It works on any phone, tablet or computer." },
+  { q: "Can I add a pre-wedding video to my invitation?", a: "Yes! Template 4 supports direct video upload, YouTube, and Vimeo links. Your guests see an envelope opening animation and then your video plays automatically." },
+  { q: "Is Arabic language supported?", a: "Yes! All templates are fully bilingual with Arabic and English, including right-to-left layout for Arabic guests." },
   { q: "Can I choose my own music?", a: "Yes! You can send us any song and we'll add it to your invitation." },
   { q: "What if I need changes after it's done?", a: "Silver and Gold packages include revisions. We're here to make it perfect." },
 ]
@@ -75,7 +79,7 @@ export default function Landing() {
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
         style={{ background: "linear-gradient(to bottom, rgba(10,8,6,0.95), transparent)" }}>
         <span className="font-serif text-xl text-[#c9a96e]">Lumivite</span>
-        <a href="/order">Book Now</a>
+        <a href="/order" className="bg-[#c9a96e] text-black font-semibold px-5 py-2 rounded-full hover:bg-[#b8965d] transition text-sm tracking-wider">Book Now</a>
       </nav>
 
       {/* Hero */}
@@ -103,11 +107,11 @@ export default function Landing() {
             Than Paper
           </h1>
           <p className="text-white/50 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-            Stunning animated digital invitations with music, RSVP tracking, and personalized guest links. Starting at $89.
+            Stunning animated digital invitations with cinematic video, music, RSVP tracking, and personalized guest links. Starting at $89.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/demo" className="bg-[#c9a96e] text-black font-semibold px-8 py-4 rounded-full hover:bg-[#b8965d] transition text-sm tracking-wider">
-              SEE LIVE DEMO
+            <a href="#demos" className="bg-[#c9a96e] text-black font-semibold px-8 py-4 rounded-full hover:bg-[#b8965d] transition text-sm tracking-wider">
+              SEE LIVE DEMOS
             </a>
             <a href="https://wa.me/96171444328?text=Hi! I want a digital wedding invitation"
               target="_blank" rel="noopener noreferrer"
@@ -128,7 +132,7 @@ export default function Landing() {
       </section>
 
       {/* Demo Preview */}
-      <section className="py-24 px-6 text-center">
+      <section id="demos" className="py-24 px-6 text-center">
       <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
       <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-3">Choose Your Style</p>
       <h2 className="font-serif text-4xl font-light mb-4">Four Stunning Templates</h2>
@@ -245,7 +249,7 @@ export default function Landing() {
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
           <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-3">Why Lumivite</p>
           <h2 className="font-serif text-4xl font-light text-center mb-16">Everything You Need</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {features.map((f, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }}
@@ -301,7 +305,7 @@ export default function Landing() {
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
           <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-3">Love Stories</p>
           <h2 className="font-serif text-4xl font-light text-center mb-16">What Couples Say</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
         {
           name: "Maya & Karim",
@@ -326,6 +330,14 @@ export default function Landing() {
           text: "Lumivite delivered in less than 24 hours. The botanical template was elegant and fresh. Our international guests loved being able to RSVP from anywhere!",
           stars: 5,
           package: "Silver Package"
+        },
+        {
+          name: "Nour & Elie",
+          location: "Riyadh, KSA",
+          avatar: "🎬",
+          text: "The envelope video blew everyone away! Our pre-wedding video played right inside the invitation. It felt like a movie trailer for our wedding. Absolutely stunning.",
+          stars: 5,
+          package: "Gold Package"
         },
       ].map((t, i) => (
         <motion.div key={i}
