@@ -47,116 +47,49 @@ const getVimeoId = url => {
 }
 const isDirectVideo = url => /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(url || "")
 
-// ── DARK ENVELOPE ────────────────────────────────────────────────────────────
-function EnvelopeScreen({ guestName, onOpen, ar, setLang, opening }) {
-  const [tapped, setTapped] = useState(false)
-  const tap = () => { if (tapped) return; setTapped(true); onOpen() }
+// ── VIDEO ENVELOPE ────────────────────────────────────────────────────────────
+function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang }) {
+  const videoRef = useRef(null)
+  const [started, setStarted] = useState(false)
 
-  const isOpen = opening || tapped
+  useEffect(() => {
+    const v = videoRef.current
+    if (v) { v.currentTime = 0 }
+  }, [])
+
+  const tap = () => {
+    if (started) return
+    setStarted(true)
+    onOpen()
+    videoRef.current?.play().catch(() => {})
+  }
 
   return (
     <motion.div
       className="absolute inset-0 cursor-pointer select-none overflow-hidden"
+      style={{ background: "#0c0b09" }}
       dir={ar ? "rtl" : "ltr"}
       onClick={tap}
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.0 }}>
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
 
-      {/* Dark background — fades revealing the video */}
-      <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ background: "#161411" }}
-        animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.5 : 0, duration: 1.3 }} />
+      {/* Envelope animation video — first frame shown as poster */}
+      <video
+        ref={videoRef}
+        src="/6bec0292b1d749753c4d597420bf2a7b_720w.mp4"
+        className="absolute inset-0 w-full h-full object-cover"
+        playsInline
+        preload="auto"
+        onEnded={onVideoEnd}
+      />
 
-      {/* Paper texture overlay */}
-      <motion.div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0 }}
-        animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.05 : 0, duration: 0.5 }}>
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <filter id="paper">
-            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
-            <feColorMatrix type="saturate" values="0"/>
-            <feBlend in="SourceGraphic" mode="overlay" result="blend"/>
-            <feComposite in="blend" in2="SourceGraphic" operator="in"/>
-          </filter>
-          <rect width="100%" height="100%" filter="url(#paper)" opacity="0.07"/>
-        </svg>
-      </motion.div>
-
-      {/* Left flap — slides left on open */}
-      <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ clipPath: "polygon(0% 0%, 0% 100%, 50% 50%)", background: "linear-gradient(to right, #28251f, #1c1a16)", zIndex: 1 }}
-        animate={{ x: isOpen ? "-100%" : "0%" }}
-        transition={{ delay: isOpen ? 0.05 : 0, duration: 1.4, ease: [0.4, 0, 0.2, 1] }} />
-
-      {/* Right flap — slides right on open */}
-      <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)", background: "linear-gradient(to left, #28251f, #1c1a16)", zIndex: 1 }}
-        animate={{ x: isOpen ? "100%" : "0%" }}
-        transition={{ delay: isOpen ? 0.05 : 0, duration: 1.4, ease: [0.4, 0, 0.2, 1] }} />
-
-      {/* Top flap — slides up on open */}
-      <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)", background: "linear-gradient(to bottom, #32302b, #1e1c18)", zIndex: 1 }}
-        animate={{ y: isOpen ? "-100%" : "0%", opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.6 : 0, duration: 1.1, ease: [0.4, 0, 0.2, 1] }} />
-
-      {/* Bottom flap — slides down on open */}
-      <motion.div className="absolute inset-0 pointer-events-none"
-        style={{ clipPath: "polygon(0% 100%, 100% 100%, 50% 50%)", background: "linear-gradient(to top, #191714, #1e1c18)", zIndex: 1 }}
-        animate={{ y: isOpen ? "100%" : "0%", opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.6 : 0, duration: 1.1, ease: [0.4, 0, 0.2, 1] }} />
-
-      {/* Fold lines — fade as flaps leave */}
-      <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 2 }}
-        viewBox="0 0 100 100" preserveAspectRatio="none"
-        animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.6, delay: isOpen ? 0.05 : 0 }}>
-        <line x1="0"   y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.45" strokeWidth="0.35" />
-        <line x1="100" y1="0"   x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.45" strokeWidth="0.35" />
-        <line x1="0"   y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.32" strokeWidth="0.28" />
-        <line x1="100" y1="100" x2="50" y2="50" stroke="#c4a35a" strokeOpacity="0.32" strokeWidth="0.28" />
-      </motion.svg>
-
-      {/* Gold wax seal */}
-      <motion.div
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
-        style={{ zIndex: 10 }}
-        animate={{ scale: isOpen ? 0.6 : 1, opacity: isOpen ? 0 : 1 }}
-        transition={{ duration: 0.6, delay: isOpen ? 0.05 : 0 }}>
-        {/* Outer glow ring */}
-        <div className="absolute rounded-full" style={{
-          width: 108, height: 108,
-          background: "radial-gradient(circle, rgba(196,163,90,0.18) 0%, transparent 70%)",
-        }}/>
-        <div className="rounded-full flex items-center justify-center"
-          style={{
-            width: 92, height: 92,
-            background: "radial-gradient(circle at 36% 32%, #e0bc60, #c49a38 45%, #8c6420 80%, #5a3e10)",
-            boxShadow: "0 4px 24px rgba(140,107,58,0.6), 0 0 40px rgba(196,163,90,0.2), inset 0 2px 4px rgba(255,255,255,0.28), inset 0 -2px 4px rgba(0,0,0,0.3)"
-          }}>
-          {/* Seal border ring */}
-          <div className="absolute rounded-full" style={{
-            width: 82, height: 82,
-            border: "1.5px solid rgba(255,255,255,0.2)",
-            borderRadius: "50%"
-          }}/>
-          <svg viewBox="0 0 60 60" width="50" height="50" fill="none">
-            {/* Two interlocking wedding rings */}
-            <circle cx="23" cy="31" r="10" stroke="rgba(255,255,255,0.75)" strokeWidth="2.5" fill="none"/>
-            <circle cx="37" cy="31" r="10" stroke="rgba(255,255,255,0.75)" strokeWidth="2.5" fill="none"/>
-            {/* Small diamond above */}
-            <path d="M30 17 L32.5 20 L30 23 L27.5 20 Z" fill="rgba(255,255,255,0.8)" />
-          </svg>
-        </div>
-      </motion.div>
-
-      {/* Guest name */}
+      {/* Guest name — fades when video starts */}
       {guestName && (
         <motion.div
           className="absolute left-0 right-0 flex flex-col items-center text-center px-6 pointer-events-none"
-          style={{ top: "60%", zIndex: 10 }}
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? -6 : 0 }}
-          transition={{ duration: isOpen ? 0.3 : 1.3, delay: isOpen ? 0 : 0.7 }}>
+          style={{ bottom: "22%", zIndex: 10 }}
+          animate={{ opacity: started ? 0 : 1 }}
+          initial={{ opacity: 0 }}
+          transition={{ duration: started ? 0.3 : 1.3, delay: started ? 0 : 0.8 }}>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.1rem,4vw,1.6rem)", color: "rgba(255,255,255,0.65)", fontStyle: "italic" }}>
             {ar ? "عزيزنا" : "Dear"} <span style={{ color: GOLD }}>{guestName}</span>
           </p>
@@ -167,8 +100,8 @@ function EnvelopeScreen({ guestName, onOpen, ar, setLang, opening }) {
       <motion.div
         className="absolute bottom-10 left-0 right-0 flex flex-col items-center pointer-events-none"
         style={{ zIndex: 10 }}
-        animate={isOpen ? { opacity: 0 } : { opacity: [0.3, 1, 0.3] }}
-        transition={isOpen ? { duration: 0.25 } : { repeat: Infinity, duration: 2.5 }}>
+        animate={started ? { opacity: 0 } : { opacity: [0.3, 1, 0.3] }}
+        transition={started ? { duration: 0.25 } : { repeat: Infinity, duration: 2.5 }}>
         <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.56rem", letterSpacing: "0.48em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase" }}>
           {ar ? "انقر لفتح" : "Tap to Open"}
         </p>
@@ -921,10 +854,10 @@ export default function Invitation4({ override = null }) {
   const startMusic = () => { if (audioRef.current) { audioRef.current.play().catch(() => {}) } }
 
   const openEnvelope = () => {
-    setPhase("opening")
+    setPhase("opening") // pre-loads wedding video in background
     if (W.muteVideo) startMusic()
-    setTimeout(() => setPhase("video"), 2400)
   }
+  const onEnvelopeVideoEnd = useCallback(() => setPhase("video"), [])
   const onVideoEnded = useCallback(() => setPhase("rsvp"), [])
   const onReplay = useCallback(() => setPhase("video"), [])
 
@@ -951,7 +884,7 @@ export default function Invitation4({ override = null }) {
         {(phase === "envelope" || phase === "opening") && (
           <motion.div key="env" className="fixed inset-0 z-10"
             exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-            <EnvelopeScreen w={W} guestName={guestName} onOpen={openEnvelope} ar={ar} setLang={setLang} opening={phase === "opening"} />
+            <EnvelopeScreen guestName={guestName} onOpen={openEnvelope} onVideoEnd={onEnvelopeVideoEnd} ar={ar} setLang={setLang} />
           </motion.div>
         )}
       </AnimatePresence>
