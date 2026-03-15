@@ -54,7 +54,9 @@ function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang }) {
 
   useEffect(() => {
     const v = videoRef.current
-    if (v) { v.currentTime = 0 }
+    if (!v) return
+    // Force first frame to render on mobile by playing then immediately pausing
+    v.play().then(() => { v.pause(); v.currentTime = 0 }).catch(() => {})
   }, [])
 
   const tap = () => {
