@@ -47,7 +47,7 @@ const getVimeoId = url => {
 }
 const isDirectVideo = url => /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(url || "")
 
-// ── ENVELOPE ─────────────────────────────────────────────────────────────────
+// ── DARK ENVELOPE ────────────────────────────────────────────────────────────
 function EnvelopeScreen({ w = {}, guestName, onOpen, ar, setLang, opening }) {
   const [tapped, setTapped] = useState(false)
   const tap = () => { if (tapped) return; setTapped(true); onOpen() }
@@ -56,238 +56,162 @@ function EnvelopeScreen({ w = {}, guestName, onOpen, ar, setLang, opening }) {
   const groomInit = (w.groom || "G")[0]?.toUpperCase() || "G"
   const brideInit = (w.bride || "B")[0]?.toUpperCase() || "B"
 
-  const CX = 50, CY = 45
-
   return (
     <motion.div
-      className="absolute inset-0 cursor-pointer select-none overflow-hidden"
+      className="absolute inset-0 cursor-pointer select-none flex items-center justify-center"
       dir={ar ? "rtl" : "ltr"}
       onClick={tap}
-      style={{ background: "linear-gradient(160deg, #ede8e0 0%, #e4dfd7 100%)" }}
+      style={{ background: "linear-gradient(160deg, #2a2420 0%, #1a1510 100%)" }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.0 }}>
 
-      {/* SVG defs — paper texture + shadow filters */}
-      <svg width="0" height="0" style={{ position: "absolute" }}>
-        <defs>
-          {/* Paper grain texture */}
-          <filter id="paper" x="0%" y="0%" width="100%" height="100%" colorInterpolationFilters="sRGB">
-            <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" seed="2" stitchTiles="stitch" result="noise"/>
-            <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
-            <feBlend in="SourceGraphic" in2="grayNoise" mode="multiply" result="blend"/>
-            <feComposite in="blend" in2="SourceGraphic" operator="in"/>
-          </filter>
-          {/* Soft shadow blur */}
-          <filter id="fold-shadow" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="2.2"/>
-          </filter>
-          <filter id="crease-blur" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="0.4"/>
-          </filter>
-          {/* Seal drop shadow */}
-          <filter id="seal-shadow" x="-40%" y="-40%" width="180%" height="180%">
-            <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="rgba(100,65,10,0.55)"/>
-          </filter>
-        </defs>
-      </svg>
-
-      {/* Envelope body base — paper texture applied */}
-      <div className="absolute inset-0" style={{
-        background: "linear-gradient(170deg, #faf7f2 0%, #f4efe7 50%, #ede8df 100%)",
-        filter: "url(#paper)",
-        zIndex: 0
-      }} />
-
-      {/* Bottom flap */}
-      <motion.div className="absolute inset-0 pointer-events-none"
+      {/* Envelope card — centered with correct proportions */}
+      <motion.div
         style={{
-          clipPath: `polygon(0% 100%, 100% 100%, ${CX}% ${CY}%)`,
-          background: "linear-gradient(340deg, #eae5dc 0%, #f0ebe3 60%, #e6e1d8 100%)",
-          filter: "url(#paper)",
+          position: "relative",
+          width: "88%",
+          aspectRatio: "3 / 4",
+          borderRadius: 6,
+          overflow: "hidden",
+          boxShadow: "0 30px 80px rgba(0,0,0,0.55), 0 10px 30px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3)",
+        }}
+        animate={{ opacity: isOpen ? 0 : 1 }}
+        transition={{ delay: isOpen ? 0.8 : 0, duration: 0.6 }}>
+
+        {/* Envelope body base */}
+        <div style={{ position: "absolute", inset: 0, background: "#f6f1e8" }} />
+
+        {/* Bottom flap */}
+        <motion.div style={{
+          position: "absolute", inset: 0,
+          clipPath: "polygon(0% 100%, 100% 100%, 50% 50%)",
+          background: "linear-gradient(to top, #e8e0d2, #f0ead8)",
           zIndex: 1
         }}
-        animate={{ y: isOpen ? "100%" : "0%", opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.4 : 0, duration: 1.1, ease: [0.4, 0, 0.2, 1] }} />
+          animate={{ y: isOpen ? "100%" : "0%", opacity: isOpen ? 0 : 1 }}
+          transition={{ delay: isOpen ? 0.3 : 0, duration: 1.1, ease: [0.4, 0, 0.2, 1] }} />
 
-      {/* Bottom flap inner shadow — depth along its top edge */}
-      <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}
-        viewBox="0 0 100 100" preserveAspectRatio="none"
-        animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.4, delay: isOpen ? 0.4 : 0 }}>
-        <polygon points={`0,100 100,100 ${CX+4},${CY+6} ${CX-4},${CY+6}`}
-          fill="rgba(80,55,20,0.12)" filter="url(#fold-shadow)" />
-      </motion.svg>
-
-      {/* Left flap */}
-      <motion.div className="absolute inset-0 pointer-events-none"
-        style={{
-          clipPath: `polygon(0% 0%, 0% 100%, ${CX}% ${CY}%)`,
-          background: "linear-gradient(125deg, #f6f2ea 0%, #eee9e0 55%, #e8e3da 100%)",
-          filter: "url(#paper)",
+        {/* Left flap */}
+        <motion.div style={{
+          position: "absolute", inset: 0,
+          clipPath: "polygon(0% 0%, 0% 100%, 50% 50%)",
+          background: "linear-gradient(to right, #ece6da, #f4efe6)",
           zIndex: 2
         }}
-        animate={{ x: isOpen ? "-100%" : "0%" }}
-        transition={{ delay: isOpen ? 0.05 : 0, duration: 1.4, ease: [0.4, 0, 0.2, 1] }} />
+          animate={{ x: isOpen ? "-100%" : "0%" }}
+          transition={{ delay: isOpen ? 0.05 : 0, duration: 1.4, ease: [0.4, 0, 0.2, 1] }} />
 
-      {/* Right flap */}
-      <motion.div className="absolute inset-0 pointer-events-none"
-        style={{
-          clipPath: `polygon(100% 0%, 100% 100%, ${CX}% ${CY}%)`,
-          background: "linear-gradient(235deg, #f6f2ea 0%, #eee9e0 55%, #e8e3da 100%)",
-          filter: "url(#paper)",
+        {/* Right flap */}
+        <motion.div style={{
+          position: "absolute", inset: 0,
+          clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)",
+          background: "linear-gradient(to left, #ece6da, #f4efe6)",
           zIndex: 2
         }}
-        animate={{ x: isOpen ? "100%" : "0%" }}
-        transition={{ delay: isOpen ? 0.05 : 0, duration: 1.4, ease: [0.4, 0, 0.2, 1] }} />
+          animate={{ x: isOpen ? "100%" : "0%" }}
+          transition={{ delay: isOpen ? 0.05 : 0, duration: 1.4, ease: [0.4, 0, 0.2, 1] }} />
 
-      {/* Left/right flap inner shadows — pressed paper depth */}
-      <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 3 }}
-        viewBox="0 0 100 100" preserveAspectRatio="none"
-        animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.4, delay: isOpen ? 0.05 : 0 }}>
-        <polygon points={`0,0 0,100 ${CX-4},${CY+4}`}
-          fill="rgba(60,40,15,0.1)" filter="url(#fold-shadow)" />
-        <polygon points={`100,0 100,100 ${CX+4},${CY+4}`}
-          fill="rgba(60,40,15,0.1)" filter="url(#fold-shadow)" />
-      </motion.svg>
+        {/* Top flap cast shadow (overlapping edge depth) */}
+        <motion.svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 3 }}
+          viewBox="0 0 100 100" preserveAspectRatio="none"
+          animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.3, delay: isOpen ? 0 : 0 }}>
+          <defs>
+            <filter id="fs" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2"/>
+            </filter>
+          </defs>
+          <polygon points="0,0 50,50 47,54 0,4"   fill="rgba(60,42,18,0.28)" filter="url(#fs)" />
+          <polygon points="100,0 50,50 53,54 100,4" fill="rgba(60,42,18,0.28)" filter="url(#fs)" />
+        </motion.svg>
 
-      {/* Top flap cast shadow onto left/right */}
-      <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 3 }}
-        viewBox="0 0 100 100" preserveAspectRatio="none"
-        animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.4, delay: isOpen ? 0.05 : 0 }}>
-        <polygon points={`0,0 ${CX},${CY} ${CX-1},${CY+8} 0,8`}
-          fill="rgba(70,50,20,0.18)" filter="url(#fold-shadow)" />
-        <polygon points={`100,0 ${CX},${CY} ${CX+1},${CY+8} 100,8`}
-          fill="rgba(70,50,20,0.18)" filter="url(#fold-shadow)" />
-      </motion.svg>
-
-      {/* Top flap — slightly darker, folded paper look */}
-      <motion.div className="absolute inset-0 pointer-events-none"
-        style={{
-          clipPath: `polygon(0% 0%, 100% 0%, ${CX}% ${CY}%)`,
-          background: "linear-gradient(180deg, #d6d1c8 0%, #ddd8cf 30%, #e5e0d8 65%, #eae5dd 100%)",
-          filter: "url(#paper)",
+        {/* Top flap — clearly a different color, sits on top */}
+        <motion.div style={{
+          position: "absolute", inset: 0,
+          clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)",
+          background: "linear-gradient(180deg, #c8c2b8 0%, #d5d0c6 30%, #dedad2 65%, #e8e3da 100%)",
           zIndex: 4
         }}
-        animate={{ y: isOpen ? "-100%" : "0%", opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.6 : 0, duration: 1.1, ease: [0.4, 0, 0.2, 1] }} />
+          animate={{ y: isOpen ? "-100%" : "0%", opacity: isOpen ? 0 : 1 }}
+          transition={{ delay: isOpen ? 0.55 : 0, duration: 1.1, ease: [0.4, 0, 0.2, 1] }} />
 
-      {/* Top flap bottom-edge highlight (paper bevel) */}
-      <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 4 }}
-        viewBox="0 0 100 100" preserveAspectRatio="none"
-        animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.4, delay: isOpen ? 0.6 : 0 }}>
-        <polygon points={`0,0 ${CX},${CY} ${CX-1},${CY-1} 0,-1`}
-          fill="rgba(255,255,255,0.35)" filter="url(#fold-shadow)" />
-        <polygon points={`100,0 ${CX},${CY} ${CX+1},${CY-1} 100,-1`}
-          fill="rgba(255,255,255,0.35)" filter="url(#fold-shadow)" />
-      </motion.svg>
+        {/* Fold crease lines */}
+        <motion.svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 5 }}
+          viewBox="0 0 100 100" preserveAspectRatio="none"
+          animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.4, delay: isOpen ? 0 : 0 }}>
+          <defs>
+            <filter id="cb" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="0.5"/>
+            </filter>
+          </defs>
+          <line x1="0"   y1="0"   x2="50" y2="50" stroke="rgba(70,50,22,0.65)"  strokeWidth="2"   filter="url(#cb)" />
+          <line x1="100" y1="0"   x2="50" y2="50" stroke="rgba(70,50,22,0.65)"  strokeWidth="2"   filter="url(#cb)" />
+          <line x1="0"   y1="100" x2="50" y2="50" stroke="rgba(70,50,22,0.42)"  strokeWidth="1.5" filter="url(#cb)" />
+          <line x1="100" y1="100" x2="50" y2="50" stroke="rgba(70,50,22,0.42)"  strokeWidth="1.5" filter="url(#cb)" />
+          <line x1="0"   y1="0"   x2="50" y2="50" stroke="rgba(255,255,255,0.9)" strokeWidth="0.7" />
+          <line x1="100" y1="0"   x2="50" y2="50" stroke="rgba(255,255,255,0.9)" strokeWidth="0.7" />
+          <line x1="0"   y1="100" x2="50" y2="50" stroke="rgba(255,255,255,0.65)" strokeWidth="0.45" />
+          <line x1="100" y1="100" x2="50" y2="50" stroke="rgba(255,255,255,0.65)" strokeWidth="0.45" />
+        </motion.svg>
 
-      {/* Fold crease lines — shadow + highlight pair */}
-      <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 5 }}
-        viewBox="0 0 100 100" preserveAspectRatio="none"
-        animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.5, delay: isOpen ? 0.05 : 0 }}>
-        {/* Shadow lines */}
-        <line x1="0"   y1="0"   x2={CX} y2={CY} stroke="rgba(90,60,20,0.55)"    strokeWidth="1.6" filter="url(#crease-blur)" />
-        <line x1="100" y1="0"   x2={CX} y2={CY} stroke="rgba(90,60,20,0.55)"    strokeWidth="1.6" filter="url(#crease-blur)" />
-        <line x1="0"   y1="100" x2={CX} y2={CY} stroke="rgba(90,60,20,0.35)"    strokeWidth="1.2" filter="url(#crease-blur)" />
-        <line x1="100" y1="100" x2={CX} y2={CY} stroke="rgba(90,60,20,0.35)"    strokeWidth="1.2" filter="url(#crease-blur)" />
-        {/* Highlight lines (paper edge light reflection) */}
-        <line x1="0"   y1="0"   x2={CX} y2={CY} stroke="rgba(255,255,255,0.85)" strokeWidth="0.7" />
-        <line x1="100" y1="0"   x2={CX} y2={CY} stroke="rgba(255,255,255,0.85)" strokeWidth="0.7" />
-        <line x1="0"   y1="100" x2={CX} y2={CY} stroke="rgba(255,255,255,0.6)"  strokeWidth="0.5" />
-        <line x1="100" y1="100" x2={CX} y2={CY} stroke="rgba(255,255,255,0.6)"  strokeWidth="0.5" />
-      </motion.svg>
-
-      {/* Gold wax seal */}
-      <motion.div
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
-        style={{ zIndex: 10, marginTop: `${CY - 50}%` }}
-        animate={{ scale: isOpen ? 0.5 : 1, opacity: isOpen ? 0 : 1 }}
-        transition={{ duration: 0.5, delay: isOpen ? 0.05 : 0 }}>
-
-        {/* Ambient glow ring */}
-        <div style={{
-          position: "absolute",
-          width: 145, height: 145,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(210,165,50,0.28) 0%, transparent 65%)",
-        }} />
-
-        {/* Seal outer shadow disc */}
-        <div style={{
-          position: "absolute",
-          width: 110, height: 110,
-          borderRadius: "50%",
-          background: "rgba(100,65,10,0.35)",
-          filter: "blur(8px)",
-          transform: "translateY(5px)"
-        }} />
-
-        {/* Octagon seal body */}
-        <div style={{
-          width: 102, height: 102,
-          clipPath: "polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)",
-          background: "radial-gradient(circle at 34% 28%, #f7dc6a 0%, #e8ba30 28%, #c49420 52%, #9a7015 72%, #6e4c10 100%)",
+        {/* Gold wax seal */}
+        <motion.div style={{
+          position: "absolute", inset: 0,
           display: "flex", alignItems: "center", justifyContent: "center",
-          position: "relative",
-          filter: "url(#seal-shadow)"
-        }}>
-          {/* Top-left specular highlight */}
+          zIndex: 10
+        }}
+          animate={{ scale: isOpen ? 0.5 : 1, opacity: isOpen ? 0 : 1 }}
+          transition={{ duration: 0.5, delay: isOpen ? 0.05 : 0 }}>
           <div style={{
-            position: "absolute",
-            inset: 0,
-            clipPath: "polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)",
-            background: "linear-gradient(135deg, rgba(255,255,255,0.38) 0%, transparent 52%)",
+            position: "absolute", width: 120, height: 120, borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(196,158,60,0.3) 0%, transparent 68%)"
           }} />
-          {/* Inner embossed ring */}
           <div style={{
-            position: "absolute",
-            width: 86, height: 86,
+            width: 90, height: 90,
             clipPath: "polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)",
-            boxShadow: "inset 0 0 0 1.5px rgba(255,255,255,0.28), inset 0 2px 5px rgba(0,0,0,0.25)",
-          }} />
-          {/* Initials */}
-          <span style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: "1.3rem",
-            fontWeight: 700,
-            color: "rgba(255,255,255,0.95)",
-            letterSpacing: "0.1em",
-            textShadow: "0 1px 5px rgba(0,0,0,0.5)",
-            position: "relative", zIndex: 1
+            background: "radial-gradient(circle at 36% 30%, #f2cc52, #d4a830 38%, #9a7220 68%, #6e4e14)",
+            boxShadow: "0 6px 28px rgba(120,85,30,0.6), 0 2px 6px rgba(0,0,0,0.2)",
+            display: "flex", alignItems: "center", justifyContent: "center", position: "relative"
           }}>
-            {groomInit}|{brideInit}
-          </span>
-        </div>
+            <span style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "1.25rem", fontWeight: 700,
+              color: "rgba(255,255,255,0.93)", letterSpacing: "0.08em",
+              textShadow: "0 1px 4px rgba(0,0,0,0.45)"
+            }}>{groomInit}|{brideInit}</span>
+          </div>
+        </motion.div>
+
+        {/* Guest name */}
+        {guestName && (
+          <motion.div style={{
+            position: "absolute", left: 0, right: 0,
+            display: "flex", justifyContent: "center",
+            top: "64%", zIndex: 10
+          }}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? -6 : 0 }}
+            transition={{ duration: isOpen ? 0.3 : 1.3, delay: isOpen ? 0 : 0.7 }}>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(0.95rem,3.5vw,1.4rem)", color: "rgba(80,58,25,0.75)", fontStyle: "italic", textAlign: "center" }}>
+              {ar ? "عزيزنا" : "Dear"} <span style={{ color: "#9a7218", fontWeight: 600 }}>{guestName}</span>
+            </p>
+          </motion.div>
+        )}
       </motion.div>
 
-      {/* Guest name */}
-      {guestName && (
-        <motion.div
-          className="absolute left-0 right-0 flex flex-col items-center text-center px-6 pointer-events-none"
-          style={{ top: "62%", zIndex: 10 }}
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? -6 : 0 }}
-          transition={{ duration: isOpen ? 0.3 : 1.3, delay: isOpen ? 0 : 0.7 }}>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.1rem,4vw,1.6rem)", color: "rgba(90,65,30,0.72)", fontStyle: "italic" }}>
-            {ar ? "عزيزنا" : "Dear"} <span style={{ color: "#a07820", fontWeight: 600 }}>{guestName}</span>
-          </p>
-        </motion.div>
-      )}
-
-      {/* Tap to open hint */}
+      {/* Tap to open — outside card, below it */}
       <motion.div
-        className="absolute bottom-10 left-0 right-0 flex flex-col items-center pointer-events-none"
-        style={{ zIndex: 10 }}
+        style={{ position: "absolute", bottom: "6%", left: 0, right: 0, display: "flex", flexDirection: "column", alignItems: "center", zIndex: 10 }}
         animate={isOpen ? { opacity: 0 } : { opacity: [0.4, 1, 0.4] }}
         transition={isOpen ? { duration: 0.25 } : { repeat: Infinity, duration: 2.5 }}>
-        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.56rem", letterSpacing: "0.48em", color: "rgba(100,75,35,0.6)", textTransform: "uppercase" }}>
+        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.55rem", letterSpacing: "0.45em", color: "rgba(200,175,120,0.8)", textTransform: "uppercase" }}>
           {ar ? "انقر لفتح" : "Tap to Open"}
         </p>
-        <div className="w-px h-7 mt-2" style={{ background: "linear-gradient(to bottom, rgba(160,120,40,0.55), transparent)" }} />
+        <div style={{ width: 1, height: 28, marginTop: 8, background: "linear-gradient(to bottom, rgba(196,163,90,0.7), transparent)" }} />
       </motion.div>
 
       {/* Language toggle */}
       <button onClick={e => { e.stopPropagation(); setLang(ar ? "en" : "ar") }}
         className="absolute top-5 right-5 z-30 h-9 px-4 rounded-full text-xs transition"
-        style={{ background: "rgba(160,120,40,0.1)", border: "1px solid rgba(160,120,40,0.35)", color: "#8a6820", fontFamily: "'Jost', sans-serif", letterSpacing: "0.1em" }}>
+        style={{ background: "rgba(196,163,90,0.15)", border: "1px solid rgba(196,163,90,0.4)", color: "#c4a35a", fontFamily: "'Jost', sans-serif", letterSpacing: "0.1em" }}>
         {ar ? "EN" : "عربي"}
       </button>
     </motion.div>
