@@ -31,7 +31,7 @@ const DEFAULT_WEDDING = {
     { name: "ABC Store",     icon: "🎁", desc: "Browse our gift registry",           descAr: "تصفح قائمة هداياي",        link: "https://www.abc.com.lb" },
     { name: "Bank Transfer", icon: "🏦", desc: "iban: LB62 0099 0000 0001 0019 2000 9123", descAr: "iban: LB62 0099 0000 0001 0019 2000 9123", link: null },
   ],
-  // video: ""  ← admin sets this to a YouTube URL, Vimeo URL, or direct MP4 URL
+  video: "/PreWeddingNew.mp4",
 }
 
 // ── Detect video URL type ────────────────────────────────────────────────────
