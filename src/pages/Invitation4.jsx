@@ -61,72 +61,68 @@ function EnvelopeScreen({ w = {}, guestName, onOpen, ar, setLang, opening }) {
       className="absolute inset-0 cursor-pointer select-none overflow-hidden"
       dir={ar ? "rtl" : "ltr"}
       onClick={tap}
-      style={{ background: "linear-gradient(160deg, #f0e9dc 0%, #e8dece 100%)" }}
+      style={{ background: "#faf7f2" }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.0 }}>
 
-      {/* Subtle radial vignette for depth */}
-      <div className="absolute inset-0 pointer-events-none" style={{
-        background: "radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(160,130,90,0.13) 100%)",
-        zIndex: 0
-      }} />
-
-      {/* Envelope base — cream center */}
-      <motion.div className="absolute inset-0 pointer-events-none" style={{ background: "#f7f2e8", zIndex: 0 }}
-        animate={{ opacity: isOpen ? 0 : 1 }}
-        transition={{ delay: isOpen ? 0.4 : 0, duration: 1.0 }} />
-
-      {/* Left flap */}
+      {/* Left flap — shadow concentrated at fold crease (right edge of triangle) */}
       <motion.div className="absolute inset-0 pointer-events-none"
         style={{
           clipPath: "polygon(0% 0%, 0% 100%, 50% 50%)",
-          background: "linear-gradient(to right, #ccc0a8, #ddd4c0, #ece6d8)",
+          background: "linear-gradient(to left, rgba(105,78,38,0.22) 0%, rgba(105,78,38,0.06) 22%, #f5f1ea 55%, #faf7f2 100%)",
           zIndex: 2
         }}
         animate={{ x: isOpen ? "-100%" : "0%" }}
         transition={{ delay: isOpen ? 0.05 : 0, duration: 1.4, ease: [0.4, 0, 0.2, 1] }} />
 
-      {/* Right flap */}
+      {/* Right flap — shadow concentrated at fold crease (left edge of triangle) */}
       <motion.div className="absolute inset-0 pointer-events-none"
         style={{
           clipPath: "polygon(100% 0%, 100% 100%, 50% 50%)",
-          background: "linear-gradient(to left, #ccc0a8, #ddd4c0, #ece6d8)",
+          background: "linear-gradient(to right, rgba(105,78,38,0.22) 0%, rgba(105,78,38,0.06) 22%, #f5f1ea 55%, #faf7f2 100%)",
           zIndex: 2
         }}
         animate={{ x: isOpen ? "100%" : "0%" }}
         transition={{ delay: isOpen ? 0.05 : 0, duration: 1.4, ease: [0.4, 0, 0.2, 1] }} />
 
-      {/* Bottom flap */}
+      {/* Bottom flap — shadow at top edge (fold crease) */}
       <motion.div className="absolute inset-0 pointer-events-none"
         style={{
           clipPath: "polygon(0% 100%, 100% 100%, 50% 50%)",
-          background: "linear-gradient(to top, #e0d8c8, #eee8da)",
+          background: "linear-gradient(to bottom, rgba(105,78,38,0.18) 0%, rgba(105,78,38,0.05) 20%, #f5f1ea 50%, #faf7f2 100%)",
           zIndex: 2
         }}
         animate={{ y: isOpen ? "100%" : "0%", opacity: isOpen ? 0 : 1 }}
         transition={{ delay: isOpen ? 0.5 : 0, duration: 1.1, ease: [0.4, 0, 0.2, 1] }} />
 
-      {/* Top flap — opens upward, slightly darker for depth */}
+      {/* Top flap — sealed flap, slightly cooler/gray tone + shadow at bottom edge */}
       <motion.div className="absolute inset-0 pointer-events-none"
         style={{
           clipPath: "polygon(0% 0%, 100% 0%, 50% 50%)",
-          background: "linear-gradient(to bottom, #bdb09a, #cec4b0, #ddd6c4)",
+          background: "linear-gradient(to top, rgba(80,62,38,0.32) 0%, rgba(80,62,38,0.1) 18%, #e8e3da 45%, #ddd8cf 100%)",
           zIndex: 3
         }}
         animate={{ y: isOpen ? "-100%" : "0%", opacity: isOpen ? 0 : 1 }}
         transition={{ delay: isOpen ? 0.6 : 0, duration: 1.1, ease: [0.4, 0, 0.2, 1] }} />
 
-      {/* Fold crease lines */}
-      <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 4 }}
+      {/* Fold crease lines with blur for realistic paper depth */}
+      <motion.svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 5 }}
         viewBox="0 0 100 100" preserveAspectRatio="none"
         animate={{ opacity: isOpen ? 0 : 1 }} transition={{ duration: 0.5, delay: isOpen ? 0.05 : 0 }}>
-        {/* Shadow side of each crease */}
-        <line x1="0"   y1="0"   x2="50" y2="50" stroke="rgba(120,95,55,0.35)" strokeWidth="0.4" />
-        <line x1="100" y1="0"   x2="50" y2="50" stroke="rgba(120,95,55,0.35)" strokeWidth="0.4" />
-        <line x1="0"   y1="100" x2="50" y2="50" stroke="rgba(120,95,55,0.22)" strokeWidth="0.3" />
-        <line x1="100" y1="100" x2="50" y2="50" stroke="rgba(120,95,55,0.22)" strokeWidth="0.3" />
-        {/* Light highlight side */}
-        <line x1="0"   y1="0"   x2="50" y2="50" stroke="rgba(255,255,255,0.55)" strokeWidth="0.18" strokeDasharray="0.5 0.5" />
-        <line x1="100" y1="0"   x2="50" y2="50" stroke="rgba(255,255,255,0.55)" strokeWidth="0.18" strokeDasharray="0.5 0.5" />
+        <defs>
+          <filter id="crease-shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="0.6"/>
+          </filter>
+        </defs>
+        {/* Blurred shadow lines */}
+        <line x1="0"   y1="0"   x2="50" y2="50" stroke="rgba(90,65,30,0.5)"  strokeWidth="1.8" filter="url(#crease-shadow)" />
+        <line x1="100" y1="0"   x2="50" y2="50" stroke="rgba(90,65,30,0.5)"  strokeWidth="1.8" filter="url(#crease-shadow)" />
+        <line x1="0"   y1="100" x2="50" y2="50" stroke="rgba(90,65,30,0.35)" strokeWidth="1.4" filter="url(#crease-shadow)" />
+        <line x1="100" y1="100" x2="50" y2="50" stroke="rgba(90,65,30,0.35)" strokeWidth="1.4" filter="url(#crease-shadow)" />
+        {/* Bright highlight lines (paper fold catch) */}
+        <line x1="0"   y1="0"   x2="50" y2="50" stroke="rgba(255,255,255,0.75)" strokeWidth="0.5" />
+        <line x1="100" y1="0"   x2="50" y2="50" stroke="rgba(255,255,255,0.75)" strokeWidth="0.5" />
+        <line x1="0"   y1="100" x2="50" y2="50" stroke="rgba(255,255,255,0.6)"  strokeWidth="0.4" />
+        <line x1="100" y1="100" x2="50" y2="50" stroke="rgba(255,255,255,0.6)"  strokeWidth="0.4" />
       </motion.svg>
 
       {/* Gold wax seal — octagonal shape */}
