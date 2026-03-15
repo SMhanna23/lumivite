@@ -131,9 +131,9 @@ export default function Landing() {
       <section className="py-24 px-6 text-center">
       <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
       <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-3">Choose Your Style</p>
-      <h2 className="font-serif text-4xl font-light mb-4">Three Stunning Templates</h2>
+      <h2 className="font-serif text-4xl font-light mb-4">Four Stunning Templates</h2>
       <p className="text-white/40 mb-12 text-sm">Click any template to see a live demo</p>
-      <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
 
       {/* Template 1 - Dark Luxury */}
       <a href="/demo" className="group block">
@@ -206,6 +206,32 @@ export default function Landing() {
             style={{ background: "rgba(183,110,121,0.08)", borderTop: "1px solid rgba(183,110,121,0.12)" }}>
             <span className="text-sm font-medium" style={{ color: "#B76E79" }}>Rose Gold & Blush</span>
             <span className="text-xs transition group-hover:opacity-100" style={{ color: "rgba(183,110,121,0.5)" }}>View Demo →</span>
+          </div>
+        </motion.div>
+      </a>
+
+      {/* Template 4 - Golden Envelope */}
+      <a href="/demo4" className="group block">
+        <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}
+          className="rounded-3xl overflow-hidden shadow-2xl"
+          style={{ background: "radial-gradient(ellipse at 50% 0%, #1a1508, #0c0b09)", border: "1px solid rgba(196,163,90,0.25)" }}>
+          <div className="p-10 text-center">
+            <p className="text-xs tracking-widest uppercase mb-4 font-medium" style={{ color: "#c4a35a" }}>You're invited</p>
+            <p className="font-serif text-4xl font-light text-white mb-1">Christopher</p>
+            <p className="text-2xl italic mb-1" style={{ color: "#c4a35a", fontFamily: "'Cormorant Garamond', serif" }}>&</p>
+            <p className="font-serif text-4xl font-light text-white mb-6">Joelle</p>
+            <div className="flex gap-2 justify-center mb-4">
+              {["198","03","00","34"].map((v,i) => (
+                <div key={i} className="w-12 h-12 rounded-lg flex items-center justify-center text-sm font-bold"
+                  style={{ background: "rgba(196,163,90,0.12)", border: "1px solid rgba(196,163,90,0.35)", color: "#c4a35a" }}>{v}</div>
+              ))}
+            </div>
+            <p className="text-xs tracking-widest opacity-40" style={{ color: "#c4a35a" }}>TAP TO OPEN</p>
+          </div>
+          <div className="py-3 px-6 flex items-center justify-between"
+            style={{ background: "rgba(196,163,90,0.06)", borderTop: "1px solid rgba(196,163,90,0.15)" }}>
+            <span className="text-sm font-medium" style={{ color: "#c4a35a" }}>Golden Envelope</span>
+            <span className="text-xs transition group-hover:opacity-100" style={{ color: "rgba(196,163,90,0.5)" }}>View Demo →</span>
           </div>
         </motion.div>
       </a>
