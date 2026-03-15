@@ -78,6 +78,7 @@ function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang }) {
         src="/6bec0292b1d749753c4d597420bf2a7b_720w.mp4"
         className="absolute inset-0 w-full h-full object-cover"
         playsInline
+        muted
         preload="auto"
         onEnded={onVideoEnd}
       />
