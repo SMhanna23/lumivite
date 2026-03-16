@@ -13,6 +13,7 @@ export default function Memories() {
   const [guestName, setGuestName] = useState("")
   const [uploading, setUploading] = useState(false)
   const [justUploaded, setJustUploaded] = useState(false)
+  const [uploadError, setUploadError] = useState("")
   const fileInputRef = useRef(null)
 
   useEffect(() => {
@@ -70,7 +71,8 @@ export default function Memories() {
       setJustUploaded(true)
       setTimeout(() => setJustUploaded(false), 3000)
     } catch (e) {
-      alert("Upload failed: " + e.message)
+      setUploadError("Upload failed: " + e.message)
+      setTimeout(() => setUploadError(""), 4000)
     }
     setUploading(false)
     if (fileInputRef.current) fileInputRef.current.value = ""
@@ -133,6 +135,7 @@ export default function Memories() {
             style={{ background: justUploaded ? "rgba(74,222,128,0.12)" : "rgba(196,163,90,0.12)", border: `1px solid ${justUploaded ? "rgba(74,222,128,0.4)" : "rgba(196,163,90,0.35)"}`, color: justUploaded ? "#4ade80" : "#c4a35a" }}>
             {uploading ? "Uploading..." : justUploaded ? "✓ Photos Shared! Thank you 🤍" : "📷 Choose Photos to Upload"}
           </button>
+          {uploadError && <p className="text-red-400 text-xs text-center mt-2">{uploadError}</p>}
           <p className="text-white/20 text-xs text-center mt-2">You can select multiple photos at once</p>
         </motion.div>
 

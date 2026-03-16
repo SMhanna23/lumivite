@@ -68,7 +68,7 @@ function Roses() {
   const items = ["🌷", "🌸", "💮", "🏵️", "✿"]
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {Array.from({ length: 16 }).map((_, i) => (
+      {Array.from({ length: 8 }).map((_, i) => (
         <motion.div key={i} className="absolute select-none"
           style={{ fontSize: `${14 + Math.random() * 10}px` }}
           initial={{ x: `${Math.random() * 100}vw`, y: -40, opacity: 0.5 }}
@@ -103,6 +103,7 @@ export default function Invitation({ override = null }) {
   const [wishes, setWishes] = useState("")
   const [persons, setPersons] = useState(1)
   const [status, setStatus] = useState("idle")
+  const [rsvpError, setRsvpError] = useState("")
   const [playing, setPlaying] = useState(false)
   const [lang, setLang] = useState("en")
   const ar = lang === "ar"
@@ -138,7 +139,8 @@ export default function Invitation({ override = null }) {
   }
 
   const handleRSVP = async () => {
-    if (!name || attending === null) return alert("Please enter your name and select attendance")
+    if (!name || attending === null) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
+    setRsvpError("")
     setStatus("loading")
     try {
       await addDoc(collection(db, "rsvps"), {
@@ -601,6 +603,7 @@ export default function Invitation({ override = null }) {
                   className="w-full rounded-xl px-5 py-4 focus:outline-none transition resize-none"
                   style={{ background: "white", border: `1px solid ${roseGold}30`, color: dark }} />
                 <p className="text-xs text-right opacity-30">{wishes.length}/200</p>
+                {rsvpError && <p className="text-red-500 text-sm text-center">{rsvpError}</p>}
                 <button onClick={handleRSVP} disabled={status === "loading"}
                   className="w-full py-4 font-semibold rounded-xl tracking-wider text-white disabled:opacity-50 transition"
                   style={{ background: `linear-gradient(135deg, ${roseGold}, #C4566A)` }}>

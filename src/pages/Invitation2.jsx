@@ -64,7 +64,7 @@ function Countdown({ targetDate }) {
 function Leaves() {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {Array.from({ length: 14 }).map((_, i) => (
+      {Array.from({ length: 8 }).map((_, i) => (
         <motion.div key={i} className="absolute text-2xl select-none"
           initial={{ x: `${Math.random() * 100}vw`, y: -40, opacity: 0.6 }}
           animate={{ y: "110vh", rotate: 180 * (Math.random() > 0.5 ? 1 : -1), opacity: [0.6, 0.3, 0] }}
@@ -93,6 +93,7 @@ export default function Invitation({ override = null }) {
   const [wishes, setWishes] = useState("")
   const [persons, setPersons] = useState(1)
   const [status, setStatus] = useState("idle")
+  const [rsvpError, setRsvpError] = useState("")
   const [playing, setPlaying] = useState(false)
   const [lang, setLang] = useState("en")
   const ar = lang === "ar"
@@ -132,7 +133,8 @@ export default function Invitation({ override = null }) {
   }
 
   const handleRSVP = async () => {
-    if (!name || attending === null) return alert("Please enter your name and select attendance")
+    if (!name || attending === null) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
+    setRsvpError("")
     setStatus("loading")
     try {
       await addDoc(collection(db, "rsvps"), {
@@ -148,8 +150,7 @@ export default function Invitation({ override = null }) {
       fetch(waUrl, { mode: "no-cors" }).catch(() => {})
 
       setStatus("success")
-    } catch (e) {
-      console.error(e)
+    } catch {
       setStatus("error")
     }
   }
@@ -590,6 +591,7 @@ export default function Invitation({ override = null }) {
                   rows={3} maxLength={200}
                   className="w-full bg-white border border-[#4a7c59]/20 rounded-lg px-5 py-4 text-[#2d3a2e] placeholder-[#4a7c59]/30 focus:outline-none focus:border-[#4a7c59] transition resize-none shadow-sm" />
                 <p className="text-[#4a7c59]/30 text-xs text-right">{wishes.length}/200</p>
+                {rsvpError && <p className="text-red-500 text-sm text-center">{rsvpError}</p>}
                 <button onClick={handleRSVP} disabled={status === "loading"}
                   className="w-full py-4 font-semibold rounded-lg transition tracking-wider text-white disabled:opacity-50"
                   style={{ background: "#4a7c59" }}>

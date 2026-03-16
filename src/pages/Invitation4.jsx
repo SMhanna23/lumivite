@@ -500,7 +500,7 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
     <div className="fixed inset-0 z-10" style={{ background: DARK }}>
       {/* Video */}
       {isDirect ? (
-        <video ref={videoRef} autoPlay playsInline
+        <video ref={videoRef} autoPlay playsInline muted={videoMuted}
           className="absolute inset-0 w-full h-full object-cover"
           style={{ background: DARK }}
           onLoadedMetadata={e => {
@@ -663,11 +663,13 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
   const [wishes,    setWishes]    = useState("")
   const [persons,   setPersons]   = useState(1)
   const [status,    setStatus]    = useState("idle")
+  const [rsvpError, setRsvpError] = useState("")
   const [searchParams] = useSearchParams()
   useEffect(() => { const gn = searchParams.get("gn"); if (gn) setName(gn) }, [])
 
   const handleRSVP = async () => {
-    if (!name || attending === null) return alert("Please enter your name and select attendance")
+    if (!name || attending === null) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
+    setRsvpError("")
     setStatus("loading")
     try {
       await addDoc(collection(db, "rsvps"), {
@@ -786,6 +788,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                   rows={3} maxLength={200} className="w-full rounded-xl px-5 py-4 text-white placeholder-white/20 focus:outline-none resize-none"
                   style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }} />
                 <p className="text-xs text-right" style={{ color: "rgba(255,255,255,0.18)" }}>{wishes.length}/200</p>
+                {rsvpError && <p className="text-red-400 text-sm text-center">{rsvpError}</p>}
                 <button onClick={handleRSVP} disabled={status === "loading"}
                   className="w-full py-4 rounded-xl font-semibold tracking-widest uppercase transition disabled:opacity-50"
                   style={{ background: GOLD, color: "white", fontFamily: "'Jost', sans-serif", fontSize: "0.82rem" }}>

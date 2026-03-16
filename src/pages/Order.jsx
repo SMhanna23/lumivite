@@ -6,7 +6,7 @@ import { db } from "../firebase"
 const packages = [
   { id: "bronze", name: "Bronze", price: "$89", color: "#cd7f32", features: ["1 template", "RSVP dashboard", "Countdown timer", "1 shared link"] },
   { id: "silver", name: "Silver", price: "$139", color: "#c9a96e", features: ["Personalized guest links", "Background music", "Photo gallery", "Excel import"], popular: true },
-  { id: "gold", name: "Gold", price: "$199", color: "#ffd700", features: ["2 template choices", "Google Maps embed", "Gift registry", "Priority support"] },
+  { id: "gold", name: "Gold", price: "$199", color: "#ffd700", features: ["All 4 template choices", "Google Maps embed", "Guest Memory Wall", "Priority support"] },
 ]
 
 const templates = [
@@ -21,6 +21,12 @@ const steps = ["Package", "Template", "Details", "Contact", "Payment"]
 export default function Order() {
   const [step, setStep] = useState(0)
   const [status, setStatus] = useState("idle")
+  const [copiedField, setCopiedField] = useState(null)
+  const copyToClipboard = (text, field) => {
+    navigator.clipboard.writeText(text)
+    setCopiedField(field)
+    setTimeout(() => setCopiedField(null), 2000)
+  }
   const [form, setForm] = useState({
     package: "",
     template: "",
@@ -400,9 +406,9 @@ export default function Order() {
             <span className="text-white/40">Phone Number</span>
             <div className="flex items-center gap-2">
               <span className="text-white font-medium">+961 71 444 328</span>
-              <button onClick={() => { navigator.clipboard.writeText("96171444328"); alert("Copied!") }}
+              <button onClick={() => copyToClipboard("96171444328", "omt")}
                 className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-2 py-0.5 hover:bg-[#c9a96e]/10 transition">
-                Copy
+                {copiedField === "omt" ? "✓" : "Copy"}
               </button>
             </div>
           </div>
@@ -432,9 +438,9 @@ export default function Order() {
       <span className="text-white/40">Card Number</span>
       <div className="flex items-center gap-2">
         <span className="text-white font-mono text-xs">**** **** **** 8478</span>
-        <button onClick={() => { navigator.clipboard.writeText("4870522074258478"); alert("Copied!") }}
+        <button onClick={() => copyToClipboard("4870522074258478", "card")}
           className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-2 py-0.5 hover:bg-[#c9a96e]/10 transition">
-          Copy
+          {copiedField === "card" ? "✓" : "Copy"}
         </button>
       </div>
     </div>
@@ -464,9 +470,9 @@ export default function Order() {
       <span className="text-white/40">Whish Number</span>
       <div className="flex items-center gap-2">
         <span className="text-white font-medium">+961 71 444 328</span>
-        <button onClick={() => { navigator.clipboard.writeText("96171444328"); alert("Copied!") }}
+        <button onClick={() => copyToClipboard("96171444328", "whish")}
           className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-2 py-0.5 hover:bg-[#c9a96e]/10 transition">
-          Copy
+          {copiedField === "whish" ? "✓" : "Copy"}
         </button>
       </div>
     </div>
