@@ -97,11 +97,11 @@ const dark = "#5C2D35"
 export default function Invitation({ override = null }) {
   const WEDDING = override ? { ...DEFAULT_WEDDING, ...override } : DEFAULT_WEDDING
   const [started, setStarted] = useState(false)
-  const [name, setName] = useState("")
+  const [name, setName] = useState(() => new URLSearchParams(window.location.search).get("gn") || "")
   const [email, setEmail] = useState("")
   const [attending, setAttending] = useState(null)
   const [wishes, setWishes] = useState("")
-  const [persons, setPersons] = useState(1)
+  const [persons, setPersons] = useState(() => parseInt(new URLSearchParams(window.location.search).get("np") || "1"))
   const [status, setStatus] = useState("idle")
   const [rsvpError, setRsvpError] = useState("")
   const [playing, setPlaying] = useState(false)
@@ -122,12 +122,6 @@ export default function Invitation({ override = null }) {
   const audioRef = useRef(null)
 
   const guestName = searchParams.get("gn") || ""
-  const numPersons = parseInt(searchParams.get("np") || "1")
-
-  useEffect(() => {
-    if (guestName) setName(guestName)
-    if (numPersons) setPersons(numPersons)
-  }, [])
 
   const startMusic = () => {
     if (audioRef.current) { audioRef.current.play().catch(() => {}); setPlaying(true) }
@@ -581,7 +575,8 @@ export default function Invitation({ override = null }) {
                       boxShadow: "0 1px 4px rgba(183,110,121,0.08)" }} />
                 ))}
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
-                  className="w-full rounded-xl px-5 py-4 focus:outline-none transition"
+                  disabled={!!searchParams.get("np")}
+                  className="w-full rounded-xl px-5 py-4 focus:outline-none transition disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ background: "white", border: `1px solid ${roseGold}30`, color: dark }}>
                   {[1,2,3,4,5].map(n => <option key={n} value={n}>{n} {n === 1 ? "person" : "persons"}</option>)}
                 </select>

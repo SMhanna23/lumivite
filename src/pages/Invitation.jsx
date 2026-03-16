@@ -88,17 +88,18 @@ const timeline = [
 export default function Invitation({ override = null }) {
   const WEDDING = override ? { ...DEFAULT_WEDDING, ...override } : DEFAULT_WEDDING
   const [started, setStarted] = useState(false)
-  const [name, setName] = useState("")
+  const [name, setName] = useState(() => new URLSearchParams(window.location.search).get("gn") || "")
   const [email, setEmail] = useState("")
   const [attending, setAttending] = useState(null)
   const [wishes, setWishes] = useState("")
-  const [persons, setPersons] = useState(1)
+  const [persons, setPersons] = useState(() => parseInt(new URLSearchParams(window.location.search).get("np") || "1"))
   const [status, setStatus] = useState("idle")
   const [rsvpError, setRsvpError] = useState("")
   const [playing, setPlaying] = useState(false)
   const [searchParams] = useSearchParams()
   const [lang, setLang] = useState("en")
   const ar = lang === "ar"
+  const guestName = searchParams.get("gn") || ""
   const photos = WEDDING.photos?.length ? WEDDING.photos : [
     "/photo1.jpg",
     "/photo2.jpg",
@@ -112,13 +113,7 @@ export default function Invitation({ override = null }) {
   ]
   const audioRef = useRef(null)
 
-  const guestName = searchParams.get("gn") || ""
-  const numPersons = parseInt(searchParams.get("np") || "1")
 
-  useEffect(() => {
-    if (guestName) setName(guestName)
-    if (numPersons) setPersons(numPersons)
-  }, [])
 
   const startMusic = () => {
     if (audioRef.current) {
@@ -505,7 +500,8 @@ export default function Invitation({ override = null }) {
                   type="email" placeholder={ar ? "بريدك الإلكتروني (اختياري)" : "Your Email (optional)"}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-[#c9a96e] transition" />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white focus:outline-none focus:border-[#c9a96e] transition">
+                  disabled={!!searchParams.get("np")}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white focus:outline-none focus:border-[#c9a96e] transition disabled:opacity-60 disabled:cursor-not-allowed">
                   {[1,2,3,4,5].map(n => <option key={n} value={n} className="bg-[#1a1510]">{n} {n === 1 ? "person" : "persons"}</option>)}
                 </select>
                 <div className="flex gap-3">

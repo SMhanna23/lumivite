@@ -657,15 +657,14 @@ function PhotoFilm({ photos, w, onEnded, ar }) {
 
 // ── RSVP SCREEN ──────────────────────────────────────────────────────────────
 function RSVPScreen({ w, ar, setLang, onReplay }) {
-  const [name,      setName]      = useState("")
+  const [name,      setName]      = useState(() => new URLSearchParams(window.location.search).get("gn") || "")
   const [email,     setEmail]     = useState("")
   const [attending, setAttending] = useState(null)
   const [wishes,    setWishes]    = useState("")
-  const [persons,   setPersons]   = useState(1)
+  const [persons,   setPersons]   = useState(() => parseInt(new URLSearchParams(window.location.search).get("np") || "1"))
   const [status,    setStatus]    = useState("idle")
   const [rsvpError, setRsvpError] = useState("")
   const [searchParams] = useSearchParams()
-  useEffect(() => { const gn = searchParams.get("gn"); if (gn) setName(gn) }, [])
 
   const handleRSVP = async () => {
     if (!name || attending === null) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
@@ -764,7 +763,8 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                     style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }} />
                 ))}
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
-                  className="w-full rounded-xl px-5 py-4 text-white focus:outline-none"
+                  disabled={!!searchParams.get("np")}
+                  className="w-full rounded-xl px-5 py-4 text-white focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }}>
                   {[1,2,3,4,5].map(n => <option key={n} value={n} style={{ background: "#1a1510" }}>{n} {n === 1 ? "person" : "persons"}</option>)}
                 </select>
