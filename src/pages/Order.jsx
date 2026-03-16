@@ -388,38 +388,6 @@ export default function Order() {
     {/* Payment Methods */}
     <div className="grid gap-4 mb-8">
 
-      {/* OMT */}
-      <div className="bg-white/3 border border-white/10 rounded-2xl p-6 hover:border-[#c9a96e]/30 transition">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center text-xl">🏧</div>
-          <div>
-            <p className="font-medium text-white">OMT Transfer</p>
-            <p className="text-white/40 text-xs">Cash transfer via OMT</p>
-          </div>
-        </div>
-        <div className="bg-white/5 rounded-xl p-4 space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-white/40">Recipient Name</span>
-            <span className="text-white font-medium">S. Mhanna</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-white/40">Phone Number</span>
-            <div className="flex items-center gap-2">
-              <span className="text-white font-medium">+961 71 444 328</span>
-              <button onClick={() => copyToClipboard("96171444328", "omt")}
-                className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-2 py-0.5 hover:bg-[#c9a96e]/10 transition">
-                {copiedField === "omt" ? "✓" : "Copy"}
-              </button>
-            </div>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-white/40">Amount</span>
-            <span className="text-[#c9a96e] font-bold">{packages.find(p => p.id === form.package)?.price}</span>
-          </div>
-        </div>
-        <p className="text-white/30 text-xs mt-3">After sending, click "I've Paid" below and we'll confirm within 1 hour.</p>
-      </div>
-
       {/* Bank Transfer */}
 <div className="bg-white/3 border border-white/10 rounded-2xl p-6 hover:border-[#c9a96e]/30 transition">
   <div className="flex items-center gap-3 mb-4">
@@ -437,8 +405,8 @@ export default function Order() {
     <div className="flex justify-between items-center">
       <span className="text-white/40">Card Number</span>
       <div className="flex items-center gap-2">
-        <span className="text-white font-mono text-xs">**** **** **** 8478</span>
-        <button onClick={() => copyToClipboard("4870522074258478", "card")}
+        <span className="text-white font-mono text-xs">***********</span>
+        <button onClick={() => copyToClipboard("***********", "card")}
           className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-2 py-0.5 hover:bg-[#c9a96e]/10 transition">
           {copiedField === "card" ? "✓" : "Copy"}
         </button>
@@ -455,39 +423,6 @@ export default function Order() {
   </div>
   <p className="text-white/30 text-xs mt-3">Use your name + wedding date as transfer reference.</p>
 </div>
-
-          {/* Whish Money */}
-<div className="bg-white/3 border border-white/10 rounded-2xl p-6 hover:border-[#c9a96e]/30 transition">
-  <div className="flex items-center gap-3 mb-4">
-    <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center text-xl">💜</div>
-    <div>
-      <p className="font-medium text-white">Whish Money</p>
-      <p className="text-white/40 text-xs">Send via Whish Money app</p>
-    </div>
-  </div>
-  <div className="bg-white/5 rounded-xl p-4 space-y-2 text-sm">
-    <div className="flex justify-between">
-      <span className="text-white/40">Whish Number</span>
-      <div className="flex items-center gap-2">
-        <span className="text-white font-medium">+961 71 444 328</span>
-        <button onClick={() => copyToClipboard("96171444328", "whish")}
-          className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-2 py-0.5 hover:bg-[#c9a96e]/10 transition">
-          {copiedField === "whish" ? "✓" : "Copy"}
-        </button>
-      </div>
-    </div>
-    <div className="flex justify-between">
-      <span className="text-white/40">Name</span>
-      <span className="text-white font-medium">S. MHANNA</span>
-    </div>
-    <div className="flex justify-between">
-      <span className="text-white/40">Amount</span>
-      <span className="text-[#c9a96e] font-bold">{packages.find(p => p.id === form.package)?.price}</span>
-    </div>
-  </div>
-  <p className="text-white/30 text-xs mt-3">Open Whish app → Send Money → enter number above → confirm amount.</p>
-</div>
-
 
       {/* WhatsApp Pay / Cash */}
       <div className="bg-white/3 border border-white/10 rounded-2xl p-6 hover:border-[#c9a96e]/30 transition">
