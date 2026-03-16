@@ -752,6 +752,9 @@ export default function Admin() {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [rsvpFilter, setRsvpFilter] = useState("all")
   const [rsvpWedding, setRsvpWedding] = useState("all")
+  const [guestSlug, setGuestSlug] = useState("")
+  const [guestLines, setGuestLines] = useState("")
+  const [guestCopied, setGuestCopied] = useState(null)
 
   useEffect(() => { fetchAll() }, [])
 
@@ -838,6 +841,18 @@ export default function Admin() {
 
   const filteredRsvps = weddingRsvps.filter(r => rsvpFilter === "all" ? true : rsvpFilter === "attending" ? r.attending : !r.attending)
 
+  const guestLinks = guestLines
+    .split("\n")
+    .map(l => l.trim())
+    .filter(Boolean)
+    .map(line => {
+      const parts = line.split(",")
+      const name = parts[0].trim()
+      const persons = parseInt(parts[1]?.trim()) || 1
+      const url = `https://www.lumivite.net/i/${guestSlug}?gn=${encodeURIComponent(name)}&np=${persons}`
+      return { name, persons, url }
+    })
+
   return (
     <div className="min-h-screen bg-[#0a0806] text-white">
 
@@ -885,6 +900,7 @@ export default function Admin() {
           {[
             { id: "orders", label: `Orders (${orders.length})`, icon: "📦" },
             { id: "rsvps", label: `RSVPs (${rsvps.length})`, icon: "💌" },
+            { id: "guests", label: "Guest Links", icon: "🔗" },
           ].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
               className="px-5 py-2.5 rounded-xl text-sm font-medium transition"
@@ -1100,6 +1116,114 @@ export default function Admin() {
                 )}
               </motion.div>
             )}
+            {/* GUEST LINKS TAB */}
+            {tab === "guests" && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <div className="max-w-2xl">
+                  <p className="text-white/40 text-sm mb-6">
+                    Generate a personalized invitation link per guest — their name will be pre-filled in the RSVP form automatically.
+                  </p>
+
+                  {/* Invitation selector */}
+                  <div className="mb-4">
+                    <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Select Wedding</label>
+                    <select value={guestSlug} onChange={e => setGuestSlug(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]"
+                      style={{ colorScheme: "dark" }}>
+                      <option value="">— Select a wedding —</option>
+                      {orders.map(o => {
+                        const slug = `${o.groomName?.toLowerCase()}-${o.brideName?.toLowerCase()}`.replace(/\s/g, "")
+                        return <option key={o.id} value={slug}>{o.groomName} & {o.brideName}</option>
+                      })}
+                    </select>
+                  </div>
+
+                  {/* Slug override */}
+                  <div className="mb-6">
+                    <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">
+                      Slug <span className="text-white/20 normal-case font-normal">(auto-filled — override if you used a custom slug)</span>
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <span className="text-white/20 text-sm whitespace-nowrap">lumivite.net/i/</span>
+                      <input value={guestSlug} onChange={e => setGuestSlug(e.target.value)}
+                        placeholder="e.g. john-sarah"
+                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                    </div>
+                  </div>
+
+                  {/* Guest names input */}
+                  <div className="mb-6">
+                    <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">
+                      Guest List <span className="text-white/20 normal-case font-normal">(one per line — add ", 2" for couples/families)</span>
+                    </label>
+                    <textarea value={guestLines} onChange={e => setGuestLines(e.target.value)}
+                      placeholder={"Sarah & Michael\nJohn Smith, 2\nNadia Haddad\nThe Abboud Family, 4\nLara Khoury"}
+                      rows={10}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e] resize-none font-mono" />
+                    <p className="text-white/20 text-xs mt-1">
+                      {guestLines.split("\n").filter(l => l.trim()).length} guests · Format: <span className="font-mono">Name</span> or <span className="font-mono">Name, 2</span>
+                    </p>
+                  </div>
+
+                  {/* Generated links */}
+                  {guestLinks.length > 0 && guestSlug && (
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="text-[#c9a96e] text-xs uppercase tracking-widest">{guestLinks.length} Personalized Links</p>
+                        <button
+                          onClick={() => {
+                            const all = guestLinks.map(g => `${g.name}:\n${g.url}`).join("\n\n")
+                            navigator.clipboard.writeText(all)
+                            setGuestCopied("all")
+                            setTimeout(() => setGuestCopied(null), 2000)
+                          }}
+                          className="text-xs px-4 py-2 rounded-xl border transition"
+                          style={{
+                            borderColor: guestCopied === "all" ? "rgba(74,222,128,0.4)" : "rgba(201,169,110,0.3)",
+                            color: guestCopied === "all" ? "#4ade80" : "#c9a96e",
+                            background: guestCopied === "all" ? "rgba(74,222,128,0.08)" : "rgba(201,169,110,0.06)"
+                          }}>
+                          {guestCopied === "all" ? "✓ Copied All!" : "📋 Copy All Links"}
+                        </button>
+                      </div>
+
+                      <div className="grid gap-2">
+                        {guestLinks.map((g, i) => (
+                          <div key={i} className="bg-white/3 border border-white/8 rounded-xl p-3 flex items-center gap-3 hover:border-white/15 transition">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-white text-sm font-medium">
+                                {g.name}
+                                {g.persons > 1 && <span className="text-white/40 text-xs ml-2">({g.persons} persons)</span>}
+                              </p>
+                              <p className="text-white/25 text-xs truncate font-mono mt-0.5">{g.url}</p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(g.url)
+                                setGuestCopied(i)
+                                setTimeout(() => setGuestCopied(null), 2000)
+                              }}
+                              className="flex-shrink-0 text-xs px-3 py-1.5 rounded-lg border transition"
+                              style={{
+                                borderColor: guestCopied === i ? "rgba(74,222,128,0.4)" : "rgba(201,169,110,0.3)",
+                                color: guestCopied === i ? "#4ade80" : "#c9a96e",
+                                background: guestCopied === i ? "rgba(74,222,128,0.08)" : "rgba(201,169,110,0.06)"
+                              }}>
+                              {guestCopied === i ? "✓" : "Copy"}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {guestLinks.length > 0 && !guestSlug && (
+                    <p className="text-yellow-400/60 text-sm text-center py-4">Select a wedding above to generate links.</p>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
           </>
         )}
       </div>
