@@ -414,7 +414,7 @@ export default function Order() {
     </div>
     <div className="flex justify-between">
       <span className="text-white/40">Name on Card</span>
-      <span className="text-white font-medium">S. MHANNA</span>
+      <span className="text-white font-medium">****</span>
     </div>
     <div className="flex justify-between">
       <span className="text-white/40">Amount</span>
