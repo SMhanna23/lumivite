@@ -23,6 +23,8 @@ const DEFAULT_WEDDING = {
   venueAr: "فيترون، لبنان",
   message: "Together with their families",
   messageAr: "معاً مع عائلتيهما",
+  memoriesEnabled: true,
+  slug: "demo3",
   registry: [
     { name: "Wish Money", icon: "💳", desc: "Contribute to our honeymoon fund", descAr: "ساهم في صندوق شهر العسل", link: "https://www.wishmoney.io", color: "#c9a96e" },
     { name: "ABC Store", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: "https://www.abc.com.lb", color: "#c9a96e" },
@@ -609,6 +611,26 @@ export default function Invitation({ override = null }) {
           </AnimatePresence>
         </motion.div>
       </section>
+
+      {/* Memories */}
+      {WEDDING.memoriesEnabled && (
+        <section className="py-12 px-6 max-w-md mx-auto text-center relative z-10">
+          <p className="text-2xl mb-3">📸</p>
+          <h3 className="text-2xl font-light mb-2" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#5C2D35" }}>
+            {ar ? "شاركونا ذكرياتكم" : "Share Your Memories"}
+          </h3>
+          <p className="text-sm mb-6 leading-relaxed" style={{ color: `${roseGold}80` }}>
+            {ar
+              ? "خلال الحفل أو بعده، شاركوا صوركم ولحظاتكم معنا"
+              : "During or after the event, open the link below to share your photos with us"}
+          </p>
+          <a href={`/memories/${WEDDING.slug || "demo3"}`} target="_blank" rel="noopener noreferrer"
+            className="inline-block px-8 py-3 rounded-full text-sm tracking-wider transition"
+            style={{ background: `${roseGold}10`, border: `1px solid ${roseGold}35`, color: roseGold }}>
+            {ar ? "📸 شارك الذكريات" : "📸 Share Memories"}
+          </a>
+        </section>
+      )}
 
       <footer className="text-center py-10 text-sm border-t relative z-10"
         style={{ color: `${roseGold}60`, borderColor: `${roseGold}15` }}>

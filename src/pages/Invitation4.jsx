@@ -32,6 +32,8 @@ const DEFAULT_WEDDING = {
     { name: "Bank Transfer", icon: "🏦", desc: "iban: LB62 0099 0000 0001 0019 2000 9123", descAr: "iban: LB62 0099 0000 0001 0019 2000 9123", link: null },
   ],
   video: "/PreWeddingNew.mp4",
+  memoriesEnabled: true,
+  slug: "demo4",
 }
 
 // ── Detect video URL type ────────────────────────────────────────────────────
@@ -824,6 +826,26 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Memories */}
+      {w.memoriesEnabled && (
+        <div className="text-center px-6 pb-10 relative z-10">
+          <p className="text-2xl mb-3">📸</p>
+          <p className="font-serif text-xl font-light text-white mb-2">
+            {ar ? "شاركونا ذكرياتكم" : "Share Your Memories"}
+          </p>
+          <p className="text-sm mb-5 leading-relaxed" style={{ color: "rgba(255,255,255,0.35)", fontFamily: "'Jost', sans-serif" }}>
+            {ar
+              ? "خلال الحفل أو بعده، شاركوا صوركم ولحظاتكم معنا"
+              : "During or after the event, open the link to share your photos with us"}
+          </p>
+          <a href={`/memories/${w.slug || "demo4"}`} target="_blank" rel="noopener noreferrer"
+            className="inline-block px-8 py-3 rounded-full text-sm tracking-wider transition"
+            style={{ background: `rgba(196,163,90,0.1)`, border: `1px solid rgba(196,163,90,0.35)`, color: GOLD, fontFamily: "'Jost', sans-serif" }}>
+            {ar ? "📸 شارك الذكريات" : "📸 Share Memories"}
+          </a>
+        </div>
+      )}
 
       <p className="text-center pb-6 text-xs relative z-10" style={{ color: "rgba(255,255,255,0.15)", fontFamily: "'Jost', sans-serif" }}>
         {ar ? "صُنع بـ ✦ بواسطة" : "Made with ✦ by"} <span style={{ color: GOLD }}>Lumivite</span>

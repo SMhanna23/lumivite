@@ -125,6 +125,7 @@ function BuildInvitationModal({ order }) {
     dressCode: "",
     transport: "",
     accommodation: "",
+    memoriesEnabled: false,
   })
 
   const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
@@ -183,6 +184,7 @@ function BuildInvitationModal({ order }) {
             dressCode: d.dressCode || "",
             transport: d.transport || "",
             accommodation: d.accommodation || "",
+            memoriesEnabled: d.memoriesEnabled ?? false,
           })
           if (d.photos?.length) setPhotos(d.photos)
           setSaved(true)
@@ -271,6 +273,7 @@ function BuildInvitationModal({ order }) {
         dressCode: extraData.dressCode || "",
         transport: extraData.transport || "",
         accommodation: extraData.accommodation || "",
+        memoriesEnabled: extraData.memoriesEnabled ?? false,
         orderId: order.id,
         package: order.package,
         _draft: true,
@@ -339,6 +342,7 @@ function BuildInvitationModal({ order }) {
         dressCode: extraData.dressCode || "",
         transport: extraData.transport || "",
         accommodation: extraData.accommodation || "",
+        memoriesEnabled: extraData.memoriesEnabled ?? false,
         slug,
         createdAt: new Date(),
         orderId: order.id,
@@ -390,6 +394,13 @@ function BuildInvitationModal({ order }) {
               <a href={dashboardUrl} target="_blank" rel="noopener noreferrer"
                 className="text-[#c9a96e] text-xs underline break-all">{dashboardUrl}</a>
             </div>
+            {extraData.memoriesEnabled && (
+              <div>
+                <p className="text-white/30 text-xs mb-1">📸 Memory Wall (share with guests on the day)</p>
+                <a href={`https://www.lumivite.net/memories/${slug}`} target="_blank" rel="noopener noreferrer"
+                  className="text-[#c9a96e] text-xs underline break-all">https://www.lumivite.net/memories/{slug}</a>
+              </div>
+            )}
           </div>
           <div className="flex gap-2 justify-center flex-wrap">
             <button onClick={() => navigator.clipboard.writeText(previewUrl).then(() => alert("Invitation link copied!"))}
@@ -400,6 +411,12 @@ function BuildInvitationModal({ order }) {
               className="text-xs px-3 py-2 rounded-xl border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
               📊 Copy Dashboard
             </button>
+            {extraData.memoriesEnabled && (
+              <button onClick={() => navigator.clipboard.writeText(`https://www.lumivite.net/memories/${slug}`).then(() => alert("Memory wall link copied!"))}
+                className="text-xs px-3 py-2 rounded-xl border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
+                📸 Copy Memories
+              </button>
+            )}
             <a href={`https://wa.me/${order.yourPhone?.replace(/[^0-9]/g,"")}?text=${encodeURIComponent(`Hi ${order.yourName}! 🎉 Your wedding invitation is ready!\n\n💍 ${order.groomName} & ${order.brideName}\n\n📩 Invitation link (share with guests):\n${previewUrl}\n\n📊 Your RSVP dashboard (see who's attending):\n${dashboardUrl}\n\n🤍 Lumivite`)}`}
               target="_blank" rel="noopener noreferrer"
               className="text-xs px-3 py-2 rounded-xl text-black font-medium transition"
@@ -653,6 +670,24 @@ function BuildInvitationModal({ order }) {
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
             </div>
           </>)}
+
+          {/* Memories feature toggle */}
+          <div className="border border-white/8 rounded-xl p-4" style={{ background: "rgba(196,163,90,0.03)" }}>
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input type="checkbox" checked={extraData.memoriesEnabled ?? false} onChange={e => update("memoriesEnabled", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <div>
+                <p className="text-white/60 text-sm">📸 Enable Guest Memory Upload</p>
+                <p className="text-white/25 text-xs mt-0.5">Guests can upload photos from the wedding to a shared memory wall — visible in the couple's dashboard</p>
+              </div>
+            </label>
+            {extraData.memoriesEnabled && slug && (
+              <div className="mt-3 pt-3 border-t border-white/8">
+                <p className="text-white/30 text-xs mb-1">Memory Wall Link (share with guests on wedding day)</p>
+                <p className="text-[#c4a35a] text-xs font-mono break-all">https://www.lumivite.net/memories/{slug}</p>
+              </div>
+            )}
+          </div>
 
           {/* Photo Upload */}
           <div>

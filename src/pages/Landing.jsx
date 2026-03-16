@@ -10,6 +10,8 @@ const features = [
   { icon: "🌍", title: "Bilingual (AR / EN)", desc: "Full Arabic and English support with right-to-left layout for all your guests" },
   { icon: "🌸", title: "Animations", desc: "Floating petals, smooth transitions, and cinematic reveals that impress everyone" },
   { icon: "📍", title: "Venue & Timeline", desc: "Interactive maps, wedding timeline, and all details beautifully presented" },
+  { icon: "📸", title: "Memory Wall", desc: "Guests upload photos from the wedding — the couple sees them all in a beautiful private gallery" },
+  { icon: "🎁", title: "Gift Registry", desc: "WishMoney, store links, and IBAN — all elegantly presented inside the invitation" },
 ]
 
 const packages = [
@@ -49,6 +51,7 @@ const packages = [
     features: [
       "Everything in Silver",
       "All 4 template choices",
+      "Guest Memory Wall (photo upload)",
       "Google Maps embed",
       "Gift registry section",
       "Priority support",
@@ -62,6 +65,7 @@ const faqs = [
   { q: "How long does it take to get my invitation?", a: "Within 24-48 hours after you provide your details and payment." },
   { q: "Can guests RSVP directly from the invitation?", a: "Yes! Guests tap Attending or Decline and you get notified instantly." },
   { q: "Can I share it on WhatsApp?", a: "Absolutely — just share the link. It works on any phone, tablet or computer." },
+  { q: "Can guests upload their photos from the wedding?", a: "Yes! With the Memory Wall feature, guests get a private link to upload their photos during or after the wedding. You see all the photos in your dashboard instantly." },
   { q: "Can I add a pre-wedding video to my invitation?", a: "Yes! Template 4 supports direct video upload, YouTube, and Vimeo links. Your guests see an envelope opening animation and then your video plays automatically." },
   { q: "Is Arabic language supported?", a: "Yes! All templates are fully bilingual with Arabic and English, including right-to-left layout for Arabic guests." },
   { q: "Can I choose my own music?", a: "Yes! You can send us any song and we'll add it to your invitation." },

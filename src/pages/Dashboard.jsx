@@ -4,6 +4,61 @@ import { doc, getDoc, collection, query, where, getDocs } from "firebase/firesto
 import { db } from "../firebase"
 import { motion } from "framer-motion"
 
+function MemoriesGallery({ slug }) {
+  const [memories, setMemories] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getDocs(query(collection(db, "memories"), where("slug", "==", slug)))
+      .then(snap => {
+        setMemories(
+          snap.docs
+            .map(d => ({ id: d.id, ...d.data() }))
+            .sort((a, b) => (b.uploadedAt?.seconds || 0) - (a.uploadedAt?.seconds || 0))
+        )
+      })
+      .finally(() => setLoading(false))
+  }, [slug])
+
+  if (loading) return <div className="text-white/20 text-xs text-center py-8">Loading memories...</div>
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-[#c9a96e] text-xs tracking-widest uppercase">📸 Guest Memories ({memories.length})</p>
+        {memories.length > 0 && (
+          <a href={`/memories/${slug}`} target="_blank" rel="noopener noreferrer"
+            className="text-xs px-3 py-1.5 rounded-full border border-white/10 text-white/40 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
+            Open Wall →
+          </a>
+        )}
+      </div>
+      {memories.length === 0 ? (
+        <div className="text-center py-10 bg-white/3 border border-white/8 rounded-2xl">
+          <p className="text-3xl mb-2">📸</p>
+          <p className="text-white/20 text-sm">No memories uploaded yet</p>
+          <p className="text-white/15 text-xs mt-1">Share the memory wall link with guests on the wedding day</p>
+        </div>
+      ) : (
+        <div className="columns-2 md:columns-3 gap-3">
+          {memories.map((m, i) => (
+            <motion.div key={m.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: Math.min(i * 0.04, 0.4) }}
+              className="break-inside-avoid mb-3 rounded-xl overflow-hidden relative group">
+              <img src={m.url} alt="memory" className="w-full object-cover" loading="lazy" />
+              {m.guestName && m.guestName !== "A Guest" && (
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 py-2 opacity-0 group-hover:opacity-100 transition">
+                  <p className="text-white text-xs">{m.guestName}</p>
+                </div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Dashboard() {
   const { slug } = useParams()
   const [invitation, setInvitation] = useState(null)
@@ -158,6 +213,12 @@ export default function Dashboard() {
             <p className="text-5xl mb-4">💌</p>
             <p className="text-white/40 text-sm">No RSVPs received yet.</p>
             <p className="text-white/20 text-xs mt-1">Share your invitation link with guests to start receiving responses.</p>
+          </div>
+        )}
+
+        {invitation.memoriesEnabled && (
+          <div className="mt-10">
+            <MemoriesGallery slug={slug} />
           </div>
         )}
 

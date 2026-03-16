@@ -23,6 +23,8 @@ const DEFAULT_WEDDING = {
   venueAr: "فيترون، لبنان",
   message: "Request the honor of your presence at the wedding of their son and daughter",
   messageAr: "يطلبون شرف حضوركم حفل زفاف نجلهم وابنتهم",
+  memoriesEnabled: true,
+  slug: "demo",
   registry: [
     { name: "Wish Money", icon: "💳", desc: "Contribute to our honeymoon fund", descAr: "ساهم في صندوق شهر العسل", link: "https://www.wishmoney.io", color: "#c9a96e" },
     { name: "ABC Store", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: "https://www.abc.com.lb", color: "#c9a96e" },
@@ -529,6 +531,26 @@ export default function Invitation({ override = null }) {
           </AnimatePresence>
         </motion.div>
       </section>
+
+      {/* Memories */}
+      {WEDDING.memoriesEnabled && (
+        <section className="py-12 px-6 max-w-md mx-auto text-center relative z-10">
+          <p className="text-[#c9a96e] text-2xl mb-3">📸</p>
+          <h3 className="font-serif text-2xl font-light text-white mb-2">
+            {ar ? "شاركونا ذكرياتكم" : "Share Your Memories"}
+          </h3>
+          <p className="text-white/40 text-sm mb-6 leading-relaxed">
+            {ar
+              ? "خلال الحفل أو بعده، شاركوا صوركم ولحظاتكم معنا"
+              : "During or after the event, open the link below to share your photos with us"}
+          </p>
+          <a href={`/memories/${WEDDING.slug || "demo"}`} target="_blank" rel="noopener noreferrer"
+            className="inline-block px-8 py-3 rounded-full text-sm tracking-wider transition"
+            style={{ background: "rgba(201,169,110,0.1)", border: "1px solid rgba(201,169,110,0.35)", color: "#c9a96e" }}>
+            {ar ? "📸 شارك الذكريات" : "📸 Share Memories"}
+          </a>
+        </section>
+      )}
 
       <footer className="text-center py-10 text-white/20 text-sm border-t border-white/5 relative z-10">
        {ar ? "صُنع بـ ✦ بواسطة" : "Made with ✦ by"}<span className="text-[#c9a96e]"> Lumivite</span>
