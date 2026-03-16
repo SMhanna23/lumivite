@@ -1153,9 +1153,28 @@ export default function Admin() {
 
                   {/* Guest names input */}
                   <div className="mb-6">
-                    <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">
-                      Guest List <span className="text-white/20 normal-case font-normal">(one per line — add ", 2" for couples/families)</span>
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-white/30 text-xs uppercase tracking-widest">
+                        Guest List <span className="text-white/20 normal-case font-normal">(one per line — add ", 2" for couples/families)</span>
+                      </label>
+                      <label className="cursor-pointer text-xs px-3 py-1.5 rounded-lg border transition flex items-center gap-1.5"
+                        style={{ borderColor: "rgba(201,169,110,0.3)", color: "#c9a96e", background: "rgba(201,169,110,0.06)" }}>
+                        📂 Import CSV
+                        <input type="file" accept=".csv" className="hidden" onChange={e => {
+                          const file = e.target.files[0]
+                          if (!file) return
+                          const reader = new FileReader()
+                          reader.onload = ev => {
+                            const lines = ev.target.result.split(/\r?\n/).map(l => l.trim()).filter(Boolean)
+                            // Skip header row if first cell looks like "name"/"guest"
+                            const start = /^(name|guest|full.?name)/i.test(lines[0]?.split(",")[0]) ? 1 : 0
+                            setGuestLines(lines.slice(start).join("\n"))
+                          }
+                          reader.readAsText(file)
+                          e.target.value = ""
+                        }} />
+                      </label>
+                    </div>
                     <textarea value={guestLines} onChange={e => setGuestLines(e.target.value)}
                       placeholder={"Sarah & Michael\nJohn Smith, 2\nNadia Haddad\nThe Abboud Family, 4\nLara Khoury"}
                       rows={10}
