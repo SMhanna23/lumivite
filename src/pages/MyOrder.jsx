@@ -17,6 +17,14 @@ export default function MyOrder() {
   const [order, setOrder] = useState(null)
   const [invitations, setInvitations] = useState([])
   const [notFound, setNotFound] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  const copyOrderLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2500)
+    })
+  }
 
   useEffect(() => {
     if (!orderId) return
@@ -64,6 +72,20 @@ export default function MyOrder() {
       </div>
 
       <div className="max-w-lg mx-auto px-6 pb-24">
+
+        {/* Save Order Link Banner */}
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-between gap-3 bg-[#c9a96e]/10 border border-[#c9a96e]/25 rounded-2xl px-5 py-4 mb-6">
+          <div>
+            <p className="text-[#c9a96e] text-xs font-semibold uppercase tracking-widest mb-0.5">Save this page</p>
+            <p className="text-white/40 text-xs">Bookmark or copy the link to track your order anytime</p>
+          </div>
+          <button onClick={copyOrderLink}
+            className="text-xs px-4 py-2 rounded-full font-semibold flex-shrink-0 transition"
+            style={{ background: copied ? "rgba(74,222,128,0.15)" : "rgba(201,169,110,0.15)", color: copied ? "#4ade80" : "#c9a96e" }}>
+            {copied ? "✓ Copied!" : "Copy Link"}
+          </button>
+        </motion.div>
 
         {/* Status Card */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
