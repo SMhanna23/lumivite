@@ -755,6 +755,8 @@ export default function Admin() {
   const [guestSlug, setGuestSlug] = useState("")
   const [guestLines, setGuestLines] = useState("")
   const [guestCopied, setGuestCopied] = useState(null)
+  const [orderPage, setOrderPage] = useState(0)
+  const ORDERS_PER_PAGE = 15
 
   useEffect(() => { fetchAll() }, [])
 
@@ -930,7 +932,7 @@ export default function Admin() {
                   <div className="text-center py-20 text-white/20">No orders yet</div>
                 ) : (
                   <div className="grid gap-4">
-                    {orders.map(order => (
+                    {orders.slice(orderPage * ORDERS_PER_PAGE, (orderPage + 1) * ORDERS_PER_PAGE).map(order => (
                       <motion.div key={order.id} layout
                         className="bg-white/3 border border-white/8 rounded-2xl overflow-hidden hover:border-[#c9a96e]/20 transition cursor-pointer"
                         onClick={() => setSelectedOrder(selectedOrder?.id === order.id ? null : order)}>
@@ -1029,6 +1031,22 @@ export default function Admin() {
 
                       </motion.div>
                     ))}
+                  </div>
+                )}
+                {/* Pagination */}
+                {orders.length > ORDERS_PER_PAGE && (
+                  <div className="flex items-center justify-center gap-3 mt-6">
+                    <button onClick={() => setOrderPage(p => Math.max(0, p - 1))} disabled={orderPage === 0}
+                      className="px-4 py-2 rounded-xl text-sm border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition disabled:opacity-30">
+                      ← Prev
+                    </button>
+                    <span className="text-white/30 text-sm">
+                      Page {orderPage + 1} of {Math.ceil(orders.length / ORDERS_PER_PAGE)}
+                    </span>
+                    <button onClick={() => setOrderPage(p => Math.min(Math.ceil(orders.length / ORDERS_PER_PAGE) - 1, p + 1))} disabled={orderPage >= Math.ceil(orders.length / ORDERS_PER_PAGE) - 1}
+                      className="px-4 py-2 rounded-xl text-sm border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition disabled:opacity-30">
+                      Next →
+                    </button>
                   </div>
                 )}
               </motion.div>

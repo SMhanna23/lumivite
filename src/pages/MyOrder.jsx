@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom"
 import { doc, onSnapshot, collection, query, where, getDocs } from "firebase/firestore"
 import { db } from "../firebase"
 import { motion } from "framer-motion"
+import Logo from "../components/Logo"
 
 const STATUS_STEPS = ["pending_payment", "paid", "in_progress", "delivered"]
 const STATUS_LABELS = {
@@ -67,7 +68,7 @@ export default function MyOrder() {
 
       {/* Header */}
       <div className="text-center pt-16 pb-8 px-6">
-        <a href="/" className="text-[#c9a96e] font-serif text-2xl">Lumivite</a>
+        <div className="flex justify-center mb-2"><Logo size="md" /></div>
         <p className="text-white/30 text-xs mt-1 tracking-widest uppercase">Your Order</p>
       </div>
 

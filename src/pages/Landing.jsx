@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import { useState } from "react"
+import Logo from "../components/Logo"
 
 const features = [
   { icon: "💍", title: "Stunning Templates", desc: "4 luxury designs that make guests say WOW the moment they open their invitation" },
@@ -82,7 +83,7 @@ export default function Landing() {
       {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
         style={{ background: "linear-gradient(to bottom, rgba(10,8,6,0.95), transparent)" }}>
-        <span className="font-serif text-xl text-[#c9a96e]">Lumivite</span>
+        <Logo size="sm" href="/" />
         <a href="/order" className="bg-[#c9a96e] text-black font-semibold px-5 py-2 rounded-full hover:bg-[#b8965d] transition text-sm tracking-wider">Book Now</a>
       </nav>
 

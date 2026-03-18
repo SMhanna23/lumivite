@@ -1,10 +1,12 @@
 import { motion } from "framer-motion"
+import Logo from "../components/Logo"
 
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-[#0a0806] flex items-center justify-center text-center px-6"
       style={{ background: "radial-gradient(ellipse at 50% 0%, #1a0f07 0%, #0a0806 60%)" }}>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <div className="flex justify-center mb-8"><Logo size="md" /></div>
         <div className="text-6xl mb-6">🔍</div>
         <h1 className="font-serif text-4xl font-light text-white mb-3">Page Not Found</h1>
         <p className="text-white/40 text-sm mb-10 max-w-xs mx-auto">
