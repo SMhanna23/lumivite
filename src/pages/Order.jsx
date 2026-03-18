@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
@@ -19,14 +20,9 @@ const templates = [
 const steps = ["Package", "Template", "Details", "Contact", "Payment"]
 
 export default function Order() {
+  const navigate = useNavigate()
   const [step, setStep] = useState(0)
   const [status, setStatus] = useState("idle")
-  const [copiedField, setCopiedField] = useState(null)
-  const copyToClipboard = (text, field) => {
-    navigator.clipboard.writeText(text)
-    setCopiedField(field)
-    setTimeout(() => setCopiedField(null), 2000)
-  }
   const [form, setForm] = useState({
     package: "",
     template: "",
@@ -52,41 +48,19 @@ export default function Order() {
   const handleSubmit = async () => {
     setStatus("loading")
     try {
-      await addDoc(collection(db, "orders"), {
+      const docRef = await addDoc(collection(db, "orders"), {
         ...form,
+        status: "pending_payment",
         createdAt: serverTimestamp()
       })
-      // WhatsApp notification
       const msg = `🎉 New Order on Lumivite!\n📦 ${form.package.toUpperCase()} Package — ${packages.find(p => p.id === form.package)?.price}\n🎨 ${form.template} Template\n💒 ${form.groomName} & ${form.brideName}\n📅 ${form.weddingDate}\n👤 Client: ${form.yourName}\n📞 ${form.yourPhone}\n⚠️ Awaiting payment confirmation!`
       fetch(`https://api.callmebot.com/whatsapp.php?phone=${import.meta.env.VITE_CALLMEBOT_PHONE}&text=${encodeURIComponent(msg)}&apikey=${import.meta.env.VITE_CALLMEBOT_APIKEY}`, { mode: "no-cors" }).catch(() => {})
-      setStatus("success")
+      navigate(`/my-order/${docRef.id}`)
     } catch (e) {
       setStatus("error")
     }
   }
 
-  if (status === "success") {
-    return (
-      <div className="min-h-screen bg-[#0a0806] flex items-center justify-center px-6 text-center">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="max-w-md">
-          <div className="text-6xl mb-6">🎉</div>
-          <h1 className="font-serif text-4xl font-light text-white mb-4">Order Received!</h1>
-          <p className="text-white/50 mb-4">Thank you <span className="text-[#c9a96e]">{form.yourName}</span>! We've received your order and will contact you within 24 hours on WhatsApp.</p>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8 text-left space-y-2">
-            <p className="text-white/40 text-xs uppercase tracking-widest mb-3">Order Summary</p>
-            <p className="text-white text-sm">📦 {form.package.charAt(0).toUpperCase() + form.package.slice(1)} Package</p>
-            <p className="text-white text-sm">🎨 {templates.find(t => t.id === form.template)?.name} Template</p>
-            <p className="text-white text-sm">💒 {form.groomName} & {form.brideName}</p>
-            <p className="text-white text-sm">📅 {form.weddingDate}</p>
-            <p className="text-white text-sm">📞 {form.yourPhone}</p>
-          </div>
-          <a href="/" className="inline-block bg-[#c9a96e] text-black font-semibold px-8 py-3 rounded-full text-sm">
-            Back to Home
-          </a>
-        </motion.div>
-      </div>
-    )
-  }
 
   return (
     <div className="min-h-screen bg-[#0a0806] text-white"
@@ -370,11 +344,11 @@ export default function Order() {
   </motion.div>
   )}
 
-          {/* STEP 4 - Payment */}
+          {/* STEP 4 - Confirm & Pay */}
 {step === 4 && (
   <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-    <h2 className="font-serif text-3xl font-light text-center mb-2">Complete Payment</h2>
-    <p className="text-white/40 text-center text-sm mb-10">Choose your preferred payment method</p>
+    <h2 className="font-serif text-3xl font-light text-center mb-2">Confirm Your Order</h2>
+    <p className="text-white/40 text-center text-sm mb-10">Review and place your order</p>
 
     {/* Amount Due */}
     <div className="text-center mb-8">
@@ -385,65 +359,36 @@ export default function Order() {
       <p className="text-white/30 text-xs mt-1 capitalize">{form.package} Package · {templates.find(t => t.id === form.template)?.name}</p>
     </div>
 
-    {/* Payment Methods */}
-    <div className="grid gap-4 mb-8">
-
-      {/* Bank Transfer */}
-<div className="bg-white/3 border border-white/10 rounded-2xl p-6 hover:border-[#c9a96e]/30 transition">
-  <div className="flex items-center gap-3 mb-4">
-    <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-xl">🏦</div>
-    <div>
-      <p className="font-medium text-white">Bank Card Transfer</p>
-      <p className="text-white/40 text-xs">Transfer directly to Blom Bank card</p>
-    </div>
-  </div>
-  <div className="bg-white/5 rounded-xl p-4 space-y-2 text-sm">
-    <div className="flex justify-between">
-      <span className="text-white/40">Bank</span>
-      <span className="text-white font-medium">Blom Bank</span>
-    </div>
-    <div className="flex justify-between items-center">
-      <span className="text-white/40">Card Number</span>
-      <div className="flex items-center gap-2">
-        <span className="text-white font-mono text-xs">***********</span>
-        <button onClick={() => copyToClipboard("***********", "card")}
-          className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-2 py-0.5 hover:bg-[#c9a96e]/10 transition">
-          {copiedField === "card" ? "✓" : "Copy"}
-        </button>
-      </div>
-    </div>
-    <div className="flex justify-between">
-      <span className="text-white/40">Name on Card</span>
-      <span className="text-white font-medium">****</span>
-    </div>
-    <div className="flex justify-between">
-      <span className="text-white/40">Amount</span>
-      <span className="text-[#c9a96e] font-bold">{packages.find(p => p.id === form.package)?.price}</span>
-    </div>
-  </div>
-  <p className="text-white/30 text-xs mt-3">Use your name + wedding date as transfer reference.</p>
-</div>
-
-      {/* WhatsApp Pay / Cash */}
-      <div className="bg-white/3 border border-white/10 rounded-2xl p-6 hover:border-[#c9a96e]/30 transition">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center text-xl">💬</div>
-          <div>
-            <p className="font-medium text-white">WhatsApp / Cash</p>
-            <p className="text-white/40 text-xs">Arrange payment directly with us</p>
+    {/* How Payment Works */}
+    <div className="bg-white/3 border border-white/10 rounded-2xl p-6 mb-8">
+      <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">How it works</p>
+      <div className="space-y-4">
+        {[
+          ["1", "Place your order below"],
+          ["2", "We contact you on WhatsApp within a few hours"],
+          ["3", "You send payment via OMT, cash, or bank transfer"],
+          ["4", "We build and deliver your invitation links"],
+        ].map(([n, text]) => (
+          <div key={n} className="flex items-center gap-3">
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+              style={{ background: "rgba(201,169,110,0.15)", color: "#c9a96e" }}>{n}</div>
+            <p className="text-white/70 text-sm">{text}</p>
           </div>
-        </div>
-        <a href={`https://wa.me/96171444328?text=${encodeURIComponent(`Hi! I just placed an order for ${form.groomName} & ${form.brideName}'s wedding invitation (${form.package} package). I'd like to arrange payment. Total: ${packages.find(p => p.id === form.package)?.price}`)}`}
-          target="_blank" rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-medium text-white transition text-sm"
-          style={{ background: "#25D366" }}>
-          💬 Message Us on WhatsApp
-        </a>
+        ))}
       </div>
-
     </div>
 
-    {/* Confirm Payment Button */}
+    {/* Order Summary */}
+    <div className="bg-white/3 border border-white/10 rounded-2xl p-5 mb-8">
+      <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-3">Order Summary</p>
+      <div className="space-y-2 text-sm">
+        <div className="flex justify-between"><span className="text-white/50">Package</span><span className="text-white capitalize">{form.package} — {packages.find(p => p.id === form.package)?.price}</span></div>
+        <div className="flex justify-between"><span className="text-white/50">Template</span><span className="text-white">{templates.find(t => t.id === form.template)?.name}</span></div>
+        <div className="flex justify-between"><span className="text-white/50">Couple</span><span className="text-white">{form.groomName} & {form.brideName}</span></div>
+        <div className="flex justify-between"><span className="text-white/50">WhatsApp</span><span className="text-white">{form.yourPhone}</span></div>
+      </div>
+    </div>
+
     <div className="flex gap-3">
       <button onClick={() => setStep(3)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">
         ← Back
@@ -451,12 +396,12 @@ export default function Order() {
       <button onClick={handleSubmit} disabled={status === "loading"}
         className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
         style={{ background: "#c9a96e" }}>
-        {status === "loading" ? "Submitting..." : "✅ I've Paid — Place Order"}
+        {status === "loading" ? "Placing Order..." : "Place Order →"}
       </button>
     </div>
 
     <p className="text-white/20 text-xs text-center mt-4">
-      Your order will be confirmed after payment verification. We'll contact you on WhatsApp within 1 hour.
+      We'll reach you on WhatsApp to arrange payment. No upfront charge.
     </p>
   </motion.div>
 )}

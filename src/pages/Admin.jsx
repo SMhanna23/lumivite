@@ -960,13 +960,21 @@ export default function Admin() {
                               👤 {order.yourName} · 📞 {order.yourPhone} · 📅 {order.weddingDate}
                             </p>
                           </div>
-                          <div className="text-right flex-shrink-0">
+                          <div className="text-right flex-shrink-0 flex flex-col items-end gap-2">
                             <p className="text-[#c9a96e] font-semibold">
                               {order.package === "bronze" ? "$89" : order.package === "silver" ? "$139" : "$199"}
                             </p>
                             <p className="text-white/30 text-xs">
                               {order.createdAt?.toDate?.()?.toLocaleDateString() || ""}
                             </p>
+                            {(!order.status || order.status === "pending_payment") && (
+                              <button
+                                onClick={e => { e.stopPropagation(); handleStatusChange(order.id, "paid") }}
+                                className="text-xs px-3 py-1 rounded-lg font-semibold transition"
+                                style={{ background: "rgba(74,222,128,0.15)", color: "#4ade80", border: "1px solid rgba(74,222,128,0.3)" }}>
+                                ✅ Confirm Payment
+                              </button>
+                            )}
                           </div>
                         </div>
 
