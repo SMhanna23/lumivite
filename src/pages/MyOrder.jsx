@@ -102,20 +102,38 @@ export default function MyOrder() {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             className="bg-white/3 border border-[#c9a96e]/20 rounded-2xl p-5 mb-6">
             <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">Your Invitation Links</p>
-            <div className="space-y-3">
-              {invitations.map(inv => (
-                <div key={inv.id} className="flex items-center justify-between gap-3 bg-white/5 rounded-xl px-4 py-3">
-                  <div>
-                    <p className="text-white text-sm font-medium">{inv.guestName || "Shared Link"}</p>
-                    <p className="text-white/30 text-xs">/i/{inv.slug}</p>
+            <div className="space-y-4">
+              {invitations.map(inv => {
+                const slug = inv.slug || inv.id
+                return (
+                  <div key={inv.id} className="bg-white/5 rounded-xl px-4 py-4 space-y-3">
+                    {/* Invitation link */}
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-white/40 text-xs mb-0.5">💌 Invitation</p>
+                        <p className="text-white text-sm font-medium">{inv.guestName || "Shared Link"}</p>
+                      </div>
+                      <a href={`/i/${slug}`} target="_blank" rel="noopener noreferrer"
+                        className="text-xs px-3 py-1.5 rounded-full font-medium flex-shrink-0"
+                        style={{ background: "rgba(201,169,110,0.15)", color: "#c9a96e" }}>
+                        Open →
+                      </a>
+                    </div>
+                    {/* Dashboard link */}
+                    <div className="flex items-center justify-between gap-3 border-t border-white/5 pt-3">
+                      <div>
+                        <p className="text-white/40 text-xs mb-0.5">📊 RSVP Dashboard</p>
+                        <p className="text-white/60 text-xs">Track who's attending</p>
+                      </div>
+                      <a href={`/dashboard/${slug}`} target="_blank" rel="noopener noreferrer"
+                        className="text-xs px-3 py-1.5 rounded-full font-medium flex-shrink-0"
+                        style={{ background: "rgba(96,165,250,0.12)", color: "#60a5fa" }}>
+                        Open →
+                      </a>
+                    </div>
                   </div>
-                  <a href={`/i/${inv.slug}`} target="_blank" rel="noopener noreferrer"
-                    className="text-xs px-3 py-1.5 rounded-full font-medium flex-shrink-0"
-                    style={{ background: "rgba(201,169,110,0.15)", color: "#c9a96e" }}>
-                    Open →
-                  </a>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </motion.div>
         )}
