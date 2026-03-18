@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
+import emailjs from "@emailjs/browser"
 
 const packages = [
   { id: "bronze", name: "Bronze", price: "$89", color: "#cd7f32", features: ["1 template", "RSVP dashboard", "Countdown timer", "1 shared link"] },
@@ -55,6 +56,22 @@ export default function Order() {
       })
       const msg = `🎉 New Order on Lumivite!\n📦 ${form.package.toUpperCase()} Package — ${packages.find(p => p.id === form.package)?.price}\n🎨 ${form.template} Template\n💒 ${form.groomName} & ${form.brideName}\n📅 ${form.weddingDate}\n👤 Client: ${form.yourName}\n📞 ${form.yourPhone}\n⚠️ Awaiting payment confirmation!`
       fetch(`https://api.callmebot.com/whatsapp.php?phone=${import.meta.env.VITE_CALLMEBOT_PHONE}&text=${encodeURIComponent(msg)}&apikey=${import.meta.env.VITE_CALLMEBOT_APIKEY}`, { mode: "no-cors" }).catch(() => {})
+      if (form.yourEmail) {
+        emailjs.send(
+          import.meta.env.VITE_EMAILJS_SERVICE_ID,
+          import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+          {
+            to_name: form.yourName,
+            to_email: form.yourEmail,
+            couple: `${form.groomName} & ${form.brideName}`,
+            package: `${form.package.charAt(0).toUpperCase() + form.package.slice(1)} — ${packages.find(p => p.id === form.package)?.price}`,
+            wedding_date: form.weddingDate,
+            order_link: `https://www.lumivite.net/my-order/${docRef.id}`,
+            order_id: docRef.id,
+          },
+          import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        ).catch(() => {})
+      }
       navigate(`/my-order/${docRef.id}`)
     } catch (e) {
       setStatus("error")
