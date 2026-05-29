@@ -310,9 +310,9 @@ export default function Invitation({ override = null }) {
       <section className="py-12 px-6 max-w-xl mx-auto relative z-10">
         <motion.div className="text-center mb-10"
           initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="text-[#4a7c59] tracking-[0.3em] text-xs uppercase mb-3 font-medium">{ar ? "قصتنا" : "Our Story"}</p>
+          <p className="text-[#4a7c59] tracking-[0.3em] text-xs uppercase mb-3 font-medium">{ar ? "قبل الأبد" : "Before Forever"}</p>
           <h2 className="mb-3" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.5rem" : "3.8rem", color: "#2d3a2e", fontWeight: 400, lineHeight: 1.2 }}>
-            {ar ? "لحظاتنا معاً" : "Moments Together"}
+            {ar ? "لمحة منّا" : "A glimpse of us"}
           </h2>
           <div className="flex items-center justify-center gap-4 mb-10">
             <div className="h-px w-20 bg-gradient-to-r from-transparent to-[#4a7c59]/50" />
