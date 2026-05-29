@@ -119,9 +119,7 @@ function BuildInvitationModal({ order }) {
     registryIban: "",
     tl0: "5:00 PM",    tl0loc: "",
     tl1: "7:00 PM",    tl1loc: "",
-    tl2: "8:30 PM",    tl2loc: "",
-    tl3: "10:00 PM",   tl3loc: "",
-    tl4: "11:00 PM",   tl4loc: "",
+    tl2: "11:00 PM",   tl2loc: "",
     dressCode: "",
     transport: "",
     accommodation: "",
@@ -178,9 +176,7 @@ function BuildInvitationModal({ order }) {
             registryIban: d.registry?.[2]?.desc?.replace("iban: ", "") || "",
             tl0: d.timeline?.[0]?.time || "5:00 PM",    tl0loc: d.timeline?.[0]?.location || "",
             tl1: d.timeline?.[1]?.time || "7:00 PM",    tl1loc: d.timeline?.[1]?.location || "",
-            tl2: d.timeline?.[2]?.time || "8:30 PM",    tl2loc: d.timeline?.[2]?.location || "",
-            tl3: d.timeline?.[3]?.time || "10:00 PM",   tl3loc: d.timeline?.[3]?.location || "",
-            tl4: d.timeline?.[4]?.time || "11:00 PM",   tl4loc: d.timeline?.[4]?.location || "",
+            tl2: d.timeline?.[2]?.time || "11:00 PM",   tl2loc: d.timeline?.[2]?.location || "",
             dressCode: d.dressCode || "",
             transport: d.transport || "",
             accommodation: d.accommodation || "",
@@ -264,11 +260,9 @@ function BuildInvitationModal({ order }) {
           ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", desc: `iban: ${extraData.registryIban}`, descAr: `iban: ${extraData.registryIban}`, link: null, color: "#c9a96e" }] : []),
         ],
         timeline: [
-          { time: extraData.tl0, label: "Ceremony",     labelAr: "مراسم الزواج",   location: extraData.tl0loc },
-          { time: extraData.tl1, label: "Cocktail Hour",labelAr: "ساعة الكوكتيل", location: extraData.tl1loc },
-          { time: extraData.tl2, label: "Photos",       labelAr: "جلسة التصوير",   location: extraData.tl2loc },
-          { time: extraData.tl3, label: "Dinner",       labelAr: "العشاء",         location: extraData.tl3loc },
-          { time: extraData.tl4, label: "Party",        labelAr: "الحفلة",         location: extraData.tl4loc },
+          { time: extraData.tl0, label: "Ceremony",      labelAr: "مراسم الزواج",   location: extraData.tl0loc },
+          { time: extraData.tl1, label: "Welcome Drink", labelAr: "مشروب الترحيب", location: extraData.tl1loc },
+          { time: extraData.tl2, label: "Party",         labelAr: "الحفلة",         location: extraData.tl2loc },
         ],
         dressCode: extraData.dressCode || "",
         transport: extraData.transport || "",
@@ -333,11 +327,9 @@ function BuildInvitationModal({ order }) {
           ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", desc: `iban: ${extraData.registryIban}`, descAr: `iban: ${extraData.registryIban}`, link: null, color: "#c9a96e" }] : []),
         ],
         timeline: [
-          { time: extraData.tl0, label: "Ceremony",     labelAr: "مراسم الزواج",   location: extraData.tl0loc },
-          { time: extraData.tl1, label: "Cocktail Hour",labelAr: "ساعة الكوكتيل", location: extraData.tl1loc },
-          { time: extraData.tl2, label: "Photos",       labelAr: "جلسة التصوير",   location: extraData.tl2loc },
-          { time: extraData.tl3, label: "Dinner",       labelAr: "العشاء",         location: extraData.tl3loc },
-          { time: extraData.tl4, label: "Party",        labelAr: "الحفلة",         location: extraData.tl4loc },
+          { time: extraData.tl0, label: "Ceremony",      labelAr: "مراسم الزواج",   location: extraData.tl0loc },
+          { time: extraData.tl1, label: "Welcome Drink", labelAr: "مشروب الترحيب", location: extraData.tl1loc },
+          { time: extraData.tl2, label: "Party",         labelAr: "الحفلة",         location: extraData.tl2loc },
         ],
         dressCode: extraData.dressCode || "",
         transport: extraData.transport || "",
@@ -631,7 +623,7 @@ function BuildInvitationModal({ order }) {
 
           {/* Wedding Timeline */}
           <p className="text-white/20 text-xs uppercase tracking-widest pt-1">🕐 Wedding Day Timeline</p>
-          {[["Ceremony", "tl0"], ["Cocktail Hour", "tl1"], ["Photos", "tl2"], ["Dinner", "tl3"], ["Party", "tl4"]].map(([label, key]) => (
+          {[["Ceremony", "tl0"], ["Welcome Drink", "tl1"], ["Party", "tl2"]].map(([label, key]) => (
             <div key={key} className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-white/30 text-xs mb-1 block">{label} — Time</label>

@@ -235,26 +235,12 @@ function renderSectionOverlay(section, w, ar) {
         <circle cx="32" cy="12" r="9" stroke={GOLD} strokeWidth="1.5"/>
         <path d="M24 5 L27 1 L24 3 L21 1 Z" fill={GOLD} opacity="0.85"/>
       </svg>,
-      // Cocktail Hour — martini
+      // Welcome Drink — martini
       <svg key="cocktail" viewBox="0 0 30 38" width="22" height="30" fill="none">
         <path d="M2 4 L28 4 L16 22 Z" stroke={GOLD} strokeWidth="1.5" strokeLinejoin="round"/>
         <line x1="16" y1="22" x2="16" y2="34" stroke={GOLD} strokeWidth="1.5"/>
         <line x1="9" y1="34" x2="23" y2="34" stroke={GOLD} strokeWidth="1.5"/>
         <circle cx="22" cy="8" r="2" stroke={GOLD} strokeWidth="1"/>
-      </svg>,
-      // Photos — camera
-      <svg key="camera" viewBox="0 0 36 28" width="28" height="22" fill="none">
-        <rect x="2" y="8" width="32" height="18" rx="3" stroke={GOLD} strokeWidth="1.5"/>
-        <circle cx="18" cy="17" r="5.5" stroke={GOLD} strokeWidth="1.5"/>
-        <path d="M11 8 L13 4 L23 4 L25 8" stroke={GOLD} strokeWidth="1.5" strokeLinejoin="round"/>
-      </svg>,
-      // Dinner — fork & knife
-      <svg key="dinner" viewBox="0 0 28 36" width="22" height="28" fill="none">
-        <line x1="7" y1="2" x2="7" y2="34" stroke={GOLD} strokeWidth="1.5"/>
-        <path d="M4 2 L4 13 Q7 18 10 13 L10 2" stroke={GOLD} strokeWidth="1.5" strokeLinejoin="round"/>
-        <line x1="21" y1="2" x2="21" y2="12" stroke={GOLD} strokeWidth="1.5"/>
-        <path d="M18 12 Q21 20 24 12" stroke={GOLD} strokeWidth="1.5" fill="none"/>
-        <line x1="21" y1="20" x2="21" y2="34" stroke={GOLD} strokeWidth="1.5"/>
       </svg>,
       // Party — speaker
       <svg key="party" viewBox="0 0 36 36" width="28" height="28" fill="none">
@@ -286,7 +272,7 @@ function renderSectionOverlay(section, w, ar) {
             <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1,
               background: `${GOLD}50`, transform: "translateX(-50%)" }} />
 
-            {tl.slice(0, 5).map((item, i) => (
+            {tl.slice(0, 3).map((item, i) => (
               <motion.div key={i}
                 initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 + i * 0.08 }}
                 style={{ display: "flex", alignItems: "center", padding: "7px 0", position: "relative" }}>
