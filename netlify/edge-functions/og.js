@@ -11,8 +11,9 @@ export default async (request, context) => {
   const slug = url.pathname.split("/i/")[1]?.split("?")[0]?.split("/")[0]
   if (!slug) return context.next()
 
-  const apiKey   = Deno.env.get("VITE_FIREBASE_API_KEY")
-  const projectId = Deno.env.get("VITE_FIREBASE_PROJECT_ID")
+  // Try both VITE_ prefixed (Netlify build vars) and plain (Netlify runtime vars)
+  const apiKey    = Deno.env.get("VITE_FIREBASE_API_KEY")    || Deno.env.get("FIREBASE_API_KEY")
+  const projectId = Deno.env.get("VITE_FIREBASE_PROJECT_ID") || Deno.env.get("FIREBASE_PROJECT_ID")
 
   let title       = "You're Invited ✨"
   let description = "You have received a beautiful digital wedding invitation. Open to view the full experience."
