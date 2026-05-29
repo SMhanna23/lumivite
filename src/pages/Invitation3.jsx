@@ -456,7 +456,7 @@ export default function Invitation({ override = null }) {
                 </div>
                 <div>
                   <p className="font-medium">{item.label}</p>
-                  <p className="text-sm mt-0.5 opacity-50">{item.desc}</p>
+                  <p className="text-sm mt-0.5 opacity-50">{item.location || item.desc}</p>
                 </div>
               </motion.div>
             ))}
