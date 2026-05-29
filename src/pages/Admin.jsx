@@ -93,6 +93,7 @@ function BuildInvitationModal({ order }) {
   const [draftSaving, setDraftSaving] = useState(false)
   const [draftSaved,  setDraftSaved]  = useState(false)
   const fileInputRef = useRef(null)
+  const savedDocIdRef = useRef(null) // tracks the actual Firestore doc ID (may differ from slug state)
   const [extraData, setExtraData] = useState({
     groomAr: "", brideAr: "",
     messageEn: "Together with their families",
@@ -140,11 +141,12 @@ function BuildInvitationModal({ order }) {
         if (!qSnap.empty) {
           docId = qSnap.docs[0].id
           d = qSnap.docs[0].data()
+          savedDocIdRef.current = docId
           setSlug(docId) // restore the real slug
         } else {
           // Fallback: try current slug directly (legacy / first-time load)
           const snap = await getDoc(firestoreDoc(db, "invitations", slug))
-          if (snap.exists()) { d = snap.data(); docId = slug }
+          if (snap.exists()) { d = snap.data(); docId = slug; savedDocIdRef.current = slug }
         }
 
         if (d) {
@@ -274,6 +276,12 @@ function BuildInvitationModal({ order }) {
         ...(photos.length > 0 && { photos }),
       }
       await setDoc(firestoreDoc(db, "invitations", slug), draftData, { merge: true })
+      // If slug changed, delete the old doc so it doesn't shadow the new one on reload
+      if (savedDocIdRef.current && savedDocIdRef.current !== slug) {
+        const { deleteDoc } = await import("firebase/firestore")
+        await deleteDoc(firestoreDoc(db, "invitations", savedDocIdRef.current)).catch(() => {})
+      }
+      savedDocIdRef.current = slug
       // Persist the slug back to the order so it reloads correctly
       await updateDoc(firestoreDoc(db, "orders", order.id), { slug })
       setDraftSaved(true)
@@ -342,6 +350,12 @@ function BuildInvitationModal({ order }) {
         ...(photos.length > 0 && { photos }),
       }
       await setDoc(doc(db, "invitations", slug), invitationData)
+      // If slug changed, delete the old doc so it doesn't shadow the new one on reload
+      if (savedDocIdRef.current && savedDocIdRef.current !== slug) {
+        const { deleteDoc } = await import("firebase/firestore")
+        await deleteDoc(doc(db, "invitations", savedDocIdRef.current)).catch(() => {})
+      }
+      savedDocIdRef.current = slug
       // Auto-mark order as delivered
       await updateDoc(doc(db, "orders", order.id), { status: "delivered" })
       setSaved(true)
@@ -424,7 +438,7 @@ function BuildInvitationModal({ order }) {
             <label className="text-white/30 text-xs mb-1 block">Invitation URL Slug</label>
             <div className="flex items-center gap-2">
               <span className="text-white/20 text-sm">lumivite.net/i/</span>
-              <input value={slug} onChange={e => setSlug(e.target.value.toLowerCase().replace(/\s/g, "-"))}
+              <input value={slug} onChange={e => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, "-"))}
                 className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
             </div>
           </div>
