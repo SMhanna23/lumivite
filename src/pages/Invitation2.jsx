@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"
+import EnvelopeScreen from "../components/EnvelopeScreen"
 import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
@@ -159,69 +160,18 @@ export default function Invitation({ override = null }) {
     }
   }
 
-  // SPLASH
+  // ENVELOPE SCREEN
   if (!started) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 cursor-pointer relative overflow-hidden"
-        dir={ar ? "rtl" : "ltr"}
-        onClick={() => { setStarted(true); setTimeout(() => startMusic(), 800) }}>
+      <div className="fixed inset-0">
         {!ytId && <audio ref={audioRef} loop src={WEDDING.music || "/music.mp3"} preload="auto" />}
-
-        {/* Full-screen blurred photo background */}
-        <div className="absolute inset-0 z-0" style={{
-          backgroundImage: `url(${photos[0]})`,
-          backgroundSize: "cover", backgroundPosition: "center",
-          filter: "blur(12px) brightness(0.45)", transform: "scale(1.1)"
-        }} />
-        {/* Botanical overlay */}
-        <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 40%, rgba(45,90,61,0.35) 0%, rgba(20,35,22,0.82) 100%)" }} />
-
-        <Leaves />
-
-        <motion.div className="relative z-10 flex flex-col items-center"
-          initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.6 }}>
-
-          <div className="text-3xl mb-5">🌿</div>
-          <p className="text-[#a8d5b5] tracking-[0.5em] text-xs uppercase mb-7 font-medium">
-            {ar ? "أنتم مدعوون" : "You're Invited"}
-          </p>
-
-          {/* Circular couple photo */}
-          <motion.div className="relative mb-8"
-            initial={{ opacity: 0, scale: 0.75 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.3, delay: 0.3 }}>
-            <div className="absolute -inset-4 rounded-full border border-[#4a7c59]/30 pointer-events-none" />
-            <div className="absolute -inset-2 rounded-full border border-[#4a7c59]/50 pointer-events-none" />
-            <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-2 border-[#6aad85]"
-              style={{ boxShadow: "0 0 40px rgba(74,124,89,0.3), 0 24px 64px rgba(0,0,0,0.6)" }}>
-              <img src={photos[0]} alt="Couple" className="w-full h-full object-cover object-top" />
-            </div>
-          </motion.div>
-
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif" }}
-            className="text-5xl md:text-7xl font-light text-white mb-2 tracking-wide">
-            {ar ? WEDDING.groomAr : WEDDING.groom}
-          </h1>
-          <p className="text-[#a8d5b5] text-3xl italic my-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>&</p>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif" }}
-            className="text-5xl md:text-7xl font-light text-white mb-8 tracking-wide">
-            {ar ? WEDDING.brideAr : WEDDING.bride}
-          </h1>
-
-          {guestName && (
-            <motion.p className="text-white/50 text-base mb-6"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1 }}>
-              {ar ? "عزيزنا" : "Dear"} <span className="text-[#a8d5b5] font-medium">{guestName}</span>
-            </motion.p>
-          )}
-
-          <motion.div animate={{ opacity: [0.35, 1, 0.35] }} transition={{ repeat: Infinity, duration: 2.2 }}
-            className="flex flex-col items-center gap-2 mt-2">
-            <p className="text-white/40 text-xs tracking-[0.35em] uppercase">
-              {ar ? "اضغط للفتح" : "Tap to Open"}
-            </p>
-            <div className="w-px h-8 bg-gradient-to-b from-[#6aad85] to-transparent" />
-          </motion.div>
-        </motion.div>
+        <EnvelopeScreen
+          guestName={guestName}
+          onOpen={() => setTimeout(() => startMusic(), 300)}
+          onVideoEnd={() => setStarted(true)}
+          ar={ar}
+          setLang={setLang}
+        />
       </div>
     )
   }

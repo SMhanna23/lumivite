@@ -1,0 +1,72 @@
+import { useState, useRef, useEffect } from "react"
+import { motion } from "framer-motion"
+
+const GOLD = "#c4a35a"
+
+export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang }) {
+  const videoRef = useRef(null)
+  const [started, setStarted] = useState(false)
+
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+    v.play().then(() => { v.pause(); v.currentTime = 0 }).catch(() => {})
+  }, [])
+
+  const tap = () => {
+    if (started) return
+    setStarted(true)
+    onOpen()
+    videoRef.current?.play().catch(() => {})
+  }
+
+  return (
+    <motion.div
+      className="absolute inset-0 cursor-pointer select-none overflow-hidden"
+      style={{ background: "#0c0b09" }}
+      dir={ar ? "rtl" : "ltr"}
+      onClick={tap}
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
+
+      <video
+        ref={videoRef}
+        src="/6bec0292b1d749753c4d597420bf2a7b_720w.mp4"
+        className="absolute inset-0 w-full h-full object-cover"
+        playsInline
+        muted
+        preload="auto"
+        onEnded={onVideoEnd}
+      />
+
+      {guestName && (
+        <motion.div
+          className="absolute left-0 right-0 flex flex-col items-center text-center px-6 pointer-events-none"
+          style={{ bottom: "22%", zIndex: 10 }}
+          animate={{ opacity: started ? 0 : 1 }}
+          initial={{ opacity: 0 }}
+          transition={{ duration: started ? 0.3 : 1.3, delay: started ? 0 : 0.8 }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.1rem,4vw,1.6rem)", color: "rgba(255,255,255,0.65)", fontStyle: "italic" }}>
+            {ar ? "عزيزنا" : "Dear"} <span style={{ color: GOLD }}>{guestName}</span>
+          </p>
+        </motion.div>
+      )}
+
+      <motion.div
+        className="absolute bottom-10 left-0 right-0 flex flex-col items-center pointer-events-none"
+        style={{ zIndex: 10 }}
+        animate={started ? { opacity: 0 } : { opacity: [0.3, 1, 0.3] }}
+        transition={started ? { duration: 0.25 } : { repeat: Infinity, duration: 2.5 }}>
+        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.56rem", letterSpacing: "0.48em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase" }}>
+          {ar ? "انقر لفتح" : "Tap to Open"}
+        </p>
+        <div className="w-px h-7 mt-2" style={{ background: `linear-gradient(to bottom, ${GOLD}70, transparent)` }} />
+      </motion.div>
+
+      <button onClick={e => { e.stopPropagation(); setLang(ar ? "en" : "ar") }}
+        className="absolute top-5 right-5 z-30 h-9 px-4 rounded-full text-xs transition"
+        style={{ background: `${GOLD}18`, border: `1px solid ${GOLD}55`, color: GOLD, fontFamily: "'Jost', sans-serif", letterSpacing: "0.1em" }}>
+        {ar ? "EN" : "عربي"}
+      </button>
+    </motion.div>
+  )
+}

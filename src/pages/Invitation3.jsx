@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"
+import EnvelopeScreen from "../components/EnvelopeScreen"
 import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
@@ -162,75 +163,18 @@ export default function Invitation({ override = null }) {
   }
 
   // SPLASH
+  // ENVELOPE SCREEN
   if (!started) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 cursor-pointer relative overflow-hidden"
-        dir={ar ? "rtl" : "ltr"}
-        onClick={() => { setStarted(true); setTimeout(() => startMusic(), 800) }}>
+      <div className="fixed inset-0">
         {!ytId && <audio ref={audioRef} loop src={WEDDING.music || "/music.mp3"} preload="auto" />}
-
-        {/* Full-screen blurred photo background */}
-        <div className="absolute inset-0 z-0" style={{
-          backgroundImage: `url(${photos[0]})`,
-          backgroundSize: "cover", backgroundPosition: "center",
-          filter: "blur(12px) brightness(0.4)", transform: "scale(1.1)"
-        }} />
-        {/* Rose gold gradient overlay */}
-        <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 40%, rgba(120,50,60,0.35) 0%, rgba(40,15,20,0.88) 100%)" }} />
-
-        <Roses />
-
-        <motion.div className="relative z-10 flex flex-col items-center"
-          initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.6 }}>
-
-          <motion.div animate={{ rotate: [0, 5, -5, 0] }} transition={{ repeat: Infinity, duration: 4 }}
-            className="text-3xl mb-5">💍</motion.div>
-          <p className="tracking-[0.5em] text-xs uppercase mb-7 font-medium" style={{ color: roseGold }}>
-            {ar ? "أنتم مدعوون" : "You're Invited"}
-          </p>
-
-          {/* Circular couple photo */}
-          <motion.div className="relative mb-8"
-            initial={{ opacity: 0, scale: 0.75 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.3, delay: 0.3 }}>
-            <div className="absolute -inset-4 rounded-full border pointer-events-none" style={{ borderColor: `${roseGold}25` }} />
-            <div className="absolute -inset-2 rounded-full border pointer-events-none" style={{ borderColor: `${roseGold}50` }} />
-            <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-2" style={{
-              borderColor: `${roseGold}cc`,
-              boxShadow: `0 0 40px rgba(183,110,121,0.3), 0 24px 64px rgba(0,0,0,0.7)`
-            }}>
-              <img src={photos[0]} alt="Couple" className="w-full h-full object-cover object-top" />
-            </div>
-          </motion.div>
-
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", color: "#fff" }}
-            className="text-5xl md:text-7xl font-light mb-2 tracking-wide">
-            {ar ? WEDDING.groomAr : WEDDING.groom}
-          </h1>
-          <div className="flex items-center justify-center gap-4 my-2">
-            <div className="h-px w-10" style={{ background: roseGold }} />
-            <span className="text-2xl" style={{ color: roseGold, fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic" }}>&</span>
-            <div className="h-px w-10" style={{ background: roseGold }} />
-          </div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", color: "#fff" }}
-            className="text-5xl md:text-7xl font-light mb-8 tracking-wide">
-            {ar ? WEDDING.brideAr : WEDDING.bride}
-          </h1>
-
-          {guestName && (
-            <motion.p className="text-base mb-6 font-light" style={{ color: "rgba(255,255,255,0.5)" }}
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1 }}>
-              {ar ? "عزيزنا" : "Dear"} <span className="font-medium" style={{ color: roseGold }}>{guestName}</span>
-            </motion.p>
-          )}
-
-          <motion.div animate={{ opacity: [0.35, 1, 0.35] }} transition={{ repeat: Infinity, duration: 2.2 }}
-            className="flex flex-col items-center gap-2 mt-2">
-            <p className="text-xs tracking-[0.35em] uppercase" style={{ color: `${roseGold}80` }}>
-              {ar ? "اضغط للفتح" : "Tap to Open"}
-            </p>
-            <div className="w-px h-8" style={{ background: `linear-gradient(to bottom, ${roseGold}, transparent)` }} />
-          </motion.div>
-        </motion.div>
+        <EnvelopeScreen
+          guestName={guestName}
+          onOpen={() => setTimeout(() => startMusic(), 300)}
+          onVideoEnd={() => setStarted(true)}
+          ar={ar}
+          setLang={setLang}
+        />
       </div>
     )
   }
