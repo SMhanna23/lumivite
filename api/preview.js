@@ -18,6 +18,11 @@ export default async function handler(req, res) {
 
   const invitationUrl = `https://www.lumivite.net/i/${slug}`
 
+  // Build redirect URL: preserve guest params (gn, np) and add _src=app to skip preview on next load
+  const { slug: _s, ...guestParams } = req.query
+  const redirectParams = new URLSearchParams({ ...guestParams, _src: "app" })
+  const redirectUrl = `${invitationUrl}?${redirectParams}`
+
   try {
     const projectId = process.env.VITE_FIREBASE_PROJECT_ID
     const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/invitations/${slug}`
@@ -67,7 +72,7 @@ export default async function handler(req, res) {
   <meta name="twitter:title" content="${safeTitle}">
   <meta name="twitter:description" content="${safeDescription}">
   <meta name="twitter:image" content="${safePhoto}">
-  <script>window.location.replace(${JSON.stringify(invitationUrl)})</script>
+  <script>window.location.replace(${JSON.stringify(redirectUrl)})</script>
 </head>
 <body style="background:#0a0806;margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;">
   <p style="color:#c9a96e;font-family:serif;font-size:1.2rem;">Opening your invitation...</p>

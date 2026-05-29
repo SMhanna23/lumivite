@@ -1,6 +1,12 @@
 {
   "rewrites": [
     { "source": "/api/preview/:slug", "destination": "/api/preview?slug=:slug" },
+    {
+      "source": "/i/:slug",
+      "has": [{ "type": "query", "key": "_src", "value": "app" }],
+      "destination": "/index.html"
+    },
+    { "source": "/i/:slug", "destination": "/api/preview?slug=:slug" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
