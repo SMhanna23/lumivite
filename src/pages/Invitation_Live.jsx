@@ -47,11 +47,10 @@ export default function Invitation_Live() {
     </div>
   )
 
-  // Pass client data as props override (strip stored timeline so code default is used)
-  const { timeline: _ignored, ...overrideData } = data
-  const template = overrideData.template || "dark"
-  if (template === "botanical") return <Invitation2 override={overrideData} />
-  if (template === "rosegold") return <Invitation3 override={overrideData} />
-  if (template === "sand") return <Invitation4 override={overrideData} />
-  return <Invitation override={overrideData} />
+  // Pass client data as props override
+  const template = data.template || "dark"
+  if (template === "botanical") return <Invitation2 override={data} />
+  if (template === "rosegold") return <Invitation3 override={data} />
+  if (template === "sand") return <Invitation4 override={data} />
+  return <Invitation override={data} />
 }
