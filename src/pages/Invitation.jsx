@@ -83,6 +83,12 @@ const timeline = [
   { time: "11:00 PM", label: "Party", icon: "🎉", desc: "Dance the night away with us" },
 ]
 
+function getYouTubeId(url) {
+  if (!url) return null
+  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+  return m ? m[1] : null
+}
+
 export default function Invitation({ override = null }) {
   const WEDDING = override ? { ...DEFAULT_WEDDING, ...override } : DEFAULT_WEDDING
   const [started, setStarted] = useState(false)
@@ -110,25 +116,24 @@ export default function Invitation({ override = null }) {
     "/photo9.jpg",
   ]
   const audioRef = useRef(null)
-
-
+  const ytRef = useRef(null)
+  const ytId = getYouTubeId(WEDDING.music)
 
   const startMusic = () => {
-    if (audioRef.current) {
-      audioRef.current.play().catch(() => {})
-      setPlaying(true)
-    }
+    if (ytId) { setPlaying(true); return }
+    if (audioRef.current) { audioRef.current.play().catch(() => {}); setPlaying(true) }
   }
 
   const toggleMusic = () => {
-    if (!audioRef.current) return
-    if (playing) {
-      audioRef.current.pause()
-      setPlaying(false)
-    } else {
-      audioRef.current.play().catch(() => {})
-      setPlaying(true)
+    if (ytId && ytRef.current) {
+      const cmd = playing ? "pauseVideo" : "playVideo"
+      ytRef.current.contentWindow.postMessage(`{"event":"command","func":"${cmd}","args":""}`, '*')
+      setPlaying(!playing)
+      return
     }
+    if (!audioRef.current) return
+    if (playing) { audioRef.current.pause(); setPlaying(false) }
+    else { audioRef.current.play().catch(() => {}); setPlaying(true) }
   }
 
   const handleRSVP = async () => {
@@ -160,7 +165,7 @@ export default function Invitation({ override = null }) {
       <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 cursor-pointer relative overflow-hidden"
         dir={ar ? "rtl" : "ltr"}
         onClick={() => { setStarted(true); setTimeout(() => startMusic(), 800) }}>
-        <audio ref={audioRef} loop src="/music.mp3" preload="auto" />
+        {!ytId && <audio ref={audioRef} loop src={WEDDING.music || "/music.mp3"} preload="auto" />}
 
         {/* Full-screen blurred photo background */}
         <div className="absolute inset-0 z-0" style={{
@@ -222,7 +227,14 @@ export default function Invitation({ override = null }) {
     <div className="min-h-screen bg-[#0d0a08] text-white overflow-x-hidden relative"
       dir={ar ? "rtl" : "ltr"}
       style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>
-      <audio ref={audioRef} loop src="/music.mp3" preload="auto" />
+      {ytId ? (
+        <iframe ref={ytRef} title="bg-music"
+          src={`https://www.youtube.com/embed/${ytId}?enablejsapi=1&autoplay=1&loop=1&playlist=${ytId}&controls=0`}
+          style={{ position: "fixed", width: 1, height: 1, opacity: 0, pointerEvents: "none", top: 0, left: 0 }}
+          allow="autoplay" />
+      ) : (
+        <audio ref={audioRef} loop src={WEDDING.music || "/music.mp3"} preload="auto" />
+      )}
       <Petals />
 
       {/* Floating music button */}
