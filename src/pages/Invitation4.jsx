@@ -132,11 +132,9 @@ function renderSectionOverlay(section, w, ar) {
   const CG = { fontFamily: "'Cormorant Garamond', serif" }
   const GV = { fontFamily: "'Great Vibes', cursive" }
   const defaultTimeline = [
-    { time: "5:00 PM",  label: "Ceremony",      labelAr: "مراسم الزواج",   location: "Saint Georges Church" },
-    { time: "7:00 PM",  label: "Cocktail Hour",  labelAr: "ساعة الكوكتيل", location: "Garden Terrace" },
-    { time: "8:30 PM",  label: "Photos",         labelAr: "جلسة التصوير",   location: "" },
-    { time: "9:00 PM",  label: "Dinner",         labelAr: "العشاء",         location: "Bois de Roses" },
-    { time: "11:00 PM", label: "Party",          labelAr: "الحفلة",         location: "" },
+    { time: "5:00 PM",  label: "Ceremony",      labelAr: "مراسم الزواج",    location: "Saint Georges Church" },
+    { time: "7:00 PM",  label: "Welcome Drink", labelAr: "مشروب الترحيب",  location: "" },
+    { time: "11:00 PM", label: "Party",         labelAr: "الحفلة",          location: "" },
   ]
   const tl = w.timeline || defaultTimeline
 

@@ -78,9 +78,7 @@ function Leaves() {
 
 const timeline = [
   { time: "5:00 PM", label: "Ceremony", icon: "💒", desc: "Join us as we say our vows" },
-  { time: "7:00 PM", label: "Cocktail Hour", icon: "🥂", desc: "Celebrate with drinks & canapés" },
-  { time: "8:30 PM", label: "Dinner", icon: "🍽️", desc: "A feast prepared with love" },
-  { time: "10:00 PM", label: "First Dance", icon: "💃", desc: "Watch us dance for the first time" },
+  { time: "7:00 PM", label: "Welcome Drink", icon: "🥂", desc: "Celebrate with drinks & canapés" },
   { time: "11:00 PM", label: "Party", icon: "🎉", desc: "Dance the night away with us" },
 ]
 
