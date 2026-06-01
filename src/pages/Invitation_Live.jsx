@@ -12,6 +12,15 @@ export default function Invitation_Live() {
   const [data, setData] = useState(null)
   const [status, setStatus] = useState("loading") // loading | found | notfound
 
+  // Clean up ?_app=1 that preview.js adds for routing bypass
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    if (url.searchParams.has("_app")) {
+      url.searchParams.delete("_app")
+      window.history.replaceState(null, "", url.pathname)
+    }
+  }, [])
+
   useEffect(() => {
     const fetch = async () => {
       try {
