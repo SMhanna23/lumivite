@@ -17,8 +17,8 @@ export default async function handler(req, res) {
     return res.redirect(302, "https://www.lumivite.net")
   }
 
-  let title       = "You're Invited ✨"
-  let description = "You have received a beautiful digital wedding invitation. Open to view the full experience."
+  let title       = "You're Invited 💍"
+  let description = "You have received a beautiful digital wedding invitation. Open to experience this special moment."
   let image       = "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=630&fit=crop&q=80"
   const pageUrl   = `https://www.lumivite.net/i/${slug}`
 
@@ -31,8 +31,9 @@ export default async function handler(req, res) {
     if (response.ok) {
       const data   = await response.json()
       const f      = data.fields || {}
-      const groom  = f.groom?.stringValue  || ""
-      const bride  = f.bride?.stringValue  || ""
+      // Try English names first, fall back to Arabic names
+      const groom  = f.groom?.stringValue  || f.groomAr?.stringValue || ""
+      const bride  = f.bride?.stringValue  || f.brideAr?.stringValue || ""
       const date   = f.date?.stringValue   || ""
       const photos = f.photos?.arrayValue?.values || []
 
@@ -42,8 +43,8 @@ export default async function handler(req, res) {
           ? new Date(date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
           : ""
         description = dateStr
-          ? `You are invited to celebrate the wedding of ${groom} & ${bride} on ${dateStr}`
-          : `You are invited to celebrate the wedding of ${groom} & ${bride}`
+          ? `${groom} & ${bride} are getting married on ${dateStr}. You are invited to celebrate their love — open to view the full invitation.`
+          : `${groom} & ${bride} are getting married and you're invited! Open to view their beautiful wedding invitation.`
       }
 
       if (photos.length > 0 && photos[0].stringValue) {
