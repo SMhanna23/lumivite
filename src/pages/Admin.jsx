@@ -409,7 +409,7 @@ function BuildInvitationModal({ order }) {
             )}
           </div>
           <div className="flex gap-2 justify-center flex-wrap">
-            <button onClick={() => navigator.clipboard.writeText(previewUrl).then(() => alert("Invitation link copied!"))}
+            <button onClick={() => navigator.clipboard.writeText(liveUrl).then(() => alert("Invitation link copied!"))}
               className="text-xs px-3 py-2 rounded-xl border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
               📋 Copy Invitation
             </button>
