@@ -6,18 +6,25 @@ const GOLD = "#c4a35a"
 export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang }) {
   const videoRef = useRef(null)
   const [started, setStarted] = useState(false)
+  const tapped = useRef(false) // guard: only call onVideoEnd after a real tap
 
   useEffect(() => {
     const v = videoRef.current
     if (!v) return
+    // Preload first frame without triggering onVideoEnd
     v.play().then(() => { v.pause(); v.currentTime = 0 }).catch(() => {})
   }, [])
 
   const tap = () => {
     if (started) return
+    tapped.current = true
     setStarted(true)
     onOpen()
     videoRef.current?.play().catch(() => {})
+  }
+
+  const handleEnded = () => {
+    if (tapped.current) onVideoEnd()
   }
 
   return (
@@ -35,7 +42,7 @@ export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setL
         playsInline
         muted
         preload="auto"
-        onEnded={onVideoEnd}
+        onEnded={handleEnded}
       />
 
       {guestName && (

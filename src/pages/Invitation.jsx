@@ -124,7 +124,8 @@ export default function Invitation({ override = null }) {
 
   const startMusic = () => {
     if (ytId) {
-      // YouTube iframe may not exist yet (envelope still showing); mark playing so it autoplays when rendered
+      // Iframe is always rendered — play via postMessage within the tap gesture (works on mobile)
+      ytRef.current?.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*')
       setPlaying(true)
       return
     }
@@ -184,11 +185,24 @@ export default function Invitation({ override = null }) {
   }
 }
 
-  // ENVELOPE SCREEN
-  if (!started) {
-    return (
-      <div className="fixed inset-0">
-        {!ytId && <audio ref={audioRef} loop src={WEDDING.music || "/music.mp3"} preload="auto" />}
+  // Single return — media element stays mounted so it never reloads when started changes
+  return (
+    <div className={started ? "min-h-screen bg-[#0d0a08] text-white overflow-x-hidden relative" : "fixed inset-0"}
+      dir={ar ? "rtl" : "ltr"}
+      style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>
+
+      {/* Always-mounted media — iframe stays alive across envelope → invitation transition */}
+      {ytId ? (
+        <iframe ref={ytRef} title="bg-music"
+          src={`https://www.youtube.com/embed/${ytId}?enablejsapi=1&loop=1&playlist=${ytId}&controls=0&start=${musicStart}${musicEnd ? `&end=${musicEnd}` : ""}`}
+          style={{ position: "fixed", width: 1, height: 1, opacity: 0, pointerEvents: "none", top: 0, left: 0 }}
+          allow="autoplay" />
+      ) : (
+        <audio ref={audioRef} loop src={WEDDING.music || "/music.mp3"} preload="auto" />
+      )}
+
+      {/* Envelope screen overlay */}
+      {!started && (
         <EnvelopeScreen
           guestName={guestName}
           onOpen={startMusic}
@@ -196,23 +210,10 @@ export default function Invitation({ override = null }) {
           ar={ar}
           setLang={setLang}
         />
-      </div>
-    )
-  }
-
-  // MAIN INVITATION
-  return (
-    <div className="min-h-screen bg-[#0d0a08] text-white overflow-x-hidden relative"
-      dir={ar ? "rtl" : "ltr"}
-      style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>
-      {ytId ? (
-        <iframe ref={ytRef} title="bg-music"
-          src={`https://www.youtube.com/embed/${ytId}?enablejsapi=1&autoplay=1&loop=1&playlist=${ytId}&controls=0&start=${musicStart}${musicEnd ? `&end=${musicEnd}` : ""}`}
-          style={{ position: "fixed", width: 1, height: 1, opacity: 0, pointerEvents: "none", top: 0, left: 0 }}
-          allow="autoplay" />
-      ) : (
-        <audio ref={audioRef} loop src={WEDDING.music || "/music.mp3"} preload="auto" />
       )}
+
+      {/* Main invitation */}
+      {started && (<>
       <Petals />
 
       {/* Floating music button */}
@@ -541,6 +542,7 @@ export default function Invitation({ override = null }) {
       <footer className="text-center py-10 text-white/20 text-sm border-t border-white/5 relative z-10">
        {ar ? "صُنع بـ ✦ بواسطة" : "Made with ✦ by"}<span className="text-[#c9a96e]"> Lumivite</span>
       </footer>
+    </>)}
     </div>
   )
 }
