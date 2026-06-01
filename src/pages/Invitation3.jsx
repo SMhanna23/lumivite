@@ -127,12 +127,18 @@ export default function Invitation({ override = null }) {
   const audioRef = useRef(null)
   const ytRef = useRef(null)
   const ytId = getYouTubeId(WEDDING.music)
+  const musicStart = WEDDING.musicStart ?? 0
+  const musicEnd   = WEDDING.musicEnd   ?? null
 
   const guestName = searchParams.get("gn") || ""
 
   const startMusic = () => {
     if (ytId) { setPlaying(true); return }
-    if (audioRef.current) { audioRef.current.play().catch(() => {}); setPlaying(true) }
+    const audio = audioRef.current
+    if (!audio) return
+    audio.currentTime = musicStart
+    audio.play().catch(() => {})
+    setPlaying(true)
   }
   const toggleMusic = () => {
     if (ytId && ytRef.current) {
@@ -141,10 +147,20 @@ export default function Invitation({ override = null }) {
       setPlaying(!playing)
       return
     }
-    if (!audioRef.current) return
-    if (playing) { audioRef.current.pause(); setPlaying(false) }
-    else { audioRef.current.play().catch(() => {}); setPlaying(true) }
+    const audio = audioRef.current
+    if (!audio) return
+    if (playing) { audio.pause(); setPlaying(false) }
+    else { audio.currentTime = musicStart; audio.play().catch(() => {}); setPlaying(true) }
   }
+
+  // Loop audio within start/end segment
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio || !musicEnd) return
+    const onTimeUpdate = () => { if (audio.currentTime >= musicEnd) audio.currentTime = musicStart }
+    audio.addEventListener("timeupdate", onTimeUpdate)
+    return () => audio.removeEventListener("timeupdate", onTimeUpdate)
+  }, [musicStart, musicEnd])
 
   const handleRSVP = async () => {
     if (!name || attending === null) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
@@ -186,7 +202,7 @@ export default function Invitation({ override = null }) {
       style={{ background: cream, color: dark, fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>
       {ytId ? (
         <iframe ref={ytRef} title="bg-music"
-          src={`https://www.youtube.com/embed/${ytId}?enablejsapi=1&autoplay=1&loop=1&playlist=${ytId}&controls=0`}
+          src={`https://www.youtube.com/embed/${ytId}?enablejsapi=1&autoplay=1&loop=1&playlist=${ytId}&controls=0&start=${musicStart}${musicEnd ? `&end=${musicEnd}` : ""}`}
           style={{ position: "fixed", width: 1, height: 1, opacity: 0, pointerEvents: "none", top: 0, left: 0 }}
           allow="autoplay" />
       ) : (

@@ -109,6 +109,8 @@ function BuildInvitationModal({ order }) {
     ceremonyMapUrl: "",
     partyMapUrl: "",
     music: order.music || "",
+    musicStart: null,
+    musicEnd: null,
     video: "",
     videoStart: null,
     videoEnd: null,
@@ -167,6 +169,8 @@ function BuildInvitationModal({ order }) {
             ceremonyMapUrl: d.venues?.[0]?.map || "",
             partyMapUrl: d.venues?.[1]?.map || "",
             music: d.music || "",
+            musicStart: d.musicStart ?? null,
+            musicEnd: d.musicEnd ?? null,
             video: d.video || "",
             videoStart: d.videoStart ?? null,
             videoEnd: d.videoEnd ?? null,
@@ -245,6 +249,8 @@ function BuildInvitationModal({ order }) {
         quoteAr: extraData.quoteAr,
         quoteRef: extraData.quoteRef,
         music: extraData.music,
+        musicStart: extraData.musicStart ?? null,
+        musicEnd: extraData.musicEnd ?? null,
         video: extraData.video || "",
         videoStart: extraData.videoStart ?? null,
         videoEnd: extraData.videoEnd ?? null,
@@ -311,6 +317,8 @@ function BuildInvitationModal({ order }) {
         quoteAr: extraData.quoteAr,
         quoteRef: extraData.quoteRef,
         music: extraData.music,
+        musicStart: extraData.musicStart ?? null,
+        musicEnd: extraData.musicEnd ?? null,
         video: extraData.video || "",
         videoStart: extraData.videoStart ?? null,
         videoEnd: extraData.videoEnd ?? null,
@@ -512,6 +520,21 @@ function BuildInvitationModal({ order }) {
             <input value={extraData.music} onChange={e => update("music", e.target.value)}
               placeholder="https://... or leave empty for default"
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            <p className="text-white/20 text-xs mt-1">🎵 Music Clip (optional) — start &amp; end in seconds (e.g. 30 → 90 plays only that segment)</p>
+            <div className="flex gap-3 mt-2">
+              <div className="flex-1">
+                <label className="text-white/25 text-xs mb-1 block">Start (seconds)</label>
+                <input type="number" min="0" value={extraData.musicStart ?? ""} onChange={e => update("musicStart", e.target.value === "" ? null : Number(e.target.value))}
+                  placeholder="0"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              </div>
+              <div className="flex-1">
+                <label className="text-white/25 text-xs mb-1 block">End (seconds)</label>
+                <input type="number" min="0" value={extraData.musicEnd ?? ""} onChange={e => update("musicEnd", e.target.value === "" ? null : Number(e.target.value))}
+                  placeholder="leave empty to play full track"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              </div>
+            </div>
           </div>
 
           {/* RSVP Deadline */}
