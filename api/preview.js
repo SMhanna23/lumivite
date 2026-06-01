@@ -1,3 +1,14 @@
+import { initializeApp, getApps, cert } from "firebase-admin/app"
+import { getFirestore } from "firebase-admin/firestore"
+
+// Initialise Firebase Admin once per cold start
+if (!getApps().length) {
+  try {
+    const sa = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || "{}")
+    initializeApp({ credential: cert(sa) })
+  } catch (_) {}
+}
+
 function escapeHtml(str) {
   return String(str || "")
     .replace(/&/g, "&amp;")
@@ -20,18 +31,15 @@ export default async function handler(req, res) {
   const pageUrl   = `https://www.lumivite.net/i/${slug}`
 
   try {
-    const projectId    = process.env.VITE_FIREBASE_PROJECT_ID || "lumivite-caa28"
-    const apiKey       = process.env.VITE_FIREBASE_API_KEY    || "AIzaSyAFvR5OKhAlxfVkkZyb42TryKivtua6EsE"
-    const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/invitations/${slug}?key=${apiKey}`
-    const response     = await fetch(firestoreUrl)
+    const db   = getFirestore()
+    const snap = await db.collection("invitations").doc(slug).get()
 
-    if (response.ok) {
-      const data   = await response.json()
-      const f      = data.fields || {}
-      const groom  = f.groom?.stringValue  || f.groomAr?.stringValue || ""
-      const bride  = f.bride?.stringValue  || f.brideAr?.stringValue || ""
-      const date   = f.date?.stringValue   || ""
-      const photos = f.photos?.arrayValue?.values || []
+    if (snap.exists) {
+      const d     = snap.data()
+      const groom = d.groom  || d.groomAr || ""
+      const bride = d.bride  || d.brideAr || ""
+      const date  = d.date   || ""
+      const photos = Array.isArray(d.photos) ? d.photos : []
 
       if (groom && bride) {
         title = `${groom} & ${bride} \uD83D\uDC8D`
@@ -43,8 +51,8 @@ export default async function handler(req, res) {
           : `${groom} & ${bride} are getting married and you\u2019re invited! Open to view their beautiful wedding invitation.`
       }
 
-      if (photos.length > 0 && photos[0].stringValue) {
-        image = photos[0].stringValue
+      if (photos.length > 0 && typeof photos[0] === "string") {
+        image = photos[0]
       }
     }
   } catch (_) {}
@@ -84,6 +92,6 @@ export default async function handler(req, res) {
 </html>`
 
   res.setHeader("Content-Type", "text/html; charset=utf-8")
-  res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600")
+  res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120")
   res.status(200).send(html)
 }
