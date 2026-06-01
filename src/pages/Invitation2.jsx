@@ -127,8 +127,9 @@ export default function Invitation({ override = null }) {
     const audio = audioRef.current
     if (!audio) return
     audio.currentTime = musicStart
-    audio.play().catch(() => {})
-    setPlaying(true)
+    audio.play()
+      .then(() => setPlaying(true))
+      .catch(() => setPlaying(false))
   }
 
   const toggleMusic = () => {
@@ -141,7 +142,10 @@ export default function Invitation({ override = null }) {
     const audio = audioRef.current
     if (!audio) return
     if (playing) { audio.pause(); setPlaying(false) }
-    else { audio.currentTime = musicStart; audio.play().catch(() => {}); setPlaying(true) }
+    else {
+      audio.currentTime = musicStart
+      audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
+    }
   }
 
   // Loop audio within start/end segment
@@ -183,7 +187,7 @@ export default function Invitation({ override = null }) {
         {!ytId && <audio ref={audioRef} loop src={WEDDING.music || "/music.mp3"} preload="auto" />}
         <EnvelopeScreen
           guestName={guestName}
-          onOpen={() => setTimeout(() => startMusic(), 300)}
+          onOpen={startMusic}
           onVideoEnd={() => setStarted(true)}
           ar={ar}
           setLang={setLang}
