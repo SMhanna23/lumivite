@@ -20,8 +20,8 @@ export default async function handler(req, res) {
   const pageUrl   = `https://www.lumivite.net/i/${slug}`
 
   try {
-    const projectId    = process.env.VITE_FIREBASE_PROJECT_ID
-    const apiKey       = process.env.VITE_FIREBASE_API_KEY
+    const projectId    = process.env.VITE_FIREBASE_PROJECT_ID || "lumivite-caa28"
+    const apiKey       = process.env.VITE_FIREBASE_API_KEY    || "AIzaSyAFvR5OKhAlxfVkkZyb42TryKivtua6EsE"
     const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/invitations/${slug}?key=${apiKey}`
     const response     = await fetch(firestoreUrl)
 
