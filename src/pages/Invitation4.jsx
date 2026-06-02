@@ -47,6 +47,16 @@ const getVimeoId = url => {
   const m = url.match(/vimeo\.com\/(\d+)/)
   return m ? m[1] : null
 }
+const getAnonMp4Id = url => {
+  if (!url) return null
+  const m = url.match(/anonmp4\.[a-z]+\/(?:v|e)\/([a-zA-Z0-9_-]+)/)
+  return m ? m[1] : null
+}
+const getAnonMp4Domain = url => {
+  if (!url) return null
+  const m = url.match(/(anonmp4\.[a-z]+)/)
+  return m ? m[1] : null
+}
 const isDirectVideo = url => /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(url || "")
 
 // ── VIDEO ENVELOPE ────────────────────────────────────────────────────────────
@@ -426,15 +436,17 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
   const [sectionIdx, setSectionIdx] = useState(0)
   const [startupCover, setStartupCover] = useState(true)
 
-  const ytId     = getYouTubeId(videoUrl)
-  const vimeoId  = getVimeoId(videoUrl)
-  const isDirect = isDirectVideo(videoUrl)
-  const hasVideo = !!(ytId || vimeoId || isDirect)
+  const ytId      = getYouTubeId(videoUrl)
+  const vimeoId   = getVimeoId(videoUrl)
+  const anonMp4Id = getAnonMp4Id(videoUrl)
+  const anonMp4Domain = getAnonMp4Domain(videoUrl)
+  const isDirect  = isDirectVideo(videoUrl)
+  const hasVideo  = !!(ytId || vimeoId || anonMp4Id || isDirect)
 
   // Detect mobile — YouTube needs mute=1 to autoplay on mobile
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
   // Mute the video if admin checked muteVideo, OR if mobile + iframe (autoplay requirement)
-  const videoMuted = !!(w.muteVideo || (isMobile && (ytId || vimeoId)))
+  const videoMuted = !!(w.muteVideo || (isMobile && (ytId || vimeoId || anonMp4Id)))
 
   // Cycle content sections for ALL video types
   useEffect(() => {
@@ -476,6 +488,8 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
   ].filter(Boolean).join("&")
   const iframeSrc = ytId
     ? `https://www.youtube-nocookie.com/embed/${ytId}?${ytParts}`
+    : anonMp4Id
+    ? `https://${anonMp4Domain}/e/${anonMp4Id}`
     : `https://player.vimeo.com/video/${vimeoId}?${vimeoParts}`
 
   const section = CONTENT_SECTIONS[sectionIdx]
