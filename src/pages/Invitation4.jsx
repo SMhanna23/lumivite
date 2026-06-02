@@ -489,7 +489,7 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
   const iframeSrc = ytId
     ? `https://www.youtube-nocookie.com/embed/${ytId}?${ytParts}`
     : anonMp4Id
-    ? `https://${anonMp4Domain}/e/${anonMp4Id}`
+    ? `https://${anonMp4Domain}/embed/${anonMp4Id}`
     : `https://player.vimeo.com/video/${vimeoId}?${vimeoParts}`
 
   const section = CONTENT_SECTIONS[sectionIdx]
