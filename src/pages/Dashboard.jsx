@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore"
+import { doc, getDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore"
+import { getAuth, onAuthStateChanged } from "firebase/auth"
 import { db } from "../firebase"
 import { motion } from "framer-motion"
 
@@ -65,6 +66,19 @@ export default function Dashboard() {
   const [rsvps, setRsvps] = useState([])
   const [status, setStatus] = useState("loading")
   const [filter, setFilter] = useState("all")
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    return onAuthStateChanged(getAuth(), u => setIsAdmin(!!u))
+  }, [])
+
+  const handleDeleteRsvp = async (rsvpId) => {
+    if (!confirm("Remove this RSVP?")) return
+    try {
+      await deleteDoc(doc(db, "rsvps", rsvpId))
+      setRsvps(prev => prev.filter(r => r.id !== rsvpId))
+    } catch (e) { alert("Error: " + e.message) }
+  }
 
   useEffect(() => {
     const load = async () => {
@@ -203,6 +217,13 @@ export default function Dashboard() {
                 <span className={`text-xs px-2.5 py-1 rounded-full font-medium flex-shrink-0 ${rsvp.attending ? "bg-[#4ade80]/15 text-[#4ade80]" : "bg-red-400/15 text-red-400"}`}>
                   {rsvp.attending ? `✓ ${rsvp.persons || 1} person${(rsvp.persons || 1) > 1 ? "s" : ""}` : "Declined"}
                 </span>
+                {isAdmin && (
+                  <button onClick={() => handleDeleteRsvp(rsvp.id)}
+                    className="text-white/20 hover:text-red-400 transition flex-shrink-0 text-xs px-2 py-1"
+                    title="Delete (admin only)">
+                    ✕
+                  </button>
+                )}
               </motion.div>
             ))}
           </div>
