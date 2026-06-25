@@ -656,7 +656,6 @@ function PhotoFilm({ photos, w, onEnded, ar }) {
 // ── RSVP SCREEN ──────────────────────────────────────────────────────────────
 function RSVPScreen({ w, ar, setLang, onReplay }) {
   const [name,      setName]      = useState(() => new URLSearchParams(window.location.search).get("gn") || "")
-  const [email,     setEmail]     = useState("")
   const [attending, setAttending] = useState(null)
   const [wishes,    setWishes]    = useState("")
   const [persons,   setPersons]   = useState(() => parseInt(new URLSearchParams(window.location.search).get("np") || "1"))
@@ -670,7 +669,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
     setStatus("loading")
     try {
       await addDoc(collection(db, "rsvps"), {
-        name, email, attending, wishes, persons,
+        name, attending, wishes, persons,
         wedding: `${w.groom} & ${w.bride}`, createdAt: serverTimestamp()
       })
       const emoji = attending ? "✅" : "❌"
@@ -752,14 +751,9 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
               </motion.div>
             ) : (
               <motion.div key="form" className="space-y-3">
-                {[
-                  { type: "text",  val: name,  set: setName,  ph: ar ? "اسمك الكامل" : "Your Full Name" },
-                  { type: "email", val: email, set: setEmail, ph: ar ? "البريد الإلكتروني (اختياري)" : "Email (optional)" },
-                ].map(({ type, val, set, ph }) => (
-                  <input key={type} type={type} value={val} onChange={e => set(e.target.value)} placeholder={ph}
-                    className="w-full rounded-xl px-5 py-4 text-white placeholder-white/20 focus:outline-none"
-                    style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }} />
-                ))}
+                <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder={ar ? "اسمك الكامل" : "Your Full Name"}
+                  className="w-full rounded-xl px-5 py-4 text-white placeholder-white/20 focus:outline-none"
+                  style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }} />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
                   disabled={!!searchParams.get("np")}
                   className="w-full rounded-xl px-5 py-4 text-white focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"

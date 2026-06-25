@@ -103,7 +103,6 @@ export default function Invitation({ override = null }) {
   const WEDDING = override ? { ...DEFAULT_WEDDING, ...override } : DEFAULT_WEDDING
   const [started, setStarted] = useState(false)
   const [name, setName] = useState(() => new URLSearchParams(window.location.search).get("gn") || "")
-  const [email, setEmail] = useState("")
   const [attending, setAttending] = useState(null)
   const [wishes, setWishes] = useState("")
   const [persons, setPersons] = useState(() => parseInt(new URLSearchParams(window.location.search).get("np") || "1"))
@@ -176,7 +175,7 @@ export default function Invitation({ override = null }) {
     setStatus("loading")
     try {
       await addDoc(collection(db, "rsvps"), {
-        name, email, attending, wishes, persons,
+        name, attending, wishes, persons,
         wedding: `${WEDDING.groom} & ${WEDDING.bride}`,
         createdAt: serverTimestamp()
       })
@@ -552,15 +551,13 @@ export default function Invitation({ override = null }) {
               </motion.div>
             ) : (
               <motion.div key="form" className="space-y-4">
-                {["text", "email"].map((type, idx) => (
-                  <input key={idx} value={idx === 0 ? name : email}
-                    onChange={e => idx === 0 ? setName(e.target.value) : setEmail(e.target.value)}
-                    type={type}
-                    placeholder={idx === 0 ? (ar ? "اسمك الكامل" : "Your Full Name") : (ar ? "بريدك الإلكتروني (اختياري)" : "Your Email (optional)")}
-                    className="w-full rounded-xl px-5 py-4 focus:outline-none transition"
-                    style={{ background: "white", border: `1px solid ${roseGold}30`, color: dark,
-                      boxShadow: "0 1px 4px rgba(183,110,121,0.08)" }} />
-                ))}
+                <input value={name}
+                  onChange={e => setName(e.target.value)}
+                  type="text"
+                  placeholder={ar ? "اسمك الكامل" : "Your Full Name"}
+                  className="w-full rounded-xl px-5 py-4 focus:outline-none transition"
+                  style={{ background: "white", border: `1px solid ${roseGold}30`, color: dark,
+                    boxShadow: "0 1px 4px rgba(183,110,121,0.08)" }} />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
                   disabled={!!searchParams.get("np")}
                   className="w-full rounded-xl px-5 py-4 focus:outline-none transition disabled:opacity-60 disabled:cursor-not-allowed"
