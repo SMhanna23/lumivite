@@ -191,6 +191,7 @@ function BuildInvitationModal({ order }) {
             transport: d.transport || "",
             accommodation: d.accommodation || "",
             memoriesEnabled: d.memoriesEnabled ?? false,
+            hideEmojis: d.hideEmojis ?? false,
           })
           if (d.photos?.length) setPhotos(d.photos)
           setSaved(true)
@@ -280,6 +281,7 @@ function BuildInvitationModal({ order }) {
         transport: extraData.transport || "",
         accommodation: extraData.accommodation || "",
         memoriesEnabled: extraData.memoriesEnabled ?? false,
+        hideEmojis: extraData.hideEmojis ?? false,
         orderId: order.id,
         package: order.package,
         _draft: true,
@@ -355,6 +357,7 @@ function BuildInvitationModal({ order }) {
         transport: extraData.transport || "",
         accommodation: extraData.accommodation || "",
         memoriesEnabled: extraData.memoriesEnabled ?? false,
+        hideEmojis: extraData.hideEmojis ?? false,
         slug,
         createdAt: new Date(),
         orderId: order.id,
