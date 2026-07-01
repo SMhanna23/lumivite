@@ -84,6 +84,9 @@ function OrderEditSection({ order, onSave }) {
 }
 
 function BuildInvitationModal({ order }) {
+  const pkg = (order.package || "gold").toLowerCase()
+  const tier = pkg.includes("gold") ? "gold" : pkg.includes("silver") ? "silver" : "bronze"
+
   const [slug, setSlug] = useState(order.slug || `${order.groomName?.toLowerCase()}-${order.brideName?.toLowerCase()}`.replace(/\s/g, ""))
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -441,6 +444,21 @@ function BuildInvitationModal({ order }) {
         </div>
       ) : (
         <div className="space-y-3">
+          {/* Package badge */}
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold"
+            style={{
+              background: tier === "gold" ? "rgba(255,215,0,0.07)" : tier === "silver" ? "rgba(201,169,110,0.07)" : "rgba(205,127,50,0.07)",
+              borderColor: tier === "gold" ? "rgba(255,215,0,0.3)" : tier === "silver" ? "rgba(201,169,110,0.3)" : "rgba(205,127,50,0.3)",
+              color: tier === "gold" ? "#ffd700" : tier === "silver" ? "#c9a96e" : "#cd7f32",
+            }}>
+            {tier === "gold" ? "🥇 Gold Package" : tier === "silver" ? "🥈 Silver Package" : "🥉 Bronze Package"}
+            <span className="font-normal opacity-60 ml-1">
+              {tier === "bronze" ? "· No music · No photos · No maps · No registry · No memory wall"
+               : tier === "silver" ? "· Music ✓ · Photos ✓ · Guest links ✓ · No maps · No registry · No memory wall"
+               : "· All features unlocked"}
+            </span>
+          </div>
+
           {/* Slug */}
           <div>
             <label className="text-white/30 text-xs mb-1 block">Invitation URL Slug</label>
@@ -514,8 +532,8 @@ function BuildInvitationModal({ order }) {
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
 
-          {/* Music */}
-          <div>
+          {/* Music — Silver and Gold only */}
+          {tier !== "bronze" && <div>
             <label className="text-white/30 text-xs mb-1 block">Music URL (optional)</label>
             <input value={extraData.music} onChange={e => update("music", e.target.value)}
               placeholder="https://... or leave empty for default"
@@ -535,7 +553,7 @@ function BuildInvitationModal({ order }) {
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* RSVP Deadline */}
           <div>
@@ -616,6 +634,7 @@ function BuildInvitationModal({ order }) {
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
             </div>
           </div>
+          {tier === "gold" && <>
           <div>
             <label className="text-white/30 text-xs mb-1 block">Ceremony — Google Maps URL</label>
             <input value={extraData.ceremonyMapUrl} onChange={e => update("ceremonyMapUrl", e.target.value)}
@@ -628,9 +647,11 @@ function BuildInvitationModal({ order }) {
               placeholder="https://maps.google.com/?q=..."
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
+          </>}
 
-          {/* Gift Registry */}
-          <p className="text-white/20 text-xs uppercase tracking-widest pt-1">🎁 Gift Registry</p>
+          {/* Gift Registry — Gold only */}
+          {tier === "gold" && <p className="text-white/20 text-xs uppercase tracking-widest pt-1">🎁 Gift Registry</p>}
+          {tier === "gold" && <>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-white/30 text-xs mb-1 block">Wish Money Account #</label>
@@ -657,6 +678,7 @@ function BuildInvitationModal({ order }) {
               placeholder="LB62 0099 0000 0001 0019 2000 9123"
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
           </div>
+          </>}
 
           {/* Wedding Timeline */}
           <p className="text-white/20 text-xs uppercase tracking-widest pt-1">🕐 Wedding Day Timeline</p>
@@ -700,8 +722,8 @@ function BuildInvitationModal({ order }) {
             </div>
           </>)}
 
-          {/* Memories feature toggle */}
-          <div className="border border-white/8 rounded-xl p-4" style={{ background: "rgba(196,163,90,0.03)" }}>
+          {/* Memories feature toggle — Gold only */}
+          {tier === "gold" && <div className="border border-white/8 rounded-xl p-4" style={{ background: "rgba(196,163,90,0.03)" }}>
             <label className="flex items-center gap-3 cursor-pointer select-none">
               <input type="checkbox" checked={extraData.memoriesEnabled ?? false} onChange={e => update("memoriesEnabled", e.target.checked)}
                 className="w-4 h-4 rounded accent-[#c9a96e]" />
@@ -716,7 +738,7 @@ function BuildInvitationModal({ order }) {
                 <p className="text-[#c4a35a] text-xs font-mono break-all">https://www.lumivite.net/memories/{slug}</p>
               </div>
             )}
-          </div>
+          </div>}
 
           {/* Photo Upload */}
           <div>
