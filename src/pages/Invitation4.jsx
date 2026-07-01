@@ -655,10 +655,13 @@ function PhotoFilm({ photos, w, onEnded, ar }) {
 
 // ── RSVP SCREEN ──────────────────────────────────────────────────────────────
 function RSVPScreen({ w, ar, setLang, onReplay }) {
-  const [name,      setName]      = useState(() => new URLSearchParams(window.location.search).get("gn") || "")
+  const tier = (w.package || "gold").toLowerCase().includes("gold") ? "gold"
+             : (w.package || "").toLowerCase().includes("silver") ? "silver"
+             : "bronze"
+  const [name,      setName]      = useState(() => tier !== "bronze" ? (new URLSearchParams(window.location.search).get("gn") || "") : "")
   const [attending, setAttending] = useState(null)
   const [wishes,    setWishes]    = useState("")
-  const [persons,   setPersons]   = useState(() => parseInt(new URLSearchParams(window.location.search).get("np") || "1"))
+  const [persons,   setPersons]   = useState(() => tier !== "bronze" ? parseInt(new URLSearchParams(window.location.search).get("np") || "1") : 1)
   const [status,    setStatus]    = useState("idle")
   const [rsvpError, setRsvpError] = useState("")
   const [searchParams] = useSearchParams()
@@ -726,13 +729,20 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
             {/* Venues summary */}
             <div className="flex gap-3 justify-center mt-4">
               {w.venues.map((v, i) => (
-                <a key={i}
-                  href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
-                  target="_blank" rel="noopener noreferrer"
-                  className="text-xs px-3 py-1.5 rounded-full transition"
-                  style={{ border: `1px solid ${GOLD}35`, color: GOLD, fontFamily: "'Jost', sans-serif" }}>
-                  📍 {ar ? v.placeAr : v.place} · {v.time}
-                </a>
+                tier === "gold" ? (
+                  <a key={i}
+                    href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="text-xs px-3 py-1.5 rounded-full transition"
+                    style={{ border: `1px solid ${GOLD}35`, color: GOLD, fontFamily: "'Jost', sans-serif" }}>
+                    📍 {ar ? v.placeAr : v.place} · {v.time}
+                  </a>
+                ) : (
+                  <span key={i} className="text-xs px-3 py-1.5 rounded-full"
+                    style={{ border: `1px solid ${GOLD}35`, color: GOLD, fontFamily: "'Jost', sans-serif" }}>
+                    📍 {ar ? v.placeAr : v.place} · {v.time}
+                  </span>
+                )
               ))}
             </div>
           </div>
@@ -755,7 +765,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                   className="w-full rounded-xl px-5 py-4 text-white placeholder-white/20 focus:outline-none"
                   style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }} />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
-                  disabled={!!searchParams.get("np")}
+                  disabled={tier !== "bronze" && !!searchParams.get("np")}
                   className="w-full rounded-xl px-5 py-4 text-white focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }}>
                   {[1,2,3,4,5].map(n => <option key={n} value={n} style={{ background: "#1a1510" }}>{n} {n === 1 ? "person" : "persons"}</option>)}
@@ -787,8 +797,8 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                   {status === "loading" ? (ar ? "جارٍ الإرسال..." : "Sending...") : (ar ? "إرسال التأكيد" : "Send RSVP")}
                 </button>
 
-                {/* Registry */}
-                {w.registry?.length > 0 && (
+                {/* Registry — Gold only */}
+                {tier === "gold" && w.registry?.length > 0 && (
                   <div className="pt-4 space-y-2">
                     <p className="text-xs tracking-[0.35em] uppercase text-center mb-3" style={{ color: "rgba(255,255,255,0.2)", fontFamily: "'Jost', sans-serif" }}>
                       {ar ? "قائمة الهدايا" : "Gift Registry"}
@@ -822,8 +832,8 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
         </div>
       </div>
 
-      {/* Memories */}
-      {w.memoriesEnabled && (
+      {/* Memories — Gold only */}
+      {tier === "gold" && w.memoriesEnabled && (
         <div className="text-center px-6 pb-10 relative z-10">
           <p className="text-2xl mb-3">📸</p>
           <p className="font-serif text-xl font-light text-white mb-2">
@@ -852,12 +862,15 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
 // ── MAIN ─────────────────────────────────────────────────────────────────────
 export default function Invitation4({ override = null }) {
   const W = override ? { ...DEFAULT_WEDDING, ...override } : DEFAULT_WEDDING
+  const tier = (W.package || "gold").toLowerCase().includes("gold") ? "gold"
+             : (W.package || "").toLowerCase().includes("silver") ? "silver"
+             : "bronze"
   const [phase,   setPhase] = useState("envelope") // envelope | video | rsvp
   const [lang,    setLang]  = useState("en")
   const ar = lang === "ar"
   const audioRef = useRef(null)
   const [searchParams] = useSearchParams()
-  const guestName = searchParams.get("gn") || ""
+  const guestName = tier !== "bronze" ? (searchParams.get("gn") || "") : ""
 
   const photos = W.photos?.length ? W.photos : [
     "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800",
@@ -871,7 +884,7 @@ export default function Invitation4({ override = null }) {
     "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800",
   ]
 
-  const startMusic = () => { if (audioRef.current) { audioRef.current.play().catch(() => {}) } }
+  const startMusic = () => { if (tier !== "bronze" && audioRef.current) { audioRef.current.play().catch(() => {}) } }
 
   const openEnvelope = () => {
     setPhase("opening") // pre-loads wedding video in background
@@ -883,10 +896,10 @@ export default function Invitation4({ override = null }) {
 
   return (
     <>
-      {/* Background music (quiet during video phase) */}
-      <audio ref={audioRef} loop src={W.music || "/music.mp3"} preload="auto"
+      {/* Background music — Silver and Gold only */}
+      {tier !== "bronze" && <audio ref={audioRef} loop src={W.music || "/music.mp3"} preload="auto"
         style={{ display: "none" }}
-      />
+      />}
 
       {/* Video — pre-rendered behind envelope during opening, full-screen after */}
       <AnimatePresence>

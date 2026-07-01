@@ -91,11 +91,14 @@ function getYouTubeId(url) {
 
 export default function Invitation({ override = null }) {
   const WEDDING = override ? { ...DEFAULT_WEDDING, ...override } : DEFAULT_WEDDING
+  const tier = (WEDDING.package || "gold").toLowerCase().includes("gold") ? "gold"
+             : (WEDDING.package || "").toLowerCase().includes("silver") ? "silver"
+             : "bronze"
   const [started, setStarted] = useState(false)
-  const [name, setName] = useState(() => new URLSearchParams(window.location.search).get("gn") || "")
+  const [name, setName] = useState(() => tier !== "bronze" ? (new URLSearchParams(window.location.search).get("gn") || "") : "")
   const [attending, setAttending] = useState(null)
   const [wishes, setWishes] = useState("")
-  const [persons, setPersons] = useState(() => parseInt(new URLSearchParams(window.location.search).get("np") || "1"))
+  const [persons, setPersons] = useState(() => tier !== "bronze" ? parseInt(new URLSearchParams(window.location.search).get("np") || "1") : 1)
   const [status, setStatus] = useState("idle")
   const [rsvpError, setRsvpError] = useState("")
   const [playing, setPlaying] = useState(false)
@@ -119,9 +122,10 @@ export default function Invitation({ override = null }) {
   const musicStart = WEDDING.musicStart ?? 0
   const musicEnd   = WEDDING.musicEnd   ?? null
 
-  const guestName = searchParams.get("gn") || ""
+  const guestName = tier !== "bronze" ? (searchParams.get("gn") || "") : ""
 
   const startMusic = () => {
+    if (tier === "bronze") return
     if (ytId) {
       ytRef.current?.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*')
       setPlaying(true)
@@ -189,15 +193,15 @@ export default function Invitation({ override = null }) {
       dir={ar ? "rtl" : "ltr"}
       style={{ background: "#faf8f3", fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>
 
-      {/* Always-mounted media — iframe stays alive across envelope → invitation transition */}
-      {ytId ? (
+      {/* Music — Silver and Gold only */}
+      {tier !== "bronze" && (ytId ? (
         <iframe ref={ytRef} title="bg-music"
           src={`https://www.youtube.com/embed/${ytId}?enablejsapi=1&loop=1&playlist=${ytId}&controls=0&start=${musicStart}${musicEnd ? `&end=${musicEnd}` : ""}`}
           style={{ position: "fixed", width: 1, height: 1, opacity: 0, pointerEvents: "none", top: 0, left: 0 }}
           allow="autoplay" />
       ) : (
         <audio ref={audioRef} loop src={WEDDING.music || "/music.mp3"} preload="auto" />
-      )}
+      ))}
 
       {/* Envelope screen overlay */}
       {!started && (
@@ -214,14 +218,14 @@ export default function Invitation({ override = null }) {
       {started && (<>
       <Leaves />
 
-      {/* Music button */}
-      <motion.button onClick={toggleMusic}
+      {/* Music button — Silver and Gold only */}
+      {tier !== "bronze" && <motion.button onClick={toggleMusic}
         initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1 }}
         className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-xl text-xl transition"
         style={{ background: "#4a7c59", color: "white" }}>
         {playing ? "⏸" : "🎵"}
-      </motion.button>
+      </motion.button>}
 
       {/* Language Toggle */}
       <motion.button onClick={() => setLang(ar ? "en" : "ar")}
@@ -329,8 +333,8 @@ export default function Invitation({ override = null }) {
         </motion.div>
       </section>
 
-      {/* Our Story — Photo 1 */}
-      <section className="py-12 px-6 max-w-xl mx-auto relative z-10">
+      {/* Our Story — Photo 1 (Silver and Gold only) */}
+      {tier !== "bronze" && <section className="py-12 px-6 max-w-xl mx-auto relative z-10">
         <motion.div className="text-center mb-10"
           initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
           <p className="text-[#4a7c59] tracking-[0.3em] text-xs uppercase mb-3 font-medium">{ar ? "قبل الأبد" : "Before Forever"}</p>
@@ -354,7 +358,7 @@ export default function Invitation({ override = null }) {
             <img src={photos[0]} alt="moment 1" className="w-full" />
           </div>
         </motion.div>
-      </section>
+      </section>}
 
       {/* Venues */}
       <section className="py-16 px-6 max-w-2xl mx-auto relative z-10">
@@ -386,11 +390,11 @@ export default function Invitation({ override = null }) {
                     style={{ fontFamily: "'Cormorant Garamond', serif" }}>{v.time}</p>
                   <p className="text-[#2d3a2e] font-medium mb-1">{ar ? v.placeAr : v.place}</p>
                   <p className="text-[#4a7c59]/60 text-sm mb-4">{ar ? v.locationAr : v.location}</p>
-                  <a href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
+                  {tier === "gold" && <a href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
                     target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-[#4a7c59] text-sm border border-[#4a7c59]/30 rounded-full px-4 py-2 hover:bg-[#4a7c59]/10 transition">
                     📍 {ar ? "افتح في خرائط جوجل" : "Open in Google Maps"}
-                  </a>
+                  </a>}
                 </div>
               </motion.div>
             ))}
@@ -398,8 +402,8 @@ export default function Invitation({ override = null }) {
         </motion.div>
       </section>
 
-      {/* Photos 2-3 */}
-      <section className="py-10 px-6 max-w-4xl mx-auto relative z-10">
+      {/* Photos 2-3 (Silver and Gold only) */}
+      {tier !== "bronze" && <section className="py-10 px-6 max-w-4xl mx-auto relative z-10">
         <div className="grid grid-cols-2 gap-4 md:gap-12">
           {[{ src: photos[4] || photos[0], rot: 2.5 }, { src: photos[5] || photos[1], rot: -2 }].map(({ src, rot }, i) => (
             <motion.div key={i}
@@ -415,7 +419,7 @@ export default function Invitation({ override = null }) {
             </motion.div>
           ))}
         </div>
-      </section>
+      </section>}
 
       {/* Timeline */}
       <section className="py-24 px-6 max-w-lg mx-auto relative z-10">
@@ -449,8 +453,8 @@ export default function Invitation({ override = null }) {
         </motion.div>
       </section>
 
-      {/* Photos 4-6 */}
-      <section className="py-10 px-6 max-w-5xl mx-auto relative z-10">
+      {/* Photos 4-6 (Silver and Gold only) */}
+      {tier !== "bronze" && <section className="py-10 px-6 max-w-5xl mx-auto relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
           {[{ src: photos[6] || photos[4] || photos[0], rot: 3 }, { src: photos[7] || photos[5] || photos[1], rot: -2 }, { src: photos[8] || photos[4] || photos[0], rot: 1.5 }].map(({ src, rot }, i) => (
             <motion.div key={i}
@@ -466,10 +470,10 @@ export default function Invitation({ override = null }) {
             </motion.div>
           ))}
         </div>
-      </section>
+      </section>}
 
-      {/* Gift Registry */}
-      <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
+      {/* Gift Registry (Gold only) */}
+      {tier === "gold" && WEDDING.registry?.length > 0 && <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
           <p className="text-[#4a7c59] tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium">
             {ar ? "بكل محبة" : "With Love"}
@@ -522,7 +526,7 @@ export default function Invitation({ override = null }) {
             ))}
           </div>
         </motion.div>
-      </section>
+      </section>}
 
       {/* RSVP */}
       <section className="py-24 px-6 max-w-md mx-auto text-center relative z-10">
@@ -553,7 +557,7 @@ export default function Invitation({ override = null }) {
                   placeholder={ar ? "اسمك الكامل" : "Your Full Name"}
                   className="w-full bg-white border border-[#4a7c59]/20 rounded-lg px-5 py-4 text-[#2d3a2e] placeholder-[#4a7c59]/30 focus:outline-none focus:border-[#4a7c59] transition shadow-sm" />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
-                  disabled={!!searchParams.get("np")}
+                  disabled={tier !== "bronze" && !!searchParams.get("np")}
                   className="w-full bg-white border border-[#4a7c59]/20 rounded-lg px-5 py-4 text-[#2d3a2e] focus:outline-none focus:border-[#4a7c59] transition shadow-sm disabled:opacity-60 disabled:cursor-not-allowed">
                   {[1,2,3,4,5].map(n => <option key={n} value={n}>{n} {n === 1 ? "person" : "persons"}</option>)}
                 </select>
@@ -586,7 +590,7 @@ export default function Invitation({ override = null }) {
       </section>
 
       {/* Memories */}
-      {WEDDING.memoriesEnabled && (
+      {tier === "gold" && WEDDING.memoriesEnabled && (
         <section className="py-12 px-6 max-w-md mx-auto text-center relative z-10">
           <p className="text-2xl mb-3">📸</p>
           <h3 className="text-2xl font-light mb-2" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#2d3a2e" }}>

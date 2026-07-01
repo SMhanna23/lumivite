@@ -57,10 +57,14 @@ export default function Invitation_Live() {
     </div>
   )
 
-  // Pass client data as props override
+  // Pass client data as props override — Bronze is always forced to the default dark template
+  const pkg = (data.package || "gold").toLowerCase()
+  const tier = pkg.includes("gold") ? "gold" : pkg.includes("silver") ? "silver" : "bronze"
   const template = data.template || "dark"
-  if (template === "botanical") return <Invitation2 override={data} />
-  if (template === "rosegold") return <Invitation3 override={data} />
-  if (template === "sand") return <Invitation4 override={data} />
+  if (tier !== "bronze") {
+    if (template === "botanical") return <Invitation2 override={data} />
+    if (template === "rosegold") return <Invitation3 override={data} />
+    if (template === "sand") return <Invitation4 override={data} />
+  }
   return <Invitation override={data} />
 }
