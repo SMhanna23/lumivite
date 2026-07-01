@@ -212,7 +212,7 @@ function BuildInvitationModal({ order }) {
     try {
       const apiKey = import.meta.env.VITE_IMGBB_KEY
       const urls = await Promise.all(
-        Array.from(files).slice(0, 9 - photos.length).map(async (file) => {
+        Array.from(files).slice(0, (tier === "bronze" ? 3 : 9) - photos.length).map(async (file) => {
           const formData = new FormData()
           formData.append("image", file)
           const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
@@ -453,8 +453,8 @@ function BuildInvitationModal({ order }) {
             }}>
             {tier === "gold" ? "🥇 Gold Package" : tier === "silver" ? "🥈 Silver Package" : "🥉 Bronze Package"}
             <span className="font-normal opacity-60 ml-1">
-              {tier === "bronze" ? "· No music · No photos · No maps · No registry · No memory wall"
-               : tier === "silver" ? "· Music ✓ · Photos ✓ · Guest links ✓ · No maps · No registry · No memory wall"
+              {tier === "bronze" ? "· No music · Cover photo only (3 max) · No maps · No registry · No memory wall"
+               : tier === "silver" ? "· Music ✓ · Full gallery (9 photos) ✓ · Guest links ✓ · No maps · No registry · No memory wall"
                : "· All features unlocked"}
             </span>
           </div>
@@ -742,7 +742,7 @@ function BuildInvitationModal({ order }) {
 
           {/* Photo Upload */}
           <div>
-            <label className="text-white/30 text-xs mb-1 block">Client Photos — Gallery ({photos.length}/9) · drag to reorder</label>
+            <label className="text-white/30 text-xs mb-1 block">Client Photos — {tier === "bronze" ? `Cover & Venue (${photos.length}/3)` : `Gallery (${photos.length}/9)`} · drag to reorder</label>
             <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden"
               onChange={e => handlePhotoUpload(e.target.files)} />
             {photos.length > 0 && (
@@ -775,9 +775,9 @@ function BuildInvitationModal({ order }) {
                 ))}
               </div>
             )}
-            <button onClick={() => fileInputRef.current?.click()} disabled={uploading || photos.length >= 9}
+            <button onClick={() => fileInputRef.current?.click()} disabled={uploading || photos.length >= (tier === "bronze" ? 3 : 9)}
               className="w-full py-2 rounded-lg border border-dashed border-white/20 text-white/40 text-sm hover:border-[#c9a96e]/50 hover:text-[#c9a96e]/70 transition disabled:opacity-30">
-              {uploading ? "Uploading..." : photos.length >= 9 ? "Max 9 photos" : "📷 Upload Photos"}
+              {uploading ? "Uploading..." : photos.length >= (tier === "bronze" ? 3 : 9) ? `Max ${tier === "bronze" ? 3 : 9} photos` : "📷 Upload Photos"}
             </button>
           </div>
 
