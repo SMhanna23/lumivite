@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
@@ -76,6 +76,8 @@ const T = {
       "You send payment via OMT, cash, or bank transfer",
       "We build and deliver your invitation links",
     ],
+    bronzeTemplateNote: "🥉 Bronze package includes the Dark Luxury template only",
+    templateLocked: "Silver & Gold only",
     back: "← Back",
     continue: "Continue →",
     continuePayment: "Continue to Payment →",
@@ -140,6 +142,8 @@ const T = {
       "تسدّد المبلغ عبر OMT أو نقداً أو تحويل بنكي",
       "نصمّم دعوتك ونرسل لك الروابط",
     ],
+    bronzeTemplateNote: "🥉 باقة برونز تشمل قالب الفاخر الداكن فقط",
+    templateLocked: "فضي وذهبي فقط",
     back: "رجوع →",
     continue: "← متابعة",
     continuePayment: "← متابعة للدفع",
@@ -165,6 +169,11 @@ export default function Order() {
   })
 
   const update = (k, v) => setForm(f => ({ ...f, [k]: v }))
+
+  // Auto-select dark template when Bronze is chosen — it's the only option
+  useEffect(() => {
+    if (form.package === "bronze") update("template", "dark")
+  }, [form.package])
 
   const handleSubmit = async () => {
     setStatus("loading")
@@ -286,31 +295,56 @@ export default function Order() {
           {step === 1 && (
             <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="font-serif text-3xl font-light text-center mb-2">{t.chooseTemplate}</h2>
-              <p className="text-white/40 text-center text-sm mb-10">{t.chooseTemplateSub}</p>
+              <p className="text-white/40 text-center text-sm mb-6">{t.chooseTemplateSub}</p>
+              {form.package === "bronze" && (
+                <p className="text-center text-xs mb-8 py-2 px-4 rounded-xl border"
+                  style={{ color: "#cd7f32", borderColor: "rgba(205,127,50,0.3)", background: "rgba(205,127,50,0.07)" }}>
+                  {t.bronzeTemplateNote}
+                </p>
+              )}
               <div className="grid gap-4">
-                {templates.map(tmpl => (
-                  <motion.div key={tmpl.id} whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
-                    onClick={() => update("template", tmpl.id)}
-                    className="p-6 rounded-2xl border cursor-pointer transition flex items-center gap-5"
-                    style={{ borderColor: form.template === tmpl.id ? "#c9a96e" : "rgba(255,255,255,0.1)", background: form.template === tmpl.id ? "rgba(201,169,110,0.08)" : "rgba(255,255,255,0.02)" }}>
-                    <div className="text-4xl">{tmpl.preview}</div>
-                    <div className="flex-1">
-                      <p className="font-medium text-white">{isAr ? tmpl.nameAr : tmpl.name}</p>
-                      <p className="text-white/40 text-sm">{isAr ? tmpl.descAr : tmpl.desc}</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <a href={tmpl.link} target="_blank" rel="noopener noreferrer"
-                        onClick={e => e.stopPropagation()}
-                        className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">
-                        {t.preview}
-                      </a>
-                      <div className="w-6 h-6 rounded-full border-2 border-[#c9a96e] flex items-center justify-center"
-                        style={{ background: form.template === tmpl.id ? "#c9a96e" : "transparent" }}>
-                        {form.template === tmpl.id && <span className="text-black text-xs">✓</span>}
+                {templates.map(tmpl => {
+                  const locked = form.package === "bronze" && tmpl.id !== "dark"
+                  return (
+                    <motion.div key={tmpl.id}
+                      whileHover={locked ? {} : { scale: 1.01 }}
+                      whileTap={locked ? {} : { scale: 0.99 }}
+                      onClick={() => !locked && update("template", tmpl.id)}
+                      className="p-6 rounded-2xl border transition flex items-center gap-5"
+                      style={{
+                        borderColor: locked ? "rgba(255,255,255,0.05)" : form.template === tmpl.id ? "#c9a96e" : "rgba(255,255,255,0.1)",
+                        background: locked ? "rgba(255,255,255,0.01)" : form.template === tmpl.id ? "rgba(201,169,110,0.08)" : "rgba(255,255,255,0.02)",
+                        opacity: locked ? 0.4 : 1,
+                        cursor: locked ? "not-allowed" : "pointer",
+                      }}>
+                      <div className="text-4xl">{tmpl.preview}</div>
+                      <div className="flex-1">
+                        <p className="font-medium text-white">{isAr ? tmpl.nameAr : tmpl.name}</p>
+                        <p className="text-white/40 text-sm">{isAr ? tmpl.descAr : tmpl.desc}</p>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                      <div className="flex items-center gap-3">
+                        {locked ? (
+                          <span className="text-xs px-3 py-1 rounded-full border"
+                            style={{ color: "#c9a96e", borderColor: "rgba(201,169,110,0.25)", background: "rgba(201,169,110,0.05)" }}>
+                            🔒 {t.templateLocked}
+                          </span>
+                        ) : (
+                          <>
+                            <a href={tmpl.link} target="_blank" rel="noopener noreferrer"
+                              onClick={e => e.stopPropagation()}
+                              className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">
+                              {t.preview}
+                            </a>
+                            <div className="w-6 h-6 rounded-full border-2 border-[#c9a96e] flex items-center justify-center"
+                              style={{ background: form.template === tmpl.id ? "#c9a96e" : "transparent" }}>
+                              {form.template === tmpl.id && <span className="text-black text-xs">✓</span>}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </motion.div>
+                  )
+                })}
               </div>
               <div className="flex gap-3 mt-8">
                 <button onClick={() => setStep(0)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
@@ -381,10 +415,12 @@ export default function Order() {
                     <input value={form.guestCount} onChange={e => update("guestCount", e.target.value)} placeholder="150" type="number" className={inp} />
                   </div>
                 </div>
-                <div>
-                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.music}</label>
-                  <input value={form.music} onChange={e => update("music", e.target.value)} placeholder={t.musicPh} className={inp} />
-                </div>
+                {form.package !== "bronze" && (
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.music}</label>
+                    <input value={form.music} onChange={e => update("music", e.target.value)} placeholder={t.musicPh} className={inp} />
+                  </div>
+                )}
               </div>
               <div className="flex gap-3 mt-8">
                 <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
