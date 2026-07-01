@@ -218,7 +218,7 @@ export default function Invitation({ override = null }) {
 
       {/* Main invitation */}
       {started && (<>
-      <Roses />
+      {!WEDDING.hideEmojis && <Roses />}
 
       {/* Top border */}
       <div className="fixed top-0 left-0 right-0 h-1 z-50" style={{ background: `linear-gradient(to right, ${blush}, ${roseGold}, ${blush})` }} />
@@ -252,10 +252,12 @@ export default function Invitation({ override = null }) {
         <div className="absolute inset-0 z-0" style={{ background: "linear-gradient(to bottom, rgba(253,240,240,0.78) 0%, rgba(253,240,240,0.55) 30%, rgba(253,240,240,0.55) 65%, rgba(253,240,240,0.85) 100%)" }} />
 
         {/* Corner roses */}
-        <div className="absolute top-8 left-8 text-3xl opacity-40">🌹</div>
-        <div className="absolute top-8 right-8 text-3xl opacity-40">🌹</div>
-        <div className="absolute bottom-24 left-8 text-2xl opacity-30">🌷</div>
-        <div className="absolute bottom-24 right-8 text-2xl opacity-30">🌷</div>
+        {!WEDDING.hideEmojis && <>
+          <div className="absolute top-8 left-8 text-3xl opacity-40">🌹</div>
+          <div className="absolute top-8 right-8 text-3xl opacity-40">🌹</div>
+          <div className="absolute bottom-24 left-8 text-2xl opacity-30">🌷</div>
+          <div className="absolute bottom-24 right-8 text-2xl opacity-30">🌷</div>
+        </>}
 
         <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
           <p className="tracking-[0.4em] text-xs uppercase mb-8 font-medium" style={{ color: roseGold }}>
@@ -265,7 +267,7 @@ export default function Invitation({ override = null }) {
           {/* Ornamental divider */}
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-px w-16" style={{ background: `${roseGold}50` }} />
-            <span className="text-xl">🌸</span>
+            {!WEDDING.hideEmojis && <span className="text-xl">🌸</span>}
             <div className="h-px w-16" style={{ background: `${roseGold}50` }} />
           </div>
 
@@ -305,7 +307,7 @@ export default function Invitation({ override = null }) {
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
           <div className="flex items-center gap-4 justify-center mb-8">
             <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
-            <span className="text-2xl">🌹</span>
+            {!WEDDING.hideEmojis && <span className="text-2xl">🌹</span>}
             <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
           </div>
           <p className="text-2xl md:text-3xl leading-relaxed opacity-80"
@@ -315,7 +317,7 @@ export default function Invitation({ override = null }) {
           <p className="text-sm mt-4 tracking-widest" style={{ color: roseGold }}>— {WEDDING.quoteRef}</p>
           <div className="flex items-center gap-4 justify-center mt-8 mb-10">
             <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
-            <span className="text-2xl">💮</span>
+            {!WEDDING.hideEmojis && <span className="text-2xl">💮</span>}
             <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
           </div>
 
@@ -346,7 +348,7 @@ export default function Invitation({ override = null }) {
           </h2>
           <div className="flex items-center justify-center gap-4 mb-10">
             <div className="h-px w-20" style={{ background: `linear-gradient(to right, transparent, ${roseGold}60)` }} />
-            <span className="text-xl">🌸</span>
+            {!WEDDING.hideEmojis && <span className="text-xl">🌸</span>}
             <div className="h-px w-20" style={{ background: `linear-gradient(to left, transparent, ${roseGold}60)` }} />
           </div>
         </motion.div>

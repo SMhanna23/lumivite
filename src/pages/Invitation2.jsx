@@ -216,7 +216,7 @@ export default function Invitation({ override = null }) {
 
       {/* Main invitation */}
       {started && (<>
-      <Leaves />
+      {!WEDDING.hideEmojis && <Leaves />}
 
       {/* Music button — Silver and Gold only */}
       {tier !== "bronze" && <motion.button onClick={toggleMusic}
@@ -250,10 +250,12 @@ export default function Invitation({ override = null }) {
         <div className="absolute top-0 left-0 right-0 h-2 bg-[#4a7c59] z-10" />
 
         {/* Corner decorations */}
-        <div className="absolute top-8 left-8 text-4xl opacity-30">🌿</div>
-        <div className="absolute top-8 right-8 text-4xl opacity-30 scale-x-[-1]">🌿</div>
-        <div className="absolute bottom-24 left-8 text-4xl opacity-20">🍃</div>
-        <div className="absolute bottom-24 right-8 text-4xl opacity-20 scale-x-[-1]">🍃</div>
+        {!WEDDING.hideEmojis && <>
+          <div className="absolute top-8 left-8 text-4xl opacity-30">🌿</div>
+          <div className="absolute top-8 right-8 text-4xl opacity-30 scale-x-[-1]">🌿</div>
+          <div className="absolute bottom-24 left-8 text-4xl opacity-20">🍃</div>
+          <div className="absolute bottom-24 right-8 text-4xl opacity-20 scale-x-[-1]">🍃</div>
+        </>}
 
         <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
           <p className="text-[#4a7c59] tracking-[0.4em] text-xs uppercase mb-8 font-medium">
@@ -262,7 +264,7 @@ export default function Invitation({ override = null }) {
 
           <div className="flex items-center justify-center gap-6 mb-2">
             <div className="h-px w-16 bg-[#4a7c59]/30" />
-            <div className="text-2xl">🌸</div>
+            {!WEDDING.hideEmojis && <div className="text-2xl">🌸</div>}
             <div className="h-px w-16 bg-[#4a7c59]/30" />
           </div>
 
@@ -302,7 +304,7 @@ export default function Invitation({ override = null }) {
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
           <div className="flex items-center gap-4 justify-center mb-8">
             <div className="h-px w-20 bg-[#4a7c59]/30" />
-            <span className="text-2xl">🌿</span>
+            {!WEDDING.hideEmojis && <span className="text-2xl">🌿</span>}
             <div className="h-px w-20 bg-[#4a7c59]/30" />
           </div>
           <p className="text-[#2d3a2e]/80 text-2xl md:text-3xl leading-relaxed"
@@ -312,7 +314,7 @@ export default function Invitation({ override = null }) {
           <p className="text-[#4a7c59] text-sm mt-4 tracking-widest">— {WEDDING.quoteRef}</p>
           <div className="flex items-center gap-4 justify-center mt-8 mb-10">
             <div className="h-px w-20 bg-[#4a7c59]/30" />
-            <span className="text-2xl">🌸</span>
+            {!WEDDING.hideEmojis && <span className="text-2xl">🌸</span>}
             <div className="h-px w-20 bg-[#4a7c59]/30" />
           </div>
 
@@ -343,7 +345,7 @@ export default function Invitation({ override = null }) {
           </h2>
           <div className="flex items-center justify-center gap-4 mb-10">
             <div className="h-px w-20 bg-gradient-to-r from-transparent to-[#4a7c59]/50" />
-            <span className="text-[#4a7c59]">🌿</span>
+            {!WEDDING.hideEmojis && <span className="text-[#4a7c59]">🌿</span>}
             <div className="h-px w-20 bg-gradient-to-l from-transparent to-[#4a7c59]/50" />
           </div>
         </motion.div>

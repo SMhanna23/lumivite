@@ -130,6 +130,7 @@ function BuildInvitationModal({ order }) {
     transport: "",
     accommodation: "",
     memoriesEnabled: false,
+    hideEmojis: false,
   })
 
   const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
@@ -739,6 +740,18 @@ function BuildInvitationModal({ order }) {
               </div>
             )}
           </div>}
+
+          {/* Hide decorative emojis toggle — all tiers */}
+          <div className="border border-white/8 rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input type="checkbox" checked={extraData.hideEmojis ?? false} onChange={e => update("hideEmojis", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <div>
+                <p className="text-white/60 text-sm">✨ Hide decorative emojis</p>
+                <p className="text-white/25 text-xs mt-0.5">Removes floating petals/leaves/roses and section divider icons for a cleaner, minimalist look</p>
+              </div>
+            </label>
+          </div>
 
           {/* Photo Upload */}
           <div>

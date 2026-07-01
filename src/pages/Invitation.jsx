@@ -216,7 +216,7 @@ export default function Invitation({ override = null }) {
 
       {/* Main invitation */}
       {started && (<>
-      <Petals />
+      {!WEDDING.hideEmojis && <Petals />}
 
       {/* Floating music button — Silver and Gold only */}
       {tier !== "bronze" && (
@@ -275,10 +275,10 @@ export default function Invitation({ override = null }) {
       {/* Quote + Parents */}
       <section className="py-16 px-6 text-center max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
-          <div className="text-[#c9a96e] text-2xl mb-6">✦</div>
+          {!WEDDING.hideEmojis && <div className="text-[#c9a96e] text-2xl mb-6">✦</div>}
           <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>"{ar ? WEDDING.quoteAr : WEDDING.quote}"</p>
           <p className="text-[#c9a96e] text-sm mt-3 tracking-widest">— {WEDDING.quoteRef}</p>
-          <div className="text-[#c9a96e] text-2xl mt-8 mb-10">✦</div>
+          {!WEDDING.hideEmojis && <div className="text-[#c9a96e] text-2xl mt-8 mb-10">✦</div>}
 
           {/* Parents cards */}
           <div className="grid grid-cols-2 gap-4 mb-6">
@@ -307,7 +307,7 @@ export default function Invitation({ override = null }) {
           </h2>
           <div className="flex items-center justify-center gap-4 mb-10">
             <div className="h-px w-20 bg-gradient-to-r from-transparent to-[#c9a96e]/60" />
-            <span className="text-[#c9a96e]">✦</span>
+            {!WEDDING.hideEmojis && <span className="text-[#c9a96e]">✦</span>}
             <div className="h-px w-20 bg-gradient-to-l from-transparent to-[#c9a96e]/60" />
           </div>
         </motion.div>
