@@ -21,11 +21,12 @@ const packages = [
     price: "$89",
     color: "#cd7f32",
     features: [
-      "1 luxury template",
+      "1 luxury template (dark design)",
       "RSVP tracking dashboard",
-      "Email notifications",
+      "Instant WhatsApp RSVP notifications",
       "Countdown timer",
       "Wedding timeline",
+      "Cover & venue photos (up to 3)",
       "1 shared link for all guests",
       "Valid for 3 months",
     ]
@@ -37,11 +38,12 @@ const packages = [
     popular: true,
     features: [
       "Everything in Bronze",
+      "Choice of any 1 template design",
       "Personalized guest links",
       "Guest name auto-display",
-      "Excel guest list import",
       "Background music",
-      "Photo gallery",
+      "Full photo gallery (up to 9 photos)",
+      "Guest list import (CSV)",
       "Valid for 6 months",
     ]
   },
