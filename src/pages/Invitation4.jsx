@@ -543,7 +543,7 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
           <motion.div className="absolute inset-0 z-[9] flex items-center justify-center"
             style={{ background: DARK }}
             exit={{ opacity: 0 }} transition={{ duration: 1.0 }}>
-            {!W.hideEmojis && (
+            {!w.hideEmojis && (
               <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.8 }}>
                 <span style={{ color: GOLD, fontSize: "1.6rem" }}>✦</span>
               </motion.div>
