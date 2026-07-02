@@ -945,8 +945,9 @@ export default function Admin() {
     .map(line => {
       const parts = line.split(",")
       const name = parts[0].trim()
-      const persons = parseInt(parts[1]?.trim()) || 1
-      const url = `https://www.lumivite.net/i/${guestSlug}?gn=${encodeURIComponent(name)}&np=${persons}`
+      const parsed = parseInt(parts[1]?.trim())
+      const persons = !isNaN(parsed) && parsed > 0 ? parsed : null
+      const url = `https://www.lumivite.net/i/${guestSlug}?gn=${encodeURIComponent(name)}${persons ? `&np=${persons}` : ""}`
       return { name, persons, url }
     })
 
@@ -1333,7 +1334,7 @@ export default function Admin() {
                             <div className="flex-1 min-w-0">
                               <p className="text-white text-sm font-medium">
                                 {g.name}
-                                {g.persons > 1 && <span className="text-white/40 text-xs ml-2">({g.persons} persons)</span>}
+                                {g.persons && <span className="text-white/40 text-xs ml-2">({g.persons} {g.persons === 1 ? "person" : "persons"})</span>}
                               </p>
                               <p className="text-white/25 text-xs truncate font-mono mt-0.5">{g.url}</p>
                             </div>
