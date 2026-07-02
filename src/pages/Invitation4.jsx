@@ -779,7 +779,8 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
             ) : (
               <motion.div key="form" className="space-y-3">
                 <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder={ar ? "اسمك الكامل" : "Your Full Name"}
-                  className="w-full rounded-xl px-5 py-4 text-white placeholder-white/20 focus:outline-none"
+                  disabled={tier !== "bronze" && !!searchParams.get("gn")}
+                  className="w-full rounded-xl px-5 py-4 text-white placeholder-white/20 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }} />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
                   disabled={tier !== "bronze" && !!searchParams.get("np")}

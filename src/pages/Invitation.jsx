@@ -492,7 +492,8 @@ export default function Invitation({ override = null }) {
               <motion.div key="form" className="space-y-4">
                 <input value={name} onChange={e => setName(e.target.value)}
                   type="text" placeholder={ar ? "اسمك الكامل" : "Your Full Name"}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-[#c9a96e] transition" />
+                  disabled={tier !== "bronze" && !!searchParams.get("gn")}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-[#c9a96e] transition disabled:opacity-60 disabled:cursor-not-allowed" />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
                   disabled={tier !== "bronze" && !!searchParams.get("np")}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white focus:outline-none focus:border-[#c9a96e] transition disabled:opacity-60 disabled:cursor-not-allowed">

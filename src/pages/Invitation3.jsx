@@ -563,7 +563,8 @@ export default function Invitation({ override = null }) {
                   onChange={e => setName(e.target.value)}
                   type="text"
                   placeholder={ar ? "اسمك الكامل" : "Your Full Name"}
-                  className="w-full rounded-xl px-5 py-4 focus:outline-none transition"
+                  disabled={tier !== "bronze" && !!searchParams.get("gn")}
+                  className="w-full rounded-xl px-5 py-4 focus:outline-none transition disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ background: "white", border: `1px solid ${roseGold}30`, color: dark,
                     boxShadow: "0 1px 4px rgba(183,110,121,0.08)" }} />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
