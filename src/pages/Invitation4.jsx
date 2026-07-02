@@ -61,7 +61,7 @@ const isDirectVideo = url => /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(url || "")
 
 // ── VIDEO ENVELOPE ────────────────────────────────────────────────────────────
 const ENVELOPE_VIDEO = {
-  black:  "/6bec0292b1d749753c4d597420bf2a7b_720w.mp4",
+  black:  "/BlackEnvelope.mp4",
   white:  "/WhiteEnvelope.mp4",
   creamy: "/CreamyEnvelope.mp4",
 }
