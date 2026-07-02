@@ -34,6 +34,7 @@ const DEFAULT_WEDDING = {
   video: "/PreWeddingNew.mp4",
   memoriesEnabled: true,
   slug: "demo4",
+  envelopeColor: "white",
 }
 
 // ── Detect video URL type ────────────────────────────────────────────────────

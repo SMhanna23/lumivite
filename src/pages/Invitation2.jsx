@@ -24,6 +24,7 @@ const DEFAULT_WEDDING = {
   venueAr: "فيترون، لبنان",
   memoriesEnabled: true,
   slug: "demo2",
+  envelopeColor: "white",
   registry: [
     { name: "Wish Money", icon: "💳", desc: "Contribute to our honeymoon fund", descAr: "ساهم في صندوق شهر العسل", link: "https://www.wishmoney.io", color: "#c9a96e" },
     { name: "ABC Store", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: "https://www.abc.com.lb", color: "#c9a96e" },

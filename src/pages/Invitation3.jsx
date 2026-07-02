@@ -26,6 +26,7 @@ const DEFAULT_WEDDING = {
   messageAr: "معاً مع عائلتيهما",
   memoriesEnabled: true,
   slug: "demo3",
+  envelopeColor: "creamy",
   registry: [
     { name: "Wish Money", icon: "💳", desc: "Contribute to our honeymoon fund", descAr: "ساهم في صندوق شهر العسل", link: "https://www.wishmoney.io", color: "#c9a96e" },
     { name: "ABC Store", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: "https://www.abc.com.lb", color: "#c9a96e" },
