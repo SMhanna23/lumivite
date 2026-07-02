@@ -911,7 +911,7 @@ export default function Invitation4({ override = null }) {
   const onReplay = useCallback(() => setPhase("video"), [])
 
   return (
-    <>
+    <div className="fixed inset-0" style={{ background: DARK }}>
       {/* Background music — Silver and Gold only */}
       {tier !== "bronze" && <audio ref={audioRef} loop src={W.music || "/music.mp3"} preload="auto"
         style={{ display: "none" }}
@@ -948,6 +948,6 @@ export default function Invitation4({ override = null }) {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   )
 }
