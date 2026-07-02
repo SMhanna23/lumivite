@@ -23,7 +23,7 @@ const packages = [
     features: [
       "1 luxury template (dark design)",
       "RSVP tracking dashboard",
-      "Instant WhatsApp RSVP notifications",
+      "Bilingual Arabic & English",
       "Countdown timer",
       "Wedding timeline",
       "Cover & venue photos (up to 3)",
@@ -43,7 +43,7 @@ const packages = [
       "Guest name auto-display",
       "Background music",
       "Full photo gallery (up to 9 photos)",
-      "Guest list import (CSV)",
+      "Custom music clip (start & end time)",
       "Valid for 6 months",
     ]
   },
