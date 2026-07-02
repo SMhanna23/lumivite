@@ -131,6 +131,7 @@ function BuildInvitationModal({ order }) {
     accommodation: "",
     memoriesEnabled: false,
     hideEmojis: false,
+    envelopeColor: "black",
   })
 
   const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
@@ -192,6 +193,7 @@ function BuildInvitationModal({ order }) {
             accommodation: d.accommodation || "",
             memoriesEnabled: d.memoriesEnabled ?? false,
             hideEmojis: d.hideEmojis ?? false,
+            envelopeColor: d.envelopeColor || "black",
           })
           if (d.photos?.length) setPhotos(d.photos)
           setSaved(true)
@@ -282,6 +284,7 @@ function BuildInvitationModal({ order }) {
         accommodation: extraData.accommodation || "",
         memoriesEnabled: extraData.memoriesEnabled ?? false,
         hideEmojis: extraData.hideEmojis ?? false,
+        envelopeColor: extraData.envelopeColor || "black",
         orderId: order.id,
         package: order.package,
         _draft: true,
@@ -358,6 +361,7 @@ function BuildInvitationModal({ order }) {
         accommodation: extraData.accommodation || "",
         memoriesEnabled: extraData.memoriesEnabled ?? false,
         hideEmojis: extraData.hideEmojis ?? false,
+        envelopeColor: extraData.envelopeColor || "black",
         slug,
         createdAt: new Date(),
         orderId: order.id,
@@ -461,6 +465,30 @@ function BuildInvitationModal({ order }) {
                : tier === "silver" ? "· Music ✓ · Full gallery (9 photos) ✓ · Guest links ✓ · No maps · No registry · No memory wall"
                : "· All features unlocked"}
             </span>
+          </div>
+
+          {/* Envelope Color */}
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">🎬 Envelope Color</label>
+            <div className="flex gap-3">
+              {[
+                { id: "black",  label: "⬛ Black",  desc: "Classic dark" },
+                { id: "white",  label: "⬜ White",  desc: "Clean & bright" },
+                { id: "creamy", label: "🟡 Creamy", desc: "Warm & elegant" },
+              ].map(opt => (
+                <button key={opt.id} type="button"
+                  onClick={() => update("envelopeColor", opt.id)}
+                  className="flex-1 py-2.5 px-3 rounded-xl border text-xs font-medium transition text-center"
+                  style={{
+                    borderColor: extraData.envelopeColor === opt.id ? "#c9a96e" : "rgba(255,255,255,0.1)",
+                    background: extraData.envelopeColor === opt.id ? "rgba(201,169,110,0.12)" : "rgba(255,255,255,0.03)",
+                    color: extraData.envelopeColor === opt.id ? "#c9a96e" : "rgba(255,255,255,0.45)",
+                  }}>
+                  {opt.label}
+                  <span className="block text-white/25 text-xs font-normal mt-0.5">{opt.desc}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Slug */}

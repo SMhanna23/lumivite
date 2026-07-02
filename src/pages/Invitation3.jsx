@@ -213,6 +213,7 @@ export default function Invitation({ override = null }) {
           onVideoEnd={() => setStarted(true)}
           ar={ar}
           setLang={setLang}
+          envelopeColor={WEDDING.envelopeColor || "black"}
         />
       )}
 

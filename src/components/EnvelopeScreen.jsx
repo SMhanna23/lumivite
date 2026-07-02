@@ -3,10 +3,30 @@ import { motion } from "framer-motion"
 
 const GOLD = "#c4a35a"
 
-export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang }) {
+const ENVELOPE_VIDEO = {
+  black:  "/6bec0292b1d749753c4d597420bf2a7b_720w.mp4",
+  white:  "/WhiteEnvelope.mp4",
+  creamy: "/CreamyEnvelope.mp4",
+}
+const ENVELOPE_BG = {
+  black: "#0c0b09", white: "#f0ede8", creamy: "#e8d4a0",
+}
+const ENVELOPE_TEXT_DEAR = {
+  black: "rgba(255,255,255,0.65)", white: "rgba(40,30,20,0.75)", creamy: "rgba(60,40,10,0.80)",
+}
+const ENVELOPE_TEXT_TAP = {
+  black: "rgba(255,255,255,0.4)", white: "rgba(40,30,20,0.4)", creamy: "rgba(60,40,10,0.4)",
+}
+
+export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang, envelopeColor = "black" }) {
   const videoRef = useRef(null)
   const [started, setStarted] = useState(false)
   const tapped = useRef(false) // guard: only call onVideoEnd after a real tap
+
+  const videoSrc  = ENVELOPE_VIDEO[envelopeColor]  || ENVELOPE_VIDEO.black
+  const bgColor   = ENVELOPE_BG[envelopeColor]     || ENVELOPE_BG.black
+  const dearColor = ENVELOPE_TEXT_DEAR[envelopeColor] || ENVELOPE_TEXT_DEAR.black
+  const tapColor  = ENVELOPE_TEXT_TAP[envelopeColor]  || ENVELOPE_TEXT_TAP.black
 
   useEffect(() => {
     const v = videoRef.current
@@ -30,14 +50,14 @@ export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setL
   return (
     <motion.div
       className="absolute inset-0 cursor-pointer select-none overflow-hidden"
-      style={{ background: "#0c0b09" }}
+      style={{ background: bgColor }}
       dir={ar ? "rtl" : "ltr"}
       onClick={tap}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
 
       <video
         ref={videoRef}
-        src="/6bec0292b1d749753c4d597420bf2a7b_720w.mp4"
+        src={videoSrc}
         className="absolute inset-0 w-full h-full object-cover"
         playsInline
         muted
@@ -52,7 +72,7 @@ export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setL
           animate={{ opacity: started ? 0 : 1 }}
           initial={{ opacity: 0 }}
           transition={{ duration: started ? 0.3 : 1.3, delay: started ? 0 : 0.8 }}>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.1rem,4vw,1.6rem)", color: "rgba(255,255,255,0.65)", fontStyle: "italic" }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.1rem,4vw,1.6rem)", color: dearColor, fontStyle: "italic" }}>
             {ar ? "عزيزنا" : "Dear"} <span style={{ color: GOLD }}>{guestName}</span>
           </p>
         </motion.div>
@@ -63,7 +83,7 @@ export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setL
         style={{ zIndex: 10 }}
         animate={started ? { opacity: 0 } : { opacity: [0.3, 1, 0.3] }}
         transition={started ? { duration: 0.25 } : { repeat: Infinity, duration: 2.5 }}>
-        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.56rem", letterSpacing: "0.48em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase" }}>
+        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.56rem", letterSpacing: "0.48em", color: tapColor, textTransform: "uppercase" }}>
           {ar ? "انقر لفتح" : "Tap to Open"}
         </p>
         <div className="w-px h-7 mt-2" style={{ background: `linear-gradient(to bottom, ${GOLD}70, transparent)` }} />
