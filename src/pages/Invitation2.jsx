@@ -102,6 +102,8 @@ export default function Invitation({ override = null }) {
   const [persons, setPersons] = useState(() => tier !== "bronze" ? parseInt(new URLSearchParams(window.location.search).get("np") || "1") : 1)
   const [status, setStatus] = useState("idle")
   const [rsvpError, setRsvpError] = useState("")
+  const [copiedKey, setCopiedKey] = useState(null)
+  const copyToClipboard = (text, key) => { navigator.clipboard.writeText(text); setCopiedKey(key); setTimeout(() => setCopiedKey(null), 1500) }
   const [playing, setPlaying] = useState(false)
   const [lang, setLang] = useState("en")
   const ar = lang === "ar"
@@ -505,11 +507,11 @@ export default function Invitation({ override = null }) {
                     </div>
                     {item.acc && <div className="flex items-center justify-between py-2 border-t border-[#4a7c59]/10">
                       <span className="text-[#4a7c59]/60 text-xs font-mono">Acc# {item.acc}</span>
-                      <button onClick={() => navigator.clipboard.writeText(item.acc)} className="text-xs rounded-full px-3 py-1" style={{ color: "#4a7c59", border: "1px solid rgba(74,124,89,0.3)" }}>{ar ? "نسخ" : "Copy"}</button>
+                      <button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-xs rounded-full px-3 py-1 transition" style={{ color: copiedKey === "wish-acc" ? "#4ade80" : "#4a7c59", border: copiedKey === "wish-acc" ? "1px solid #4ade80" : "1px solid rgba(74,124,89,0.3)" }}>{copiedKey === "wish-acc" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button>
                     </div>}
                     {item.phone && <div className="flex items-center justify-between py-2 border-t border-[#4a7c59]/10">
                       <span className="text-[#4a7c59]/60 text-xs font-mono">{item.phone}</span>
-                      <button onClick={() => navigator.clipboard.writeText(item.phone)} className="text-xs rounded-full px-3 py-1" style={{ color: "#4a7c59", border: "1px solid rgba(74,124,89,0.3)" }}>{ar ? "نسخ" : "Copy"}</button>
+                      <button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-xs rounded-full px-3 py-1 transition" style={{ color: copiedKey === "wish-phone" ? "#4ade80" : "#4a7c59", border: copiedKey === "wish-phone" ? "1px solid #4ade80" : "1px solid rgba(74,124,89,0.3)" }}>{copiedKey === "wish-phone" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button>
                     </div>}
                     {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs px-3 py-1 rounded-full" style={{ color: "#4a7c59", border: "1px solid rgba(74,124,89,0.3)" }}>Visit →</a>}
                   </div>
@@ -524,10 +526,11 @@ export default function Invitation({ override = null }) {
                     </div>
                     {(item.iban || item.desc) && <div className="flex items-center justify-between py-2 border-t border-[#4a7c59]/10">
                       <span className="text-[#4a7c59]/60 text-xs font-mono">{item.iban || item.desc?.replace("iban: ", "")}</span>
-                      <button onClick={() => navigator.clipboard.writeText(item.iban || item.desc?.replace("iban: ", ""))} className="text-xs rounded-full px-3 py-1" style={{ color: "#4a7c59", border: "1px solid rgba(74,124,89,0.3)" }}>{ar ? "نسخ" : "Copy"}</button>
+                      <button onClick={() => copyToClipboard(item.iban || item.desc?.replace("iban: ", ""), "bank-iban")} className="text-xs rounded-full px-3 py-1 transition" style={{ color: copiedKey === "bank-iban" ? "#4ade80" : "#4a7c59", border: copiedKey === "bank-iban" ? "1px solid #4ade80" : "1px solid rgba(74,124,89,0.3)" }}>{copiedKey === "bank-iban" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button>
                     </div>}
-                    {item.bic && <div className="py-2 border-t border-[#4a7c59]/10">
+                    {item.bic && <div className="flex items-center justify-between py-2 border-t border-[#4a7c59]/10">
                       <span className="text-[#4a7c59]/60 text-xs">BIC/Swift: <span className="font-mono">{item.bic}</span></span>
+                      <button onClick={() => copyToClipboard(item.bic, "bank-bic")} className="text-xs rounded-full px-3 py-1 transition" style={{ color: copiedKey === "bank-bic" ? "#4ade80" : "#4a7c59", border: copiedKey === "bank-bic" ? "1px solid #4ade80" : "1px solid rgba(74,124,89,0.3)" }}>{copiedKey === "bank-bic" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button>
                     </div>}
                   </div>
                 ) : item.link ? (

@@ -103,6 +103,8 @@ export default function Invitation({ override = null }) {
   const [persons, setPersons] = useState(() => tier !== "bronze" ? parseInt(new URLSearchParams(window.location.search).get("np") || "1") : 1)
   const [status, setStatus] = useState("idle")
   const [rsvpError, setRsvpError] = useState("")
+  const [copiedKey, setCopiedKey] = useState(null)
+  const copyToClipboard = (text, key) => { navigator.clipboard.writeText(text); setCopiedKey(key); setTimeout(() => setCopiedKey(null), 1500) }
   const [playing, setPlaying] = useState(false)
   const [searchParams] = useSearchParams()
   const [lang, setLang] = useState("en")
@@ -445,15 +447,15 @@ export default function Invitation({ override = null }) {
           {item.name === "Wish Money" ? (
             <div className="p-5 rounded-2xl border border-white/10 bg-white/3">
               <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl bg-[#c9a96e]/10 flex items-center justify-center text-xl flex-shrink-0">💳</div><p className="font-medium text-white">Wish Money</p></div>
-              {item.acc && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">Acc# {item.acc}</span><button onClick={() => navigator.clipboard.writeText(item.acc)} className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">{ar ? "نسخ" : "Copy"}</button></div>}
-              {item.phone && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">{item.phone}</span><button onClick={() => navigator.clipboard.writeText(item.phone)} className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">{ar ? "نسخ" : "Copy"}</button></div>}
+              {item.acc && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">Acc# {item.acc}</span><button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">{copiedKey === "wish-acc" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
+              {item.phone && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">{item.phone}</span><button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">{copiedKey === "wish-phone" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
               {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs px-3 py-1 rounded-full text-[#c9a96e] border border-[#c9a96e]/30">Visit →</a>}
             </div>
           ) : item.name === "Bank Transfer" ? (
             <div className="p-5 rounded-2xl border border-white/10 bg-white/3">
               <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl bg-[#c9a96e]/10 flex items-center justify-center text-xl flex-shrink-0">🏦</div><div><p className="font-medium text-white">{ar ? "تحويل بنكي" : "Bank Transfer"}</p>{item.beneficiary && <p className="text-white/40 text-xs">{item.beneficiary}</p>}</div></div>
-              {(item.iban || item.desc) && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">{item.iban || item.desc?.replace("iban: ", "")}</span><button onClick={() => navigator.clipboard.writeText(item.iban || item.desc?.replace("iban: ", ""))} className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">{ar ? "نسخ" : "Copy"}</button></div>}
-              {item.bic && <div className="py-2 border-t border-white/10"><span className="text-white/40 text-xs">BIC/Swift: <span className="font-mono">{item.bic}</span></span></div>}
+              {(item.iban || item.desc) && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">{item.iban || item.desc?.replace("iban: ", "")}</span><button onClick={() => copyToClipboard(item.iban || item.desc?.replace("iban: ", ""), "bank-iban")} className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">{copiedKey === "bank-iban" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
+              {item.bic && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs">BIC/Swift: <span className="font-mono">{item.bic}</span></span><button onClick={() => copyToClipboard(item.bic, "bank-bic")} className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">{copiedKey === "bank-bic" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
             </div>
           ) : item.link ? (
             <a href={item.link} target="_blank" rel="noopener noreferrer"

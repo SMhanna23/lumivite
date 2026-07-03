@@ -681,6 +681,8 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
   const [persons,   setPersons]   = useState(() => tier !== "bronze" ? parseInt(new URLSearchParams(window.location.search).get("np") || "1") : 1)
   const [status,    setStatus]    = useState("idle")
   const [rsvpError, setRsvpError] = useState("")
+  const [copiedKey, setCopiedKey] = useState(null)
+  const copyToClipboard = (text, key) => { navigator.clipboard.writeText(text); setCopiedKey(key); setTimeout(() => setCopiedKey(null), 1500) }
   const [searchParams] = useSearchParams()
 
   const handleRSVP = async () => {
@@ -826,15 +828,15 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                       item.name === "Wish Money" ? (
                         <div key={i} className="px-4 py-3 rounded-xl space-y-2" style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
                           <p className="text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>💳 Wish Money</p>
-                          {item.acc && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>Acc# {item.acc}</span><button onClick={() => navigator.clipboard.writeText(item.acc)} className="text-xs px-2 py-1 rounded-full" style={{ color: GOLD, border: `1px solid ${GOLD}40` }}>Copy</button></div>}
-                          {item.phone && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{item.phone}</span><button onClick={() => navigator.clipboard.writeText(item.phone)} className="text-xs px-2 py-1 rounded-full" style={{ color: GOLD, border: `1px solid ${GOLD}40` }}>Copy</button></div>}
+                          {item.acc && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>Acc# {item.acc}</span><button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "wish-acc" ? "#4ade80" : GOLD, border: copiedKey === "wish-acc" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "wish-acc" ? "Copied!" : "Copy"}</button></div>}
+                          {item.phone && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{item.phone}</span><button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "wish-phone" ? "#4ade80" : GOLD, border: copiedKey === "wish-phone" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "wish-phone" ? "Copied!" : "Copy"}</button></div>}
                           {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-xs px-2 py-1 rounded-full inline-block mt-1" style={{ color: GOLD, border: `1px solid ${GOLD}40` }}>Visit →</a>}
                         </div>
                       ) : item.name === "Bank Transfer" ? (
                         <div key={i} className="px-4 py-3 rounded-xl space-y-2" style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
                           <p className="text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>🏦 {ar ? "تحويل بنكي" : "Bank Transfer"}{item.beneficiary && <span className="text-xs ml-2" style={{ color: "rgba(255,255,255,0.4)" }}>{item.beneficiary}</span>}</p>
-                          {(item.iban || item.desc) && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{item.iban || item.desc?.replace("iban: ", "")}</span><button onClick={() => navigator.clipboard.writeText(item.iban || item.desc?.replace("iban: ", ""))} className="text-xs px-2 py-1 rounded-full" style={{ color: GOLD, border: `1px solid ${GOLD}40` }}>Copy</button></div>}
-                          {item.bic && <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>BIC/Swift: <span className="font-mono">{item.bic}</span></p>}
+                          {(item.iban || item.desc) && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{item.iban || item.desc?.replace("iban: ", "")}</span><button onClick={() => copyToClipboard(item.iban || item.desc?.replace("iban: ", ""), "bank-iban")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "bank-iban" ? "#4ade80" : GOLD, border: copiedKey === "bank-iban" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "bank-iban" ? "Copied!" : "Copy"}</button></div>}
+                          {item.bic && <div className="flex items-center justify-between"><span className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>BIC/Swift: <span className="font-mono">{item.bic}</span></span><button onClick={() => copyToClipboard(item.bic, "bank-bic")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "bank-bic" ? "#4ade80" : GOLD, border: copiedKey === "bank-bic" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "bank-bic" ? "Copied!" : "Copy"}</button></div>}
                         </div>
                       ) : item.link ? (
                         <a key={i} href={item.link} target="_blank" rel="noopener noreferrer"
