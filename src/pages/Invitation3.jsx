@@ -339,7 +339,7 @@ export default function Invitation({ override = null }) {
                 transition={{ delay: i * 0.15 }} viewport={{ once: true }}
                 className="rounded-xl px-4 py-5 text-center"
                 style={{ border: `1px solid ${roseGold}35`, background: `rgba(183,110,121,0.05)` }}>
-                <p className="text-xs tracking-[0.3em] uppercase mb-2" style={{ color: roseGold }}>{ar ? "السادة" : "Mr. & Mrs."}</p>
+                <p className="text-xs tracking-[0.3em] uppercase mb-2" style={{ color: roseGold }}>{ar ? "عائلة" : "Mr. & Mrs."}</p>
                 <p className="font-light text-sm leading-relaxed" style={{ color: dark, fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>{p}</p>
               </motion.div>
             ))}
