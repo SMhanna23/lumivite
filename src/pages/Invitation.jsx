@@ -121,6 +121,10 @@ export default function Invitation({ override = null }) {
     "/photo8.jpg",
     "/photo9.jpg",
   ]
+  const namesFont = WEDDING.namesFont === "script" ? "'Great Vibes', cursive" : "'Cormorant Garamond', serif"
+  const namesClass = WEDDING.namesFont === "script" ? "text-7xl md:text-9xl" : "text-6xl md:text-8xl"
+  const subtextSize = WEDDING.heroSubtextSize === "lg" ? "1.125rem" : WEDDING.heroSubtextSize === "md" ? "1rem" : "0.875rem"
+  const subtextWeight = WEDDING.heroSubtextBold ? 600 : 400
   const audioRef = useRef(null)
   const ytRef = useRef(null)
   const ytId = getYouTubeId(WEDDING.music)
@@ -258,15 +262,19 @@ export default function Invitation({ override = null }) {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full border border-white/5 pointer-events-none" />
         <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
           <p className="text-[#c9a96e] tracking-[0.4em] text-xs uppercase mb-8">{ar ? "نحن نتزوج" : "We're getting married"}</p>
-          <h1 className="font-serif text-6xl md:text-8xl font-light mb-2">{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
-          <p className="text-[#c9a96e] text-4xl font-serif italic mb-2">&</p>
-          <h1 className="font-serif text-6xl md:text-8xl font-light mb-10">{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
-          <p className="text-white/40 text-sm tracking-widest uppercase mb-2">
+          <h1 className={`${namesClass} font-light text-white mb-2`} style={{ fontFamily: namesFont }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
+          <p className="text-[#c9a96e] text-4xl italic mb-2" style={{ fontFamily: namesFont }}>&</p>
+          <h1 className={`${namesClass} font-light text-white mb-10`} style={{ fontFamily: namesFont }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
+          <p className={`tracking-widest uppercase mb-2 ${WEDDING.heroSubtextBold ? "text-white/90" : "text-white/50"}`}
+            style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
             {ar
               ? new Date(WEDDING.date).toLocaleDateString("ar-EG", { day: "numeric", month: "long", year: "numeric" })
               : new Date(WEDDING.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
           </p>
-          <p className="text-white/40 text-sm mb-12">{ar ? WEDDING.venueAr : WEDDING.venue}</p>
+          <p className={`mb-12 ${WEDDING.heroSubtextBold ? "text-white/80" : "text-white/45"}`}
+            style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
+            {ar ? WEDDING.venueAr : WEDDING.venue}
+          </p>
           <Countdown targetDate={WEDDING.date} />
         </motion.div>
         <motion.div className="absolute bottom-10 flex flex-col items-center gap-2 z-10"

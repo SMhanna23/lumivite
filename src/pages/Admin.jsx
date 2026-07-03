@@ -136,6 +136,9 @@ function BuildInvitationModal({ order }) {
     dressCode: "",
     transport: "",
     accommodation: "",
+    namesFont: "serif",
+    heroSubtextSize: "sm",
+    heroSubtextBold: false,
     noteEn: "",
     noteAr: "",
     memoriesEnabled: false,
@@ -207,6 +210,9 @@ function BuildInvitationModal({ order }) {
             dressCode: d.dressCode || "",
             transport: d.transport || "",
             accommodation: d.accommodation || "",
+            namesFont: d.namesFont || "serif",
+            heroSubtextSize: d.heroSubtextSize || "sm",
+            heroSubtextBold: d.heroSubtextBold ?? false,
             noteEn: d.noteEn || "",
             noteAr: d.noteAr || "",
             memoriesEnabled: d.memoriesEnabled ?? false,
@@ -301,6 +307,9 @@ function BuildInvitationModal({ order }) {
         dressCode: extraData.dressCode || "",
         transport: extraData.transport || "",
         accommodation: extraData.accommodation || "",
+        namesFont: extraData.namesFont || "serif",
+        heroSubtextSize: extraData.heroSubtextSize || "sm",
+        heroSubtextBold: extraData.heroSubtextBold ?? false,
         noteEn: extraData.noteEn || "",
         noteAr: extraData.noteAr || "",
         memoriesEnabled: extraData.memoriesEnabled ?? false,
@@ -377,6 +386,9 @@ function BuildInvitationModal({ order }) {
         dressCode: extraData.dressCode || "",
         transport: extraData.transport || "",
         accommodation: extraData.accommodation || "",
+        namesFont: extraData.namesFont || "serif",
+        heroSubtextSize: extraData.heroSubtextSize || "sm",
+        heroSubtextBold: extraData.heroSubtextBold ?? false,
         noteEn: extraData.noteEn || "",
         noteAr: extraData.noteAr || "",
         memoriesEnabled: extraData.memoriesEnabled ?? false,
@@ -522,6 +534,42 @@ function BuildInvitationModal({ order }) {
               <input value={slug} onChange={e => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, "-"))}
                 className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
             </div>
+          </div>
+
+          {/* Hero Style */}
+          <p className="text-white/20 text-xs uppercase tracking-widest pt-1">🎨 Hero Style</p>
+          <div>
+            <label className="text-white/30 text-xs mb-2 block">Names Font Style</label>
+            <div className="flex gap-3">
+              {[
+                { id: "serif", label: "Elegant Serif", preview: "Cormorant Garamond", desc: "Classic & refined" },
+                { id: "script", label: "Italic Script", preview: "Great Vibes", desc: "Romantic cursive" },
+              ].map(opt => (
+                <button key={opt.id} type="button" onClick={() => update("namesFont", opt.id)}
+                  className="flex-1 py-3 px-3 rounded-xl border text-center transition"
+                  style={{ borderColor: extraData.namesFont === opt.id ? "#c9a96e" : "rgba(255,255,255,0.1)", background: extraData.namesFont === opt.id ? "rgba(201,169,110,0.1)" : "rgba(255,255,255,0.03)" }}>
+                  <p className="text-white/80 text-sm" style={{ fontFamily: opt.id === "script" ? "'Great Vibes', cursive" : "'Cormorant Garamond', serif", fontSize: opt.id === "script" ? "1.3rem" : "1rem" }}>{opt.preview}</p>
+                  <p className="text-white/30 text-xs mt-1">{opt.desc}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="text-white/30 text-xs mb-2 block">Date & Location — Size</label>
+            <div className="flex gap-2">
+              {[{ id: "sm", label: "Small (default)" }, { id: "md", label: "Medium" }, { id: "lg", label: "Large" }].map(opt => (
+                <button key={opt.id} type="button" onClick={() => update("heroSubtextSize", opt.id)}
+                  className="flex-1 py-2 rounded-xl border text-xs font-medium transition"
+                  style={{ borderColor: extraData.heroSubtextSize === opt.id ? "#c9a96e" : "rgba(255,255,255,0.1)", background: extraData.heroSubtextSize === opt.id ? "rgba(201,169,110,0.1)" : "rgba(255,255,255,0.03)", color: extraData.heroSubtextSize === opt.id ? "#c9a96e" : "rgba(255,255,255,0.45)" }}>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            <label className="flex items-center gap-2 cursor-pointer select-none mt-2">
+              <input type="checkbox" checked={extraData.heroSubtextBold ?? false} onChange={e => update("heroSubtextBold", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <span className="text-white/35 text-xs">Bold & more visible</span>
+            </label>
           </div>
 
           {/* Arabic names */}

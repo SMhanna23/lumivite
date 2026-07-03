@@ -154,8 +154,10 @@ const CONTENT_SECTIONS = ["opening", "timeline", "details", "closing"]
 
 function renderSectionOverlay(section, w, ar) {
   const J  = { fontFamily: "'Jost', sans-serif" }
+  const NF = { fontFamily: w.namesFont === "script" ? "'Great Vibes', cursive" : "'Cormorant Garamond', serif" }
   const CG = { fontFamily: "'Cormorant Garamond', serif" }
   const GV = { fontFamily: "'Great Vibes', cursive" }
+  const isScript = w.namesFont === "script"
   const defaultTimeline = [
     { time: "5:00 PM",  label: "Ceremony",      labelAr: "مراسم الزواج",    location: "Saint Georges Church" },
     { time: "7:00 PM",  label: "Welcome Drink", labelAr: "مشروب الترحيب",  location: "" },
@@ -200,15 +202,15 @@ function renderSectionOverlay(section, w, ar) {
         {/* Names on ONE LINE: GROOM "and" BRIDE */}
         <div style={{ display: "flex", alignItems: "baseline", gap: "clamp(6px,2vw,12px)",
           flexWrap: "nowrap", justifyContent: "center", maxWidth: "92vw" }}>
-          <p style={{ ...CG, fontSize: "clamp(1.5rem,5.8vw,3rem)", color: "white", lineHeight: 1.0,
-            fontWeight: 300, letterSpacing: "0.14em", textTransform: "uppercase", textShadow: ts }}>
+          <p style={{ ...NF, fontSize: isScript ? "clamp(2rem,7vw,4rem)" : "clamp(1.5rem,5.8vw,3rem)", color: "white", lineHeight: 1.0,
+            fontWeight: 300, letterSpacing: isScript ? "0.02em" : "0.14em", textTransform: isScript ? "none" : "uppercase", textShadow: ts }}>
             {ar ? w.groomAr : w.groom}
           </p>
           <p style={{ ...GV, fontSize: "clamp(1rem,3.2vw,1.7rem)", color: GOLD, textShadow: ts }}>
             {ar ? "و" : "and"}
           </p>
-          <p style={{ ...CG, fontSize: "clamp(1.5rem,5.8vw,3rem)", color: "white", lineHeight: 1.0,
-            fontWeight: 300, letterSpacing: "0.14em", textTransform: "uppercase", textShadow: ts }}>
+          <p style={{ ...NF, fontSize: isScript ? "clamp(2rem,7vw,4rem)" : "clamp(1.5rem,5.8vw,3rem)", color: "white", lineHeight: 1.0,
+            fontWeight: 300, letterSpacing: isScript ? "0.02em" : "0.14em", textTransform: isScript ? "none" : "uppercase", textShadow: ts }}>
             {ar ? w.brideAr : w.bride}
           </p>
         </div>

@@ -119,6 +119,10 @@ export default function Invitation({ override = null }) {
     "/photo9.jpg",
   ]
   const [searchParams] = useSearchParams()
+  const namesFont = WEDDING.namesFont === "script" ? "'Great Vibes', cursive" : "'Cormorant Garamond', serif"
+  const namesClass = WEDDING.namesFont === "script" ? "text-7xl md:text-9xl" : "text-6xl md:text-8xl"
+  const subtextSize = WEDDING.heroSubtextSize === "lg" ? "1.125rem" : WEDDING.heroSubtextSize === "md" ? "1rem" : "0.875rem"
+  const subtextWeight = WEDDING.heroSubtextBold ? 600 : 400
   const audioRef = useRef(null)
   const ytRef = useRef(null)
   const ytId = getYouTubeId(WEDDING.music)
@@ -272,19 +276,20 @@ export default function Invitation({ override = null }) {
             <div className="h-px w-16 bg-[#4a7c59]/30" />
           </div>
 
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif" }}
-            className="text-6xl md:text-8xl font-light text-[#2d3a2e] mb-1">
+          <h1 style={{ fontFamily: namesFont }}
+            className={`${namesClass} font-light text-[#2d3a2e] mb-1`}>
             {ar ? WEDDING.groomAr : WEDDING.groom}
           </h1>
-          <p className="text-[#4a7c59] text-4xl italic my-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>&</p>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif" }}
-            className="text-6xl md:text-8xl font-light text-[#2d3a2e] mb-8">
+          <p className="text-[#4a7c59] text-4xl italic my-1" style={{ fontFamily: namesFont }}>&</p>
+          <h1 style={{ fontFamily: namesFont }}
+            className={`${namesClass} font-light text-[#2d3a2e] mb-8`}>
             {ar ? WEDDING.brideAr : WEDDING.bride}
           </h1>
 
           <div className="flex items-center justify-center gap-6 mb-8">
             <div className="h-px w-16 bg-[#4a7c59]/30" />
-            <p className="text-[#4a7c59]/60 text-sm tracking-widest uppercase">
+            <p className={`tracking-widest uppercase ${WEDDING.heroSubtextBold ? "text-[#4a7c59]" : "text-[#4a7c59]/70"}`}
+              style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
               {ar
                 ? new Date(WEDDING.date).toLocaleDateString("ar-EG", { day: "numeric", month: "long", year: "numeric" })
                 : new Date(WEDDING.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
@@ -292,7 +297,10 @@ export default function Invitation({ override = null }) {
             <div className="h-px w-16 bg-[#4a7c59]/30" />
           </div>
 
-          <p className="text-[#4a7c59]/50 text-sm mb-10">{ar ? WEDDING.venueAr : WEDDING.venue}</p>
+          <p className={`mb-10 ${WEDDING.heroSubtextBold ? "text-[#4a7c59]/90" : "text-[#4a7c59]/55"}`}
+            style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
+            {ar ? WEDDING.venueAr : WEDDING.venue}
+          </p>
           <Countdown targetDate={WEDDING.date} />
         </motion.div>
 
