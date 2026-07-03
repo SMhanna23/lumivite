@@ -120,9 +120,15 @@ function BuildInvitationModal({ order }) {
     muteVideo: false,
     rsvpDeadline: "",
     registryWishMoneyAcc: "",
+    registryWishMoneyPhone: "",
     registryLink1: "",
     registryLink2: "",
+    registryBeneficiary: "",
     registryIban: "",
+    registryBic: "",
+    registrySubtitle: "",
+    hideCeremony: false,
+    hideTimeline: false,
     tl0: "5:00 PM",    tl0loc: "",
     tl1: "7:00 PM",    tl1loc: "",
     tl2: "11:00 PM",   tl2loc: "",
@@ -181,10 +187,16 @@ function BuildInvitationModal({ order }) {
             videoEnd: d.videoEnd ?? null,
             muteVideo: d.muteVideo ?? false,
             rsvpDeadline: d.rsvpDeadline || "",
-            registryWishMoneyAcc: d.registry?.[0]?.acc || "",
-            registryLink1: d.registry?.[0]?.link || "",
-            registryLink2: d.registry?.[1]?.link || "",
-            registryIban: d.registry?.[2]?.desc?.replace("iban: ", "") || "",
+            registryWishMoneyAcc: d.registry?.find(r => r.name === "Wish Money")?.acc || "",
+            registryWishMoneyPhone: d.registry?.find(r => r.name === "Wish Money")?.phone || "",
+            registryLink1: d.registry?.find(r => r.name === "Wish Money")?.link || "",
+            registryLink2: d.registry?.find(r => r.name === "Gift Registry")?.link || "",
+            registryBeneficiary: d.registry?.find(r => r.name === "Bank Transfer")?.beneficiary || "",
+            registryIban: d.registry?.find(r => r.name === "Bank Transfer")?.iban || d.registry?.find(r => r.name === "Bank Transfer")?.desc?.replace("iban: ", "") || "",
+            registryBic: d.registry?.find(r => r.name === "Bank Transfer")?.bic || "",
+            registrySubtitle: d.registrySubtitle || "",
+            hideCeremony: d.hideCeremony ?? false,
+            hideTimeline: d.hideTimeline ?? false,
             tl0: d.timeline?.[0]?.time || "5:00 PM",    tl0loc: d.timeline?.[0]?.location || "",
             tl1: d.timeline?.[1]?.time || "7:00 PM",    tl1loc: d.timeline?.[1]?.location || "",
             tl2: d.timeline?.[2]?.time || "11:00 PM",   tl2loc: d.timeline?.[2]?.location || "",
@@ -270,9 +282,9 @@ function BuildInvitationModal({ order }) {
           { label: "Wedding Party", labelAr: "حفل الزفاف", time: order.partyTime, place: order.partyPlace, placeAr: extraData.partyPlaceAr || order.partyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.partyMapUrl || null },
         ],
         registry: [
-          ...(extraData.registryLink1 || extraData.registryWishMoneyAcc ? [{ name: "Wish Money", icon: "💳", desc: extraData.registryWishMoneyAcc ? `Acc# ${extraData.registryWishMoneyAcc}` : "Contribute to our honeymoon fund", descAr: extraData.registryWishMoneyAcc ? `Acc# ${extraData.registryWishMoneyAcc}` : "ساهم في صندوق شهر العسل", link: extraData.registryLink1 || null, acc: extraData.registryWishMoneyAcc || null, color: "#c9a96e" }] : []),
+          ...(extraData.registryWishMoneyAcc || extraData.registryWishMoneyPhone || extraData.registryLink1 ? [{ name: "Wish Money", icon: "💳", acc: extraData.registryWishMoneyAcc || null, phone: extraData.registryWishMoneyPhone || null, link: extraData.registryLink1 || null, color: "#c9a96e" }] : []),
           ...(extraData.registryLink2 ? [{ name: "Gift Registry", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: extraData.registryLink2, color: "#c9a96e" }] : []),
-          ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", desc: `iban: ${extraData.registryIban}`, descAr: `iban: ${extraData.registryIban}`, link: null, color: "#c9a96e" }] : []),
+          ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", beneficiary: extraData.registryBeneficiary || null, iban: extraData.registryIban, bic: extraData.registryBic || null, link: null, color: "#c9a96e" }] : []),
         ],
         timeline: [
           { time: extraData.tl0, label: "Ceremony",      labelAr: "مراسم الزواج",   icon: "💒", location: extraData.tl0loc, desc: extraData.tl0loc || "Join us as we say our vows" },
@@ -285,6 +297,9 @@ function BuildInvitationModal({ order }) {
         memoriesEnabled: extraData.memoriesEnabled ?? false,
         hideEmojis: extraData.hideEmojis ?? false,
         envelopeColor: extraData.envelopeColor || "black",
+        registrySubtitle: extraData.registrySubtitle || "",
+        hideCeremony: extraData.hideCeremony ?? false,
+        hideTimeline: extraData.hideTimeline ?? false,
         orderId: order.id,
         package: order.package,
         _draft: true,
@@ -362,6 +377,9 @@ function BuildInvitationModal({ order }) {
         memoriesEnabled: extraData.memoriesEnabled ?? false,
         hideEmojis: extraData.hideEmojis ?? false,
         envelopeColor: extraData.envelopeColor || "black",
+        registrySubtitle: extraData.registrySubtitle || "",
+        hideCeremony: extraData.hideCeremony ?? false,
+        hideTimeline: extraData.hideTimeline ?? false,
         slug,
         createdAt: new Date(),
         orderId: order.id,
@@ -638,6 +656,14 @@ function BuildInvitationModal({ order }) {
 
           {/* Venue details */}
           <p className="text-white/20 text-xs uppercase tracking-widest pt-1">📍 Venue Details</p>
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <input type="checkbox" checked={extraData.hideCeremony ?? false} onChange={e => update("hideCeremony", e.target.checked)}
+              className="w-4 h-4 rounded accent-[#c9a96e]" />
+            <div>
+              <p className="text-white/60 text-sm">🚫 Hide ceremony venue card</p>
+              <p className="text-white/25 text-xs mt-0.5">For Islamic / civil weddings with no church ceremony</p>
+            </div>
+          </label>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-white/30 text-xs mb-1 block">Hero Location Text (English)</label>
@@ -684,36 +710,76 @@ function BuildInvitationModal({ order }) {
           {/* Gift Registry — Gold only */}
           {tier === "gold" && <p className="text-white/20 text-xs uppercase tracking-widest pt-1">🎁 Gift Registry</p>}
           {tier === "gold" && <>
+          {/* Registry subtitle */}
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Registry Subtitle (optional — leave blank for default)</label>
+            <input value={extraData.registrySubtitle} onChange={e => update("registrySubtitle", e.target.value)}
+              placeholder="Your presence is our greatest gift. If you wish to honor us further:"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+          {/* Wish Money */}
+          <p className="text-white/20 text-xs uppercase tracking-widest">💳 Wish Money</p>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-white/30 text-xs mb-1 block">Wish Money Account #</label>
+              <label className="text-white/30 text-xs mb-1 block">Account ID</label>
               <input value={extraData.registryWishMoneyAcc} onChange={e => update("registryWishMoneyAcc", e.target.value)}
-                placeholder="21055323"
+                placeholder="30187123-03"
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
             </div>
             <div>
-              <label className="text-white/30 text-xs mb-1 block">Wish Money Link (optional)</label>
-              <input value={extraData.registryLink1} onChange={e => update("registryLink1", e.target.value)}
-                placeholder="https://www.wishmoney.io/..."
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              <label className="text-white/30 text-xs mb-1 block">Phone Number</label>
+              <input value={extraData.registryWishMoneyPhone} onChange={e => update("registryWishMoneyPhone", e.target.value)}
+                placeholder="+32495757278"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
             </div>
           </div>
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Wish Money Link (optional)</label>
+            <input value={extraData.registryLink1} onChange={e => update("registryLink1", e.target.value)}
+              placeholder="https://www.wishmoney.io/..."
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+          {/* Gift store */}
           <div>
             <label className="text-white/30 text-xs mb-1 block">Gift Store Link (optional)</label>
             <input value={extraData.registryLink2} onChange={e => update("registryLink2", e.target.value)}
               placeholder="https://www.abc.com.lb/..."
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
+          {/* Bank Transfer */}
+          <p className="text-white/20 text-xs uppercase tracking-widest">🏦 Bank Transfer</p>
           <div>
-            <label className="text-white/30 text-xs mb-1 block">Bank Transfer IBAN</label>
-            <input value={extraData.registryIban} onChange={e => update("registryIban", e.target.value)}
-              placeholder="LB62 0099 0000 0001 0019 2000 9123"
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
+            <label className="text-white/30 text-xs mb-1 block">Beneficiary Name</label>
+            <input value={extraData.registryBeneficiary} onChange={e => update("registryBeneficiary", e.target.value)}
+              placeholder="Maya Rammal"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">IBAN</label>
+              <input value={extraData.registryIban} onChange={e => update("registryIban", e.target.value)}
+                placeholder="BE18650397645665"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">BIC / Swift Code</label>
+              <input value={extraData.registryBic} onChange={e => update("registryBic", e.target.value)}
+                placeholder="REVOBEB2"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
+            </div>
           </div>
           </>}
 
           {/* Wedding Timeline */}
           <p className="text-white/20 text-xs uppercase tracking-widest pt-1">🕐 Wedding Day Timeline</p>
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <input type="checkbox" checked={extraData.hideTimeline ?? false} onChange={e => update("hideTimeline", e.target.checked)}
+              className="w-4 h-4 rounded accent-[#c9a96e]" />
+            <div>
+              <p className="text-white/60 text-sm">🚫 Hide wedding timeline section</p>
+              <p className="text-white/25 text-xs mt-0.5">Remove the timeline from the invitation</p>
+            </div>
+          </label>
           {[["Ceremony", "tl0"], ["Welcome Drink", "tl1"], ["Party", "tl2"]].map(([label, key]) => (
             <div key={key} className="grid grid-cols-2 gap-2">
               <div>

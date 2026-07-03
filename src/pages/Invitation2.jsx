@@ -375,7 +375,9 @@ export default function Invitation({ override = null }) {
             {ar ? "الاحتفال" : "The Celebration"}
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
-            {WEDDING.venues.map((v, i) => (
+            {WEDDING.venues.map((v, i) => {
+              if (i === 0 && WEDDING.hideCeremony) return null
+              return (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.2 }} viewport={{ once: true }}
                 className="border border-[#4a7c59]/20 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition">
@@ -401,7 +403,8 @@ export default function Invitation({ override = null }) {
                   </a>}
                 </div>
               </motion.div>
-            ))}
+              )
+            })}
           </div>
         </motion.div>
       </section>
@@ -426,7 +429,7 @@ export default function Invitation({ override = null }) {
       </section>}
 
       {/* Timeline */}
-      <section className="py-24 px-6 max-w-lg mx-auto relative z-10">
+      {!WEDDING.hideTimeline && <section className="py-24 px-6 max-w-lg mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
           <p className="text-[#4a7c59] tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium">
             {ar ? "اليوم" : "The Day"}
@@ -455,7 +458,7 @@ export default function Invitation({ override = null }) {
             ))}
           </div>
         </motion.div>
-      </section>
+      </section>}
 
       {/* Photos 4-6 (Silver and Gold only) */}
       {tier !== "bronze" && <section className="py-10 px-6 max-w-5xl mx-auto relative z-10">
@@ -487,45 +490,58 @@ export default function Invitation({ override = null }) {
             {ar ? "قائمة الهدايا" : "Gift Registry"}
           </h2>
           <p className="text-[#4a7c59]/50 text-sm text-center mb-12">
-            {ar ? "حضوركم هو أغلى هدية. إن أردتم تكريمنا أكثر:" : "Your presence is our greatest gift. If you wish to honor us further:"}
+            {ar ? "حضوركم هو أغلى هدية. إن أردتم تكريمنا أكثر:" : (WEDDING.registrySubtitle || "Your presence is our greatest gift. If you wish to honor us further:")}
           </p>
           <div className="grid gap-4">
             {WEDDING.registry.map((item, i) => (
               <motion.div key={i}
                 initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
-                {item.link ? (
+                {item.name === "Wish Money" ? (
+                  <div className="p-5 rounded-2xl bg-white shadow-sm" style={{ border: "1px solid rgba(74,124,89,0.15)" }}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: "rgba(74,124,89,0.08)" }}>💳</div>
+                      <p className="font-medium text-[#2d3a2e]">Wish Money</p>
+                    </div>
+                    {item.acc && <div className="flex items-center justify-between py-2 border-t border-[#4a7c59]/10">
+                      <span className="text-[#4a7c59]/60 text-xs font-mono">Acc# {item.acc}</span>
+                      <button onClick={() => navigator.clipboard.writeText(item.acc)} className="text-xs rounded-full px-3 py-1" style={{ color: "#4a7c59", border: "1px solid rgba(74,124,89,0.3)" }}>{ar ? "نسخ" : "Copy"}</button>
+                    </div>}
+                    {item.phone && <div className="flex items-center justify-between py-2 border-t border-[#4a7c59]/10">
+                      <span className="text-[#4a7c59]/60 text-xs font-mono">{item.phone}</span>
+                      <button onClick={() => navigator.clipboard.writeText(item.phone)} className="text-xs rounded-full px-3 py-1" style={{ color: "#4a7c59", border: "1px solid rgba(74,124,89,0.3)" }}>{ar ? "نسخ" : "Copy"}</button>
+                    </div>}
+                    {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs px-3 py-1 rounded-full" style={{ color: "#4a7c59", border: "1px solid rgba(74,124,89,0.3)" }}>Visit →</a>}
+                  </div>
+                ) : item.name === "Bank Transfer" ? (
+                  <div className="p-5 rounded-2xl bg-white shadow-sm" style={{ border: "1px solid rgba(74,124,89,0.15)" }}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: "rgba(74,124,89,0.08)" }}>🏦</div>
+                      <div>
+                        <p className="font-medium text-[#2d3a2e]">{ar ? "تحويل بنكي" : "Bank Transfer"}</p>
+                        {item.beneficiary && <p className="text-[#4a7c59]/60 text-xs">{item.beneficiary}</p>}
+                      </div>
+                    </div>
+                    {(item.iban || item.desc) && <div className="flex items-center justify-between py-2 border-t border-[#4a7c59]/10">
+                      <span className="text-[#4a7c59]/60 text-xs font-mono">{item.iban || item.desc?.replace("iban: ", "")}</span>
+                      <button onClick={() => navigator.clipboard.writeText(item.iban || item.desc?.replace("iban: ", ""))} className="text-xs rounded-full px-3 py-1" style={{ color: "#4a7c59", border: "1px solid rgba(74,124,89,0.3)" }}>{ar ? "نسخ" : "Copy"}</button>
+                    </div>}
+                    {item.bic && <div className="py-2 border-t border-[#4a7c59]/10">
+                      <span className="text-[#4a7c59]/60 text-xs">BIC/Swift: <span className="font-mono">{item.bic}</span></span>
+                    </div>}
+                  </div>
+                ) : item.link ? (
                   <a href={item.link} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-5 p-5 rounded-2xl bg-white shadow-sm hover:shadow-md transition group"
                     style={{ border: "1px solid rgba(74,124,89,0.15)" }}>
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
-                      style={{ background: "rgba(74,124,89,0.08)" }}>
-                      {item.icon}
-                    </div>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: "rgba(74,124,89,0.08)" }}>{item.icon}</div>
                     <div className="flex-1 text-left">
                       <p className="font-medium text-[#2d3a2e]">{item.name}</p>
                       <p className="text-[#4a7c59]/50 text-sm">{ar ? item.descAr : item.desc}</p>
                     </div>
                     <span className="text-[#4a7c59] text-sm opacity-0 group-hover:opacity-100 transition">→</span>
                   </a>
-                ) : (
-                  <div className="flex items-center gap-5 p-5 rounded-2xl bg-white shadow-sm"
-                    style={{ border: "1px solid rgba(74,124,89,0.15)" }}>
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
-                      style={{ background: "rgba(74,124,89,0.08)" }}>
-                      {item.icon}
-                    </div>
-                    <div className="flex-1 text-left">
-                      <p className="font-medium text-[#2d3a2e]">{item.name}</p>
-                      <p className="text-[#4a7c59]/50 text-xs font-mono mt-0.5">{item.desc}</p>
-                    </div>
-                    <button onClick={() => navigator.clipboard.writeText(item.desc.replace("iban: ", ""))}
-                      className="text-xs rounded-full px-3 py-1 transition"
-                      style={{ color: "#4a7c59", border: "1px solid rgba(74,124,89,0.3)" }}>
-                      {ar ? "نسخ" : "Copy"}
-                    </button>
-                  </div>
-                )}
+                ) : null}
               </motion.div>
             ))}
           </div>

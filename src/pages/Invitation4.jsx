@@ -745,8 +745,9 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
 
             {/* Venues summary */}
             <div className="flex gap-3 justify-center mt-4">
-              {w.venues.map((v, i) => (
-                tier === "gold" ? (
+              {w.venues.map((v, i) => {
+                if (i === 0 && w.hideCeremony) return null
+                return tier === "gold" ? (
                   <a key={i}
                     href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
                     target="_blank" rel="noopener noreferrer"
@@ -760,7 +761,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                     📍 {ar ? v.placeAr : v.place} · {v.time}
                   </span>
                 )
-              ))}
+              })}
             </div>
           </div>
 
@@ -822,7 +823,20 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                       {ar ? "قائمة الهدايا" : "Gift Registry"}
                     </p>
                     {w.registry.map((item, i) => (
-                      item.link ? (
+                      item.name === "Wish Money" ? (
+                        <div key={i} className="px-4 py-3 rounded-xl space-y-2" style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
+                          <p className="text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>💳 Wish Money</p>
+                          {item.acc && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>Acc# {item.acc}</span><button onClick={() => navigator.clipboard.writeText(item.acc)} className="text-xs px-2 py-1 rounded-full" style={{ color: GOLD, border: `1px solid ${GOLD}40` }}>Copy</button></div>}
+                          {item.phone && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{item.phone}</span><button onClick={() => navigator.clipboard.writeText(item.phone)} className="text-xs px-2 py-1 rounded-full" style={{ color: GOLD, border: `1px solid ${GOLD}40` }}>Copy</button></div>}
+                          {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-xs px-2 py-1 rounded-full inline-block mt-1" style={{ color: GOLD, border: `1px solid ${GOLD}40` }}>Visit →</a>}
+                        </div>
+                      ) : item.name === "Bank Transfer" ? (
+                        <div key={i} className="px-4 py-3 rounded-xl space-y-2" style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
+                          <p className="text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>🏦 {ar ? "تحويل بنكي" : "Bank Transfer"}{item.beneficiary && <span className="text-xs ml-2" style={{ color: "rgba(255,255,255,0.4)" }}>{item.beneficiary}</span>}</p>
+                          {(item.iban || item.desc) && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{item.iban || item.desc?.replace("iban: ", "")}</span><button onClick={() => navigator.clipboard.writeText(item.iban || item.desc?.replace("iban: ", ""))} className="text-xs px-2 py-1 rounded-full" style={{ color: GOLD, border: `1px solid ${GOLD}40` }}>Copy</button></div>}
+                          {item.bic && <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>BIC/Swift: <span className="font-mono">{item.bic}</span></p>}
+                        </div>
+                      ) : item.link ? (
                         <a key={i} href={item.link} target="_blank" rel="noopener noreferrer"
                           className="flex items-center gap-3 px-4 py-3 rounded-xl transition"
                           style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
@@ -830,17 +844,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                           <span className="flex-1 text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>{item.name}</span>
                           <span style={{ color: GOLD, fontSize: 12 }}>→</span>
                         </a>
-                      ) : (
-                        <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                          style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
-                          <span>{item.icon}</span>
-                          <span className="flex-1 text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{item.desc}</span>
-                          <button onClick={() => navigator.clipboard.writeText(item.desc.replace("iban: ", ""))}
-                            className="text-xs px-2 py-1 rounded-full" style={{ color: GOLD, border: `1px solid ${GOLD}40` }}>
-                            Copy
-                          </button>
-                        </div>
-                      )
+                      ) : null
                     ))}
                   </div>
                 )}
