@@ -83,7 +83,7 @@ export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setL
         style={{ zIndex: 10 }}
         animate={started ? { opacity: 0 } : { opacity: [0.3, 1, 0.3] }}
         transition={started ? { duration: 0.25 } : { repeat: Infinity, duration: 2.5 }}>
-        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.72rem", letterSpacing: "0.38em", color: tapColor, textTransform: "uppercase" }}>
+        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.85rem", letterSpacing: "0.32em", color: tapColor, textTransform: "uppercase", fontWeight: 600 }}>
           {ar ? "انقر لفتح" : "Tap to Open"}
         </p>
         <div className="w-px h-7 mt-2" style={{ background: `linear-gradient(to bottom, ${GOLD}70, transparent)` }} />
