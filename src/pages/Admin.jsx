@@ -107,6 +107,7 @@ function BuildInvitationModal({ order }) {
     quote: "We love because he first loved us.",
     quoteAr: "نحن نحب لأنه هو أحبنا أولاً",
     quoteRef: "1 John 4:19",
+    hideQuoteRef: false,
     ceremonyPlaceAr: "",
     partyPlaceAr: "",
     ceremonyMapUrl: "",
@@ -174,7 +175,8 @@ function BuildInvitationModal({ order }) {
             parentsAr: (d.parentsAr || []).join("\n"),
             quote: d.quote || "We love because he first loved us.",
             quoteAr: d.quoteAr || "نحن نحب لأنه هو أحبنا أولاً",
-            quoteRef: d.quoteRef || "1 John 4:19",
+            quoteRef: d.quoteRef ?? "1 John 4:19",
+            hideQuoteRef: d.hideQuoteRef ?? false,
             ceremonyPlaceAr: d.venues?.[0]?.placeAr || "",
             partyPlaceAr: d.venues?.[1]?.placeAr || "",
             ceremonyMapUrl: d.venues?.[0]?.map || "",
@@ -267,6 +269,7 @@ function BuildInvitationModal({ order }) {
         quote: extraData.quote,
         quoteAr: extraData.quoteAr,
         quoteRef: extraData.quoteRef,
+        hideQuoteRef: extraData.hideQuoteRef ?? false,
         music: extraData.music,
         musicStart: extraData.musicStart ?? null,
         musicEnd: extraData.musicEnd ?? null,
@@ -340,6 +343,7 @@ function BuildInvitationModal({ order }) {
         quote: extraData.quote,
         quoteAr: extraData.quoteAr,
         quoteRef: extraData.quoteRef,
+        hideQuoteRef: extraData.hideQuoteRef ?? false,
         music: extraData.music,
         musicStart: extraData.musicStart ?? null,
         musicEnd: extraData.musicEnd ?? null,
@@ -579,7 +583,13 @@ function BuildInvitationModal({ order }) {
             <label className="text-white/30 text-xs mb-1 block">Quote Author / Reference</label>
             <input value={extraData.quoteRef} onChange={e => update("quoteRef", e.target.value)}
               placeholder="1 John 4:19"
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              disabled={extraData.hideQuoteRef}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e] disabled:opacity-30" />
+            <label className="flex items-center gap-2 cursor-pointer select-none mt-2">
+              <input type="checkbox" checked={extraData.hideQuoteRef ?? false} onChange={e => update("hideQuoteRef", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <span className="text-white/35 text-xs">Hide author / reference line (for non-religious quotes)</span>
+            </label>
           </div>
 
           {/* Music — Silver and Gold only */}

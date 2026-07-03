@@ -279,7 +279,7 @@ export default function Invitation({ override = null }) {
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
           {!WEDDING.hideEmojis && <div className="text-[#c9a96e] text-2xl mb-6">✦</div>}
           <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>"{ar ? WEDDING.quoteAr : WEDDING.quote}"</p>
-          <p className="text-[#c9a96e] text-sm mt-3 tracking-widest">— {WEDDING.quoteRef}</p>
+          {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-[#c9a96e] text-sm mt-3 tracking-widest">— {WEDDING.quoteRef}</p>}
           {!WEDDING.hideEmojis && <div className="text-[#c9a96e] text-2xl mt-8 mb-10">✦</div>}
 
           {/* Parents cards */}
