@@ -725,6 +725,20 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
         </button>
       </div>
 
+      {/* Additional Note */}
+      {(ar ? w.noteAr : w.noteEn) && (
+        <div className="text-center px-6 pt-6 pb-2">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="h-px w-12" style={{ background: `linear-gradient(to right, transparent, ${GOLD}40)` }} />
+            <div className="w-1.5 h-1.5 rounded-full" style={{ background: `${GOLD}60` }} />
+            <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${GOLD}40)` }} />
+          </div>
+          <p className="text-sm italic leading-relaxed" style={{ color: "rgba(255,255,255,0.45)", fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif", fontSize: ar ? "1.05rem" : "0.95rem" }}>
+            {ar ? w.noteAr : w.noteEn}
+          </p>
+        </div>
+      )}
+
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-10">
         <div className="w-full max-w-sm">

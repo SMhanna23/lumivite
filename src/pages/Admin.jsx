@@ -136,6 +136,8 @@ function BuildInvitationModal({ order }) {
     dressCode: "",
     transport: "",
     accommodation: "",
+    noteEn: "",
+    noteAr: "",
     memoriesEnabled: false,
     hideEmojis: false,
     envelopeColor: "black",
@@ -205,6 +207,8 @@ function BuildInvitationModal({ order }) {
             dressCode: d.dressCode || "",
             transport: d.transport || "",
             accommodation: d.accommodation || "",
+            noteEn: d.noteEn || "",
+            noteAr: d.noteAr || "",
             memoriesEnabled: d.memoriesEnabled ?? false,
             hideEmojis: d.hideEmojis ?? false,
             envelopeColor: d.envelopeColor || "black",
@@ -297,6 +301,8 @@ function BuildInvitationModal({ order }) {
         dressCode: extraData.dressCode || "",
         transport: extraData.transport || "",
         accommodation: extraData.accommodation || "",
+        noteEn: extraData.noteEn || "",
+        noteAr: extraData.noteAr || "",
         memoriesEnabled: extraData.memoriesEnabled ?? false,
         hideEmojis: extraData.hideEmojis ?? false,
         envelopeColor: extraData.envelopeColor || "black",
@@ -371,6 +377,8 @@ function BuildInvitationModal({ order }) {
         dressCode: extraData.dressCode || "",
         transport: extraData.transport || "",
         accommodation: extraData.accommodation || "",
+        noteEn: extraData.noteEn || "",
+        noteAr: extraData.noteAr || "",
         memoriesEnabled: extraData.memoriesEnabled ?? false,
         hideEmojis: extraData.hideEmojis ?? false,
         envelopeColor: extraData.envelopeColor || "black",
@@ -822,6 +830,25 @@ function BuildInvitationModal({ order }) {
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
             </div>
           </>)}
+
+          {/* Additional Note */}
+          <p className="text-white/20 text-xs uppercase tracking-widest pt-1">📝 Additional Note (optional)</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Note (English)</label>
+              <textarea value={extraData.noteEn} onChange={e => update("noteEn", e.target.value)}
+                placeholder="e.g. Although we adore your little ones, we have chosen to make our wedding an adults-only celebration."
+                rows={3}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e] resize-none" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Note (Arabic)</label>
+              <textarea value={extraData.noteAr} onChange={e => update("noteAr", e.target.value)}
+                placeholder="نوما هنيئاً لأطفالكم"
+                rows={3} dir="rtl"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e] resize-none" />
+            </div>
+          </div>
 
           {/* Memories feature toggle — Gold only */}
           {tier === "gold" && <div className="border border-white/8 rounded-xl p-4" style={{ background: "rgba(196,163,90,0.03)" }}>

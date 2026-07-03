@@ -471,6 +471,20 @@ export default function Invitation({ override = null }) {
   </motion.div>
 </section>}
 
+      {/* Additional Note */}
+      {(ar ? WEDDING.noteAr : WEDDING.noteEn) && (
+        <section className="py-10 px-6 max-w-lg mx-auto text-center relative z-10">
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#c9a96e]/40" />
+            <div className="w-1.5 h-1.5 rounded-full bg-[#c9a96e]/40" />
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#c9a96e]/40" />
+          </div>
+          <p className="text-white/50 text-sm italic leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif", fontSize: ar ? "1.1rem" : "1rem" }}>
+            {ar ? WEDDING.noteAr : WEDDING.noteEn}
+          </p>
+        </section>
+      )}
+
       {/* RSVP */}
       <section className="py-24 px-6 max-w-md mx-auto text-center relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
