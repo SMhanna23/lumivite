@@ -340,7 +340,10 @@ export default function Invitation({ override = null }) {
         <section className="py-16 px-6 max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
           <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">{ar ? "انضموا إلينا" : "Join Us"}</p>
-          <h2 className="font-serif text-4xl font-light text-center mb-12">{ar ? "الاحتفال" : "The Celebration"}</h2>
+          <h2 className="font-light text-center mb-12 text-white"
+            style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem" }}>
+            {ar ? "الاحتفال" : "The Celebration"}
+          </h2>
           <div className="grid md:grid-cols-2 gap-6">
             {WEDDING.venues.map((v, i) => {
               if (i === 0 && WEDDING.hideCeremony) return null
@@ -445,7 +448,10 @@ export default function Invitation({ override = null }) {
       {tier === "gold" && WEDDING.registry?.length > 0 && <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
   <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
     <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">{ar ? "بكل محبة" : "With Love"}</p>
-    <h2 className="font-serif text-4xl font-light text-center mb-4">{ar ? "قائمة الهدايا" : "Gift Registry"}</h2>
+    <h2 className="font-light text-center mb-4 text-white"
+      style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem" }}>
+      {ar ? "قائمة الهدايا" : "Gift Registry"}
+    </h2>
     <p className="text-white/40 text-sm text-center mb-12">{ar ? "حضوركم هو أغلى هدية. إن أردتم تكريمنا أكثر:" : (WEDDING.registrySubtitle || "Your presence is our greatest gift. If you wish to honor us further:")}</p>
     <div className="grid gap-4">
       {WEDDING.registry.map((item, i) => (
@@ -487,7 +493,7 @@ export default function Invitation({ override = null }) {
             <div className="w-1.5 h-1.5 rounded-full bg-[#c9a96e]/40" />
             <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#c9a96e]/40" />
           </div>
-          <p className="text-white/50 text-sm italic leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif", fontSize: ar ? "1.1rem" : "1rem" }}>
+          <p className="text-white/85 font-medium leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif", fontSize: ar ? "1.2rem" : "1.1rem", fontStyle: "italic" }}>
             {ar ? WEDDING.noteAr : WEDDING.noteEn}
           </p>
         </section>

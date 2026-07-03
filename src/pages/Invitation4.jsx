@@ -132,7 +132,7 @@ function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang, envelopeCo
         style={{ zIndex: 10 }}
         animate={started ? { opacity: 0 } : { opacity: [0.3, 1, 0.3] }}
         transition={started ? { duration: 0.25 } : { repeat: Infinity, duration: 2.5 }}>
-        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.56rem", letterSpacing: "0.48em", color: tapColor, textTransform: "uppercase" }}>
+        <p style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.72rem", letterSpacing: "0.38em", color: tapColor, textTransform: "uppercase" }}>
           {ar ? "انقر لفتح" : "Tap to Open"}
         </p>
         <div className="w-px h-7 mt-2" style={{ background: `linear-gradient(to bottom, ${GOLD}70, transparent)` }} />
@@ -735,7 +735,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
             <div className="w-1.5 h-1.5 rounded-full" style={{ background: `${GOLD}60` }} />
             <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${GOLD}40)` }} />
           </div>
-          <p className="text-sm italic leading-relaxed" style={{ color: "rgba(255,255,255,0.45)", fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif", fontSize: ar ? "1.05rem" : "0.95rem" }}>
+          <p className="font-medium leading-relaxed" style={{ color: "rgba(255,255,255,0.85)", fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif", fontSize: ar ? "1.2rem" : "1.1rem", fontStyle: "italic" }}>
             {ar ? w.noteAr : w.noteEn}
           </p>
         </div>
@@ -837,7 +837,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                 {/* Registry — Gold only */}
                 {tier === "gold" && w.registry?.length > 0 && (
                   <div className="pt-4 space-y-2">
-                    <p className="text-xs tracking-[0.35em] uppercase text-center mb-3" style={{ color: "rgba(255,255,255,0.2)", fontFamily: "'Jost', sans-serif" }}>
+                    <p className="text-center mb-3" style={{ color: "rgba(255,255,255,0.6)", fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "1.2rem" : "1.8rem" }}>
                       {ar ? "قائمة الهدايا" : "Gift Registry"}
                     </p>
                     {w.registry.map((item, i) => (

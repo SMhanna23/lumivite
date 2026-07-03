@@ -381,7 +381,8 @@ export default function Invitation({ override = null }) {
           <p className="tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>
             {ar ? "انضموا إلينا" : "Join Us"}
           </p>
-          <h2 className="text-4xl font-light text-center mb-12" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <h2 className="font-light text-center mb-12"
+            style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem", color: dark }}>
             {ar ? "الاحتفال" : "The Celebration"}
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
@@ -496,7 +497,8 @@ export default function Invitation({ override = null }) {
           <p className="tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>
             {ar ? "بكل محبة" : "With Love"}
           </p>
-          <h2 className="text-4xl font-light text-center mb-4" style={{ fontFamily: "'Cormorant Garamond', serif", color: dark }}>
+          <h2 className="font-light text-center mb-4"
+            style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem", color: dark }}>
             {ar ? "قائمة الهدايا" : "Gift Registry"}
           </h2>
           <p className="text-sm text-center mb-12 opacity-40">
@@ -539,7 +541,7 @@ export default function Invitation({ override = null }) {
             <div className="w-1.5 h-1.5 rounded-full" style={{ background: `${roseGold}60` }} />
             <div className="h-px w-16" style={{ background: `linear-gradient(to left, transparent, ${roseGold}40)` }} />
           </div>
-          <p className="text-sm italic leading-relaxed opacity-50" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif", fontSize: ar ? "1.1rem" : "1rem", color: dark }}>
+          <p className="font-medium leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif", fontSize: ar ? "1.2rem" : "1.1rem", fontStyle: "italic", color: dark, opacity: 0.8 }}>
             {ar ? WEDDING.noteAr : WEDDING.noteEn}
           </p>
         </section>
