@@ -359,16 +359,9 @@ function BuildInvitationModal({ order }) {
           { label: "Wedding Party", labelAr: "حفل الزفاف", time: order.partyTime, place: order.partyPlace, placeAr: extraData.partyPlaceAr || order.partyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.partyMapUrl || null },
         ],
         registry: [
-          ...(extraData.registryLink1 || extraData.registryWishMoneyAcc ? [{
-            name: "Wish Money", icon: "💳",
-            desc: extraData.registryWishMoneyAcc ? `Acc# ${extraData.registryWishMoneyAcc}` : "Contribute to our honeymoon fund",
-            descAr: extraData.registryWishMoneyAcc ? `Acc# ${extraData.registryWishMoneyAcc}` : "ساهم في صندوق شهر العسل",
-            link: extraData.registryLink1 || null,
-            acc: extraData.registryWishMoneyAcc || null,
-            color: "#c9a96e",
-          }] : []),
+          ...(extraData.registryWishMoneyAcc || extraData.registryWishMoneyPhone || extraData.registryLink1 ? [{ name: "Wish Money", icon: "💳", acc: extraData.registryWishMoneyAcc || null, phone: extraData.registryWishMoneyPhone || null, link: extraData.registryLink1 || null, color: "#c9a96e" }] : []),
           ...(extraData.registryLink2 ? [{ name: "Gift Registry", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: extraData.registryLink2, color: "#c9a96e" }] : []),
-          ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", desc: `iban: ${extraData.registryIban}`, descAr: `iban: ${extraData.registryIban}`, link: null, color: "#c9a96e" }] : []),
+          ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", beneficiary: extraData.registryBeneficiary || null, iban: extraData.registryIban, bic: extraData.registryBic || null, link: null, color: "#c9a96e" }] : []),
         ],
         timeline: [
           { time: extraData.tl0, label: "Ceremony",      labelAr: "مراسم الزواج",   icon: "💒", location: extraData.tl0loc, desc: extraData.tl0loc || "Join us as we say our vows" },
