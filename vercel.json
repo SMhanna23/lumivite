@@ -7,6 +7,18 @@
       "destination": "/index.html"
     },
     { "source": "/i/:slug", "destination": "/api/preview?slug=:slug" },
+    {
+      "source": "/dashboard/:slug",
+      "has": [{ "type": "query", "key": "_app", "value": "1" }],
+      "destination": "/index.html"
+    },
+    { "source": "/dashboard/:slug", "destination": "/api/dashboard-preview?slug=:slug" },
+    {
+      "source": "/memories/:slug",
+      "has": [{ "type": "query", "key": "_app", "value": "1" }],
+      "destination": "/index.html"
+    },
+    { "source": "/memories/:slug", "destination": "/api/memories-preview?slug=:slug" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
