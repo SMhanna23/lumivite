@@ -500,7 +500,7 @@ export default function Invitation({ override = null }) {
             {ar ? "قائمة الهدايا" : "Gift Registry"}
           </h2>
           <p className="text-[#4a7c59]/50 text-sm text-center mb-12">
-            {ar ? "حضوركم هو أغلى هدية. إن أردتم تكريمنا أكثر:" : (WEDDING.registrySubtitle || "Your presence is our greatest gift. If you wish to honor us further:")}
+            {ar ? "وجودكم معنا هو أجمل هدية! لمن يرغب تتوفر قائمة الهدايا عبر حساب Wish Money :" : (WEDDING.registrySubtitle || "Your presence is our greatest gift. If you wish to honor us further:")}
           </p>
           <div className="grid gap-4">
             {WEDDING.registry.map((item, i) => (
