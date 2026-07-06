@@ -581,10 +581,9 @@ export default function Invitation({ override = null }) {
                   style={{ background: "white", border: `1px solid ${roseGold}30`, color: dark,
                     boxShadow: "0 1px 4px rgba(183,110,121,0.08)" }} />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
-                  disabled={tier !== "bronze" && !!searchParams.get("np")}
-                  className="w-full rounded-xl px-5 py-4 focus:outline-none transition disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full rounded-xl px-5 py-4 focus:outline-none transition"
                   style={{ background: "white", border: `1px solid ${roseGold}30`, color: dark }}>
-                  {[1,2,3,4,5].map(n => <option key={n} value={n}>{n} {n === 1 ? "person" : "persons"}</option>)}
+                  {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n} {n === 1 ? "person" : "persons"}</option>)}
                 </select>
                 <div className="flex gap-3">
                   <button onClick={() => setAttending(true)}

@@ -802,10 +802,9 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                   className="w-full rounded-xl px-5 py-4 text-white placeholder-white/20 focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }} />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
-                  disabled={tier !== "bronze" && !!searchParams.get("np")}
-                  className="w-full rounded-xl px-5 py-4 text-white focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full rounded-xl px-5 py-4 text-white focus:outline-none"
                   style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }}>
-                  {[1,2,3,4,5].map(n => <option key={n} value={n} style={{ background: "#1a1510" }}>{n} {n === 1 ? "person" : "persons"}</option>)}
+                  {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n} style={{ background: "#1a1510" }}>{n} {n === 1 ? "person" : "persons"}</option>)}
                 </select>
                 <div className="flex gap-3">
                   {[

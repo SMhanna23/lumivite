@@ -603,9 +603,8 @@ export default function Invitation({ override = null }) {
                   disabled={tier !== "bronze" && !!searchParams.get("gn")}
                   className="w-full bg-white border border-[#4a7c59]/20 rounded-lg px-5 py-4 text-[#2d3a2e] placeholder-[#4a7c59]/30 focus:outline-none focus:border-[#4a7c59] transition shadow-sm disabled:opacity-60 disabled:cursor-not-allowed" />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
-                  disabled={tier !== "bronze" && !!searchParams.get("np")}
-                  className="w-full bg-white border border-[#4a7c59]/20 rounded-lg px-5 py-4 text-[#2d3a2e] focus:outline-none focus:border-[#4a7c59] transition shadow-sm disabled:opacity-60 disabled:cursor-not-allowed">
-                  {[1,2,3,4,5].map(n => <option key={n} value={n}>{n} {n === 1 ? "person" : "persons"}</option>)}
+                  className="w-full bg-white border border-[#4a7c59]/20 rounded-lg px-5 py-4 text-[#2d3a2e] focus:outline-none focus:border-[#4a7c59] transition shadow-sm">
+                  {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n} {n === 1 ? "person" : "persons"}</option>)}
                 </select>
                 <div className="flex gap-3">
                   <button onClick={() => setAttending(true)}
