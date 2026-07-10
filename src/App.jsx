@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard"
 import Memories from "./pages/Memories"
 import MyOrder from "./pages/MyOrder"
 import NotFound from "./pages/NotFound"
+import PixelPageView from "./components/PixelPageView"
 
 function ProtectedRoute({ user, children }) {
   if (user === null) return <Navigate to="/admin/login" />
@@ -31,6 +32,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <PixelPageView />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/demo" element={<Invitation />} />
