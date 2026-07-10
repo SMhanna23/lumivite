@@ -7,9 +7,9 @@ import emailjs from "@emailjs/browser"
 import Logo from "../components/Logo"
 
 const packages = [
-  { id: "bronze", name: "Bronze", nameAr: "برونز", price: "$89", color: "#cd7f32", features: ["1 template", "RSVP dashboard", "Countdown timer", "1 shared link"], featuresAr: ["قالب واحد", "لوحة RSVP", "عداد تنازلي", "رابط مشترك واحد"] },
-  { id: "silver", name: "Silver", nameAr: "فضي", price: "$139", color: "#c9a96e", features: ["Personalized guest links", "Background music", "Photo gallery", "Excel import"], featuresAr: ["روابط مخصصة للضيوف", "موسيقى خلفية", "معرض صور", "استيراد Excel"], popular: true },
-  { id: "gold", name: "Gold", nameAr: "ذهبي", price: "$199", color: "#ffd700", features: ["All 4 template choices", "Google Maps embed", "Guest Memory Wall", "Priority support"], featuresAr: ["4 خيارات قوالب", "خريطة Google", "جدار ذكريات الضيوف", "دعم أولوية"] },
+  { id: "bronze", name: "Bronze", nameAr: "برونز", price: "$89", priceValue: 89, color: "#cd7f32", features: ["1 template", "RSVP dashboard", "Countdown timer", "1 shared link"], featuresAr: ["قالب واحد", "لوحة RSVP", "عداد تنازلي", "رابط مشترك واحد"] },
+  { id: "silver", name: "Silver", nameAr: "فضي", price: "$139", priceValue: 139, color: "#c9a96e", features: ["Personalized guest links", "Background music", "Photo gallery", "Excel import"], featuresAr: ["روابط مخصصة للضيوف", "موسيقى خلفية", "معرض صور", "استيراد Excel"], popular: true },
+  { id: "gold", name: "Gold", nameAr: "ذهبي", price: "$199", priceValue: 199, color: "#ffd700", features: ["All 4 template choices", "Google Maps embed", "Guest Memory Wall", "Priority support"], featuresAr: ["4 خيارات قوالب", "خريطة Google", "جدار ذكريات الضيوف", "دعم أولوية"] },
 ]
 
 const templates = [
@@ -175,6 +175,10 @@ export default function Order() {
     if (form.package === "bronze") update("template", "dark")
   }, [form.package])
 
+  useEffect(() => {
+    if (typeof window.fbq === "function") window.fbq("track", "InitiateCheckout")
+  }, [])
+
   const handleSubmit = async () => {
     setStatus("loading")
     try {
@@ -183,6 +187,13 @@ export default function Order() {
         status: "pending_payment",
         createdAt: serverTimestamp()
       })
+      if (typeof window.fbq === "function") {
+        window.fbq("track", "Lead", {
+          value: packages.find(p => p.id === form.package)?.priceValue,
+          currency: "USD",
+          content_name: form.package,
+        })
+      }
       const msg = `🎉 New Order on Lumivite!\n📦 ${form.package.toUpperCase()} Package — ${packages.find(p => p.id === form.package)?.price}\n🎨 ${form.template} Template\n💒 ${form.groomName} & ${form.brideName}\n📅 ${form.weddingDate}\n👤 Client: ${form.yourName}\n📞 ${form.yourPhone}\n⚠️ Awaiting payment confirmation!`
       fetch(`https://api.callmebot.com/whatsapp.php?phone=${import.meta.env.VITE_CALLMEBOT_PHONE}&text=${encodeURIComponent(msg)}&apikey=${import.meta.env.VITE_CALLMEBOT_APIKEY}`, { mode: "no-cors" }).catch(() => {})
       if (form.yourEmail) {
