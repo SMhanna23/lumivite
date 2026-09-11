@@ -44,10 +44,15 @@ async function loadGoogleFont(family, weight, text) {
   throw new Error("font load failed")
 }
 
+// Plain element builder — avoids relying on a JSX transform for this API route.
+function h(type, props, ...children) {
+  return { type, props: { ...props, children: children.flat() } }
+}
+
 export default async function handler(req) {
   const { searchParams } = new URL(req.url)
   const variant = searchParams.get("v")
-  const theme = THEMES[variant] || THEMES[1]
+  const theme = THEMES[variant] || THEMES["1"]
 
   const titleText = theme.name
   const subtitleText = `${theme.subtitle} · LUMIVITE`
@@ -64,84 +69,89 @@ export default async function handler(req) {
     ]
   } catch (_) {}
 
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "1200px",
-          height: "630px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          background: theme.bg,
-          position: "relative",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: 40,
-            left: 40,
-            right: 40,
-            bottom: 40,
-            border: `1px solid ${theme.accent}66`,
-            display: "flex",
-          }}
-        />
-        <div
-          style={{
-            fontSize: 20,
-            letterSpacing: 8,
-            color: theme.accent,
-            fontFamily: "Jost",
-            textTransform: "uppercase",
-            marginBottom: 28,
-            display: "flex",
-          }}
-        >
-          LUMIVITE
-        </div>
-        <div
-          style={{
-            fontSize: 96,
-            color: theme.text,
-            fontFamily: "Playfair Display",
-            fontWeight: 600,
-            textAlign: "center",
-            display: "flex",
-            padding: "0 60px",
-          }}
-        >
-          {titleText}
-        </div>
-        <div
-          style={{
-            width: 90,
-            height: 2,
-            background: theme.accent,
-            margin: "32px 0",
-            display: "flex",
-          }}
-        />
-        <div
-          style={{
-            fontSize: 24,
-            color: theme.accent,
-            fontFamily: "Jost",
-            letterSpacing: 3,
-            textTransform: "uppercase",
-            display: "flex",
-          }}
-        >
-          {theme.subtitle}
-        </div>
-      </div>
-    ),
+  const tree = h(
+    "div",
     {
-      width: 1200,
-      height: 630,
-      fonts,
-    }
+      style: {
+        width: "1200px",
+        height: "630px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        background: theme.bg,
+        position: "relative",
+      },
+    },
+    h("div", {
+      style: {
+        position: "absolute",
+        top: 40,
+        left: 40,
+        right: 40,
+        bottom: 40,
+        border: `1px solid ${theme.accent}66`,
+        display: "flex",
+      },
+    }),
+    h(
+      "div",
+      {
+        style: {
+          fontSize: 20,
+          letterSpacing: 8,
+          color: theme.accent,
+          fontFamily: "Jost",
+          textTransform: "uppercase",
+          marginBottom: 28,
+          display: "flex",
+        },
+      },
+      "LUMIVITE"
+    ),
+    h(
+      "div",
+      {
+        style: {
+          fontSize: 96,
+          color: theme.text,
+          fontFamily: "Playfair Display",
+          fontWeight: 600,
+          textAlign: "center",
+          display: "flex",
+          padding: "0 60px",
+        },
+      },
+      titleText
+    ),
+    h("div", {
+      style: {
+        width: 90,
+        height: 2,
+        background: theme.accent,
+        margin: "32px 0",
+        display: "flex",
+      },
+    }),
+    h(
+      "div",
+      {
+        style: {
+          fontSize: 24,
+          color: theme.accent,
+          fontFamily: "Jost",
+          letterSpacing: 3,
+          textTransform: "uppercase",
+          display: "flex",
+        },
+      },
+      theme.subtitle
+    )
   )
+
+  return new ImageResponse(tree, {
+    width: 1200,
+    height: 630,
+    fonts,
+  })
 }
