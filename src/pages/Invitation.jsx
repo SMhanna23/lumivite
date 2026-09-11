@@ -162,6 +162,16 @@ export default function Invitation({ override = null }) {
     }
   }
 
+  // Clean up ?_app=1 that demo-preview.js adds for routing bypass, preserving other params (gn, np)
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    if (url.searchParams.has("_app")) {
+      url.searchParams.delete("_app")
+      const query = url.searchParams.toString()
+      window.history.replaceState(null, "", url.pathname + (query ? `?${query}` : "") + url.hash)
+    }
+  }, [])
+
   // Loop audio within start/end segment
   useEffect(() => {
     const audio = audioRef.current

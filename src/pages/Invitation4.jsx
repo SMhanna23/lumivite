@@ -911,6 +911,16 @@ export default function Invitation4({ override = null }) {
   const [searchParams] = useSearchParams()
   const guestName = tier !== "bronze" ? (searchParams.get("gn") || "") : ""
 
+  // Clean up ?_app=1 that demo-preview.js adds for routing bypass, preserving other params (gn, np)
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    if (url.searchParams.has("_app")) {
+      url.searchParams.delete("_app")
+      const query = url.searchParams.toString()
+      window.history.replaceState(null, "", url.pathname + (query ? `?${query}` : "") + url.hash)
+    }
+  }, [])
+
   const photos = W.photos?.length ? W.photos : [
     "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800",
     "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200",
