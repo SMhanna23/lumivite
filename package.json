@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "baseline-browser-mapping": "^2.11.22",
+    "caniuse-lite": "^1.0.30001810",
     "firebase": "^12.10.0",
     "firebase-admin": "^13.10.0",
     "framer-motion": "^12.35.0",

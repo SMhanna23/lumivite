@@ -10,7 +10,7 @@ const DEFAULT_WEDDING = {
   bride: "Joelle",
   groomAr: "كريستوفر",
   brideAr: "جويل",
-  date: "2026-09-20T18:00:00",
+  date: "2027-09-20T18:00:00",
   venues: [
     { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: "6:00 PM", place: "Saint Georges Church", placeAr: "كنيسة مار جرجس", location: "Feytroun, Lebanon", locationAr: "فيترون، لبنان", map: "https://maps.google.com/?q=Saint+Georges+Church+Feytroun+Lebanon" },
     { label: "Wedding Party", labelAr: "حفل الزفاف", time: "8:30 PM", place: "Bois de Roses", placeAr: "بوا دو روز", location: "Feytroun, Lebanon", locationAr: "فيترون، لبنان", map: "https://maps.google.com/?q=Bois+de+Roses+Feytroun+Lebanon" },

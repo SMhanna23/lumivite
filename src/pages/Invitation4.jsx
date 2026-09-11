@@ -10,7 +10,7 @@ const DARK = "#0c0b09"
 const DEFAULT_WEDDING = {
   groom: "Christopher", bride: "Joelle",
   groomAr: "كريستوفر", brideAr: "جويل",
-  date: "2026-09-20T18:00:00",
+  date: "2027-09-20T18:00:00",
   venues: [
     { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: "6:00 PM", place: "Saint Georges Church", placeAr: "كنيسة مار جرجس", location: "Feytroun, Lebanon", locationAr: "فيترون، لبنان", map: "" },
     { label: "Wedding Party",    labelAr: "حفل الزفاف",   time: "8:30 PM", place: "Bois de Roses",        placeAr: "بوا دو روز",        location: "Feytroun, Lebanon", locationAr: "فيترون، لبنان", map: "" },
