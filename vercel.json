@@ -19,6 +19,30 @@
       "destination": "/index.html"
     },
     { "source": "/memories/:slug", "destination": "/api/memories-preview?slug=:slug" },
+    {
+      "source": "/demo",
+      "has": [{ "type": "query", "key": "_app", "value": "1" }],
+      "destination": "/index.html"
+    },
+    { "source": "/demo", "destination": "/api/demo-preview?v=1" },
+    {
+      "source": "/demo2",
+      "has": [{ "type": "query", "key": "_app", "value": "1" }],
+      "destination": "/index.html"
+    },
+    { "source": "/demo2", "destination": "/api/demo-preview?v=2" },
+    {
+      "source": "/demo3",
+      "has": [{ "type": "query", "key": "_app", "value": "1" }],
+      "destination": "/index.html"
+    },
+    { "source": "/demo3", "destination": "/api/demo-preview?v=3" },
+    {
+      "source": "/demo4",
+      "has": [{ "type": "query", "key": "_app", "value": "1" }],
+      "destination": "/index.html"
+    },
+    { "source": "/demo4", "destination": "/api/demo-preview?v=4" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
