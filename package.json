@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
-    "@vercel/og": "^1.0.2",
     "baseline-browser-mapping": "^2.11.22",
     "caniuse-lite": "^1.0.30001810",
     "firebase": "^12.10.0",
