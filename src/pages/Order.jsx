@@ -21,7 +21,7 @@ const templates = [
 
 const T = {
   en: {
-    steps: ["Package", "Template", "Details", "Contact", "Payment"],
+    steps: ["Package", "Template", "Details", "Personalize", "Contact", "Payment"],
     subtitle: "Order Your Invitation",
     mostPopular: "MOST POPULAR",
     choosePackage: "Choose Your Package",
@@ -35,13 +35,20 @@ const T = {
     brideName: "Bride's Name",
     groomPh: "Christopher",
     bridePh: "Joelle",
+    groomNameAr: "Groom's Name (Arabic, optional)",
+    brideNameAr: "Bride's Name (Arabic, optional)",
+    groomArPh: "كريستوفر",
+    brideArPh: "جويل",
     parents: "Parents Names (optional)",
     parentsPh: "Fadi & Dania Abboud\nNicolas & Marleine Hanna",
     parentsHint: "One per line: Groom's parents first, then Bride's",
+    parentsAr: "Parents Names — Arabic (optional)",
+    parentsArPh: "فادي ودانيا عبود\nنيكولا ومرلين حنا",
     weddingDate: "Wedding Date",
     ceremonyVenue: "Ceremony Venue",
     partyVenue: "Party Venue",
     placeName: "Place Name",
+    placeNameAr: "Place Name (Arabic, optional)",
     time: "Time",
     ceremonyPh: "Saint Georges Church",
     ceremonyTimePh: "6:00 PM",
@@ -52,6 +59,15 @@ const T = {
     guestCount: "Guest Count",
     music: "Preferred Music (optional)",
     musicPh: "Song name or YouTube link",
+    musicClip: "Music Clip (optional)",
+    musicClipSub: "Start & end in seconds — plays only that segment of the song",
+    startSec: "Start (seconds)",
+    endSec: "End (seconds)",
+    heroLocation: "Hero Location Text (optional)",
+    heroLocationSub: "Shown at the top of your invitation",
+    heroLocationPh: "Saint Georges Church, Feytroun, Lebanon",
+    heroLocationAr: "Hero Location Text — Arabic (optional)",
+    heroLocationArPh: "كنيسة مار جرجس، فيترون، لبنان",
     contactInfo: "Your Contact Info",
     contactSub: "We'll reach you on WhatsApp within 24 hours",
     yourName: "Your Full Name",
@@ -85,9 +101,65 @@ const T = {
     placing: "Placing Order...",
     noCharge: "We'll reach you on WhatsApp to arrange payment. No upfront charge.",
     whatsappLabel: "WhatsApp",
+    personalizeTitle: "Personalize Your Invitation",
+    personalizeSub: "All optional — skip anything you're not sure about, we'll follow up",
+    subheading: "Sub-heading Message (optional)",
+    subheadingSub: "The line under your names, e.g. \"Together with their families\"",
+    subheadingPh: "Together with their families",
+    subheadingAr: "Sub-heading Message — Arabic (optional)",
+    subheadingArPh: "معاً مع عائلتيهما",
+    quoteLabel: "A Quote or Verse (optional)",
+    quotePh: "We love because he first loved us.",
+    quoteArLabel: "Quote — Arabic (optional)",
+    quoteArPh: "نحن نحب لأنه هو أحبنا أولاً",
+    quoteRefLabel: "Quote Author / Reference (optional)",
+    quoteRefPh: "1 John 4:19",
+    rsvpDeadline: "RSVP Deadline (optional)",
+    timeline: "Wedding Day Timeline (optional)",
+    timelineSub: "Times & locations for each part of the day",
+    ceremonyLabel: "Ceremony",
+    welcomeLabel: "Welcome Drink",
+    partyLabel: "Party",
+    locationPh: "Venue name",
+    videoSection: "Pre-Wedding Video (optional)",
+    videoSectionSub: "For the Cinematic Sand & Seal template — YouTube, Vimeo, or a direct video link",
+    videoUrl: "Video URL",
+    videoUrlPh: "https://youtu.be/... or https://vimeo.com/...",
+    videoClip: "Video Clip (optional)",
+    videoClipSub: "Start & end in seconds — plays only that segment",
+    detailsSlide: "Additional Details (optional)",
+    dressCode: "Dress Code",
+    dressCodePh: "Black Tie",
+    transport: "Transportation",
+    transportPh: "Shuttle from Jounieh at 6:00 PM",
+    accommodation: "Accommodation",
+    accommodationPh: "Kempinski Hotel — special rates",
+    giftRegistry: "Gift Registry (optional)",
+    registrySub: "Gold package only — shown to guests who'd like to send a gift",
+    registrySubtitleLabel: "Registry Subtitle",
+    registrySubtitlePh: "Your presence is our greatest gift. If you wish to honor us further:",
+    wishMoney: "Wish Money",
+    wishMoneyAcc: "Account ID",
+    wishMoneyAccPh: "30187123-03",
+    wishMoneyPhone: "Phone Number",
+    wishMoneyPhonePh: "+32495757278",
+    wishMoneyLink: "Wish Money Link (optional)",
+    giftStoreLink: "Gift Store Link (optional)",
+    bankTransfer: "Bank Transfer",
+    beneficiary: "Beneficiary Name",
+    beneficiaryPh: "Maya Rammal",
+    iban: "IBAN",
+    ibanPh: "BE18650397645665",
+    bic: "BIC / Swift Code",
+    bicPh: "REVOBEB2",
+    additionalNote: "Additional Note (optional)",
+    additionalNoteSub: "Shown on your invitation, e.g. an adults-only notice",
+    noteEnPh: "e.g. Although we adore your little ones, we have chosen to make our wedding an adults-only celebration.",
+    noteArLabel: "Additional Note — Arabic (optional)",
+    noteArPh: "نوما هنيئاً لأطفالكم",
   },
   ar: {
-    steps: ["الباقة", "القالب", "التفاصيل", "التواصل", "الدفع"],
+    steps: ["الباقة", "القالب", "التفاصيل", "التخصيص", "التواصل", "الدفع"],
     subtitle: "اطلب دعوتك",
     mostPopular: "الأكثر طلباً",
     choosePackage: "اختر باقتك",
@@ -101,13 +173,20 @@ const T = {
     brideName: "اسم العروس",
     groomPh: "كريستوفر",
     bridePh: "جويل",
+    groomNameAr: "اسم العريس بالعربية (اختياري)",
+    brideNameAr: "اسم العروس بالعربية (اختياري)",
+    groomArPh: "كريستوفر",
+    brideArPh: "جويل",
     parents: "أسماء الأهل (اختياري)",
     parentsPh: "فادي وداني عبود\nنيكولاس ومارلين حنا",
     parentsHint: "سطر لكل عائلة: أهل العريس أولاً ثم أهل العروس",
+    parentsAr: "أسماء الأهل بالعربية (اختياري)",
+    parentsArPh: "فادي ودانيا عبود\nنيكولا ومرلين حنا",
     weddingDate: "تاريخ الزفاف",
     ceremonyVenue: "مكان المراسم",
     partyVenue: "مكان الحفل",
     placeName: "اسم المكان",
+    placeNameAr: "اسم المكان بالعربية (اختياري)",
     time: "الوقت",
     ceremonyPh: "كنيسة القديس جورج",
     ceremonyTimePh: "6:00 مساءً",
@@ -118,6 +197,15 @@ const T = {
     guestCount: "عدد المدعوين",
     music: "الموسيقى المفضّلة (اختياري)",
     musicPh: "اسم الأغنية أو رابط يوتيوب",
+    musicClip: "مقطع الموسيقى (اختياري)",
+    musicClipSub: "البداية والنهاية بالثواني — يتم تشغيل هذا المقطع فقط",
+    startSec: "البداية (ثواني)",
+    endSec: "النهاية (ثواني)",
+    heroLocation: "نص الموقع الرئيسي (اختياري)",
+    heroLocationSub: "يظهر أعلى دعوتك",
+    heroLocationPh: "كنيسة مار جرجس، فيترون، لبنان",
+    heroLocationAr: "نص الموقع الرئيسي بالعربية (اختياري)",
+    heroLocationArPh: "كنيسة مار جرجس، فيترون، لبنان",
     contactInfo: "بياناتك",
     contactSub: "سنتواصل معك عبر الواتساب خلال 24 ساعة",
     yourName: "اسمك الكامل",
@@ -151,6 +239,62 @@ const T = {
     placing: "جارٍ الإرسال...",
     noCharge: "سنتواصل معك عبر الواتساب لترتيب الدفع. لا دفع مسبق.",
     whatsappLabel: "الواتساب",
+    personalizeTitle: "خصّص دعوتك",
+    personalizeSub: "كل الحقول اختيارية — تخطَّ أي شيء غير متأكد منه، سنتابع معك",
+    subheading: "نص العنوان الفرعي (اختياري)",
+    subheadingSub: "السطر تحت أسمائكم، مثل \"معاً مع عائلتيهما\"",
+    subheadingPh: "معاً مع عائلتيهما",
+    subheadingAr: "العنوان الفرعي بالعربية (اختياري)",
+    subheadingArPh: "معاً مع عائلتيهما",
+    quoteLabel: "اقتباس أو آية (اختياري)",
+    quotePh: "نحن نحب لأنه هو أحبنا أولاً",
+    quoteArLabel: "الاقتباس بالعربية (اختياري)",
+    quoteArPh: "نحن نحب لأنه هو أحبنا أولاً",
+    quoteRefLabel: "كاتب الاقتباس / المرجع (اختياري)",
+    quoteRefPh: "1 يوحنا 4:19",
+    rsvpDeadline: "الموعد النهائي للرد (اختياري)",
+    timeline: "جدول يوم الزفاف (اختياري)",
+    timelineSub: "الأوقات والأماكن لكل جزء من اليوم",
+    ceremonyLabel: "المراسم",
+    welcomeLabel: "مشروب الترحيب",
+    partyLabel: "الحفلة",
+    locationPh: "اسم المكان",
+    videoSection: "فيديو ما قبل الزفاف (اختياري)",
+    videoSectionSub: "لقالب رملي سينمائي فقط — يوتيوب أو فيميو أو رابط فيديو مباشر",
+    videoUrl: "رابط الفيديو",
+    videoUrlPh: "https://youtu.be/... أو https://vimeo.com/...",
+    videoClip: "مقطع الفيديو (اختياري)",
+    videoClipSub: "البداية والنهاية بالثواني — يتم تشغيل هذا المقطع فقط",
+    detailsSlide: "تفاصيل إضافية (اختياري)",
+    dressCode: "قواعد اللباس",
+    dressCodePh: "بدلة رسمية سوداء",
+    transport: "المواصلات",
+    transportPh: "حافلة من جونية الساعة 6:00 مساءً",
+    accommodation: "الإقامة",
+    accommodationPh: "فندق كمبينسكي — أسعار خاصة",
+    giftRegistry: "قائمة الهدايا (اختياري)",
+    registrySub: "لباقة الذهبي فقط — تظهر للضيوف الراغبين بإرسال هدية",
+    registrySubtitleLabel: "عنوان فرعي لقائمة الهدايا",
+    registrySubtitlePh: "حضوركم هو أثمن هدية لنا. إن أردتم تكريمنا أكثر:",
+    wishMoney: "Wish Money",
+    wishMoneyAcc: "رقم الحساب",
+    wishMoneyAccPh: "30187123-03",
+    wishMoneyPhone: "رقم الهاتف",
+    wishMoneyPhonePh: "+32495757278",
+    wishMoneyLink: "رابط Wish Money (اختياري)",
+    giftStoreLink: "رابط متجر الهدايا (اختياري)",
+    bankTransfer: "تحويل بنكي",
+    beneficiary: "اسم المستفيد",
+    beneficiaryPh: "مايا رمال",
+    iban: "رقم الآيبان IBAN",
+    ibanPh: "BE18650397645665",
+    bic: "رمز BIC / Swift",
+    bicPh: "REVOBEB2",
+    additionalNote: "ملاحظة إضافية (اختياري)",
+    additionalNoteSub: "تظهر على دعوتك، مثل ملاحظة عدم اصطحاب الأطفال",
+    noteEnPh: "مثال: على الرغم من حبنا لأطفالكم، اخترنا أن يكون زفافنا للكبار فقط.",
+    noteArLabel: "ملاحظة إضافية بالعربية (اختياري)",
+    noteArPh: "نوماً هنيئاً لأطفالكم",
   }
 }
 
@@ -163,9 +307,22 @@ export default function Order() {
   const isAr = lang === "ar"
 
   const [form, setForm] = useState({
-    package: "", template: "", groomName: "", brideName: "", parentsEn: "",
-    weddingDate: "", ceremonyPlace: "", ceremonyTime: "", partyPlace: "", partyTime: "",
-    city: "", guestCount: "", music: "", yourName: "", yourPhone: "", yourEmail: "", notes: "",
+    package: "", template: "", groomName: "", brideName: "", groomAr: "", brideAr: "",
+    parentsEn: "", parentsAr: "",
+    weddingDate: "", ceremonyPlace: "", ceremonyTime: "", ceremonyPlaceAr: "",
+    partyPlace: "", partyTime: "", partyPlaceAr: "",
+    venue: "", venueAr: "",
+    city: "", guestCount: "", music: "", musicStart: "", musicEnd: "",
+    messageEn: "", messageAr: "",
+    quote: "", quoteAr: "", quoteRef: "",
+    rsvpDeadline: "",
+    tl0: "", tl0loc: "", tl1: "", tl1loc: "", tl2: "", tl2loc: "",
+    video: "", videoStart: "", videoEnd: "",
+    dressCode: "", transport: "", accommodation: "",
+    registrySubtitle: "", registryWishMoneyAcc: "", registryWishMoneyPhone: "",
+    registryLink1: "", registryLink2: "", registryBeneficiary: "", registryIban: "", registryBic: "",
+    noteEn: "", noteAr: "",
+    yourName: "", yourPhone: "", yourEmail: "", notes: "",
   })
 
   const update = (k, v) => setForm(f => ({ ...f, [k]: v }))
@@ -384,11 +541,24 @@ export default function Order() {
                     </div>
                   ))}
                 </div>
+                <div className="grid grid-cols-2 gap-4">
+                  {[[t.groomNameAr, "groomAr", t.groomArPh], [t.brideNameAr, "brideAr", t.brideArPh]].map(([label, key, ph]) => (
+                    <div key={key}>
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{label}</label>
+                      <input value={form[key]} onChange={e => update(key, e.target.value)} placeholder={ph} dir="rtl" className={inp} />
+                    </div>
+                  ))}
+                </div>
                 <div>
                   <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.parents}</label>
                   <textarea value={form.parentsEn} onChange={e => update("parentsEn", e.target.value)} placeholder={t.parentsPh} rows={2}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
                   <p className="text-white/20 text-xs mt-1">{t.parentsHint}</p>
+                </div>
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.parentsAr}</label>
+                  <textarea value={form.parentsAr} onChange={e => update("parentsAr", e.target.value)} placeholder={t.parentsArPh} rows={2} dir="rtl"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
                 </div>
                 <div>
                   <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.weddingDate}</label>
@@ -406,6 +576,10 @@ export default function Order() {
                       <input value={form.ceremonyTime} onChange={e => update("ceremonyTime", e.target.value)} placeholder={t.ceremonyTimePh} className={inp} />
                     </div>
                   </div>
+                  <div className="mt-4">
+                    <label className="text-white/40 text-xs mb-2 block">{t.placeNameAr}</label>
+                    <input value={form.ceremonyPlaceAr} onChange={e => update("ceremonyPlaceAr", e.target.value)} placeholder={t.ceremonyPh} dir="rtl" className={inp} />
+                  </div>
                 </div>
                 <div>
                   <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">{t.partyVenue}</p>
@@ -419,6 +593,19 @@ export default function Order() {
                       <input value={form.partyTime} onChange={e => update("partyTime", e.target.value)} placeholder={t.partyTimePh} className={inp} />
                     </div>
                   </div>
+                  <div className="mt-4">
+                    <label className="text-white/40 text-xs mb-2 block">{t.placeNameAr}</label>
+                    <input value={form.partyPlaceAr} onChange={e => update("partyPlaceAr", e.target.value)} placeholder={t.partyPh} dir="rtl" className={inp} />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.heroLocation}</label>
+                  <p className="text-white/20 text-xs mb-2">{t.heroLocationSub}</p>
+                  <input value={form.venue} onChange={e => update("venue", e.target.value)} placeholder={t.heroLocationPh} className={inp} />
+                </div>
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.heroLocationAr}</label>
+                  <input value={form.venueAr} onChange={e => update("venueAr", e.target.value)} placeholder={t.heroLocationArPh} dir="rtl" className={inp} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -434,6 +621,17 @@ export default function Order() {
                   <div>
                     <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.music}</label>
                     <input value={form.music} onChange={e => update("music", e.target.value)} placeholder={t.musicPh} className={inp} />
+                    <p className="text-white/20 text-xs mt-3 mb-2">{t.musicClip} — {t.musicClipSub}</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{t.startSec}</label>
+                        <input value={form.musicStart} onChange={e => update("musicStart", e.target.value)} placeholder="0" type="number" className={inp} />
+                      </div>
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{t.endSec}</label>
+                        <input value={form.musicEnd} onChange={e => update("musicEnd", e.target.value)} placeholder="90" type="number" className={inp} />
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -446,9 +644,174 @@ export default function Order() {
             </motion.div>
           )}
 
-          {/* STEP 3 - Contact */}
+          {/* STEP 3 - Personalize */}
           {step === 3 && (
-            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <motion.div key="step3personalize" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+              <h2 className="font-serif text-3xl font-light text-center mb-2">{t.personalizeTitle}</h2>
+              <p className="text-white/40 text-center text-sm mb-10">{t.personalizeSub}</p>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.subheading}</label>
+                  <p className="text-white/20 text-xs mb-2">{t.subheadingSub}</p>
+                  <input value={form.messageEn} onChange={e => update("messageEn", e.target.value)} placeholder={t.subheadingPh} className={inp} />
+                </div>
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.subheadingAr}</label>
+                  <input value={form.messageAr} onChange={e => update("messageAr", e.target.value)} placeholder={t.subheadingArPh} dir="rtl" className={inp} />
+                </div>
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.quoteLabel}</label>
+                  <input value={form.quote} onChange={e => update("quote", e.target.value)} placeholder={t.quotePh} className={inp} />
+                </div>
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.quoteArLabel}</label>
+                  <input value={form.quoteAr} onChange={e => update("quoteAr", e.target.value)} placeholder={t.quoteArPh} dir="rtl" className={inp} />
+                </div>
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.quoteRefLabel}</label>
+                  <input value={form.quoteRef} onChange={e => update("quoteRef", e.target.value)} placeholder={t.quoteRefPh} className={inp} />
+                </div>
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.rsvpDeadline}</label>
+                  <input value={form.rsvpDeadline} onChange={e => update("rsvpDeadline", e.target.value)} type="date" className={inp} />
+                </div>
+
+                <div className="pt-2">
+                  <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-1">{t.timeline}</p>
+                  <p className="text-white/20 text-xs mb-4">{t.timelineSub}</p>
+                  {[
+                    [t.ceremonyLabel, "tl0", "tl0loc", t.ceremonyTimePh],
+                    [t.welcomeLabel, "tl1", "tl1loc", "8:00 PM"],
+                    [t.partyLabel, "tl2", "tl2loc", "11:00 PM"],
+                  ].map(([label, timeKey, locKey, timePh]) => (
+                    <div key={timeKey} className="grid grid-cols-2 gap-4 mb-3">
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{label} — {t.time}</label>
+                        <input value={form[timeKey]} onChange={e => update(timeKey, e.target.value)} placeholder={timePh} className={inp} />
+                      </div>
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{label} — {t.placeName}</label>
+                        <input value={form[locKey]} onChange={e => update(locKey, e.target.value)} placeholder={t.locationPh} className={inp} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {form.template === "sand" && (
+                  <div className="pt-2">
+                    <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-1">{t.videoSection}</p>
+                    <p className="text-white/20 text-xs mb-4">{t.videoSectionSub}</p>
+                    <div className="mb-3">
+                      <label className="text-white/30 text-xs mb-2 block">{t.videoUrl}</label>
+                      <input value={form.video} onChange={e => update("video", e.target.value)} placeholder={t.videoUrlPh} className={inp} />
+                    </div>
+                    <p className="text-white/20 text-xs mb-2">{t.videoClip} — {t.videoClipSub}</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{t.startSec}</label>
+                        <input value={form.videoStart} onChange={e => update("videoStart", e.target.value)} placeholder="0" type="number" className={inp} />
+                      </div>
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{t.endSec}</label>
+                        <input value={form.videoEnd} onChange={e => update("videoEnd", e.target.value)} placeholder="90" type="number" className={inp} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {form.template === "sand" && (
+                  <div className="pt-2">
+                    <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">{t.detailsSlide}</p>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{t.dressCode}</label>
+                        <input value={form.dressCode} onChange={e => update("dressCode", e.target.value)} placeholder={t.dressCodePh} className={inp} />
+                      </div>
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{t.transport}</label>
+                        <input value={form.transport} onChange={e => update("transport", e.target.value)} placeholder={t.transportPh} className={inp} />
+                      </div>
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{t.accommodation}</label>
+                        <input value={form.accommodation} onChange={e => update("accommodation", e.target.value)} placeholder={t.accommodationPh} className={inp} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {form.package === "gold" && (
+                  <div className="pt-2">
+                    <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-1">{t.giftRegistry}</p>
+                    <p className="text-white/20 text-xs mb-4">{t.registrySub}</p>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{t.registrySubtitleLabel}</label>
+                        <input value={form.registrySubtitle} onChange={e => update("registrySubtitle", e.target.value)} placeholder={t.registrySubtitlePh} className={inp} />
+                      </div>
+                      <p className="text-white/20 text-xs uppercase tracking-widest">{t.wishMoney}</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.wishMoneyAcc}</label>
+                          <input value={form.registryWishMoneyAcc} onChange={e => update("registryWishMoneyAcc", e.target.value)} placeholder={t.wishMoneyAccPh} className={`${inp} font-mono`} />
+                        </div>
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.wishMoneyPhone}</label>
+                          <input value={form.registryWishMoneyPhone} onChange={e => update("registryWishMoneyPhone", e.target.value)} placeholder={t.wishMoneyPhonePh} className={`${inp} font-mono`} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{t.wishMoneyLink}</label>
+                        <input value={form.registryLink1} onChange={e => update("registryLink1", e.target.value)} placeholder="https://www.wishmoney.io/..." className={inp} />
+                      </div>
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{t.giftStoreLink}</label>
+                        <input value={form.registryLink2} onChange={e => update("registryLink2", e.target.value)} placeholder="https://www.abc.com.lb/..." className={inp} />
+                      </div>
+                      <p className="text-white/20 text-xs uppercase tracking-widest">{t.bankTransfer}</p>
+                      <div>
+                        <label className="text-white/30 text-xs mb-2 block">{t.beneficiary}</label>
+                        <input value={form.registryBeneficiary} onChange={e => update("registryBeneficiary", e.target.value)} placeholder={t.beneficiaryPh} className={inp} />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.iban}</label>
+                          <input value={form.registryIban} onChange={e => update("registryIban", e.target.value)} placeholder={t.ibanPh} className={`${inp} font-mono`} />
+                        </div>
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.bic}</label>
+                          <input value={form.registryBic} onChange={e => update("registryBic", e.target.value)} placeholder={t.bicPh} className={`${inp} font-mono`} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-2">
+                  <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-1">{t.additionalNote}</p>
+                  <p className="text-white/20 text-xs mb-4">{t.additionalNoteSub}</p>
+                  <div className="space-y-4">
+                    <textarea value={form.noteEn} onChange={e => update("noteEn", e.target.value)} placeholder={t.noteEnPh} rows={3}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
+                    <div>
+                      <label className="text-white/30 text-xs mb-2 block">{t.noteArLabel}</label>
+                      <textarea value={form.noteAr} onChange={e => update("noteAr", e.target.value)} placeholder={t.noteArPh} rows={3} dir="rtl"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-3 mt-8">
+                <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
+                <button onClick={() => setStep(4)}
+                  className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black transition"
+                  style={{ background: "#c9a96e" }}>{t.continue}</button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP 4 - Contact */}
+          {step === 4 && (
+            <motion.div key="step4contact" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="font-serif text-3xl font-light text-center mb-2">{t.contactInfo}</h2>
               <p className="text-white/40 text-center text-sm mb-10">{t.contactSub}</p>
               <div className="space-y-4 mb-8">
@@ -481,17 +844,17 @@ export default function Order() {
                 </div>
               </div>
               <div className="flex gap-3">
-                <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
-                <button onClick={() => setStep(4)} disabled={!form.yourName || !form.yourPhone}
+                <button onClick={() => setStep(3)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
+                <button onClick={() => setStep(5)} disabled={!form.yourName || !form.yourPhone}
                   className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
                   style={{ background: "#c9a96e" }}>{t.continuePayment}</button>
               </div>
             </motion.div>
           )}
 
-          {/* STEP 4 - Confirm & Pay */}
-          {step === 4 && (
-            <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+          {/* STEP 5 - Confirm & Pay */}
+          {step === 5 && (
+            <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="font-serif text-3xl font-light text-center mb-2">{t.confirmOrder}</h2>
               <p className="text-white/40 text-center text-sm mb-10">{t.confirmSub}</p>
               <div className="text-center mb-8">
@@ -521,7 +884,7 @@ export default function Order() {
                 </div>
               </div>
               <div className="flex gap-3">
-                <button onClick={() => setStep(3)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
+                <button onClick={() => setStep(4)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
                 <button onClick={handleSubmit} disabled={status === "loading"}
                   className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
                   style={{ background: "#c9a96e" }}>
