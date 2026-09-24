@@ -130,6 +130,7 @@ function BuildInvitationModal({ order }) {
     registrySubtitle: "",
     hideCeremony: false,
     hideTimeline: false,
+    askEventAttendance: false,
     tl0: "5:00 PM",    tl0loc: "",
     tl1: "7:00 PM",    tl1loc: "",
     tl2: "11:00 PM",   tl2loc: "",
@@ -204,6 +205,7 @@ function BuildInvitationModal({ order }) {
             registrySubtitle: d.registrySubtitle || "",
             hideCeremony: d.hideCeremony ?? false,
             hideTimeline: d.hideTimeline ?? false,
+            askEventAttendance: d.askEventAttendance ?? false,
             tl0: d.timeline?.[0]?.time || "5:00 PM",    tl0loc: d.timeline?.[0]?.location || "",
             tl1: d.timeline?.[1]?.time || "7:00 PM",    tl1loc: d.timeline?.[1]?.location || "",
             tl2: d.timeline?.[2]?.time || "11:00 PM",   tl2loc: d.timeline?.[2]?.location || "",
@@ -318,6 +320,7 @@ function BuildInvitationModal({ order }) {
         registrySubtitle: extraData.registrySubtitle || "",
         hideCeremony: extraData.hideCeremony ?? false,
         hideTimeline: extraData.hideTimeline ?? false,
+        askEventAttendance: extraData.askEventAttendance ?? false,
         orderId: order.id,
         package: order.package,
         _draft: true,
@@ -397,6 +400,7 @@ function BuildInvitationModal({ order }) {
         registrySubtitle: extraData.registrySubtitle || "",
         hideCeremony: extraData.hideCeremony ?? false,
         hideTimeline: extraData.hideTimeline ?? false,
+        askEventAttendance: extraData.askEventAttendance ?? false,
         slug,
         createdAt: new Date(),
         orderId: order.id,
@@ -721,6 +725,15 @@ function BuildInvitationModal({ order }) {
             <div>
               <p className="text-white/60 text-sm">🚫 Hide ceremony venue card</p>
               <p className="text-white/25 text-xs mt-0.5">For Islamic / civil weddings with no church ceremony</p>
+            </div>
+          </label>
+          <label className={`flex items-center gap-3 select-none ${extraData.hideCeremony ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}`}>
+            <input type="checkbox" checked={extraData.askEventAttendance ?? false} disabled={extraData.hideCeremony}
+              onChange={e => update("askEventAttendance", e.target.checked)}
+              className="w-4 h-4 rounded accent-[#c9a96e]" />
+            <div>
+              <p className="text-white/60 text-sm">🎉 Ask which events guests are attending</p>
+              <p className="text-white/25 text-xs mt-0.5">Replaces the simple Attending/Decline buttons with a required choice: both events, ceremony only, party only, or can't make it — using the venue names below. {extraData.hideCeremony ? "Unavailable while the ceremony card is hidden (only one event exists)." : ""}</p>
             </div>
           </label>
           <div className="grid grid-cols-2 gap-3">

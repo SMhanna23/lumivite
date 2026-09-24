@@ -60,6 +60,14 @@ function MemoriesGallery({ slug }) {
   )
 }
 
+function eventChoiceLabel(choice, venues) {
+  if (!choice || !venues?.length) return null
+  if (choice === "both") return `${venues[0]?.label} & ${venues[1]?.label}`
+  if (choice === "venue0") return `${venues[0]?.label} only`
+  if (choice === "venue1") return `${venues[1]?.label} only`
+  return null
+}
+
 export default function Dashboard() {
   const { slug } = useParams()
   const [invitation, setInvitation] = useState(null)
@@ -210,6 +218,9 @@ export default function Dashboard() {
                 <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${rsvp.attending ? "bg-[#4ade80]" : "bg-red-400"}`} />
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-white">{rsvp.name}</p>
+                  {eventChoiceLabel(rsvp.eventChoice, invitation?.venues) && (
+                    <p className="text-[#c9a96e]/70 text-xs mt-0.5">📍 {eventChoiceLabel(rsvp.eventChoice, invitation?.venues)}</p>
+                  )}
                   {rsvp.wishes && (
                     <p className="text-white/40 text-xs mt-0.5 italic">"{rsvp.wishes}"</p>
                   )}

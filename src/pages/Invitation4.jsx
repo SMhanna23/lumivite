@@ -33,6 +33,7 @@ const DEFAULT_WEDDING = {
   ],
   video: "/PreWeddingNew.mp4",
   memoriesEnabled: true,
+  askEventAttendance: true,
   slug: "demo4",
   envelopeColor: "white",
 }
@@ -679,6 +680,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
              : "bronze"
   const [name,      setName]      = useState(() => tier !== "bronze" ? (new URLSearchParams(window.location.search).get("gn") || "") : "")
   const [attending, setAttending] = useState(null)
+  const [eventChoice, setEventChoice] = useState(null)
   const [wishes,    setWishes]    = useState("")
   const [persons,   setPersons]   = useState(() => tier !== "bronze" ? parseInt(new URLSearchParams(window.location.search).get("np") || "1") : 1)
   const [status,    setStatus]    = useState("idle")
@@ -687,17 +689,30 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
   const copyToClipboard = (text, key) => { navigator.clipboard.writeText(text); setCopiedKey(key); setTimeout(() => setCopiedKey(null), 1500) }
   const [searchParams] = useSearchParams()
 
+  // Per-event attendance choice — only makes sense when both venues are shown
+  const showEventChoice = (w.askEventAttendance ?? false) && !w.hideCeremony && (w.venues?.length ?? 0) >= 2
+  const eventOptions = showEventChoice ? [
+    { id: "both", label: `I'm coming to the ${w.venues[0].label} and the ${w.venues[1].label}`, labelAr: `سآتي إلى ${w.venues[0].labelAr} و${w.venues[1].labelAr}` },
+    { id: "venue0", label: `Just the ${w.venues[0].label} for me`, labelAr: `سآتي إلى ${w.venues[0].labelAr} فقط` },
+    { id: "venue1", label: `Just the ${w.venues[1].label} for me`, labelAr: `سآتي إلى ${w.venues[1].labelAr} فقط` },
+    { id: "decline", label: `I can't make it, but I'll be thinking of you`, labelAr: `لا أستطيع الحضور، لكن قلبي معكم` },
+  ] : []
+
   const handleRSVP = async () => {
-    if (!name || attending === null) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
+    if (!name || (showEventChoice ? eventChoice === null : attending === null)) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
     setRsvpError("")
     setStatus("loading")
     try {
+      const finalAttending = showEventChoice ? eventChoice !== "decline" : attending
       await addDoc(collection(db, "rsvps"), {
-        name, attending, wishes, persons,
-        wedding: `${w.groom} & ${w.bride}`, createdAt: serverTimestamp()
+        name, attending: finalAttending, wishes, persons,
+        wedding: `${w.groom} & ${w.bride}`,
+        ...(showEventChoice ? { eventChoice } : {}),
+        createdAt: serverTimestamp()
       })
-      const emoji = attending ? "✅" : "❌"
-      const msg = `${emoji} New RSVP on Lumivite!\n👤 ${name}\n💒 ${w.groom} & ${w.bride}\n${attending ? `✅ Attending (${persons} person${persons > 1 ? "s" : ""})` : "❌ Declined"}${wishes ? `\n💬 "${wishes}"` : ""}`
+      const emoji = finalAttending ? "✅" : "❌"
+      const chosenOption = showEventChoice ? eventOptions.find(o => o.id === eventChoice) : null
+      const msg = `${emoji} New RSVP on Lumivite!\n👤 ${name}\n💒 ${w.groom} & ${w.bride}\n${finalAttending ? `✅ Attending (${persons} person${persons > 1 ? "s" : ""})` : "❌ Declined"}${chosenOption ? `\n📍 ${chosenOption.label}` : ""}${wishes ? `\n💬 "${wishes}"` : ""}`
       fetch("/api/notify-whatsapp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -810,21 +825,39 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                   style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }}>
                   {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n} style={{ background: "#1a1510" }}>{n} {n === 1 ? "person" : "persons"}</option>)}
                 </select>
-                <div className="flex gap-3">
-                  {[
-                    { val: true,  label: ar ? "✓ حاضر"   : "✓ Attending" },
-                    { val: false, label: ar ? "✗ اعتذار" : "✗ Decline"  },
-                  ].map(({ val, label }) => (
-                    <button key={String(val)} onClick={() => setAttending(val)}
-                      className="flex-1 py-4 rounded-xl font-medium tracking-wider transition"
-                      style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.8rem",
-                        background: attending === val ? (val ? GOLD : "rgba(255,255,255,0.14)") : "transparent",
-                        border: `1px solid ${attending === val ? (val ? GOLD : "rgba(255,255,255,0.4)") : "rgba(255,255,255,0.1)"}`,
-                        color: attending === val ? "white" : "rgba(255,255,255,0.38)" }}>
-                      {label}
-                    </button>
-                  ))}
-                </div>
+                {showEventChoice ? (
+                  <div className="space-y-2.5" dir={ar ? "rtl" : "ltr"}>
+                    {eventOptions.map(opt => (
+                      <button key={opt.id} type="button" onClick={() => setEventChoice(opt.id)}
+                        className={`w-full flex items-center gap-3 p-4 rounded-xl transition ${ar ? "text-right" : "text-left"}`}
+                        style={{ fontFamily: "'Jost', sans-serif",
+                          background: eventChoice === opt.id ? `${GOLD}18` : "rgba(255,255,255,0.055)",
+                          border: `1px solid ${eventChoice === opt.id ? GOLD : "rgba(255,255,255,0.09)"}` }}>
+                        <span className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center transition"
+                          style={{ border: `2px solid ${eventChoice === opt.id ? GOLD : "rgba(255,255,255,0.25)"}` }}>
+                          {eventChoice === opt.id && <span className="w-2.5 h-2.5 rounded-full" style={{ background: GOLD }} />}
+                        </span>
+                        <span className="text-sm leading-snug" style={{ color: eventChoice === opt.id ? "white" : "rgba(255,255,255,0.55)" }}>{ar ? opt.labelAr : opt.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex gap-3">
+                    {[
+                      { val: true,  label: ar ? "✓ حاضر"   : "✓ Attending" },
+                      { val: false, label: ar ? "✗ اعتذار" : "✗ Decline"  },
+                    ].map(({ val, label }) => (
+                      <button key={String(val)} onClick={() => setAttending(val)}
+                        className="flex-1 py-4 rounded-xl font-medium tracking-wider transition"
+                        style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.8rem",
+                          background: attending === val ? (val ? GOLD : "rgba(255,255,255,0.14)") : "transparent",
+                          border: `1px solid ${attending === val ? (val ? GOLD : "rgba(255,255,255,0.4)") : "rgba(255,255,255,0.1)"}`,
+                          color: attending === val ? "white" : "rgba(255,255,255,0.38)" }}>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <textarea value={wishes} onChange={e => setWishes(e.target.value)}
                   placeholder={ar ? "شاركنا أمنياتك... (اختياري)" : "Share your wishes... (optional)"}
                   rows={3} maxLength={200} className="w-full rounded-xl px-5 py-4 text-white placeholder-white/20 focus:outline-none resize-none"
