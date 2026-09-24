@@ -109,13 +109,12 @@ export default function Invitation({ override = null }) {
   const [playing, setPlaying] = useState(false)
   const [lang, setLang] = useState("en")
   const ar = lang === "ar"
-  // Per-event attendance choice — only makes sense when both venues are shown
+  // Per-event attendance choice — asked in addition to Attending/Decline, only when both venues are shown
   const showEventChoice = (WEDDING.askEventAttendance ?? false) && !WEDDING.hideCeremony && (WEDDING.venues?.length ?? 0) >= 2
   const eventOptions = showEventChoice ? [
     { id: "both", label: `I'm coming to the ${WEDDING.venues[0].label} and the ${WEDDING.venues[1].label}`, labelAr: `سآتي إلى ${WEDDING.venues[0].labelAr} و${WEDDING.venues[1].labelAr}` },
     { id: "venue0", label: `Just the ${WEDDING.venues[0].label} for me`, labelAr: `سآتي إلى ${WEDDING.venues[0].labelAr} فقط` },
     { id: "venue1", label: `Just the ${WEDDING.venues[1].label} for me`, labelAr: `سآتي إلى ${WEDDING.venues[1].labelAr} فقط` },
-    { id: "decline", label: `I can't make it, but I'll be thinking of you`, labelAr: `لا أستطيع الحضور، لكن قلبي معكم` },
   ] : []
   const photos = WEDDING.photos?.length ? WEDDING.photos : [
     "/photo1.jpg",
@@ -191,23 +190,23 @@ export default function Invitation({ override = null }) {
     return () => audio.removeEventListener("timeupdate", onTimeUpdate)
   }, [musicStart, musicEnd])
 
+  const requireEventChoice = showEventChoice && attending === true
   const handleRSVP = async () => {
-    if (!name || (showEventChoice ? eventChoice === null : attending === null)) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
+    if (!name || attending === null || (requireEventChoice && eventChoice === null)) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
     setRsvpError("")
     setStatus("loading")
     try {
-      const finalAttending = showEventChoice ? eventChoice !== "decline" : attending
       await addDoc(collection(db, "rsvps"), {
-        name, attending: finalAttending, wishes, persons,
+        name, attending, wishes, persons,
         wedding: `${WEDDING.groom} & ${WEDDING.bride}`,
-        ...(showEventChoice ? { eventChoice } : {}),
+        ...(requireEventChoice ? { eventChoice } : {}),
         createdAt: serverTimestamp()
       })
 
       // WhatsApp notification
-      const emoji = finalAttending ? "✅" : "❌"
-      const chosenOption = showEventChoice ? eventOptions.find(o => o.id === eventChoice) : null
-      const msg = `${emoji} New RSVP on Lumivite!\n👤 ${name}\n💒 ${WEDDING.groom} & ${WEDDING.bride}\n${finalAttending ? `✅ Attending (${persons} person${persons > 1 ? "s" : ""})` : "❌ Declined"}${chosenOption ? `\n📍 ${chosenOption.label}` : ""}${wishes ? `\n💬 "${wishes}"` : ""}`
+      const emoji = attending ? "✅" : "❌"
+      const chosenOption = requireEventChoice ? eventOptions.find(o => o.id === eventChoice) : null
+      const msg = `${emoji} New RSVP on Lumivite!\n👤 ${name}\n💒 ${WEDDING.groom} & ${WEDDING.bride}\n${attending ? `✅ Attending (${persons} person${persons > 1 ? "s" : ""})` : "❌ Declined"}${chosenOption ? `\n📍 ${chosenOption.label}` : ""}${wishes ? `\n💬 "${wishes}"` : ""}`
       fetch("/api/notify-whatsapp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -632,7 +631,18 @@ export default function Invitation({ override = null }) {
                   className="w-full bg-white border border-[#4a7c59]/20 rounded-lg px-5 py-4 text-[#2d3a2e] focus:outline-none focus:border-[#4a7c59] transition shadow-sm">
                   {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n} {n === 1 ? "person" : "persons"}</option>)}
                 </select>
-                {showEventChoice ? (
+                <div className="flex gap-3">
+                  <button onClick={() => setAttending(true)}
+                    className={`flex-1 py-4 rounded-lg border transition font-medium tracking-wider ${attending === true ? "text-white border-[#4a7c59]" : "border-[#4a7c59]/30 text-[#4a7c59]/60 hover:border-[#4a7c59]"}`}
+                    style={{ background: attending === true ? "#4a7c59" : "white" }}>
+                    {ar ? "✓ حاضر" : "✓ Attending"}
+                  </button>
+                  <button onClick={() => { setAttending(false); setEventChoice(null) }}
+                    className={`flex-1 py-4 rounded-lg border transition font-medium tracking-wider ${attending === false ? "bg-[#2d3a2e] border-[#2d3a2e] text-white" : "border-[#4a7c59]/30 text-[#4a7c59]/60 bg-white"}`}>
+                    {ar ? "✗ اعتذار" : "✗ Decline"}
+                  </button>
+                </div>
+                {requireEventChoice && (
                   <div className="space-y-2.5" dir={ar ? "rtl" : "ltr"}>
                     {eventOptions.map(opt => (
                       <button key={opt.id} type="button" onClick={() => setEventChoice(opt.id)}
@@ -643,18 +653,6 @@ export default function Invitation({ override = null }) {
                         <span className={`text-sm leading-snug ${eventChoice === opt.id ? "text-[#2d3a2e]" : "text-[#2d3a2e]/60"}`}>{ar ? opt.labelAr : opt.label}</span>
                       </button>
                     ))}
-                  </div>
-                ) : (
-                  <div className="flex gap-3">
-                    <button onClick={() => setAttending(true)}
-                      className={`flex-1 py-4 rounded-lg border transition font-medium tracking-wider ${attending === true ? "text-white border-[#4a7c59]" : "border-[#4a7c59]/30 text-[#4a7c59]/60 hover:border-[#4a7c59]"}`}
-                      style={{ background: attending === true ? "#4a7c59" : "white" }}>
-                      {ar ? "✓ حاضر" : "✓ Attending"}
-                    </button>
-                    <button onClick={() => setAttending(false)}
-                      className={`flex-1 py-4 rounded-lg border transition font-medium tracking-wider ${attending === false ? "bg-[#2d3a2e] border-[#2d3a2e] text-white" : "border-[#4a7c59]/30 text-[#4a7c59]/60 bg-white"}`}>
-                      {ar ? "✗ اعتذار" : "✗ Decline"}
-                    </button>
                   </div>
                 )}
                 <textarea value={wishes} onChange={e => setWishes(e.target.value)}

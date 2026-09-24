@@ -689,30 +689,29 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
   const copyToClipboard = (text, key) => { navigator.clipboard.writeText(text); setCopiedKey(key); setTimeout(() => setCopiedKey(null), 1500) }
   const [searchParams] = useSearchParams()
 
-  // Per-event attendance choice — only makes sense when both venues are shown
+  // Per-event attendance choice — asked in addition to Attending/Decline, only when both venues are shown
   const showEventChoice = (w.askEventAttendance ?? false) && !w.hideCeremony && (w.venues?.length ?? 0) >= 2
   const eventOptions = showEventChoice ? [
     { id: "both", label: `I'm coming to the ${w.venues[0].label} and the ${w.venues[1].label}`, labelAr: `سآتي إلى ${w.venues[0].labelAr} و${w.venues[1].labelAr}` },
     { id: "venue0", label: `Just the ${w.venues[0].label} for me`, labelAr: `سآتي إلى ${w.venues[0].labelAr} فقط` },
     { id: "venue1", label: `Just the ${w.venues[1].label} for me`, labelAr: `سآتي إلى ${w.venues[1].labelAr} فقط` },
-    { id: "decline", label: `I can't make it, but I'll be thinking of you`, labelAr: `لا أستطيع الحضور، لكن قلبي معكم` },
   ] : []
 
+  const requireEventChoice = showEventChoice && attending === true
   const handleRSVP = async () => {
-    if (!name || (showEventChoice ? eventChoice === null : attending === null)) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
+    if (!name || attending === null || (requireEventChoice && eventChoice === null)) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
     setRsvpError("")
     setStatus("loading")
     try {
-      const finalAttending = showEventChoice ? eventChoice !== "decline" : attending
       await addDoc(collection(db, "rsvps"), {
-        name, attending: finalAttending, wishes, persons,
+        name, attending, wishes, persons,
         wedding: `${w.groom} & ${w.bride}`,
-        ...(showEventChoice ? { eventChoice } : {}),
+        ...(requireEventChoice ? { eventChoice } : {}),
         createdAt: serverTimestamp()
       })
-      const emoji = finalAttending ? "✅" : "❌"
-      const chosenOption = showEventChoice ? eventOptions.find(o => o.id === eventChoice) : null
-      const msg = `${emoji} New RSVP on Lumivite!\n👤 ${name}\n💒 ${w.groom} & ${w.bride}\n${finalAttending ? `✅ Attending (${persons} person${persons > 1 ? "s" : ""})` : "❌ Declined"}${chosenOption ? `\n📍 ${chosenOption.label}` : ""}${wishes ? `\n💬 "${wishes}"` : ""}`
+      const emoji = attending ? "✅" : "❌"
+      const chosenOption = requireEventChoice ? eventOptions.find(o => o.id === eventChoice) : null
+      const msg = `${emoji} New RSVP on Lumivite!\n👤 ${name}\n💒 ${w.groom} & ${w.bride}\n${attending ? `✅ Attending (${persons} person${persons > 1 ? "s" : ""})` : "❌ Declined"}${chosenOption ? `\n📍 ${chosenOption.label}` : ""}${wishes ? `\n💬 "${wishes}"` : ""}`
       fetch("/api/notify-whatsapp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -825,7 +824,22 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                   style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }}>
                   {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n} style={{ background: "#1a1510" }}>{n} {n === 1 ? "person" : "persons"}</option>)}
                 </select>
-                {showEventChoice ? (
+                <div className="flex gap-3">
+                  {[
+                    { val: true,  label: ar ? "✓ حاضر"   : "✓ Attending" },
+                    { val: false, label: ar ? "✗ اعتذار" : "✗ Decline"  },
+                  ].map(({ val, label }) => (
+                    <button key={String(val)} onClick={() => { setAttending(val); if (!val) setEventChoice(null) }}
+                      className="flex-1 py-4 rounded-xl font-medium tracking-wider transition"
+                      style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.8rem",
+                        background: attending === val ? (val ? GOLD : "rgba(255,255,255,0.14)") : "transparent",
+                        border: `1px solid ${attending === val ? (val ? GOLD : "rgba(255,255,255,0.4)") : "rgba(255,255,255,0.1)"}`,
+                        color: attending === val ? "white" : "rgba(255,255,255,0.38)" }}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                {requireEventChoice && (
                   <div className="space-y-2.5" dir={ar ? "rtl" : "ltr"}>
                     {eventOptions.map(opt => (
                       <button key={opt.id} type="button" onClick={() => setEventChoice(opt.id)}
@@ -838,22 +852,6 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                           {eventChoice === opt.id && <span className="w-2.5 h-2.5 rounded-full" style={{ background: GOLD }} />}
                         </span>
                         <span className="text-sm leading-snug" style={{ color: eventChoice === opt.id ? "white" : "rgba(255,255,255,0.55)" }}>{ar ? opt.labelAr : opt.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="flex gap-3">
-                    {[
-                      { val: true,  label: ar ? "✓ حاضر"   : "✓ Attending" },
-                      { val: false, label: ar ? "✗ اعتذار" : "✗ Decline"  },
-                    ].map(({ val, label }) => (
-                      <button key={String(val)} onClick={() => setAttending(val)}
-                        className="flex-1 py-4 rounded-xl font-medium tracking-wider transition"
-                        style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.8rem",
-                          background: attending === val ? (val ? GOLD : "rgba(255,255,255,0.14)") : "transparent",
-                          border: `1px solid ${attending === val ? (val ? GOLD : "rgba(255,255,255,0.4)") : "rgba(255,255,255,0.1)"}`,
-                          color: attending === val ? "white" : "rgba(255,255,255,0.38)" }}>
-                        {label}
                       </button>
                     ))}
                   </div>

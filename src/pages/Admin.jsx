@@ -733,7 +733,7 @@ function BuildInvitationModal({ order }) {
               className="w-4 h-4 rounded accent-[#c9a96e]" />
             <div>
               <p className="text-white/60 text-sm">🎉 Ask which events guests are attending</p>
-              <p className="text-white/25 text-xs mt-0.5">Replaces the simple Attending/Decline buttons with a required choice: both events, ceremony only, party only, or can't make it — using the venue names below. {extraData.hideCeremony ? "Unavailable while the ceremony card is hidden (only one event exists)." : ""}</p>
+              <p className="text-white/25 text-xs mt-0.5">Keeps the Attending/Decline buttons, but if a guest picks Attending they're then required to say which event(s) they're coming to — both, ceremony only, or party only — using the venue names below. {extraData.hideCeremony ? "Unavailable while the ceremony card is hidden (only one event exists)." : ""}</p>
             </div>
           </label>
           <div className="grid grid-cols-2 gap-3">
