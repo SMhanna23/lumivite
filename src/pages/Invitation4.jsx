@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
+import { arMonthName, formatArabicDate } from "../lib/arabicDate"
 
 const GOLD = "#c4a35a"
 const DARK = "#0c0b09"
@@ -177,7 +178,7 @@ function renderSectionOverlay(section, w, ar) {
     const day      = d.getDate()
     const year     = d.getFullYear()
     const time     = d.toLocaleString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
-    const monthAr  = d.toLocaleString("ar-EG", { month: "long" })
+    const monthAr  = arMonthName(d)
     const dayNameAr= d.toLocaleString("ar-EG", { weekday: "long" })
     const timeAr   = d.toLocaleString("ar-EG", { hour: "numeric", minute: "2-digit" })
 
@@ -772,7 +773,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
             </h2>
             <p className="mt-3 text-xs tracking-[0.35em] uppercase" style={{ color: "rgba(255,255,255,0.28)", fontFamily: "'Jost', sans-serif" }}>
               {ar
-                ? `يرجى الرد قبل ${w.rsvpDeadline ? new Date(w.rsvpDeadline + "T12:00:00").toLocaleDateString("ar-EG", { month: "long", day: "numeric" }) : "١ أغسطس"}`
+                ? `يرجى الرد قبل ${w.rsvpDeadline ? formatArabicDate(new Date(w.rsvpDeadline + "T12:00:00"), { withYear: false }) : "١ آب"}`
                 : `Kindly Reply By ${w.rsvpDeadline ? new Date(w.rsvpDeadline + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" }) : "August 1st"}`}
             </p>
             <p className="mt-1 text-sm italic" style={{ color: GOLD, fontFamily: "'Cormorant Garamond', serif" }}>

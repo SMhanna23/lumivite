@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
+import { formatArabicDate } from "../lib/arabicDate"
 
 const DEFAULT_WEDDING = {
   groom: "Christopher",
@@ -316,7 +317,7 @@ export default function Invitation({ override = null }) {
             <p className={`tracking-widest uppercase ${WEDDING.heroSubtextBold ? "text-[#4a7c59]" : "text-[#4a7c59]/70"}`}
               style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
               {ar
-                ? new Date(WEDDING.date).toLocaleDateString("ar-EG", { day: "numeric", month: "long", year: "numeric" })
+                ? formatArabicDate(new Date(WEDDING.date))
                 : new Date(WEDDING.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
             </p>
             <div className="h-px w-16 bg-[#4a7c59]/30" />
@@ -606,7 +607,7 @@ export default function Invitation({ override = null }) {
           transition={{ duration: 0.8 }} viewport={{ once: true }}>
           <p className="text-[#4a7c59] tracking-[0.3em] text-xs uppercase mb-4 font-medium">
             {ar
-              ? `يرجى الرد قبل ${WEDDING.rsvpDeadline ? new Date(WEDDING.rsvpDeadline + "T12:00:00").toLocaleDateString("ar-EG", { month: "long", day: "numeric" }) : "١ أغسطس"}`
+              ? `يرجى الرد قبل ${WEDDING.rsvpDeadline ? formatArabicDate(new Date(WEDDING.rsvpDeadline + "T12:00:00"), { withYear: false }) : "١ آب"}`
               : `Kindly Reply By ${WEDDING.rsvpDeadline ? new Date(WEDDING.rsvpDeadline + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" }) : "August 1st"}`}
           </p>
           <h2 className="mb-10" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3.5rem", fontWeight: 400, color: "#2d3a2e", lineHeight: 1.2 }}>

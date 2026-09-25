@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
+import { formatArabicDate } from "../lib/arabicDate"
 
 const DEFAULT_WEDDING = {
   groom: "Christopher",
@@ -293,7 +294,7 @@ export default function Invitation({ override = null }) {
           <p className={`tracking-widest uppercase mb-2 ${WEDDING.heroSubtextBold ? "text-white/90" : "text-white/50"}`}
             style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
             {ar
-              ? new Date(WEDDING.date).toLocaleDateString("ar-EG", { day: "numeric", month: "long", year: "numeric" })
+              ? formatArabicDate(new Date(WEDDING.date))
               : new Date(WEDDING.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
           </p>
           <p className={`mb-12 ${WEDDING.heroSubtextBold ? "text-white/80" : "text-white/45"}`}
@@ -531,7 +532,7 @@ export default function Invitation({ override = null }) {
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
           <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-4">
             {ar
-              ? `يرجى الرد قبل ${WEDDING.rsvpDeadline ? new Date(WEDDING.rsvpDeadline + "T12:00:00").toLocaleDateString("ar-EG", { month: "long", day: "numeric" }) : "١ أغسطس"}`
+              ? `يرجى الرد قبل ${WEDDING.rsvpDeadline ? formatArabicDate(new Date(WEDDING.rsvpDeadline + "T12:00:00"), { withYear: false }) : "١ آب"}`
               : `Kindly Reply By ${WEDDING.rsvpDeadline ? new Date(WEDDING.rsvpDeadline + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" }) : "August 1st"}`}
           </p>
           <h2 className="mb-10" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3.5rem", fontWeight: 400, color: "white", lineHeight: 1.2 }}>{ar ? "هل ستنضمون إلينا؟" : "Will you join us?"}</h2>
