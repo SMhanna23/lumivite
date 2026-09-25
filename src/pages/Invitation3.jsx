@@ -341,21 +341,23 @@ export default function Invitation({ override = null }) {
       {/* Quote + Parents */}
       <section className="py-16 px-6 text-center max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
-          <div className="flex items-center gap-4 justify-center mb-8">
-            <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
-            {!WEDDING.hideEmojis && <span className="text-2xl">🌹</span>}
-            <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
-          </div>
-          <p className="text-2xl md:text-3xl leading-relaxed opacity-80"
-            style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
-            "{ar ? WEDDING.quoteAr : WEDDING.quote}"
-          </p>
-          {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-sm mt-4 tracking-widest" style={{ color: roseGold }}>— {WEDDING.quoteRef}</p>}
-          <div className="flex items-center gap-4 justify-center mt-8 mb-10">
-            <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
-            {!WEDDING.hideEmojis && <span className="text-2xl">💮</span>}
-            <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
-          </div>
+          {!WEDDING.hideQuote && (<>
+            <div className="flex items-center gap-4 justify-center mb-8">
+              <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
+              {!WEDDING.hideEmojis && <span className="text-2xl">🌹</span>}
+              <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
+            </div>
+            <p className="text-2xl md:text-3xl leading-relaxed opacity-80"
+              style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
+              "{ar ? WEDDING.quoteAr : WEDDING.quote}"
+            </p>
+            {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-sm mt-4 tracking-widest" style={{ color: roseGold }}>— {WEDDING.quoteRef}</p>}
+            <div className="flex items-center gap-4 justify-center mt-8 mb-10">
+              <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
+              {!WEDDING.hideEmojis && <span className="text-2xl">💮</span>}
+              <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
+            </div>
+          </>)}
 
           {/* Parents cards */}
           <div className="grid grid-cols-2 gap-4 mb-6">

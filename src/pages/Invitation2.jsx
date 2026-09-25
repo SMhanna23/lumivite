@@ -339,21 +339,23 @@ export default function Invitation({ override = null }) {
       {/* Quote + Parents */}
       <section className="py-16 px-6 text-center max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
-          <div className="flex items-center gap-4 justify-center mb-8">
-            <div className="h-px w-20 bg-[#4a7c59]/30" />
-            {!WEDDING.hideEmojis && <span className="text-2xl">🌿</span>}
-            <div className="h-px w-20 bg-[#4a7c59]/30" />
-          </div>
-          <p className="text-[#2d3a2e]/80 text-2xl md:text-3xl leading-relaxed"
-            style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
-            "{ar ? WEDDING.quoteAr : WEDDING.quote}"
-          </p>
-          {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-[#4a7c59] text-sm mt-4 tracking-widest">— {WEDDING.quoteRef}</p>}
-          <div className="flex items-center gap-4 justify-center mt-8 mb-10">
-            <div className="h-px w-20 bg-[#4a7c59]/30" />
-            {!WEDDING.hideEmojis && <span className="text-2xl">🌸</span>}
-            <div className="h-px w-20 bg-[#4a7c59]/30" />
-          </div>
+          {!WEDDING.hideQuote && (<>
+            <div className="flex items-center gap-4 justify-center mb-8">
+              <div className="h-px w-20 bg-[#4a7c59]/30" />
+              {!WEDDING.hideEmojis && <span className="text-2xl">🌿</span>}
+              <div className="h-px w-20 bg-[#4a7c59]/30" />
+            </div>
+            <p className="text-[#2d3a2e]/80 text-2xl md:text-3xl leading-relaxed"
+              style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
+              "{ar ? WEDDING.quoteAr : WEDDING.quote}"
+            </p>
+            {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-[#4a7c59] text-sm mt-4 tracking-widest">— {WEDDING.quoteRef}</p>}
+            <div className="flex items-center gap-4 justify-center mt-8 mb-10">
+              <div className="h-px w-20 bg-[#4a7c59]/30" />
+              {!WEDDING.hideEmojis && <span className="text-2xl">🌸</span>}
+              <div className="h-px w-20 bg-[#4a7c59]/30" />
+            </div>
+          </>)}
 
           {/* Parents cards */}
           <div className="grid grid-cols-2 gap-4 mb-6">

@@ -431,14 +431,14 @@ function renderSectionOverlay(section, w, ar) {
       </p>
 
       {/* Quote */}
-      {(ar ? w.quoteAr : w.quote) && (
+      {!w.hideQuote && (ar ? w.quoteAr : w.quote) && (
         <p style={{ ...GV, fontSize: "clamp(1rem,3.2vw,1.3rem)", color: GOLD,
           textShadow: ts, marginTop: 18, fontStyle: "italic",
           maxWidth: "72vw", lineHeight: 1.5 }}>
           "{ar ? (w.quoteAr || w.quote) : (w.quote || w.quoteAr)}"
         </p>
       )}
-      {!w.hideQuoteRef && w.quoteRef && (
+      {!w.hideQuote && !w.hideQuoteRef && w.quoteRef && (
         <p style={{ ...J, fontSize: "0.52rem", letterSpacing: "0.32em", color: "rgba(255,255,255,0.42)",
           textShadow: ts, marginTop: 5 }}>
           — {w.quoteRef}

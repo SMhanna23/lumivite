@@ -107,6 +107,7 @@ function BuildInvitationModal({ order }) {
     quote: order.quote || "We love because he first loved us.",
     quoteAr: order.quoteAr || "نحن نحب لأنه هو أحبنا أولاً",
     quoteRef: order.quoteRef || "1 John 4:19",
+    hideQuote: false,
     hideQuoteRef: false,
     ceremonyPlaceAr: order.ceremonyPlaceAr || "",
     partyPlaceAr: order.partyPlaceAr || "",
@@ -182,6 +183,7 @@ function BuildInvitationModal({ order }) {
             quote: d.quote || "We love because he first loved us.",
             quoteAr: d.quoteAr || "نحن نحب لأنه هو أحبنا أولاً",
             quoteRef: d.quoteRef ?? "1 John 4:19",
+            hideQuote: d.hideQuote ?? false,
             hideQuoteRef: d.hideQuoteRef ?? false,
             ceremonyPlaceAr: d.venues?.[0]?.placeAr || "",
             partyPlaceAr: d.venues?.[1]?.placeAr || "",
@@ -281,6 +283,7 @@ function BuildInvitationModal({ order }) {
         quote: extraData.quote,
         quoteAr: extraData.quoteAr,
         quoteRef: extraData.quoteRef,
+        hideQuote: extraData.hideQuote ?? false,
         hideQuoteRef: extraData.hideQuoteRef ?? false,
         music: extraData.music,
         musicStart: extraData.musicStart ?? null,
@@ -361,6 +364,7 @@ function BuildInvitationModal({ order }) {
         quote: extraData.quote,
         quoteAr: extraData.quoteAr,
         quoteRef: extraData.quoteRef,
+        hideQuote: extraData.hideQuote ?? false,
         hideQuoteRef: extraData.hideQuoteRef ?? false,
         music: extraData.music,
         musicStart: extraData.musicStart ?? null,
@@ -621,18 +625,26 @@ function BuildInvitationModal({ order }) {
           </div>
 
           {/* Quote */}
-          <div>
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <input type="checkbox" checked={extraData.hideQuote ?? false} onChange={e => update("hideQuote", e.target.checked)}
+              className="w-4 h-4 rounded accent-[#c9a96e]" />
+            <div>
+              <p className="text-white/60 text-sm">🚫 Hide quote/verse section</p>
+              <p className="text-white/25 text-xs mt-0.5">Removes the quote, its reference, and the divider around it — for clients who don't want a quote on their invitation</p>
+            </div>
+          </label>
+          <div style={{ opacity: extraData.hideQuote ? 0.3 : 1, pointerEvents: extraData.hideQuote ? "none" : "auto" }}>
             <label className="text-white/30 text-xs mb-1 block">Quote (English)</label>
             <input value={extraData.quote} onChange={e => update("quote", e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
-          <div>
+          <div style={{ opacity: extraData.hideQuote ? 0.3 : 1, pointerEvents: extraData.hideQuote ? "none" : "auto" }}>
             <label className="text-white/30 text-xs mb-1 block">Quote (Arabic)</label>
             <input value={extraData.quoteAr} onChange={e => update("quoteAr", e.target.value)}
               dir="rtl"
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
-          <div>
+          <div style={{ opacity: extraData.hideQuote ? 0.3 : 1, pointerEvents: extraData.hideQuote ? "none" : "auto" }}>
             <label className="text-white/30 text-xs mb-1 block">Quote Author / Reference</label>
             <input value={extraData.quoteRef} onChange={e => update("quoteRef", e.target.value)}
               placeholder="1 John 4:19"
@@ -641,7 +653,7 @@ function BuildInvitationModal({ order }) {
             <label className="flex items-center gap-2 cursor-pointer select-none mt-2">
               <input type="checkbox" checked={extraData.hideQuoteRef ?? false} onChange={e => update("hideQuoteRef", e.target.checked)}
                 className="w-4 h-4 rounded accent-[#c9a96e]" />
-              <span className="text-white/35 text-xs">Hide author / reference line (for non-religious quotes)</span>
+              <span className="text-white/35 text-xs">Hide author / reference line only (for non-religious quotes)</span>
             </label>
           </div>
 
