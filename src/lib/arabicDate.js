@@ -18,3 +18,18 @@ export function formatArabicDate(date, { withYear = true } = {}) {
   const year = date.toLocaleDateString("ar-EG", { year: "numeric" })
   return `${day} ${month} ${year}`
 }
+
+const ARABIC_INDIC_DIGITS = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"]
+
+// Converts any Western digits (0-9) inside a string/number to Arabic-Indic digits,
+// leaving everything else (letters, "PM", punctuation) untouched.
+export function toArabicDigits(value) {
+  return String(value).replace(/[0-9]/g, d => ARABIC_INDIC_DIGITS[d])
+}
+
+// "1 person" / "2 people" / "5 persons" equivalent, e.g. for the RSVP guest-count dropdown.
+export function personsLabelAr(n) {
+  if (n === 1) return "شخص واحد"
+  if (n === 2) return "شخصان"
+  return `${toArabicDigits(n)} أشخاص`
+}

@@ -4,7 +4,9 @@ import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
-import { formatArabicDate } from "../lib/arabicDate"
+import { formatArabicDate, toArabicDigits, personsLabelAr } from "../lib/arabicDate"
+
+const COUNTDOWN_LABELS_AR = { days: "أيام", hours: "ساعات", mins: "دقائق", secs: "ثواني" }
 
 const DEFAULT_WEDDING = {
   groom: "Christopher",
@@ -36,7 +38,7 @@ const DEFAULT_WEDDING = {
   ],
 }
 
-function Countdown({ targetDate }) {
+function Countdown({ targetDate, ar }) {
   const [time, setTime] = useState({})
   useEffect(() => {
     const calc = () => {
@@ -59,9 +61,9 @@ function Countdown({ targetDate }) {
         <div key={label} className="flex flex-col items-center">
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-light"
             style={{ background: "rgba(198,143,119,0.15)", border: "1px solid rgba(198,143,119,0.4)", color: "#8B4D3B" }}>
-            {String(val).padStart(2, "0")}
+            {ar ? toArabicDigits(String(val).padStart(2, "0")) : String(val).padStart(2, "0")}
           </div>
-          <span className="text-xs mt-1 uppercase tracking-widest" style={{ color: "#C68F77" }}>{label}</span>
+          <span className="text-xs mt-1 uppercase tracking-widest" style={{ color: "#C68F77" }}>{ar ? COUNTDOWN_LABELS_AR[label] : label}</span>
         </div>
       ))}
     </div>
@@ -329,7 +331,7 @@ export default function Invitation({ override = null }) {
           <p className="mb-10" style={{ fontSize: subtextSize, fontWeight: subtextWeight, opacity: WEDDING.heroSubtextBold ? 0.75 : 0.5 }}>
             {ar ? WEDDING.venueAr : WEDDING.venue}
           </p>
-          <Countdown targetDate={WEDDING.date} />
+          <Countdown targetDate={WEDDING.date} ar={ar} />
         </motion.div>
 
         <motion.div className="absolute bottom-10 flex flex-col items-center gap-2 z-10"
@@ -433,7 +435,7 @@ export default function Invitation({ override = null }) {
                   <p className="text-xs tracking-widest uppercase mb-2 font-medium" style={{ color: roseGold }}>
                     {ar ? v.labelAr : v.label}
                   </p>
-                  <p className="text-3xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{v.time}</p>
+                  <p className="text-3xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? toArabicDigits(v.time) : v.time}</p>
                   <p className="font-medium mb-1">{ar ? v.placeAr : v.place}</p>
                   <p className="text-sm mb-4 opacity-50">{ar ? v.locationAr : v.location}</p>
                   {tier === "gold" && <a href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
@@ -485,7 +487,7 @@ export default function Invitation({ override = null }) {
                 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
                 <div className="text-right w-16 pt-1">
-                  <span className="text-xs opacity-50">{item.time}</span>
+                  <span className="text-xs opacity-50">{ar ? toArabicDigits(item.time) : item.time}</span>
                 </div>
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0 relative z-10 shadow-sm"
                   style={{ background: "white", border: `1px solid ${roseGold}50` }}>
@@ -612,7 +614,7 @@ export default function Invitation({ override = null }) {
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
                   className="w-full rounded-xl px-5 py-4 focus:outline-none transition"
                   style={{ background: "white", border: `1px solid ${roseGold}30`, color: dark }}>
-                  {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n} {n === 1 ? "person" : "persons"}</option>)}
+                  {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n}>{ar ? personsLabelAr(n) : `${n} ${n === 1 ? "person" : "persons"}`}</option>)}
                 </select>
                 <div className="flex gap-3">
                   <button onClick={() => setAttending(true)}

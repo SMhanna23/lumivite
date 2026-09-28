@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
-import { arMonthName, formatArabicDate } from "../lib/arabicDate"
+import { arMonthName, formatArabicDate, toArabicDigits, personsLabelAr } from "../lib/arabicDate"
 
 const GOLD = "#c4a35a"
 const DARK = "#0c0b09"
@@ -238,7 +238,7 @@ function renderSectionOverlay(section, w, ar) {
             </p>
             <p style={{ ...CG, fontSize: "clamp(2rem,7.5vw,3.8rem)", color: "white", fontWeight: 300,
               lineHeight: 1, textShadow: ts }}>
-              {day}
+              {ar ? toArabicDigits(day) : day}
             </p>
             <p style={{ ...J, fontSize: "0.52rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.58)",
               textTransform: "uppercase", textShadow: ts }}>
@@ -248,7 +248,7 @@ function renderSectionOverlay(section, w, ar) {
           <div style={{ width: "min(200px,56vw)", height: 1, background: "rgba(255,255,255,0.28)" }} />
           <p style={{ ...J, fontSize: "0.58rem", letterSpacing: "0.38em", color: "rgba(255,255,255,0.62)",
             textTransform: "uppercase", textShadow: ts, marginTop: 8 }}>
-            {year}
+            {ar ? toArabicDigits(year) : year}
           </p>
         </div>
       </motion.div>
@@ -310,7 +310,7 @@ function renderSectionOverlay(section, w, ar) {
                     {/* Text LEFT, icon RIGHT */}
                     <div style={{ flex: 1, textAlign: "right", paddingRight: 16 }}>
                       <p style={{ ...J, fontSize: "0.55rem", letterSpacing: "0.28em", color: GOLD,
-                        textTransform: "uppercase" }}>{item.time}</p>
+                        textTransform: "uppercase" }}>{ar ? toArabicDigits(item.time) : item.time}</p>
                       <p style={{ ...CG, fontSize: "clamp(0.95rem,3.2vw,1.15rem)", color: "white",
                         fontWeight: 400, lineHeight: 1.15, marginTop: 1 }}>
                         {ar ? (item.labelAr || item.label) : item.label}
@@ -336,7 +336,7 @@ function renderSectionOverlay(section, w, ar) {
                       flexShrink: 0, position: "relative", zIndex: 1 }} />
                     <div style={{ flex: 1, textAlign: "left", paddingLeft: 16 }}>
                       <p style={{ ...J, fontSize: "0.55rem", letterSpacing: "0.28em", color: GOLD,
-                        textTransform: "uppercase" }}>{item.time}</p>
+                        textTransform: "uppercase" }}>{ar ? toArabicDigits(item.time) : item.time}</p>
                       <p style={{ ...CG, fontSize: "clamp(0.95rem,3.2vw,1.15rem)", color: "white",
                         fontWeight: 400, lineHeight: 1.15, marginTop: 1 }}>
                         {ar ? (item.labelAr || item.label) : item.label}
@@ -790,12 +790,12 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                     target="_blank" rel="noopener noreferrer"
                     className="text-xs px-3 py-1.5 rounded-full transition"
                     style={{ border: `1px solid ${GOLD}35`, color: GOLD, fontFamily: "'Jost', sans-serif" }}>
-                    📍 {ar ? v.placeAr : v.place} · {v.time}
+                    📍 {ar ? v.placeAr : v.place} · {ar ? toArabicDigits(v.time) : v.time}
                   </a>
                 ) : (
                   <span key={i} className="text-xs px-3 py-1.5 rounded-full"
                     style={{ border: `1px solid ${GOLD}35`, color: GOLD, fontFamily: "'Jost', sans-serif" }}>
-                    📍 {ar ? v.placeAr : v.place} · {v.time}
+                    📍 {ar ? v.placeAr : v.place} · {ar ? toArabicDigits(v.time) : v.time}
                   </span>
                 )
               })}
@@ -823,7 +823,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
                   className="w-full rounded-xl px-5 py-4 text-white focus:outline-none"
                   style={{ background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", fontFamily: "'Jost', sans-serif" }}>
-                  {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n} style={{ background: "#1a1510" }}>{n} {n === 1 ? "person" : "persons"}</option>)}
+                  {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n} style={{ background: "#1a1510" }}>{ar ? personsLabelAr(n) : `${n} ${n === 1 ? "person" : "persons"}`}</option>)}
                 </select>
                 <div className="flex gap-3">
                   {[
