@@ -69,7 +69,7 @@ function Leaves() {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {Array.from({ length: 8 }).map((_, i) => (
-        <motion.div key={i} className="absolute text-2xl select-none"
+        <motion.div key={i} className="absolute text-2xl select-none" style={{ left: 0, top: 0 }}
           initial={{ x: `${Math.random() * 100}vw`, y: -40, opacity: 0.6 }}
           animate={{ y: "110vh", rotate: 180 * (Math.random() > 0.5 ? 1 : -1), opacity: [0.6, 0.3, 0] }}
           transition={{ duration: 8 + Math.random() * 8, repeat: Infinity, delay: Math.random() * 12, ease: "linear" }}>
