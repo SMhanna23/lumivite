@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
-import { formatArabicDate, toArabicDigits, personsLabelAr } from "../lib/arabicDate"
+import { formatArabicDate, toArabicDigits, toArabicTime, personsLabelAr } from "../lib/arabicDate"
 
 const COUNTDOWN_LABELS_AR = { days: "أيام", hours: "ساعات", mins: "دقائق", secs: "ثواني" }
 
@@ -391,7 +391,7 @@ export default function Invitation({ override = null }) {
           </div>
           <div className="p-6 text-center">
             <p className="text-[#c9a96e] text-xs tracking-widest uppercase mb-2">{ar ? v.labelAr : v.label}</p>
-            <p className="font-serif text-2xl font-light mb-1">{ar ? toArabicDigits(v.time) : v.time}</p>
+            <p className="font-serif text-2xl font-light mb-1">{ar ? toArabicTime(v.time) : v.time}</p>
             <p className="text-white font-medium mb-1">{ar ? v.placeAr : v.place}</p>
             <p className="text-white/40 text-sm mb-4">{ar ? v.locationAr : v.location}</p>
             {tier === "gold" && (
@@ -440,7 +440,7 @@ export default function Invitation({ override = null }) {
                 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
                 <div className="text-right w-16 pt-1">
-                  <span className="text-white/40 text-xs">{ar ? toArabicDigits(item.time) : item.time}</span>
+                  <span className="text-white/40 text-xs">{ar ? toArabicTime(item.time) : item.time}</span>
                 </div>
                 <div className="w-8 h-8 rounded-full bg-[#1a1510] border border-[#c9a96e]/40 flex items-center justify-center text-sm flex-shrink-0 relative z-10">
                   {item.icon}

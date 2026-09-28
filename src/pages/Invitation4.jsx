@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
-import { arMonthName, formatArabicDate, toArabicDigits, personsLabelAr } from "../lib/arabicDate"
+import { arMonthName, formatArabicDate, toArabicDigits, toArabicTime, personsLabelAr } from "../lib/arabicDate"
 
 const GOLD = "#c4a35a"
 const DARK = "#0c0b09"
@@ -310,7 +310,7 @@ function renderSectionOverlay(section, w, ar) {
                     {/* Text LEFT, icon RIGHT */}
                     <div style={{ flex: 1, textAlign: "right", paddingRight: 16 }}>
                       <p style={{ ...J, fontSize: "0.55rem", letterSpacing: "0.28em", color: GOLD,
-                        textTransform: "uppercase" }}>{ar ? toArabicDigits(item.time) : item.time}</p>
+                        textTransform: "uppercase" }}>{ar ? toArabicTime(item.time) : item.time}</p>
                       <p style={{ ...CG, fontSize: "clamp(0.95rem,3.2vw,1.15rem)", color: "white",
                         fontWeight: 400, lineHeight: 1.15, marginTop: 1 }}>
                         {ar ? (item.labelAr || item.label) : item.label}
@@ -336,7 +336,7 @@ function renderSectionOverlay(section, w, ar) {
                       flexShrink: 0, position: "relative", zIndex: 1 }} />
                     <div style={{ flex: 1, textAlign: "left", paddingLeft: 16 }}>
                       <p style={{ ...J, fontSize: "0.55rem", letterSpacing: "0.28em", color: GOLD,
-                        textTransform: "uppercase" }}>{ar ? toArabicDigits(item.time) : item.time}</p>
+                        textTransform: "uppercase" }}>{ar ? toArabicTime(item.time) : item.time}</p>
                       <p style={{ ...CG, fontSize: "clamp(0.95rem,3.2vw,1.15rem)", color: "white",
                         fontWeight: 400, lineHeight: 1.15, marginTop: 1 }}>
                         {ar ? (item.labelAr || item.label) : item.label}
@@ -790,12 +790,12 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                     target="_blank" rel="noopener noreferrer"
                     className="text-xs px-3 py-1.5 rounded-full transition"
                     style={{ border: `1px solid ${GOLD}35`, color: GOLD, fontFamily: "'Jost', sans-serif" }}>
-                    📍 {ar ? v.placeAr : v.place} · {ar ? toArabicDigits(v.time) : v.time}
+                    📍 {ar ? v.placeAr : v.place} · {ar ? toArabicTime(v.time) : v.time}
                   </a>
                 ) : (
                   <span key={i} className="text-xs px-3 py-1.5 rounded-full"
                     style={{ border: `1px solid ${GOLD}35`, color: GOLD, fontFamily: "'Jost', sans-serif" }}>
-                    📍 {ar ? v.placeAr : v.place} · {ar ? toArabicDigits(v.time) : v.time}
+                    📍 {ar ? v.placeAr : v.place} · {ar ? toArabicTime(v.time) : v.time}
                   </span>
                 )
               })}

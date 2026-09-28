@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
-import { formatArabicDate, toArabicDigits, personsLabelAr } from "../lib/arabicDate"
+import { formatArabicDate, toArabicDigits, toArabicTime, personsLabelAr } from "../lib/arabicDate"
 
 const COUNTDOWN_LABELS_AR = { days: "أيام", hours: "ساعات", mins: "دقائق", secs: "ثواني" }
 
@@ -433,7 +433,7 @@ export default function Invitation({ override = null }) {
                     {ar ? v.labelAr : v.label}
                   </p>
                   <p className="text-3xl font-light mb-1 text-[#2d3a2e]"
-                    style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? toArabicDigits(v.time) : v.time}</p>
+                    style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? toArabicTime(v.time) : v.time}</p>
                   <p className="text-[#2d3a2e] font-medium mb-1">{ar ? v.placeAr : v.place}</p>
                   <p className="text-[#4a7c59]/60 text-sm mb-4">{ar ? v.locationAr : v.location}</p>
                   {tier === "gold" && <a href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
@@ -485,7 +485,7 @@ export default function Invitation({ override = null }) {
                 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
                 <div className="text-right w-16 pt-1">
-                  <span className="text-[#4a7c59]/50 text-xs">{ar ? toArabicDigits(item.time) : item.time}</span>
+                  <span className="text-[#4a7c59]/50 text-xs">{ar ? toArabicTime(item.time) : item.time}</span>
                 </div>
                 <div className="w-8 h-8 rounded-full bg-white border border-[#4a7c59]/40 flex items-center justify-center text-sm flex-shrink-0 relative z-10 shadow-sm">
                   {item.icon}

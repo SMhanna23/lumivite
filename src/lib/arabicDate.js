@@ -27,6 +27,14 @@ export function toArabicDigits(value) {
   return String(value).replace(/[0-9]/g, d => ARABIC_INDIC_DIGITS[d])
 }
 
+// Converts a free-text time string like "6:00 PM" or "PM 5:00" to Arabic:
+// digits become Arabic-Indic and AM/PM become صباحاً/مساءً, wherever they appear.
+export function toArabicTime(value) {
+  return toArabicDigits(value)
+    .replace(/\bPM\b/gi, "مساءً")
+    .replace(/\bAM\b/gi, "صباحاً")
+}
+
 // "1 person" / "2 people" / "5 persons" equivalent, e.g. for the RSVP guest-count dropdown.
 export function personsLabelAr(n) {
   if (n === 1) return "شخص واحد"

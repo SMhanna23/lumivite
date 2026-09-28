@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
-import { formatArabicDate, toArabicDigits, personsLabelAr } from "../lib/arabicDate"
+import { formatArabicDate, toArabicDigits, toArabicTime, personsLabelAr } from "../lib/arabicDate"
 
 const COUNTDOWN_LABELS_AR = { days: "أيام", hours: "ساعات", mins: "دقائق", secs: "ثواني" }
 
@@ -435,7 +435,7 @@ export default function Invitation({ override = null }) {
                   <p className="text-xs tracking-widest uppercase mb-2 font-medium" style={{ color: roseGold }}>
                     {ar ? v.labelAr : v.label}
                   </p>
-                  <p className="text-3xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? toArabicDigits(v.time) : v.time}</p>
+                  <p className="text-3xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? toArabicTime(v.time) : v.time}</p>
                   <p className="font-medium mb-1">{ar ? v.placeAr : v.place}</p>
                   <p className="text-sm mb-4 opacity-50">{ar ? v.locationAr : v.location}</p>
                   {tier === "gold" && <a href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
@@ -487,7 +487,7 @@ export default function Invitation({ override = null }) {
                 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
                 <div className="text-right w-16 pt-1">
-                  <span className="text-xs opacity-50">{ar ? toArabicDigits(item.time) : item.time}</span>
+                  <span className="text-xs opacity-50">{ar ? toArabicTime(item.time) : item.time}</span>
                 </div>
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0 relative z-10 shadow-sm"
                   style={{ background: "white", border: `1px solid ${roseGold}50` }}>
