@@ -224,7 +224,7 @@ export default function Invitation({ override = null }) {
   return (
     <div className={started ? "min-h-screen bg-[#0d0a08] text-white overflow-x-hidden relative" : "fixed inset-0"}
       dir={ar ? "rtl" : "ltr"}
-      style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>
+      style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol'" : "inherit" }}>
 
       {/* Music — Silver and Gold only */}
       {tier !== "bronze" && (ytId ? (
