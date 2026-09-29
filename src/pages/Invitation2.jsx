@@ -294,7 +294,7 @@ export default function Invitation({ override = null }) {
         </>}
 
         <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
-          <p className="text-[#4a7c59] tracking-[0.4em] text-xs uppercase mb-8 font-medium">
+          <p className="text-[#4a7c59] tracking-[0.4em] text-sm uppercase mb-8 font-medium">
             {ar ? "نحن نتزوج" : "We're getting married"}
           </p>
 
@@ -381,7 +381,7 @@ export default function Invitation({ override = null }) {
       {tier !== "bronze" && <section className="py-12 px-6 max-w-xl mx-auto relative z-10">
         <motion.div className="text-center mb-10"
           initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="text-[#4a7c59] tracking-[0.3em] text-xs uppercase mb-3 font-medium">{ar ? "قبل الأبد" : "Before Forever"}</p>
+          <p className="text-[#4a7c59] tracking-[0.3em] text-sm uppercase mb-3 font-medium">{ar ? "قبل الأبد" : "Before Forever"}</p>
           <h2 className="mb-3" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.5rem" : "3.8rem", color: "#2d3a2e", fontWeight: 400, lineHeight: 1.2 }}>
             {ar ? "لمحة منّا" : "A glimpse of us"}
           </h2>
@@ -407,7 +407,7 @@ export default function Invitation({ override = null }) {
       {/* Venues */}
       <section className="py-16 px-6 max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="text-[#4a7c59] tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium">
+          <p className="text-[#4a7c59] tracking-[0.3em] text-sm uppercase text-center mb-2 font-medium">
             {ar ? "انضموا إلينا" : "Join Us"}
           </p>
           <h2 className="font-light text-center mb-12 text-[#2d3a2e]"
@@ -429,7 +429,7 @@ export default function Invitation({ override = null }) {
                   />
                 </div>
                 <div className="p-6 text-center">
-                  <p className="text-[#4a7c59] text-xs tracking-widest uppercase mb-2 font-medium">
+                  <p className="text-[#4a7c59] text-sm tracking-widest uppercase mb-2 font-medium">
                     {ar ? v.labelAr : v.label}
                   </p>
                   <p className="text-3xl font-light mb-1 text-[#2d3a2e]"
@@ -522,7 +522,7 @@ export default function Invitation({ override = null }) {
       {/* Gift Registry (Gold only) */}
       {tier === "gold" && WEDDING.registry?.length > 0 && <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="text-[#4a7c59] tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium">
+          <p className="text-[#4a7c59] tracking-[0.3em] text-sm uppercase text-center mb-2 font-medium">
             {ar ? "بكل محبة" : "With Love"}
           </p>
           <h2 className="font-light text-center mb-4 text-[#2d3a2e]"
@@ -607,7 +607,7 @@ export default function Invitation({ override = null }) {
       <section className="py-24 px-6 max-w-md mx-auto text-center relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }} viewport={{ once: true }}>
-          <p className="text-[#4a7c59] tracking-[0.3em] text-xs uppercase mb-4 font-medium">
+          <p className="text-[#4a7c59] tracking-[0.3em] text-sm uppercase mb-4 font-medium">
             {ar
               ? `يرجى الرد قبل ${WEDDING.rsvpDeadline ? formatArabicDate(new Date(WEDDING.rsvpDeadline + "T12:00:00"), { withYear: false }) : "١ آب"}`
               : `Kindly Reply By ${WEDDING.rsvpDeadline ? new Date(WEDDING.rsvpDeadline + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" }) : "August 1st"}`}

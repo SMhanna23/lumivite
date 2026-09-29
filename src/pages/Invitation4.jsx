@@ -771,7 +771,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
             <h2 className="mt-1" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.8rem,10vw,4.2rem)", fontWeight: 300, color: "white", lineHeight: 1, letterSpacing: "0.06em" }}>
               {ar ? "ردّوا علينا" : "R S V P"}
             </h2>
-            <p className="mt-3 text-xs tracking-[0.35em] uppercase" style={{ color: "rgba(255,255,255,0.28)", fontFamily: "'Jost', sans-serif" }}>
+            <p className="mt-3 text-sm tracking-[0.35em] uppercase" style={{ color: "rgba(255,255,255,0.28)", fontFamily: "'Jost', sans-serif" }}>
               {ar
                 ? `يرجى الرد قبل ${w.rsvpDeadline ? formatArabicDate(new Date(w.rsvpDeadline + "T12:00:00"), { withYear: false }) : "١ آب"}`
                 : `Kindly Reply By ${w.rsvpDeadline ? new Date(w.rsvpDeadline + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" }) : "August 1st"}`}
