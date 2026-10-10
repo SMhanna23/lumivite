@@ -22,14 +22,14 @@ const THEMES = {
   },
   3: {
     path: "/demo3",
-    name: "Rose Gold Romance",
-    description: "A romantic digital wedding invitation in rose gold and blush, with cinematic video, music, and RSVP tracking. Preview the Rose Gold Romance template.",
+    name: "Rose Gold & Blush",
+    description: "A romantic digital wedding invitation in rose gold and blush, with cinematic video, music, and RSVP tracking. Preview the Rose Gold & Blush template.",
     image: "demo-og-rose-gold-romance.png",
   },
   4: {
     path: "/demo4",
-    name: "Black Tie Gold",
-    description: "A formal black-tie digital wedding invitation in obsidian and gold, with cinematic video, music, and RSVP tracking. Preview the Black Tie Gold template.",
+    name: "Cinematic Sand & Seal",
+    description: "A formal digital wedding invitation in warm sand tones with cinematic elegance, music, and RSVP tracking. Preview the Cinematic Sand & Seal template.",
     image: "demo-og-black-tie-gold.png",
   },
 }

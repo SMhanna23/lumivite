@@ -188,7 +188,7 @@ export default function Landing() {
             <p className="text-[#4a7c59]/40 text-xs tracking-widest">TAP TO OPEN</p>
           </div>
           <div className="bg-[#4a7c59]/10 py-3 px-6 flex items-center justify-between border-t border-[#4a7c59]/10">
-            <span className="text-[#4a7c59] text-sm font-medium">Botanical Garden</span>
+            <span className="text-[#4a7c59] text-sm font-medium">Garden Romance</span>
             <span className="text-[#4a7c59]/40 text-xs group-hover:text-[#4a7c59] transition">View Demo →</span>
           </div>
         </motion.div>
@@ -221,7 +221,7 @@ export default function Landing() {
         </motion.div>
       </a>
 
-      {/* Template 4 - Golden Envelope */}
+      {/* Template 4 - Cinematic Sand & Seal */}
       <a href="/demo4" className="group block">
         <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}
           className="rounded-3xl overflow-hidden shadow-2xl"
@@ -241,7 +241,7 @@ export default function Landing() {
           </div>
           <div className="py-3 px-6 flex items-center justify-between"
             style={{ background: "rgba(196,163,90,0.06)", borderTop: "1px solid rgba(196,163,90,0.15)" }}>
-            <span className="text-sm font-medium" style={{ color: "#c4a35a" }}>Golden Envelope</span>
+            <span className="text-sm font-medium" style={{ color: "#c4a35a" }}>Cinematic Sand & Seal</span>
             <span className="text-xs transition group-hover:opacity-100" style={{ color: "rgba(196,163,90,0.5)" }}>View Demo →</span>
           </div>
         </motion.div>
@@ -414,7 +414,6 @@ export default function Landing() {
           </h2>
           <p className="text-white/40 mb-10">Join couples who chose Lumivite for their special day</p>
           <a href="/order"
-            target="_blank" rel="noopener noreferrer"
             className="inline-block bg-[#c9a96e] text-black font-semibold px-10 py-4 rounded-full hover:bg-[#b8965d] transition text-sm tracking-wider">
             START YOUR INVITATION →
           </a>

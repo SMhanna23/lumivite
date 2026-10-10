@@ -14,7 +14,7 @@ const packages = [
 
 const templates = [
   { id: "dark", name: "Dark Luxury", nameAr: "فاخر داكن", preview: "🌑", desc: "Elegant dark theme with gold accents", descAr: "تصميم داكن أنيق مع لمسات ذهبية", link: "/demo" },
-  { id: "botanical", name: "Botanical Garden", nameAr: "الحديقة النباتية", preview: "🌿", desc: "Fresh white & sage green", descAr: "أبيض منعش مع أخضر حكيمي", link: "/demo2" },
+  { id: "botanical", name: "Garden Romance", nameAr: "رومانسية الحديقة", preview: "🌿", desc: "Fresh white & sage green", descAr: "أبيض منعش مع أخضر حكيمي", link: "/demo2" },
   { id: "rosegold", name: "Rose Gold & Blush", nameAr: "ذهبي وردي", preview: "🌸", desc: "Romantic blush pink tones", descAr: "درجات وردية رومانسية", link: "/demo3" },
   { id: "sand", name: "Cinematic Sand & Seal", nameAr: "رملي سينمائي", preview: "🏺", desc: "Warm sand tones with cinematic elegance", descAr: "درجات رملية دافئة بأناقة سينمائية", link: "/demo4" },
 ]
