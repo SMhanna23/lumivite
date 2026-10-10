@@ -277,6 +277,16 @@ export default function Landing() {
       </a>
 
       </div>
+
+      <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+        className="mt-10 text-center">
+        <a href="/demo-dashboard" target="_blank" rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-sm px-6 py-3 rounded-full border transition"
+          style={{ borderColor: "rgba(201,169,110,0.3)", color: "#c9a96e", background: "rgba(201,169,110,0.06)" }}>
+          📊 See a Live RSVP Dashboard Demo →
+        </a>
+      </motion.div>
+
       </motion.div>
       </section>
 

@@ -12,6 +12,7 @@ import Admin from "./pages/Admin"
 import Login from "./pages/Login"
 import Order from "./pages/Order"
 import Dashboard from "./pages/Dashboard"
+import DemoDashboard from "./pages/DemoDashboard"
 import Memories from "./pages/Memories"
 import MyOrder from "./pages/MyOrder"
 import NotFound from "./pages/NotFound"
@@ -45,6 +46,7 @@ export default function App() {
         <Route path="/order" element={<Order />} />
         <Route path="/my-order/:orderId" element={<MyOrder />} />
         <Route path="/dashboard/:slug" element={<Dashboard />} />
+        <Route path="/demo-dashboard" element={<DemoDashboard />} />
         <Route path="/memories/:slug" element={<Memories />} />
         <Route path="/admin/login" element={user ? <Navigate to="/admin" /> : <Login />} />
         <Route path="/admin" element={<ProtectedRoute user={user}><Admin /></ProtectedRoute>} />
