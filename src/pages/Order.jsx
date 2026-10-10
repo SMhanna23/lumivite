@@ -9,7 +9,7 @@ import Logo from "../components/Logo"
 const packages = [
   { id: "bronze", name: "Bronze", nameAr: "برونز", price: "$89", priceValue: 89, color: "#cd7f32", features: ["1 template", "RSVP dashboard", "Countdown timer", "1 shared link"], featuresAr: ["قالب واحد", "لوحة RSVP", "عداد تنازلي", "رابط مشترك واحد"] },
   { id: "silver", name: "Silver", nameAr: "فضي", price: "$139", priceValue: 139, color: "#c9a96e", features: ["Personalized guest links", "Background music", "Photo gallery", "Excel import"], featuresAr: ["روابط مخصصة للضيوف", "موسيقى خلفية", "معرض صور", "استيراد Excel"], popular: true },
-  { id: "gold", name: "Gold", nameAr: "ذهبي", price: "$199", priceValue: 199, color: "#ffd700", features: ["All 4 template choices", "Google Maps embed", "Guest Memory Wall", "Priority support"], featuresAr: ["4 خيارات قوالب", "خريطة Google", "جدار ذكريات الضيوف", "دعم أولوية"] },
+  { id: "gold", name: "Gold", nameAr: "ذهبي", price: "$199", priceValue: 199, color: "#ffd700", features: ["All template choices", "Google Maps embed", "Guest Memory Wall", "Priority support"], featuresAr: ["كل خيارات القوالب", "خريطة Google", "جدار ذكريات الضيوف", "دعم أولوية"] },
 ]
 
 const templates = [
@@ -18,6 +18,8 @@ const templates = [
   { id: "rosegold", name: "Rose Gold & Blush", nameAr: "ذهبي وردي", preview: "🌸", desc: "Romantic blush pink tones", descAr: "درجات وردية رومانسية", link: "/demo3" },
   { id: "sand", name: "Cinematic Sand & Seal", nameAr: "رملي سينمائي", preview: "🏺", desc: "Warm sand tones with cinematic elegance", descAr: "درجات رملية دافئة بأناقة سينمائية", link: "/demo4" },
 ]
+
+const birthdayTemplate = { id: "birthday", name: "Golden Soirée", nameAr: "سواريه ذهبية", preview: "🎂", desc: "Magnificent black & gold milestone birthday invitation", descAr: "دعوة عيد ميلاد فاخرة بالأسود والذهبي", link: "/demo-birthday" }
 
 const T = {
   en: {
@@ -157,6 +159,24 @@ const T = {
     noteEnPh: "e.g. Although we adore your little ones, we have chosen to make our wedding an adults-only celebration.",
     noteArLabel: "Additional Note — Arabic (optional)",
     noteArPh: "نوما هنيئاً لأطفالكم",
+    eventTypeWedding: "💍 Wedding",
+    eventTypeBirthday: "🎂 Birthday",
+    birthdayDetails: "Birthday Details",
+    birthdayDetailsSub: "Tell us about the celebration",
+    celebrantName: "Celebrant's Name",
+    celebrantPh: "Sofia",
+    celebrantNameAr: "Celebrant's Name (Arabic, optional)",
+    celebrantArPh: "صوفيا",
+    age: "Turning Age",
+    agePh: "30",
+    eventDate: "Event Date",
+    venueDetails: "Venue",
+    celebrant: "Celebrant",
+    ceremonyLabelBday: "Cocktail Hour",
+    welcomeLabelBday: "Dinner & Toasts",
+    partyLabelBday: "Dancing",
+    timelineBday: "Night's Program (optional)",
+    noteEnPhBday: "e.g. Your presence is the greatest gift — no need to bring anything else.",
   },
   ar: {
     steps: ["الباقة", "القالب", "التفاصيل", "التخصيص", "التواصل", "الدفع"],
@@ -295,6 +315,24 @@ const T = {
     noteEnPh: "مثال: على الرغم من حبنا لأطفالكم، اخترنا أن يكون زفافنا للكبار فقط.",
     noteArLabel: "ملاحظة إضافية بالعربية (اختياري)",
     noteArPh: "نوماً هنيئاً لأطفالكم",
+    eventTypeWedding: "💍 زفاف",
+    eventTypeBirthday: "🎂 عيد ميلاد",
+    birthdayDetails: "تفاصيل عيد الميلاد",
+    birthdayDetailsSub: "أخبرنا عن الاحتفال",
+    celebrantName: "اسم صاحب العيد",
+    celebrantPh: "صوفيا",
+    celebrantNameAr: "اسم صاحب العيد بالعربية (اختياري)",
+    celebrantArPh: "صوفيا",
+    age: "العمر الذي يتم الاحتفال به",
+    agePh: "30",
+    eventDate: "تاريخ الحفل",
+    venueDetails: "المكان",
+    celebrant: "صاحب العيد",
+    ceremonyLabelBday: "ساعة الكوكتيل",
+    welcomeLabelBday: "العشاء ونخب",
+    partyLabelBday: "سهرة راقصة",
+    timelineBday: "برنامج الأمسية (اختياري)",
+    noteEnPhBday: "مثال: حضوركم هو أثمن هدية — لا حاجة لإحضار أي شيء آخر.",
   }
 }
 
@@ -308,6 +346,7 @@ export default function Order() {
 
   const [form, setForm] = useState({
     package: "", template: "", groomName: "", brideName: "", groomAr: "", brideAr: "",
+    age: "",
     parentsEn: "", parentsAr: "",
     weddingDate: "", ceremonyPlace: "", ceremonyTime: "", ceremonyPlaceAr: "",
     partyPlace: "", partyTime: "", partyPlaceAr: "",
@@ -327,9 +366,12 @@ export default function Order() {
 
   const update = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
-  // Auto-select dark template when Bronze is chosen — it's the only option
+  const isBirthday = form.template === "birthday"
+  const [tplTab, setTplTab] = useState("wedding")
+
+  // Auto-select dark template when Bronze is chosen on the wedding tab — it's the only option
   useEffect(() => {
-    if (form.package === "bronze") update("template", "dark")
+    if (form.package === "bronze" && form.template !== "birthday") update("template", "dark")
   }, [form.package])
 
   useEffect(() => {
@@ -351,7 +393,8 @@ export default function Order() {
           content_name: form.package,
         })
       }
-      const msg = `🎉 New Order on Lumivite!\n📦 ${form.package.toUpperCase()} Package — ${packages.find(p => p.id === form.package)?.price}\n🎨 ${form.template} Template\n💒 ${form.groomName} & ${form.brideName}\n📅 ${form.weddingDate}\n👤 Client: ${form.yourName}\n📞 ${form.yourPhone}\n⚠️ Awaiting payment confirmation!`
+      const eventLine = isBirthday ? `🎂 ${form.groomName}'s ${form.age}th Birthday` : `💒 ${form.groomName} & ${form.brideName}`
+      const msg = `🎉 New Order on Lumivite!\n📦 ${form.package.toUpperCase()} Package — ${packages.find(p => p.id === form.package)?.price}\n🎨 ${form.template} Template\n${eventLine}\n📅 ${form.weddingDate}\n👤 Client: ${form.yourName}\n📞 ${form.yourPhone}\n⚠️ Awaiting payment confirmation!`
       fetch("/api/notify-whatsapp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -364,7 +407,7 @@ export default function Order() {
           {
             to_name: form.yourName,
             to_email: form.yourEmail,
-            couple: `${form.groomName} & ${form.brideName}`,
+            couple: isBirthday ? `${form.groomName}'s ${form.age}th Birthday` : `${form.groomName} & ${form.brideName}`,
             package: `${form.package.charAt(0).toUpperCase() + form.package.slice(1)} — ${packages.find(p => p.id === form.package)?.price}`,
             wedding_date: form.weddingDate,
             order_link: `https://www.lumivite.net/my-order/${docRef.id}`,
@@ -468,13 +511,54 @@ export default function Order() {
             <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="font-serif text-3xl font-light text-center mb-2">{t.chooseTemplate}</h2>
               <p className="text-white/40 text-center text-sm mb-6">{t.chooseTemplateSub}</p>
-              {form.package === "bronze" && (
+
+              {/* Event type tabs */}
+              <div className="flex gap-2 justify-center mb-8">
+                {[["wedding", t.eventTypeWedding], ["birthday", t.eventTypeBirthday]].map(([id, label]) => (
+                  <button key={id} type="button"
+                    onClick={() => { setTplTab(id); if (id === "birthday") update("template", "birthday"); else if (form.template === "birthday") update("template", "") }}
+                    className="px-5 py-2.5 rounded-xl text-sm font-medium transition"
+                    style={{ background: tplTab === id ? "#c9a96e" : "rgba(255,255,255,0.05)", color: tplTab === id ? "black" : "rgba(255,255,255,0.5)" }}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {tplTab === "wedding" && form.package === "bronze" && (
                 <p className="text-center text-xs mb-8 py-2 px-4 rounded-xl border"
                   style={{ color: "#cd7f32", borderColor: "rgba(205,127,50,0.3)", background: "rgba(205,127,50,0.07)" }}>
                   {t.bronzeTemplateNote}
                 </p>
               )}
-              <div className="grid gap-4">
+
+              {tplTab === "birthday" && (
+                <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
+                  onClick={() => update("template", "birthday")}
+                  className="p-6 rounded-2xl border transition flex items-center gap-5 cursor-pointer"
+                  style={{
+                    borderColor: form.template === "birthday" ? "#c9a96e" : "rgba(255,255,255,0.1)",
+                    background: form.template === "birthday" ? "rgba(201,169,110,0.08)" : "rgba(255,255,255,0.02)",
+                  }}>
+                  <div className="text-4xl">{birthdayTemplate.preview}</div>
+                  <div className="flex-1">
+                    <p className="font-medium text-white">{isAr ? birthdayTemplate.nameAr : birthdayTemplate.name}</p>
+                    <p className="text-white/40 text-sm">{isAr ? birthdayTemplate.descAr : birthdayTemplate.desc}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <a href={birthdayTemplate.link} target="_blank" rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">
+                      {t.preview}
+                    </a>
+                    <div className="w-6 h-6 rounded-full border-2 border-[#c9a96e] flex items-center justify-center"
+                      style={{ background: form.template === "birthday" ? "#c9a96e" : "transparent" }}>
+                      {form.template === "birthday" && <span className="text-black text-xs">✓</span>}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {tplTab === "wedding" && <div className="grid gap-4">
                 {templates.map(tmpl => {
                   const locked = form.package === "bronze" && tmpl.id !== "dark"
                   return (
@@ -517,7 +601,7 @@ export default function Order() {
                     </motion.div>
                   )
                 })}
-              </div>
+              </div>}
               <div className="flex gap-3 mt-8">
                 <button onClick={() => setStep(0)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
                 <button onClick={() => setStep(2)} disabled={!form.template}
@@ -530,114 +614,194 @@ export default function Order() {
           {/* STEP 2 - Wedding Details */}
           {step === 2 && (
             <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <h2 className="font-serif text-3xl font-light text-center mb-2">{t.weddingDetails}</h2>
-              <p className="text-white/40 text-center text-sm mb-10">{t.weddingDetailsSub}</p>
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  {[[t.groomName, "groomName", t.groomPh], [t.brideName, "brideName", t.bridePh]].map(([label, key, ph]) => (
-                    <div key={key}>
-                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{label}</label>
-                      <input value={form[key]} onChange={e => update(key, e.target.value)} placeholder={ph} className={inp} />
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  {[[t.groomNameAr, "groomAr", t.groomArPh], [t.brideNameAr, "brideAr", t.brideArPh]].map(([label, key, ph]) => (
-                    <div key={key}>
-                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{label}</label>
-                      <input value={form[key]} onChange={e => update(key, e.target.value)} placeholder={ph} dir="rtl" className={inp} />
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.parents}</label>
-                  <textarea value={form.parentsEn} onChange={e => update("parentsEn", e.target.value)} placeholder={t.parentsPh} rows={2}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
-                  <p className="text-white/20 text-xs mt-1">{t.parentsHint}</p>
-                </div>
-                <div>
-                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.parentsAr}</label>
-                  <textarea value={form.parentsAr} onChange={e => update("parentsAr", e.target.value)} placeholder={t.parentsArPh} rows={2} dir="rtl"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
-                </div>
-                <div>
-                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.weddingDate}</label>
-                  <input value={form.weddingDate} onChange={e => update("weddingDate", e.target.value)} type="date" className={inp} />
-                </div>
-                <div className="pt-2">
-                  <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">{t.ceremonyVenue}</p>
+              <h2 className="font-serif text-3xl font-light text-center mb-2">{isBirthday ? t.birthdayDetails : t.weddingDetails}</h2>
+              <p className="text-white/40 text-center text-sm mb-10">{isBirthday ? t.birthdayDetailsSub : t.weddingDetailsSub}</p>
+              {isBirthday ? (
+                <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-white/40 text-xs mb-2 block">{t.placeName}</label>
-                      <input value={form.ceremonyPlace} onChange={e => update("ceremonyPlace", e.target.value)} placeholder={t.ceremonyPh} className={inp} />
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.celebrantName}</label>
+                      <input value={form.groomName} onChange={e => update("groomName", e.target.value)} placeholder={t.celebrantPh} className={inp} />
                     </div>
                     <div>
-                      <label className="text-white/40 text-xs mb-2 block">{t.time}</label>
-                      <input value={form.ceremonyTime} onChange={e => update("ceremonyTime", e.target.value)} placeholder={t.ceremonyTimePh} className={inp} />
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.age}</label>
+                      <input value={form.age} onChange={e => update("age", e.target.value)} placeholder={t.agePh} type="number" className={inp} />
                     </div>
                   </div>
-                  <div className="mt-4">
-                    <label className="text-white/40 text-xs mb-2 block">{t.placeNameAr}</label>
-                    <input value={form.ceremonyPlaceAr} onChange={e => update("ceremonyPlaceAr", e.target.value)} placeholder={t.ceremonyPh} dir="rtl" className={inp} />
-                  </div>
-                </div>
-                <div>
-                  <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">{t.partyVenue}</p>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-white/40 text-xs mb-2 block">{t.placeName}</label>
-                      <input value={form.partyPlace} onChange={e => update("partyPlace", e.target.value)} placeholder={t.partyPh} className={inp} />
-                    </div>
-                    <div>
-                      <label className="text-white/40 text-xs mb-2 block">{t.time}</label>
-                      <input value={form.partyTime} onChange={e => update("partyTime", e.target.value)} placeholder={t.partyTimePh} className={inp} />
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <label className="text-white/40 text-xs mb-2 block">{t.placeNameAr}</label>
-                    <input value={form.partyPlaceAr} onChange={e => update("partyPlaceAr", e.target.value)} placeholder={t.partyPh} dir="rtl" className={inp} />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.heroLocation}</label>
-                  <p className="text-white/20 text-xs mb-2">{t.heroLocationSub}</p>
-                  <input value={form.venue} onChange={e => update("venue", e.target.value)} placeholder={t.heroLocationPh} className={inp} />
-                </div>
-                <div>
-                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.heroLocationAr}</label>
-                  <input value={form.venueAr} onChange={e => update("venueAr", e.target.value)} placeholder={t.heroLocationArPh} dir="rtl" className={inp} />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.city}</label>
-                    <input value={form.city} onChange={e => update("city", e.target.value)} placeholder={t.cityPh} className={inp} />
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.celebrantNameAr}</label>
+                    <input value={form.groomAr} onChange={e => update("groomAr", e.target.value)} placeholder={t.celebrantArPh} dir="rtl" className={inp} />
                   </div>
                   <div>
-                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.guestCount}</label>
-                    <input value={form.guestCount} onChange={e => update("guestCount", e.target.value)} placeholder="150" type="number" className={inp} />
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.eventDate}</label>
+                    <input value={form.weddingDate} onChange={e => update("weddingDate", e.target.value)} type="date" className={inp} />
                   </div>
-                </div>
-                {form.package !== "bronze" && (
-                  <div>
-                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.music}</label>
-                    <input value={form.music} onChange={e => update("music", e.target.value)} placeholder={t.musicPh} className={inp} />
-                    <p className="text-white/20 text-xs mt-3 mb-2">{t.musicClip} — {t.musicClipSub}</p>
+                  <div className="pt-2">
+                    <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">{t.venueDetails}</p>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-white/30 text-xs mb-2 block">{t.startSec}</label>
-                        <input value={form.musicStart} onChange={e => update("musicStart", e.target.value)} placeholder="0" type="number" className={inp} />
+                        <label className="text-white/40 text-xs mb-2 block">{t.placeName}</label>
+                        <input value={form.ceremonyPlace} onChange={e => update("ceremonyPlace", e.target.value)} placeholder="The Grand Ballroom, Phoenicia Hotel" className={inp} />
                       </div>
                       <div>
-                        <label className="text-white/30 text-xs mb-2 block">{t.endSec}</label>
-                        <input value={form.musicEnd} onChange={e => update("musicEnd", e.target.value)} placeholder="90" type="number" className={inp} />
+                        <label className="text-white/40 text-xs mb-2 block">{t.time}</label>
+                        <input value={form.ceremonyTime} onChange={e => update("ceremonyTime", e.target.value)} placeholder="8:00 PM" className={inp} />
                       </div>
                     </div>
+                    <div className="mt-4">
+                      <label className="text-white/40 text-xs mb-2 block">{t.placeNameAr}</label>
+                      <input value={form.ceremonyPlaceAr} onChange={e => update("ceremonyPlaceAr", e.target.value)} dir="rtl" className={inp} />
+                    </div>
                   </div>
-                )}
-              </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.heroLocation}</label>
+                    <p className="text-white/20 text-xs mb-2">{t.heroLocationSub}</p>
+                    <input value={form.venue} onChange={e => update("venue", e.target.value)} placeholder="Beirut, Lebanon" className={inp} />
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.heroLocationAr}</label>
+                    <input value={form.venueAr} onChange={e => update("venueAr", e.target.value)} dir="rtl" className={inp} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.city}</label>
+                      <input value={form.city} onChange={e => update("city", e.target.value)} placeholder={t.cityPh} className={inp} />
+                    </div>
+                    <div>
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.guestCount}</label>
+                      <input value={form.guestCount} onChange={e => update("guestCount", e.target.value)} placeholder="80" type="number" className={inp} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.dressCode}</label>
+                    <input value={form.dressCode} onChange={e => update("dressCode", e.target.value)} placeholder="Black Tie Optional" className={inp} />
+                  </div>
+                  {form.package !== "bronze" && (
+                    <div>
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.music}</label>
+                      <input value={form.music} onChange={e => update("music", e.target.value)} placeholder={t.musicPh} className={inp} />
+                      <p className="text-white/20 text-xs mt-3 mb-2">{t.musicClip} — {t.musicClipSub}</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.startSec}</label>
+                          <input value={form.musicStart} onChange={e => update("musicStart", e.target.value)} placeholder="0" type="number" className={inp} />
+                        </div>
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.endSec}</label>
+                          <input value={form.musicEnd} onChange={e => update("musicEnd", e.target.value)} placeholder="90" type="number" className={inp} />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    {[[t.groomName, "groomName", t.groomPh], [t.brideName, "brideName", t.bridePh]].map(([label, key, ph]) => (
+                      <div key={key}>
+                        <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{label}</label>
+                        <input value={form[key]} onChange={e => update(key, e.target.value)} placeholder={ph} className={inp} />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    {[[t.groomNameAr, "groomAr", t.groomArPh], [t.brideNameAr, "brideAr", t.brideArPh]].map(([label, key, ph]) => (
+                      <div key={key}>
+                        <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{label}</label>
+                        <input value={form[key]} onChange={e => update(key, e.target.value)} placeholder={ph} dir="rtl" className={inp} />
+                      </div>
+                    ))}
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.parents}</label>
+                    <textarea value={form.parentsEn} onChange={e => update("parentsEn", e.target.value)} placeholder={t.parentsPh} rows={2}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
+                    <p className="text-white/20 text-xs mt-1">{t.parentsHint}</p>
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.parentsAr}</label>
+                    <textarea value={form.parentsAr} onChange={e => update("parentsAr", e.target.value)} placeholder={t.parentsArPh} rows={2} dir="rtl"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.weddingDate}</label>
+                    <input value={form.weddingDate} onChange={e => update("weddingDate", e.target.value)} type="date" className={inp} />
+                  </div>
+                  <div className="pt-2">
+                    <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">{t.ceremonyVenue}</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-white/40 text-xs mb-2 block">{t.placeName}</label>
+                        <input value={form.ceremonyPlace} onChange={e => update("ceremonyPlace", e.target.value)} placeholder={t.ceremonyPh} className={inp} />
+                      </div>
+                      <div>
+                        <label className="text-white/40 text-xs mb-2 block">{t.time}</label>
+                        <input value={form.ceremonyTime} onChange={e => update("ceremonyTime", e.target.value)} placeholder={t.ceremonyTimePh} className={inp} />
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <label className="text-white/40 text-xs mb-2 block">{t.placeNameAr}</label>
+                      <input value={form.ceremonyPlaceAr} onChange={e => update("ceremonyPlaceAr", e.target.value)} placeholder={t.ceremonyPh} dir="rtl" className={inp} />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">{t.partyVenue}</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-white/40 text-xs mb-2 block">{t.placeName}</label>
+                        <input value={form.partyPlace} onChange={e => update("partyPlace", e.target.value)} placeholder={t.partyPh} className={inp} />
+                      </div>
+                      <div>
+                        <label className="text-white/40 text-xs mb-2 block">{t.time}</label>
+                        <input value={form.partyTime} onChange={e => update("partyTime", e.target.value)} placeholder={t.partyTimePh} className={inp} />
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <label className="text-white/40 text-xs mb-2 block">{t.placeNameAr}</label>
+                      <input value={form.partyPlaceAr} onChange={e => update("partyPlaceAr", e.target.value)} placeholder={t.partyPh} dir="rtl" className={inp} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.heroLocation}</label>
+                    <p className="text-white/20 text-xs mb-2">{t.heroLocationSub}</p>
+                    <input value={form.venue} onChange={e => update("venue", e.target.value)} placeholder={t.heroLocationPh} className={inp} />
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.heroLocationAr}</label>
+                    <input value={form.venueAr} onChange={e => update("venueAr", e.target.value)} placeholder={t.heroLocationArPh} dir="rtl" className={inp} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.city}</label>
+                      <input value={form.city} onChange={e => update("city", e.target.value)} placeholder={t.cityPh} className={inp} />
+                    </div>
+                    <div>
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.guestCount}</label>
+                      <input value={form.guestCount} onChange={e => update("guestCount", e.target.value)} placeholder="150" type="number" className={inp} />
+                    </div>
+                  </div>
+                  {form.package !== "bronze" && (
+                    <div>
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.music}</label>
+                      <input value={form.music} onChange={e => update("music", e.target.value)} placeholder={t.musicPh} className={inp} />
+                      <p className="text-white/20 text-xs mt-3 mb-2">{t.musicClip} — {t.musicClipSub}</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.startSec}</label>
+                          <input value={form.musicStart} onChange={e => update("musicStart", e.target.value)} placeholder="0" type="number" className={inp} />
+                        </div>
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.endSec}</label>
+                          <input value={form.musicEnd} onChange={e => update("musicEnd", e.target.value)} placeholder="90" type="number" className={inp} />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="flex gap-3 mt-8">
                 <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
-                <button onClick={() => setStep(3)} disabled={!form.groomName || !form.brideName || !form.weddingDate}
+                <button onClick={() => setStep(3)} disabled={isBirthday ? (!form.groomName || !form.age || !form.weddingDate) : (!form.groomName || !form.brideName || !form.weddingDate)}
                   className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
                   style={{ background: "#c9a96e" }}>{t.continue}</button>
               </div>
@@ -677,13 +841,17 @@ export default function Order() {
                 </div>
 
                 <div className="pt-2">
-                  <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-1">{t.timeline}</p>
+                  <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-1">{isBirthday ? t.timelineBday : t.timeline}</p>
                   <p className="text-white/20 text-xs mb-4">{t.timelineSub}</p>
-                  {[
+                  {(isBirthday ? [
+                    [t.ceremonyLabelBday, "tl0", "tl0loc", "8:00 PM"],
+                    [t.welcomeLabelBday, "tl1", "tl1loc", "9:00 PM"],
+                    [t.partyLabelBday, "tl2", "tl2loc", "11:00 PM"],
+                  ] : [
                     [t.ceremonyLabel, "tl0", "tl0loc", t.ceremonyTimePh],
                     [t.welcomeLabel, "tl1", "tl1loc", "8:00 PM"],
                     [t.partyLabel, "tl2", "tl2loc", "11:00 PM"],
-                  ].map(([label, timeKey, locKey, timePh]) => (
+                  ]).map(([label, timeKey, locKey, timePh]) => (
                     <div key={timeKey} className="grid grid-cols-2 gap-4 mb-3">
                       <div>
                         <label className="text-white/30 text-xs mb-2 block">{label} — {t.time}</label>
@@ -739,7 +907,7 @@ export default function Order() {
                   </div>
                 )}
 
-                {form.package === "gold" && (
+                {form.package === "gold" && !isBirthday && (
                   <div className="pt-2">
                     <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-1">{t.giftRegistry}</p>
                     <p className="text-white/20 text-xs mb-4">{t.registrySub}</p>
@@ -790,7 +958,7 @@ export default function Order() {
                   <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-1">{t.additionalNote}</p>
                   <p className="text-white/20 text-xs mb-4">{t.additionalNoteSub}</p>
                   <div className="space-y-4">
-                    <textarea value={form.noteEn} onChange={e => update("noteEn", e.target.value)} placeholder={t.noteEnPh} rows={3}
+                    <textarea value={form.noteEn} onChange={e => update("noteEn", e.target.value)} placeholder={isBirthday ? t.noteEnPhBday : t.noteEnPh} rows={3}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
                     <div>
                       <label className="text-white/30 text-xs mb-2 block">{t.noteArLabel}</label>
@@ -835,8 +1003,8 @@ export default function Order() {
                 <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-3">{t.orderSummary}</p>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between"><span className="text-white/50">{t.package}</span><span className="text-white capitalize">{form.package} — {packages.find(p => p.id === form.package)?.price}</span></div>
-                  <div className="flex justify-between"><span className="text-white/50">{t.template}</span><span className="text-white">{templates.find(tmpl => tmpl.id === form.template)?.name}</span></div>
-                  <div className="flex justify-between"><span className="text-white/50">{t.couple}</span><span className="text-white">{form.groomName} & {form.brideName}</span></div>
+                  <div className="flex justify-between"><span className="text-white/50">{t.template}</span><span className="text-white">{isBirthday ? birthdayTemplate.name : templates.find(tmpl => tmpl.id === form.template)?.name}</span></div>
+                  <div className="flex justify-between"><span className="text-white/50">{isBirthday ? t.celebrant : t.couple}</span><span className="text-white">{isBirthday ? `${form.groomName} — ${form.age}th Birthday` : `${form.groomName} & ${form.brideName}`}</span></div>
                   <div className="border-t border-white/10 pt-2 mt-2 flex justify-between">
                     <span className="text-white/50">{t.totalDue}</span>
                     <span className="font-bold text-xl text-[#c9a96e]">{packages.find(p => p.id === form.package)?.price}</span>
@@ -860,7 +1028,7 @@ export default function Order() {
               <div className="text-center mb-8">
                 <p className="text-white/40 text-sm mb-1">{t.totalDue}</p>
                 <p className="font-serif text-5xl font-light text-[#c9a96e]">{packages.find(p => p.id === form.package)?.price}</p>
-                <p className="text-white/30 text-xs mt-1 capitalize">{form.package} · {templates.find(tmpl => tmpl.id === form.template)?.name}</p>
+                <p className="text-white/30 text-xs mt-1 capitalize">{form.package} · {isBirthday ? birthdayTemplate.name : templates.find(tmpl => tmpl.id === form.template)?.name}</p>
               </div>
               <div className="bg-white/3 border border-white/10 rounded-2xl p-6 mb-8">
                 <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">{t.howItWorks}</p>
@@ -878,8 +1046,8 @@ export default function Order() {
                 <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-3">{t.orderSummary}</p>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between"><span className="text-white/50">{t.package}</span><span className="text-white capitalize">{form.package} — {packages.find(p => p.id === form.package)?.price}</span></div>
-                  <div className="flex justify-between"><span className="text-white/50">{t.template}</span><span className="text-white">{templates.find(tmpl => tmpl.id === form.template)?.name}</span></div>
-                  <div className="flex justify-between"><span className="text-white/50">{t.couple}</span><span className="text-white">{form.groomName} & {form.brideName}</span></div>
+                  <div className="flex justify-between"><span className="text-white/50">{t.template}</span><span className="text-white">{isBirthday ? birthdayTemplate.name : templates.find(tmpl => tmpl.id === form.template)?.name}</span></div>
+                  <div className="flex justify-between"><span className="text-white/50">{isBirthday ? t.celebrant : t.couple}</span><span className="text-white">{isBirthday ? `${form.groomName} — ${form.age}th Birthday` : `${form.groomName} & ${form.brideName}`}</span></div>
                   <div className="flex justify-between"><span className="text-white/50">{t.whatsappLabel}</span><span className="text-white">{form.yourPhone}</span></div>
                 </div>
               </div>

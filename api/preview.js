@@ -38,23 +38,33 @@ export default async function handler(req, res) {
 
     if (snap.exists) {
       const d     = snap.data()
-      const groom = d.groom  || d.groomAr || ""
-      const bride = d.bride  || d.brideAr || ""
       const date  = d.date   || ""
       const photos = Array.isArray(d.photos) ? d.photos : []
 
-      if (groom && bride) {
-        title = `${groom} & ${bride} \uD83D\uDC8D`
+      if (d.template === "birthday" && d.name) {
+        title = `${d.name} is turning ${d.age}! \uD83C\uDF82`
         const dateStr = date
           ? new Date(date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
           : ""
         description = dateStr
-          ? `${groom} & ${bride} are getting married on ${dateStr}. You are invited to celebrate their love \u2014 open to view the full invitation.`
-          : `${groom} & ${bride} are getting married and you\u2019re invited! Open to view their beautiful wedding invitation.`
-      }
-
-      if (photos.length > 0 && typeof photos[0] === "string") {
-        image = photos[0]
+          ? `Join us in celebrating ${d.name}'s ${d.age}th birthday on ${dateStr}. Open to view the full invitation.`
+          : `Join us in celebrating ${d.name}'s ${d.age}th birthday! Open to view the full invitation.`
+        if (d.photo) image = d.photo
+      } else {
+        const groom = d.groom  || d.groomAr || ""
+        const bride = d.bride  || d.brideAr || ""
+        if (groom && bride) {
+          title = `${groom} & ${bride} \uD83D\uDC8D`
+          const dateStr = date
+            ? new Date(date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+            : ""
+          description = dateStr
+            ? `${groom} & ${bride} are getting married on ${dateStr}. You are invited to celebrate their love \u2014 open to view the full invitation.`
+            : `${groom} & ${bride} are getting married and you\u2019re invited! Open to view their beautiful wedding invitation.`
+        }
+        if (photos.length > 0 && typeof photos[0] === "string") {
+          image = photos[0]
+        }
       }
     }
   } catch (_) {}

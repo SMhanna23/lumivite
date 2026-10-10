@@ -43,6 +43,12 @@
       "destination": "/index.html"
     },
     { "source": "/demo4", "destination": "/api/demo-preview?v=4" },
+    {
+      "source": "/demo-birthday",
+      "has": [{ "type": "query", "key": "_app", "value": "1" }],
+      "destination": "/index.html"
+    },
+    { "source": "/demo-birthday", "destination": "/api/demo-preview?v=5" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }

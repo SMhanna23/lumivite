@@ -32,13 +32,20 @@ const THEMES = {
     description: "A formal digital wedding invitation in warm sand tones with cinematic elegance, music, and RSVP tracking. Preview the Cinematic Sand & Seal template.",
     image: "demo-og-black-tie-gold.png",
   },
+  5: {
+    path: "/demo-birthday",
+    name: "Golden Soirée",
+    description: "A magnificent black & gold digital birthday invitation with a signature age-numeral design, RSVP tracking, and music. Preview the Golden Soirée template.",
+    image: "demo-og-birthday.png",
+    kind: "birthday",
+  },
 }
 
 export default async function handler(req, res) {
   const variant = THEMES[req.query.v] ? req.query.v : "1"
   const theme = THEMES[variant]
 
-  const title   = `${theme.name} — Wedding Invitation Template 💍`
+  const title   = theme.kind === "birthday" ? `${theme.name} — Birthday Invitation Template 🎂` : `${theme.name} — Wedding Invitation Template 💍`
   const image   = `https://www.lumivite.net/${theme.image}`
   const pageUrl = `https://www.lumivite.net${theme.path}`
   const appUrl  = `${pageUrl}?_app=1`
