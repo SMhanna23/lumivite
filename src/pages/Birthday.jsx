@@ -14,7 +14,8 @@ const DEFAULT_CELEBRATION = {
   nameAr: "صوفيا",
   age: 30,
   date: "2027-03-15T20:00:00",
-  venue: { label: "The Celebration", labelAr: "الاحتفال", time: "8:00 PM", place: "The Grand Ballroom, Phoenicia Hotel", placeAr: "القاعة الكبرى، فينيسيا هوتيل", location: "Beirut, Lebanon", locationAr: "بيروت، لبنان", map: "https://maps.google.com/?q=Phoenicia+Hotel+Beirut" },
+  photo: "/birthday-demo-portrait.jpg",
+  venue: { label: "The Celebration", labelAr: "الاحتفال", time: "8:00 PM", place: "The Grand Ballroom, Phoenicia Hotel", placeAr: "القاعة الكبرى، فينيسيا هوتيل", location: "Beirut, Lebanon", locationAr: "بيروت، لبنان", map: "https://maps.google.com/?q=Phoenicia+Hotel+Beirut", photo: "/birthday-venue-phoenicia.jpg" },
   dressCode: "Black Tie Optional",
   dressCodeAr: "إلزامية رسمية (اختياري)",
   quote: "Grow old along with me, the best is yet to be.",
@@ -207,15 +208,22 @@ export default function Birthday({ override = null }) {
 
         {/* Hero */}
         <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center z-10 overflow-hidden">
-          {/* Luxury graphic background — deep radial gold glow, no stock photography */}
-          <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 38%, #221a10 0%, #130f0a 45%, #0a0806 85%)" }} />
-          <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(212,175,55,0.08) 0%, transparent 60%)" }} />
+          {/* Celebrant photo background — swappable per client via CELEBRATION.photo */}
+          {CELEBRATION.photo && (
+            <div className="absolute inset-0 z-0" style={{
+              backgroundImage: `url(${CELEBRATION.photo})`,
+              backgroundSize: "cover", backgroundPosition: "center top",
+              filter: "brightness(0.5)"
+            }} />
+          )}
+          <div className="absolute inset-0 z-0" style={{ background: CELEBRATION.photo ? "linear-gradient(to bottom, rgba(10,8,6,0.8) 0%, rgba(10,8,6,0.2) 26%, rgba(10,8,6,0.25) 62%, rgba(10,8,6,0.92) 100%)" : "radial-gradient(ellipse at 50% 38%, #221a10 0%, #130f0a 45%, #0a0806 85%)" }} />
+          <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(10,8,6,0.55) 100%)" }} />
           <div className="absolute inset-[18px] md:inset-10 z-0 pointer-events-none" style={{ border: `1px solid ${GOLD}33` }} />
           <div className="absolute inset-[26px] md:inset-14 z-0 pointer-events-none" style={{ border: `1px solid ${GOLD}1a` }} />
 
           {/* Big watermark age numeral — the signature motif for this template */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0"
-            style={{ fontSize: "min(60vw, 26rem)", fontFamily: "'Playfair Display', serif", fontWeight: 700, color: "rgba(212,175,55,0.10)", lineHeight: 1 }}>
+            style={{ fontSize: "min(60vw, 26rem)", fontFamily: "'Playfair Display', serif", fontWeight: 700, color: "rgba(212,175,55,0.14)", lineHeight: 1, mixBlendMode: "overlay" }}>
             {ar ? toArabicDigits(CELEBRATION.age) : CELEBRATION.age}
           </div>
 
@@ -296,9 +304,15 @@ export default function Birthday({ override = null }) {
             </h2>
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               className="bg-white/3 border border-white/10 rounded-2xl overflow-hidden transition" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-              <div className="h-20 w-full flex items-center justify-center" style={{ background: "linear-gradient(160deg, #1a140d 0%, #110d08 100%)" }}>
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 1v20M1 11h20" stroke={GOLD} strokeWidth="0.75" opacity="0.5" transform="rotate(45 11 11)" /></svg>
-              </div>
+              {CELEBRATION.venue.photo ? (
+                <div className="h-56 w-full overflow-hidden">
+                  <img src={CELEBRATION.venue.photo} alt={CELEBRATION.venue.place} className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700" />
+                </div>
+              ) : (
+                <div className="h-20 w-full flex items-center justify-center" style={{ background: "linear-gradient(160deg, #1a140d 0%, #110d08 100%)" }}>
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 1v20M1 11h20" stroke={GOLD} strokeWidth="0.75" opacity="0.5" transform="rotate(45 11 11)" /></svg>
+                </div>
+              )}
               <div className="p-6 text-center">
                 <p className="font-serif text-2xl font-light mb-1">{ar ? toArabicTime(CELEBRATION.venue.time) : CELEBRATION.venue.time}</p>
                 <p className="text-white font-medium mb-1">{ar ? CELEBRATION.venue.placeAr : CELEBRATION.venue.place}</p>
