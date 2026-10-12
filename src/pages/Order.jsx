@@ -34,7 +34,7 @@ const EVENT_ICONS = [
 
 const T = {
   en: {
-    steps: ["Package", "Template", "Details", "Personalize", "Contact", "Payment"],
+    steps: ["Event", "Package", "Template", "Details", "Personalize", "Contact", "Payment"],
     subtitle: "Order Your Invitation",
     mostPopular: "MOST POPULAR",
     choosePackage: "Choose Your Package",
@@ -173,6 +173,18 @@ const T = {
     eventTypeWedding: "💍 Wedding",
     eventTypeBirthday: "🎂 Birthday",
     eventTypeOccasion: "✨ Other Events",
+    chooseEventType: "What Are You Celebrating?",
+    chooseEventTypeSub: "Pick the kind of invitation you need",
+    eventTypeWeddingName: "Wedding",
+    eventTypeWeddingDesc: "Ceremony & reception, 4 template choices",
+    eventTypeBirthdayName: "Birthday",
+    eventTypeBirthdayDesc: "A magnificent milestone birthday invitation",
+    eventTypeOccasionName: "Other Events",
+    eventTypeOccasionDesc: "Engagement, baptism, graduation, and more",
+    choosePackageSubFlat: "One flat price, every feature included",
+    flatPackageName: "ALL-INCLUSIVE",
+    flatPackageFeatures: ["RSVP dashboard", "Background music", "Memory wall", "Google Maps", "Personalized guest links"],
+    flatPackageFeaturesAr: ["لوحة RSVP", "موسيقى خلفية", "جدار الذكريات", "خرائط Google", "روابط مخصصة للضيوف"],
     birthdayDetails: "Birthday Details",
     birthdayDetailsSub: "Tell us about the celebration",
     celebrantName: "Celebrant's Name",
@@ -208,7 +220,7 @@ const T = {
     programLabelPh: "e.g. Welcome Reception",
   },
   ar: {
-    steps: ["الباقة", "القالب", "التفاصيل", "التخصيص", "التواصل", "الدفع"],
+    steps: ["المناسبة", "الباقة", "القالب", "التفاصيل", "التخصيص", "التواصل", "الدفع"],
     subtitle: "اطلب دعوتك",
     mostPopular: "الأكثر طلباً",
     choosePackage: "اختر باقتك",
@@ -346,6 +358,18 @@ const T = {
     noteArPh: "نوماً هنيئاً لأطفالكم",
     eventTypeWedding: "💍 زفاف",
     eventTypeBirthday: "🎂 عيد ميلاد",
+    chooseEventType: "ما هي مناسبتكم؟",
+    chooseEventTypeSub: "اختر نوع الدعوة التي تحتاجها",
+    eventTypeWeddingName: "زفاف",
+    eventTypeWeddingDesc: "مراسم وحفل استقبال، 4 خيارات قوالب",
+    eventTypeBirthdayName: "عيد ميلاد",
+    eventTypeBirthdayDesc: "دعوة عيد ميلاد فاخرة لمحطة مميزة",
+    eventTypeOccasionName: "مناسبات أخرى",
+    eventTypeOccasionDesc: "خطوبة، معمودية، تخرج، وأكثر",
+    choosePackageSubFlat: "سعر ثابت واحد، كل الميزات مشمولة",
+    flatPackageName: "باقة شاملة",
+    flatPackageFeatures: ["RSVP dashboard", "Background music", "Memory wall", "Google Maps", "Personalized guest links"],
+    flatPackageFeaturesAr: ["لوحة RSVP", "موسيقى خلفية", "جدار الذكريات", "خرائط Google", "روابط مخصصة للضيوف"],
     birthdayDetails: "تفاصيل عيد الميلاد",
     birthdayDetailsSub: "أخبرنا عن الاحتفال",
     celebrantName: "اسم صاحب العيد",
@@ -422,6 +446,9 @@ export default function Order() {
   const eventSummaryValue = isBirthday ? `${form.groomName} — ${form.age}th Birthday`
     : isOccasion ? `${form.groomName} — ${form.eventType}`
     : `${form.groomName} & ${form.brideName}`
+  const isFlatPriced = isBirthday || isOccasion
+  const displayPrice = isFlatPriced ? "$80" : packages.find(p => p.id === form.package)?.price
+  const displayPriceValue = isFlatPriced ? 80 : packages.find(p => p.id === form.package)?.priceValue
 
   // Auto-select dark template when Bronze is chosen on the wedding tab — it's the only option
   useEffect(() => {
@@ -442,7 +469,7 @@ export default function Order() {
       })
       if (typeof window.fbq === "function") {
         window.fbq("track", "Lead", {
-          value: packages.find(p => p.id === form.package)?.priceValue,
+          value: displayPriceValue,
           currency: "USD",
           content_name: form.package,
         })
@@ -450,7 +477,7 @@ export default function Order() {
       const eventLine = isBirthday ? `🎂 ${form.groomName}'s ${form.age}th Birthday`
         : isOccasion ? `${form.eventIcon} ${form.groomName} — ${form.eventType}`
         : `💒 ${form.groomName} & ${form.brideName}`
-      const msg = `🎉 New Order on Lumivite!\n📦 ${form.package.toUpperCase()} Package — ${packages.find(p => p.id === form.package)?.price}\n🎨 ${form.template} Template\n${eventLine}\n📅 ${form.weddingDate}\n👤 Client: ${form.yourName}\n📞 ${form.yourPhone}\n⚠️ Awaiting payment confirmation!`
+      const msg = `🎉 New Order on Lumivite!\n📦 ${isFlatPriced ? "ALL-INCLUSIVE" : form.package.toUpperCase()} Package — ${displayPrice}\n🎨 ${form.template} Template\n${eventLine}\n📅 ${form.weddingDate}\n👤 Client: ${form.yourName}\n📞 ${form.yourPhone}\n⚠️ Awaiting payment confirmation!`
       fetch("/api/notify-whatsapp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -466,7 +493,7 @@ export default function Order() {
             couple: isBirthday ? `${form.groomName}'s ${form.age}th Birthday`
               : isOccasion ? `${form.groomName} — ${form.eventType}`
               : `${form.groomName} & ${form.brideName}`,
-            package: `${form.package.charAt(0).toUpperCase() + form.package.slice(1)} — ${packages.find(p => p.id === form.package)?.price}`,
+            package: isFlatPriced ? `All-Inclusive — ${displayPrice}` : `${form.package.charAt(0).toUpperCase() + form.package.slice(1)} — ${displayPrice}`,
             wedding_date: form.weddingDate,
             order_link: `https://www.lumivite.net/my-order/${docRef.id}`,
             order_id: docRef.id,
@@ -522,41 +549,39 @@ export default function Order() {
       <div className="max-w-2xl mx-auto px-6 pb-24">
         <AnimatePresence mode="wait">
 
-          {/* STEP 0 - Package */}
+          {/* STEP 0 - Event Type */}
           {step === 0 && (
             <motion.div key="step0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <h2 className="font-serif text-3xl font-light text-center mb-2">{t.choosePackage}</h2>
-              <p className="text-white/40 text-center text-sm mb-10">{t.choosePackageSub}</p>
+              <h2 className="font-serif text-3xl font-light text-center mb-2">{t.chooseEventType}</h2>
+              <p className="text-white/40 text-center text-sm mb-10">{t.chooseEventTypeSub}</p>
               <div className="grid gap-4">
-                {packages.map(pkg => (
-                  <motion.div key={pkg.id} whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
-                    onClick={() => update("package", pkg.id)}
-                    className="relative p-6 rounded-2xl border cursor-pointer transition"
-                    style={{ borderColor: form.package === pkg.id ? pkg.color : "rgba(255,255,255,0.1)", background: form.package === pkg.id ? `${pkg.color}10` : "rgba(255,255,255,0.02)" }}>
-                    {pkg.popular && (
-                      <div className={`absolute -top-3 ${isAr ? "right-6" : "left-6"} text-xs font-bold px-3 py-1 rounded-full bg-[#c9a96e] text-black`}>
-                        {t.mostPopular}
-                      </div>
-                    )}
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <p className="font-semibold tracking-wider text-sm" style={{ color: pkg.color }}>{(isAr ? pkg.nameAr : pkg.name).toUpperCase()}</p>
-                        <p className="font-serif text-3xl font-light mt-1" style={{ color: pkg.color }}>{pkg.price}</p>
-                      </div>
-                      <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center transition"
-                        style={{ borderColor: pkg.color, background: form.package === pkg.id ? pkg.color : "transparent" }}>
-                        {form.package === pkg.id && <span className="text-black text-xs">✓</span>}
-                      </div>
+                {[
+                  { id: "wedding", icon: "💍", name: t.eventTypeWeddingName, desc: t.eventTypeWeddingDesc },
+                  { id: "birthday", icon: birthdayTemplate.preview, name: t.eventTypeBirthdayName, desc: t.eventTypeBirthdayDesc },
+                  { id: "occasion", icon: occasionTemplate.preview, name: t.eventTypeOccasionName, desc: t.eventTypeOccasionDesc },
+                ].map(opt => (
+                  <motion.div key={opt.id} whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
+                    onClick={() => {
+                      setTplTab(opt.id)
+                      update("package", "")
+                      if (opt.id === "birthday" || opt.id === "occasion") update("template", opt.id)
+                      else update("template", "")
+                    }}
+                    className="relative p-6 rounded-2xl border cursor-pointer transition flex items-center gap-5"
+                    style={{ borderColor: tplTab === opt.id ? "#c9a96e" : "rgba(255,255,255,0.1)", background: tplTab === opt.id ? "rgba(201,169,110,0.08)" : "rgba(255,255,255,0.02)" }}>
+                    <div className="text-4xl">{opt.icon}</div>
+                    <div className="flex-1">
+                      <p className="font-medium text-white">{opt.name}</p>
+                      <p className="text-white/40 text-sm">{opt.desc}</p>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {(isAr ? pkg.featuresAr : pkg.features).map((f, i) => (
-                        <span key={i} className="text-xs px-3 py-1 rounded-full bg-white/5 text-white/50">✓ {f}</span>
-                      ))}
+                    <div className="w-6 h-6 rounded-full border-2 border-[#c9a96e] flex items-center justify-center flex-shrink-0"
+                      style={{ background: tplTab === opt.id ? "#c9a96e" : "transparent" }}>
+                      {tplTab === opt.id && <span className="text-black text-xs">✓</span>}
                     </div>
                   </motion.div>
                 ))}
               </div>
-              <button onClick={() => setStep(1)} disabled={!form.package}
+              <button onClick={() => setStep(1)} disabled={!tplTab}
                 className="w-full mt-8 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
                 style={{ background: "#c9a96e" }}>
                 {t.continue}
@@ -564,23 +589,81 @@ export default function Order() {
             </motion.div>
           )}
 
-          {/* STEP 1 - Template */}
+          {/* STEP 1 - Package */}
           {step === 1 && (
-            <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+            <motion.div key="step1pkg" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+              <h2 className="font-serif text-3xl font-light text-center mb-2">{t.choosePackage}</h2>
+              <p className="text-white/40 text-center text-sm mb-10">{isFlatPriced ? t.choosePackageSubFlat : t.choosePackageSub}</p>
+
+              {tplTab === "wedding" && (
+                <div className="grid gap-4">
+                  {packages.map(pkg => (
+                    <motion.div key={pkg.id} whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
+                      onClick={() => update("package", pkg.id)}
+                      className="relative p-6 rounded-2xl border cursor-pointer transition"
+                      style={{ borderColor: form.package === pkg.id ? pkg.color : "rgba(255,255,255,0.1)", background: form.package === pkg.id ? `${pkg.color}10` : "rgba(255,255,255,0.02)" }}>
+                      {pkg.popular && (
+                        <div className={`absolute -top-3 ${isAr ? "right-6" : "left-6"} text-xs font-bold px-3 py-1 rounded-full bg-[#c9a96e] text-black`}>
+                          {t.mostPopular}
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <p className="font-semibold tracking-wider text-sm" style={{ color: pkg.color }}>{(isAr ? pkg.nameAr : pkg.name).toUpperCase()}</p>
+                          <p className="font-serif text-3xl font-light mt-1" style={{ color: pkg.color }}>{pkg.price}</p>
+                        </div>
+                        <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center transition"
+                          style={{ borderColor: pkg.color, background: form.package === pkg.id ? pkg.color : "transparent" }}>
+                          {form.package === pkg.id && <span className="text-black text-xs">✓</span>}
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {(isAr ? pkg.featuresAr : pkg.features).map((f, i) => (
+                          <span key={i} className="text-xs px-3 py-1 rounded-full bg-white/5 text-white/50">✓ {f}</span>
+                        ))}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+
+              {isFlatPriced && (
+                <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
+                  onClick={() => update("package", "gold")}
+                  className="relative p-6 rounded-2xl border cursor-pointer transition"
+                  style={{ borderColor: form.package ? "#bfa15f" : "rgba(255,255,255,0.1)", background: form.package ? "rgba(191,161,95,0.1)" : "rgba(255,255,255,0.02)" }}>
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="font-semibold tracking-wider text-sm" style={{ color: "#bfa15f" }}>{t.flatPackageName}</p>
+                      <p className="font-serif text-3xl font-light mt-1" style={{ color: "#bfa15f" }}>$80</p>
+                    </div>
+                    <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center transition"
+                      style={{ borderColor: "#bfa15f", background: form.package ? "#bfa15f" : "transparent" }}>
+                      {form.package && <span className="text-black text-xs">✓</span>}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(isAr ? t.flatPackageFeaturesAr : t.flatPackageFeatures).map((f, i) => (
+                      <span key={i} className="text-xs px-3 py-1 rounded-full bg-white/5 text-white/50">✓ {f}</span>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              <div className="flex gap-3 mt-8">
+                <button onClick={() => setStep(0)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
+                <button onClick={() => setStep(2)} disabled={!form.package}
+                  className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
+                  style={{ background: "#c9a96e" }}>{t.continue}</button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP 2 - Template */}
+          {step === 2 && (
+            <motion.div key="step2tpl" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="font-serif text-3xl font-light text-center mb-2">{t.chooseTemplate}</h2>
               <p className="text-white/40 text-center text-sm mb-6">{t.chooseTemplateSub}</p>
-
-              {/* Event type tabs */}
-              <div className="flex gap-2 justify-center mb-8 flex-wrap">
-                {[["wedding", t.eventTypeWedding], ["birthday", t.eventTypeBirthday], ["occasion", t.eventTypeOccasion]].map(([id, label]) => (
-                  <button key={id} type="button"
-                    onClick={() => { setTplTab(id); if (id === "birthday" || id === "occasion") update("template", id); else if (form.template === "birthday" || form.template === "occasion") update("template", "") }}
-                    className="px-5 py-2.5 rounded-xl text-sm font-medium transition"
-                    style={{ background: tplTab === id ? "#c9a96e" : "rgba(255,255,255,0.05)", color: tplTab === id ? "black" : "rgba(255,255,255,0.5)" }}>
-                    {label}
-                  </button>
-                ))}
-              </div>
 
               {tplTab === "wedding" && form.package === "bronze" && (
                 <p className="text-center text-xs mb-8 py-2 px-4 rounded-xl border"
@@ -688,16 +771,16 @@ export default function Order() {
                 })}
               </div>}
               <div className="flex gap-3 mt-8">
-                <button onClick={() => setStep(0)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
-                <button onClick={() => setStep(2)} disabled={!form.template}
+                <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
+                <button onClick={() => setStep(3)} disabled={!form.template}
                   className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
                   style={{ background: "#c9a96e" }}>{t.continue}</button>
               </div>
             </motion.div>
           )}
 
-          {/* STEP 2 - Wedding Details */}
-          {step === 2 && (
+          {/* STEP 3 - Wedding Details */}
+          {step === 3 && (
             <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="font-serif text-3xl font-light text-center mb-2">{isOccasion ? t.occasionDetails : isBirthday ? t.birthdayDetails : t.weddingDetails}</h2>
               <p className="text-white/40 text-center text-sm mb-10">{isOccasion ? t.occasionDetailsSub : isBirthday ? t.birthdayDetailsSub : t.weddingDetailsSub}</p>
@@ -982,16 +1065,16 @@ export default function Order() {
                 </div>
               )}
               <div className="flex gap-3 mt-8">
-                <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
-                <button onClick={() => setStep(3)} disabled={isOccasion ? (!form.groomName || !form.eventType || !form.weddingDate) : isBirthday ? (!form.groomName || !form.age || !form.weddingDate) : (!form.groomName || !form.brideName || !form.weddingDate)}
+                <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
+                <button onClick={() => setStep(4)} disabled={isOccasion ? (!form.groomName || !form.eventType || !form.weddingDate) : isBirthday ? (!form.groomName || !form.age || !form.weddingDate) : (!form.groomName || !form.brideName || !form.weddingDate)}
                   className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
                   style={{ background: "#c9a96e" }}>{t.continue}</button>
               </div>
             </motion.div>
           )}
 
-          {/* STEP 3 - Personalize */}
-          {step === 3 && (
+          {/* STEP 4 - Personalize */}
+          {step === 4 && (
             <motion.div key="step3personalize" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="font-serif text-3xl font-light text-center mb-2">{t.personalizeTitle}</h2>
               <p className="text-white/40 text-center text-sm mb-10">{t.personalizeSub}</p>
@@ -1168,16 +1251,16 @@ export default function Order() {
                 </div>
               </div>
               <div className="flex gap-3 mt-8">
-                <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
-                <button onClick={() => setStep(4)}
+                <button onClick={() => setStep(3)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
+                <button onClick={() => setStep(5)}
                   className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black transition"
                   style={{ background: "#c9a96e" }}>{t.continue}</button>
               </div>
             </motion.div>
           )}
 
-          {/* STEP 4 - Contact */}
-          {step === 4 && (
+          {/* STEP 5 - Contact */}
+          {step === 5 && (
             <motion.div key="step4contact" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="font-serif text-3xl font-light text-center mb-2">{t.contactInfo}</h2>
               <p className="text-white/40 text-center text-sm mb-10">{t.contactSub}</p>
@@ -1201,33 +1284,33 @@ export default function Order() {
               <div className="bg-white/3 border border-white/10 rounded-2xl p-5 mb-8">
                 <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-3">{t.orderSummary}</p>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between"><span className="text-white/50">{t.package}</span><span className="text-white capitalize">{form.package} — {packages.find(p => p.id === form.package)?.price}</span></div>
+                  <div className="flex justify-between"><span className="text-white/50">{t.package}</span><span className="text-white capitalize">{isFlatPriced ? "All-Inclusive" : form.package} — {displayPrice}</span></div>
                   <div className="flex justify-between"><span className="text-white/50">{t.template}</span><span className="text-white">{selectedTemplateName}</span></div>
                   <div className="flex justify-between"><span className="text-white/50">{eventSummaryLabel}</span><span className="text-white">{eventSummaryValue}</span></div>
                   <div className="border-t border-white/10 pt-2 mt-2 flex justify-between">
                     <span className="text-white/50">{t.totalDue}</span>
-                    <span className="font-bold text-xl text-[#c9a96e]">{packages.find(p => p.id === form.package)?.price}</span>
+                    <span className="font-bold text-xl text-[#c9a96e]">{displayPrice}</span>
                   </div>
                 </div>
               </div>
               <div className="flex gap-3">
-                <button onClick={() => setStep(3)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
-                <button onClick={() => setStep(5)} disabled={!form.yourName || !form.yourPhone}
+                <button onClick={() => setStep(4)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
+                <button onClick={() => setStep(6)} disabled={!form.yourName || !form.yourPhone}
                   className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
                   style={{ background: "#c9a96e" }}>{t.continuePayment}</button>
               </div>
             </motion.div>
           )}
 
-          {/* STEP 5 - Confirm & Pay */}
-          {step === 5 && (
+          {/* STEP 6 - Confirm & Pay */}
+          {step === 6 && (
             <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="font-serif text-3xl font-light text-center mb-2">{t.confirmOrder}</h2>
               <p className="text-white/40 text-center text-sm mb-10">{t.confirmSub}</p>
               <div className="text-center mb-8">
                 <p className="text-white/40 text-sm mb-1">{t.totalDue}</p>
-                <p className="font-serif text-5xl font-light text-[#c9a96e]">{packages.find(p => p.id === form.package)?.price}</p>
-                <p className="text-white/30 text-xs mt-1 capitalize">{form.package} · {selectedTemplateName}</p>
+                <p className="font-serif text-5xl font-light text-[#c9a96e]">{displayPrice}</p>
+                <p className="text-white/30 text-xs mt-1 capitalize">{isFlatPriced ? "All-Inclusive" : form.package} · {selectedTemplateName}</p>
               </div>
               <div className="bg-white/3 border border-white/10 rounded-2xl p-6 mb-8">
                 <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">{t.howItWorks}</p>
@@ -1244,14 +1327,14 @@ export default function Order() {
               <div className="bg-white/3 border border-white/10 rounded-2xl p-5 mb-8">
                 <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-3">{t.orderSummary}</p>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between"><span className="text-white/50">{t.package}</span><span className="text-white capitalize">{form.package} — {packages.find(p => p.id === form.package)?.price}</span></div>
+                  <div className="flex justify-between"><span className="text-white/50">{t.package}</span><span className="text-white capitalize">{isFlatPriced ? "All-Inclusive" : form.package} — {displayPrice}</span></div>
                   <div className="flex justify-between"><span className="text-white/50">{t.template}</span><span className="text-white">{selectedTemplateName}</span></div>
                   <div className="flex justify-between"><span className="text-white/50">{eventSummaryLabel}</span><span className="text-white">{eventSummaryValue}</span></div>
                   <div className="flex justify-between"><span className="text-white/50">{t.whatsappLabel}</span><span className="text-white">{form.yourPhone}</span></div>
                 </div>
               </div>
               <div className="flex gap-3">
-                <button onClick={() => setStep(4)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
+                <button onClick={() => setStep(5)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
                 <button onClick={handleSubmit} disabled={status === "loading"}
                   className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
                   style={{ background: "#c9a96e" }}>

@@ -1289,12 +1289,8 @@ function BuildBirthdayModal({ order }) {
       ) : (
         <div className="space-y-3">
           <div className="flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold"
-            style={{
-              background: tier === "gold" ? "rgba(255,215,0,0.07)" : tier === "silver" ? "rgba(201,169,110,0.07)" : "rgba(205,127,50,0.07)",
-              borderColor: tier === "gold" ? "rgba(255,215,0,0.3)" : tier === "silver" ? "rgba(201,169,110,0.3)" : "rgba(205,127,50,0.3)",
-              color: tier === "gold" ? "#ffd700" : tier === "silver" ? "#c9a96e" : "#cd7f32",
-            }}>
-            {tier === "gold" ? "🥇 Gold Package" : tier === "silver" ? "🥈 Silver Package" : "🥉 Bronze Package"}
+            style={{ background: "rgba(191,161,95,0.07)", borderColor: "rgba(191,161,95,0.3)", color: "#bfa15f" }}>
+            ✨ All-Inclusive Package — $80
           </div>
 
           <div>
@@ -1822,12 +1818,8 @@ function BuildOccasionModal({ order }) {
       ) : (
         <div className="space-y-3">
           <div className="flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold"
-            style={{
-              background: tier === "gold" ? "rgba(255,215,0,0.07)" : tier === "silver" ? "rgba(201,169,110,0.07)" : "rgba(205,127,50,0.07)",
-              borderColor: tier === "gold" ? "rgba(255,215,0,0.3)" : tier === "silver" ? "rgba(201,169,110,0.3)" : "rgba(205,127,50,0.3)",
-              color: tier === "gold" ? "#ffd700" : tier === "silver" ? "#c9a96e" : "#cd7f32",
-            }}>
-            {tier === "gold" ? "🥇 Gold Package" : tier === "silver" ? "🥈 Silver Package" : "🥉 Bronze Package"}
+            style={{ background: "rgba(191,161,95,0.07)", borderColor: "rgba(191,161,95,0.3)", color: "#bfa15f" }}>
+            ✨ All-Inclusive Package — $80
           </div>
 
           <div>
@@ -2316,8 +2308,11 @@ export default function Admin() {
                             <div className="flex items-center gap-2 mb-1 flex-wrap">
                               <p className="font-medium text-white">{orderTitle(order)}</p>
                               <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
-                                style={{ background: `${packageColor[order.package]}20`, color: packageColor[order.package] }}>
-                                {order.package?.toUpperCase()}
+                                style={{
+                                  background: order.template === "birthday" || order.template === "occasion" ? "rgba(191,161,95,0.2)" : `${packageColor[order.package]}20`,
+                                  color: order.template === "birthday" || order.template === "occasion" ? "#bfa15f" : packageColor[order.package],
+                                }}>
+                                {order.template === "birthday" || order.template === "occasion" ? "ALL-INCLUSIVE" : order.package?.toUpperCase()}
                               </span>
                               <span className="text-xs text-white/30">
                                 {templateName[order.template]}
@@ -2338,7 +2333,7 @@ export default function Admin() {
                           </div>
                           <div className="text-right flex-shrink-0 flex flex-col items-end gap-2">
                             <p className="text-[#c9a96e] font-semibold">
-                              {order.package === "bronze" ? "$89" : order.package === "silver" ? "$139" : "$199"}
+                              {order.template === "birthday" || order.template === "occasion" ? "$80" : order.package === "bronze" ? "$89" : order.package === "silver" ? "$139" : "$199"}
                             </p>
                             <p className="text-white/30 text-xs">
                               {order.createdAt?.toDate?.()?.toLocaleDateString() || ""}

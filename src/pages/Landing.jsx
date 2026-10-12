@@ -64,6 +64,23 @@ const packages = [
   },
 ]
 
+const eventPackage = {
+  price: "$80",
+  color: "#bfa15f",
+  features: [
+    "Golden Soirée or The Occasion template",
+    "RSVP tracking dashboard",
+    "Bilingual Arabic & English",
+    "Countdown timer",
+    "Background music",
+    "Hero & venue photo upload",
+    "Guest Memory Wall (photo upload)",
+    "Google Maps embed",
+    "Personalized guest links",
+    "Valid for 6 months",
+  ]
+}
+
 const faqs = [
   { q: "How long does it take to get my invitation?", a: "Within 24-48 hours after you provide your details and payment." },
   { q: "Can guests RSVP directly from the invitation?", a: "Yes! Guests tap Attending or Decline and you get notified instantly." },
@@ -373,7 +390,36 @@ export default function Landing() {
           </div>
         </motion.div>
       </section>
-      
+
+      {/* Birthday & Event Pricing */}
+      <section className="py-24 px-6 max-w-2xl mx-auto">
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+          <p className="tracking-[0.3em] text-xs uppercase text-center mb-3" style={{ color: eventPackage.color }}>Simple Pricing</p>
+          <h2 className="font-serif text-4xl font-light text-center mb-2">Birthday &amp; Event Invitations</h2>
+          <p className="text-white/40 text-center text-sm mb-16">One flat price, every feature included — engagements, baptisms, graduations, and more</p>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            className="relative rounded-2xl p-8 border"
+            style={{ borderColor: `${eventPackage.color}50`, background: `${eventPackage.color}0d` }}>
+            <p style={{ color: eventPackage.color }} className="text-sm font-semibold tracking-widest uppercase mb-2">🎂 Birthday &amp; ✨ Any Event</p>
+            <p className="font-serif text-5xl font-light mb-6" style={{ color: eventPackage.color }}>{eventPackage.price}</p>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 mb-8">
+              {eventPackage.features.map((f, j) => (
+                <li key={j} className="flex items-start gap-2 text-sm text-white/60">
+                  <span style={{ color: eventPackage.color }} className="mt-0.5 flex-shrink-0">✓</span>
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <a href={`https://wa.me/96171444328?text=${encodeURIComponent("Hi! I want a Birthday or Event invitation")}`}
+              target="_blank" rel="noopener noreferrer"
+              className="block text-center py-3 rounded-xl font-semibold text-sm transition"
+              style={{ background: eventPackage.color, color: "black" }}>
+              Get Started
+            </a>
+          </motion.div>
+        </motion.div>
+      </section>
+
         {/* Testimonials */}
         <section className="py-24 px-6 max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
