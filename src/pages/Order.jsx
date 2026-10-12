@@ -21,6 +21,17 @@ const templates = [
 
 const birthdayTemplate = { id: "birthday", name: "Golden Soirée", nameAr: "سواريه ذهبية", preview: "🎂", desc: "Magnificent black & gold milestone birthday invitation", descAr: "دعوة عيد ميلاد فاخرة بالأسود والذهبي", link: "/demo-birthday" }
 
+const occasionTemplate = { id: "occasion", name: "The Occasion", nameAr: "المناسبة", preview: "✨", desc: "An elegant, flexible invitation for engagements, baptisms, graduations, and any celebration", descAr: "دعوة أنيقة ومرنة لأي مناسبة — خطوبة، معمودية، تخرج، وأكثر", link: "/demo-occasion" }
+
+const EVENT_ICONS = [
+  { id: "💍", label: "Engagement / Proposal" },
+  { id: "🥂", label: "Anniversary / Bachelor(ette)" },
+  { id: "🎓", label: "Graduation" },
+  { id: "✝️", label: "Baptism" },
+  { id: "🎉", label: "General Celebration" },
+  { id: "⭐", label: "Other" },
+]
+
 const T = {
   en: {
     steps: ["Package", "Template", "Details", "Personalize", "Contact", "Payment"],
@@ -161,6 +172,7 @@ const T = {
     noteArPh: "نوما هنيئاً لأطفالكم",
     eventTypeWedding: "💍 Wedding",
     eventTypeBirthday: "🎂 Birthday",
+    eventTypeOccasion: "✨ Other Events",
     birthdayDetails: "Birthday Details",
     birthdayDetailsSub: "Tell us about the celebration",
     celebrantName: "Celebrant's Name",
@@ -177,6 +189,23 @@ const T = {
     partyLabelBday: "Dancing",
     timelineBday: "Night's Program (optional)",
     noteEnPhBday: "e.g. Your presence is the greatest gift — no need to bring anything else.",
+    occasionDetails: "Event Details",
+    occasionDetailsSub: "Tell us about your occasion — engagement, baptism, graduation, anything",
+    occasionType: "Type of Event",
+    occasionTypePh: "e.g. Engagement, Baptism, Graduation, Bachelor Party",
+    occasionIcon: "Choose an Icon",
+    occasionTitle: "Title (name or names shown on the invitation)",
+    occasionTitlePh: "Lea & Marc",
+    occasionTitleAr: "Title — Arabic (optional)",
+    occasionTitleArPh: "ليا ومارك",
+    occasionSubtitle: "Tagline (the line under the title)",
+    occasionSubtitlePh: "are getting engaged",
+    occasionSubtitleAr: "Tagline — Arabic (optional)",
+    occasionSubtitleArPh: "يُعلنان خطوبتهما",
+    occasionProgram: "Program (optional)",
+    occasionProgramSub: "Up to 3 moments — label, time, and location for each",
+    programLabel: "Label",
+    programLabelPh: "e.g. Welcome Reception",
   },
   ar: {
     steps: ["الباقة", "القالب", "التفاصيل", "التخصيص", "التواصل", "الدفع"],
@@ -333,6 +362,24 @@ const T = {
     partyLabelBday: "سهرة راقصة",
     timelineBday: "برنامج الأمسية (اختياري)",
     noteEnPhBday: "مثال: حضوركم هو أثمن هدية — لا حاجة لإحضار أي شيء آخر.",
+    eventTypeOccasion: "✨ مناسبات أخرى",
+    occasionDetails: "تفاصيل المناسبة",
+    occasionDetailsSub: "أخبرنا عن مناسبتك — خطوبة، معمودية، تخرج، أو أي شيء آخر",
+    occasionType: "نوع المناسبة",
+    occasionTypePh: "مثال: خطوبة، معمودية، تخرج، عزوبية",
+    occasionIcon: "اختر أيقونة",
+    occasionTitle: "العنوان (الاسم أو الأسماء الظاهرة على الدعوة)",
+    occasionTitlePh: "ليا ومارك",
+    occasionTitleAr: "العنوان بالعربية (اختياري)",
+    occasionTitleArPh: "ليا ومارك",
+    occasionSubtitle: "الشعار (السطر تحت العنوان)",
+    occasionSubtitlePh: "يُعلنان خطوبتهما",
+    occasionSubtitleAr: "الشعار بالعربية (اختياري)",
+    occasionSubtitleArPh: "يُعلنان خطوبتهما",
+    occasionProgram: "البرنامج (اختياري)",
+    occasionProgramSub: "حتى 3 لحظات — عنوان ووقت ومكان لكل منها",
+    programLabel: "العنوان",
+    programLabelPh: "مثال: استقبال الضيوف",
   }
 }
 
@@ -347,6 +394,7 @@ export default function Order() {
   const [form, setForm] = useState({
     package: "", template: "", groomName: "", brideName: "", groomAr: "", brideAr: "",
     age: "",
+    eventType: "", eventTypeAr: "", eventSubtitle: "", eventSubtitleAr: "", eventIcon: "💍",
     parentsEn: "", parentsAr: "",
     weddingDate: "", ceremonyPlace: "", ceremonyTime: "", ceremonyPlaceAr: "",
     partyPlace: "", partyTime: "", partyPlaceAr: "",
@@ -355,7 +403,7 @@ export default function Order() {
     messageEn: "", messageAr: "",
     quote: "", quoteAr: "", quoteRef: "",
     rsvpDeadline: "",
-    tl0: "", tl0loc: "", tl1: "", tl1loc: "", tl2: "", tl2loc: "",
+    tl0: "", tl0loc: "", tl0label: "", tl1: "", tl1loc: "", tl1label: "", tl2: "", tl2loc: "", tl2label: "",
     video: "", videoStart: "", videoEnd: "",
     dressCode: "", transport: "", accommodation: "",
     registrySubtitle: "", registryWishMoneyAcc: "", registryWishMoneyPhone: "",
@@ -367,11 +415,17 @@ export default function Order() {
   const update = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
   const isBirthday = form.template === "birthday"
+  const isOccasion = form.template === "occasion"
   const [tplTab, setTplTab] = useState("wedding")
+  const selectedTemplateName = isBirthday ? birthdayTemplate.name : isOccasion ? occasionTemplate.name : templates.find(tmpl => tmpl.id === form.template)?.name
+  const eventSummaryLabel = isBirthday ? t.celebrant : isOccasion ? t.occasionType : t.couple
+  const eventSummaryValue = isBirthday ? `${form.groomName} — ${form.age}th Birthday`
+    : isOccasion ? `${form.groomName} — ${form.eventType}`
+    : `${form.groomName} & ${form.brideName}`
 
   // Auto-select dark template when Bronze is chosen on the wedding tab — it's the only option
   useEffect(() => {
-    if (form.package === "bronze" && form.template !== "birthday") update("template", "dark")
+    if (form.package === "bronze" && form.template !== "birthday" && form.template !== "occasion") update("template", "dark")
   }, [form.package])
 
   useEffect(() => {
@@ -393,7 +447,9 @@ export default function Order() {
           content_name: form.package,
         })
       }
-      const eventLine = isBirthday ? `🎂 ${form.groomName}'s ${form.age}th Birthday` : `💒 ${form.groomName} & ${form.brideName}`
+      const eventLine = isBirthday ? `🎂 ${form.groomName}'s ${form.age}th Birthday`
+        : isOccasion ? `${form.eventIcon} ${form.groomName} — ${form.eventType}`
+        : `💒 ${form.groomName} & ${form.brideName}`
       const msg = `🎉 New Order on Lumivite!\n📦 ${form.package.toUpperCase()} Package — ${packages.find(p => p.id === form.package)?.price}\n🎨 ${form.template} Template\n${eventLine}\n📅 ${form.weddingDate}\n👤 Client: ${form.yourName}\n📞 ${form.yourPhone}\n⚠️ Awaiting payment confirmation!`
       fetch("/api/notify-whatsapp", {
         method: "POST",
@@ -407,7 +463,9 @@ export default function Order() {
           {
             to_name: form.yourName,
             to_email: form.yourEmail,
-            couple: isBirthday ? `${form.groomName}'s ${form.age}th Birthday` : `${form.groomName} & ${form.brideName}`,
+            couple: isBirthday ? `${form.groomName}'s ${form.age}th Birthday`
+              : isOccasion ? `${form.groomName} — ${form.eventType}`
+              : `${form.groomName} & ${form.brideName}`,
             package: `${form.package.charAt(0).toUpperCase() + form.package.slice(1)} — ${packages.find(p => p.id === form.package)?.price}`,
             wedding_date: form.weddingDate,
             order_link: `https://www.lumivite.net/my-order/${docRef.id}`,
@@ -513,10 +571,10 @@ export default function Order() {
               <p className="text-white/40 text-center text-sm mb-6">{t.chooseTemplateSub}</p>
 
               {/* Event type tabs */}
-              <div className="flex gap-2 justify-center mb-8">
-                {[["wedding", t.eventTypeWedding], ["birthday", t.eventTypeBirthday]].map(([id, label]) => (
+              <div className="flex gap-2 justify-center mb-8 flex-wrap">
+                {[["wedding", t.eventTypeWedding], ["birthday", t.eventTypeBirthday], ["occasion", t.eventTypeOccasion]].map(([id, label]) => (
                   <button key={id} type="button"
-                    onClick={() => { setTplTab(id); if (id === "birthday") update("template", "birthday"); else if (form.template === "birthday") update("template", "") }}
+                    onClick={() => { setTplTab(id); if (id === "birthday" || id === "occasion") update("template", id); else if (form.template === "birthday" || form.template === "occasion") update("template", "") }}
                     className="px-5 py-2.5 rounded-xl text-sm font-medium transition"
                     style={{ background: tplTab === id ? "#c9a96e" : "rgba(255,255,255,0.05)", color: tplTab === id ? "black" : "rgba(255,255,255,0.5)" }}>
                     {label}
@@ -553,6 +611,33 @@ export default function Order() {
                     <div className="w-6 h-6 rounded-full border-2 border-[#c9a96e] flex items-center justify-center"
                       style={{ background: form.template === "birthday" ? "#c9a96e" : "transparent" }}>
                       {form.template === "birthday" && <span className="text-black text-xs">✓</span>}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {tplTab === "occasion" && (
+                <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
+                  onClick={() => update("template", "occasion")}
+                  className="p-6 rounded-2xl border transition flex items-center gap-5 cursor-pointer"
+                  style={{
+                    borderColor: form.template === "occasion" ? "#c9a96e" : "rgba(255,255,255,0.1)",
+                    background: form.template === "occasion" ? "rgba(201,169,110,0.08)" : "rgba(255,255,255,0.02)",
+                  }}>
+                  <div className="text-4xl">{occasionTemplate.preview}</div>
+                  <div className="flex-1">
+                    <p className="font-medium text-white">{isAr ? occasionTemplate.nameAr : occasionTemplate.name}</p>
+                    <p className="text-white/40 text-sm">{isAr ? occasionTemplate.descAr : occasionTemplate.desc}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <a href={occasionTemplate.link} target="_blank" rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">
+                      {t.preview}
+                    </a>
+                    <div className="w-6 h-6 rounded-full border-2 border-[#c9a96e] flex items-center justify-center"
+                      style={{ background: form.template === "occasion" ? "#c9a96e" : "transparent" }}>
+                      {form.template === "occasion" && <span className="text-black text-xs">✓</span>}
                     </div>
                   </div>
                 </motion.div>
@@ -614,9 +699,106 @@ export default function Order() {
           {/* STEP 2 - Wedding Details */}
           {step === 2 && (
             <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <h2 className="font-serif text-3xl font-light text-center mb-2">{isBirthday ? t.birthdayDetails : t.weddingDetails}</h2>
-              <p className="text-white/40 text-center text-sm mb-10">{isBirthday ? t.birthdayDetailsSub : t.weddingDetailsSub}</p>
-              {isBirthday ? (
+              <h2 className="font-serif text-3xl font-light text-center mb-2">{isOccasion ? t.occasionDetails : isBirthday ? t.birthdayDetails : t.weddingDetails}</h2>
+              <p className="text-white/40 text-center text-sm mb-10">{isOccasion ? t.occasionDetailsSub : isBirthday ? t.birthdayDetailsSub : t.weddingDetailsSub}</p>
+              {isOccasion ? (
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.occasionType}</label>
+                    <input value={form.eventType} onChange={e => update("eventType", e.target.value)} placeholder={t.occasionTypePh} className={inp} />
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.occasionIcon}</label>
+                    <div className="flex gap-2 flex-wrap">
+                      {EVENT_ICONS.map(opt => (
+                        <button key={opt.id} type="button" onClick={() => update("eventIcon", opt.id)}
+                          title={opt.label}
+                          className="w-12 h-12 rounded-xl border text-xl flex items-center justify-center transition"
+                          style={{ borderColor: form.eventIcon === opt.id ? "#c9a96e" : "rgba(255,255,255,0.1)", background: form.eventIcon === opt.id ? "rgba(201,169,110,0.12)" : "rgba(255,255,255,0.03)" }}>
+                          {opt.id}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.occasionTitle}</label>
+                    <input value={form.groomName} onChange={e => update("groomName", e.target.value)} placeholder={t.occasionTitlePh} className={inp} />
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.occasionTitleAr}</label>
+                    <input value={form.groomAr} onChange={e => update("groomAr", e.target.value)} placeholder={t.occasionTitleArPh} dir="rtl" className={inp} />
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.occasionSubtitle}</label>
+                    <input value={form.eventSubtitle} onChange={e => update("eventSubtitle", e.target.value)} placeholder={t.occasionSubtitlePh} className={inp} />
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.occasionSubtitleAr}</label>
+                    <input value={form.eventSubtitleAr} onChange={e => update("eventSubtitleAr", e.target.value)} placeholder={t.occasionSubtitleArPh} dir="rtl" className={inp} />
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.eventDate}</label>
+                    <input value={form.weddingDate} onChange={e => update("weddingDate", e.target.value)} type="date" className={inp} />
+                  </div>
+                  <div className="pt-2">
+                    <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">{t.venueDetails}</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-white/40 text-xs mb-2 block">{t.placeName}</label>
+                        <input value={form.ceremonyPlace} onChange={e => update("ceremonyPlace", e.target.value)} placeholder="La Maison Blanche, Beirut" className={inp} />
+                      </div>
+                      <div>
+                        <label className="text-white/40 text-xs mb-2 block">{t.time}</label>
+                        <input value={form.ceremonyTime} onChange={e => update("ceremonyTime", e.target.value)} placeholder="7:00 PM" className={inp} />
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <label className="text-white/40 text-xs mb-2 block">{t.placeNameAr}</label>
+                      <input value={form.ceremonyPlaceAr} onChange={e => update("ceremonyPlaceAr", e.target.value)} dir="rtl" className={inp} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.heroLocation}</label>
+                    <p className="text-white/20 text-xs mb-2">{t.heroLocationSub}</p>
+                    <input value={form.venue} onChange={e => update("venue", e.target.value)} placeholder="Beirut, Lebanon" className={inp} />
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.heroLocationAr}</label>
+                    <input value={form.venueAr} onChange={e => update("venueAr", e.target.value)} dir="rtl" className={inp} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.city}</label>
+                      <input value={form.city} onChange={e => update("city", e.target.value)} placeholder={t.cityPh} className={inp} />
+                    </div>
+                    <div>
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.guestCount}</label>
+                      <input value={form.guestCount} onChange={e => update("guestCount", e.target.value)} placeholder="80" type="number" className={inp} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.dressCode}</label>
+                    <input value={form.dressCode} onChange={e => update("dressCode", e.target.value)} placeholder="Smart Elegant" className={inp} />
+                  </div>
+                  {form.package !== "bronze" && (
+                    <div>
+                      <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.music}</label>
+                      <input value={form.music} onChange={e => update("music", e.target.value)} placeholder={t.musicPh} className={inp} />
+                      <p className="text-white/20 text-xs mt-3 mb-2">{t.musicClip} — {t.musicClipSub}</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.startSec}</label>
+                          <input value={form.musicStart} onChange={e => update("musicStart", e.target.value)} placeholder="0" type="number" className={inp} />
+                        </div>
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.endSec}</label>
+                          <input value={form.musicEnd} onChange={e => update("musicEnd", e.target.value)} placeholder="90" type="number" className={inp} />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : isBirthday ? (
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -801,7 +983,7 @@ export default function Order() {
               )}
               <div className="flex gap-3 mt-8">
                 <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
-                <button onClick={() => setStep(3)} disabled={isBirthday ? (!form.groomName || !form.age || !form.weddingDate) : (!form.groomName || !form.brideName || !form.weddingDate)}
+                <button onClick={() => setStep(3)} disabled={isOccasion ? (!form.groomName || !form.eventType || !form.weddingDate) : isBirthday ? (!form.groomName || !form.age || !form.weddingDate) : (!form.groomName || !form.brideName || !form.weddingDate)}
                   className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
                   style={{ background: "#c9a96e" }}>{t.continue}</button>
               </div>
@@ -841,9 +1023,26 @@ export default function Order() {
                 </div>
 
                 <div className="pt-2">
-                  <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-1">{isBirthday ? t.timelineBday : t.timeline}</p>
-                  <p className="text-white/20 text-xs mb-4">{t.timelineSub}</p>
-                  {(isBirthday ? [
+                  <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-1">{isOccasion ? t.occasionProgram : isBirthday ? t.timelineBday : t.timeline}</p>
+                  <p className="text-white/20 text-xs mb-4">{isOccasion ? t.occasionProgramSub : t.timelineSub}</p>
+                  {isOccasion ? (
+                    [["tl0", "tl0label", "tl0loc", "7:00 PM"], ["tl1", "tl1label", "tl1loc", "8:00 PM"], ["tl2", "tl2label", "tl2loc", "9:00 PM"]].map(([timeKey, labelKey, locKey, timePh], i) => (
+                      <div key={timeKey} className="grid grid-cols-3 gap-3 mb-3">
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.programLabel} {i + 1}</label>
+                          <input value={form[labelKey]} onChange={e => update(labelKey, e.target.value)} placeholder={t.programLabelPh} className={inp} />
+                        </div>
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.time}</label>
+                          <input value={form[timeKey]} onChange={e => update(timeKey, e.target.value)} placeholder={timePh} className={inp} />
+                        </div>
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{t.placeName}</label>
+                          <input value={form[locKey]} onChange={e => update(locKey, e.target.value)} placeholder={t.locationPh} className={inp} />
+                        </div>
+                      </div>
+                    ))
+                  ) : (isBirthday ? [
                     [t.ceremonyLabelBday, "tl0", "tl0loc", "8:00 PM"],
                     [t.welcomeLabelBday, "tl1", "tl1loc", "9:00 PM"],
                     [t.partyLabelBday, "tl2", "tl2loc", "11:00 PM"],
@@ -907,7 +1106,7 @@ export default function Order() {
                   </div>
                 )}
 
-                {form.package === "gold" && !isBirthday && (
+                {form.package === "gold" && !isBirthday && !isOccasion && (
                   <div className="pt-2">
                     <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-1">{t.giftRegistry}</p>
                     <p className="text-white/20 text-xs mb-4">{t.registrySub}</p>
@@ -1003,8 +1202,8 @@ export default function Order() {
                 <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-3">{t.orderSummary}</p>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between"><span className="text-white/50">{t.package}</span><span className="text-white capitalize">{form.package} — {packages.find(p => p.id === form.package)?.price}</span></div>
-                  <div className="flex justify-between"><span className="text-white/50">{t.template}</span><span className="text-white">{isBirthday ? birthdayTemplate.name : templates.find(tmpl => tmpl.id === form.template)?.name}</span></div>
-                  <div className="flex justify-between"><span className="text-white/50">{isBirthday ? t.celebrant : t.couple}</span><span className="text-white">{isBirthday ? `${form.groomName} — ${form.age}th Birthday` : `${form.groomName} & ${form.brideName}`}</span></div>
+                  <div className="flex justify-between"><span className="text-white/50">{t.template}</span><span className="text-white">{selectedTemplateName}</span></div>
+                  <div className="flex justify-between"><span className="text-white/50">{eventSummaryLabel}</span><span className="text-white">{eventSummaryValue}</span></div>
                   <div className="border-t border-white/10 pt-2 mt-2 flex justify-between">
                     <span className="text-white/50">{t.totalDue}</span>
                     <span className="font-bold text-xl text-[#c9a96e]">{packages.find(p => p.id === form.package)?.price}</span>
@@ -1028,7 +1227,7 @@ export default function Order() {
               <div className="text-center mb-8">
                 <p className="text-white/40 text-sm mb-1">{t.totalDue}</p>
                 <p className="font-serif text-5xl font-light text-[#c9a96e]">{packages.find(p => p.id === form.package)?.price}</p>
-                <p className="text-white/30 text-xs mt-1 capitalize">{form.package} · {isBirthday ? birthdayTemplate.name : templates.find(tmpl => tmpl.id === form.template)?.name}</p>
+                <p className="text-white/30 text-xs mt-1 capitalize">{form.package} · {selectedTemplateName}</p>
               </div>
               <div className="bg-white/3 border border-white/10 rounded-2xl p-6 mb-8">
                 <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-4">{t.howItWorks}</p>
@@ -1046,8 +1245,8 @@ export default function Order() {
                 <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-3">{t.orderSummary}</p>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between"><span className="text-white/50">{t.package}</span><span className="text-white capitalize">{form.package} — {packages.find(p => p.id === form.package)?.price}</span></div>
-                  <div className="flex justify-between"><span className="text-white/50">{t.template}</span><span className="text-white">{isBirthday ? birthdayTemplate.name : templates.find(tmpl => tmpl.id === form.template)?.name}</span></div>
-                  <div className="flex justify-between"><span className="text-white/50">{isBirthday ? t.celebrant : t.couple}</span><span className="text-white">{isBirthday ? `${form.groomName} — ${form.age}th Birthday` : `${form.groomName} & ${form.brideName}`}</span></div>
+                  <div className="flex justify-between"><span className="text-white/50">{t.template}</span><span className="text-white">{selectedTemplateName}</span></div>
+                  <div className="flex justify-between"><span className="text-white/50">{eventSummaryLabel}</span><span className="text-white">{eventSummaryValue}</span></div>
                   <div className="flex justify-between"><span className="text-white/50">{t.whatsappLabel}</span><span className="text-white">{form.yourPhone}</span></div>
                 </div>
               </div>

@@ -13,12 +13,14 @@ const STATUS_CONFIG = {
 
 function OrderEditSection({ order, onSave }) {
   const isBirthday = order.template === "birthday"
+  const isOccasion = order.template === "occasion"
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
   const [fields, setFields] = useState({
     groomName: order.groomName || "",
     brideName: order.brideName || "",
     age: order.age || "",
+    eventType: order.eventType || "",
     yourName: order.yourName || "",
     yourPhone: order.yourPhone || "",
     yourEmail: order.yourEmail || "",
@@ -67,6 +69,12 @@ function OrderEditSection({ order, onSave }) {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
         {(isBirthday ? [
           ["Celebrant", "groomName"], ["Age", "age"],
+          ["Client Name", "yourName"], ["Phone", "yourPhone"], ["Email", "yourEmail"],
+          ["Event Date", "weddingDate"], ["City", "city"], ["Guests", "guestCount"],
+          ["Venue Place", "ceremonyPlace"], ["Venue Time", "ceremonyTime"],
+          ["Dress Code", "dressCode"], ["Music", "music"], ["Notes", "notes"],
+        ] : isOccasion ? [
+          ["Title", "groomName"], ["Event Type", "eventType"],
           ["Client Name", "yourName"], ["Phone", "yourPhone"], ["Email", "yourEmail"],
           ["Event Date", "weddingDate"], ["City", "city"], ["Guests", "guestCount"],
           ["Venue Place", "ceremonyPlace"], ["Venue Time", "ceremonyTime"],
@@ -1535,6 +1543,571 @@ function BuildBirthdayModal({ order }) {
   )
 }
 
+const OCCASION_ICONS = ["💍", "🥂", "🎓", "✝️", "🎉", "⭐"]
+
+function BuildOccasionModal({ order }) {
+  const pkg = (order.package || "gold").toLowerCase()
+  const tier = pkg.includes("gold") ? "gold" : pkg.includes("silver") ? "silver" : "bronze"
+
+  const [slug, setSlug] = useState(order.slug || `${order.groomName?.toLowerCase()}-occasion`.replace(/\s/g, ""))
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [heroPhoto, setHeroPhoto] = useState("")
+  const [venuePhoto, setVenuePhoto] = useState("")
+  const [uploadingHero, setUploadingHero] = useState(false)
+  const [uploadingVenue, setUploadingVenue] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [draftSaving, setDraftSaving] = useState(false)
+  const [draftSaved, setDraftSaved] = useState(false)
+  const heroInputRef = useRef(null)
+  const venueInputRef = useRef(null)
+  const savedDocIdRef = useRef(null)
+  const [extraData, setExtraData] = useState({
+    icon: order.eventIcon || "💍",
+    titleAr: order.groomAr || "",
+    eventTypeAr: order.eventTypeAr || "",
+    subtitleAr: order.eventSubtitleAr || "",
+    venuePlaceAr: order.ceremonyPlaceAr || "",
+    venueAr: order.venueAr || "",
+    venueMapUrl: "",
+    dressCodeAr: "",
+    quote: order.quote || "The best thing to hold onto in life is each other.",
+    quoteAr: order.quoteAr || "أفضل ما يمكن التمسك به في الحياة هو بعضنا البعض.",
+    quoteRef: order.quoteRef || "Audrey Hepburn",
+    hideQuote: false,
+    messageEn: order.messageEn || "Please join us as we celebrate this special moment together",
+    messageAr: order.messageAr || "انضموا إلينا للاحتفال بهذه اللحظة المميزة معاً",
+    noteEn: order.noteEn || "Your presence means the world to us.",
+    noteAr: order.noteAr || "حضوركم يعني لنا الكثير.",
+    rsvpDeadline: order.rsvpDeadline || "",
+    music: order.music || "",
+    musicStart: order.musicStart ? Number(order.musicStart) : null,
+    musicEnd: order.musicEnd ? Number(order.musicEnd) : null,
+    hideTimeline: false,
+    tl0: order.tl0 || "7:00 PM", tl0loc: order.tl0loc || "", tl0label: order.tl0label || "Welcome Reception", tl0labelAr: "",
+    tl1: order.tl1 || "8:00 PM", tl1loc: order.tl1loc || "", tl1label: order.tl1label || "Toast & Blessing", tl1labelAr: "",
+    tl2: order.tl2 || "9:00 PM", tl2loc: order.tl2loc || "", tl2label: order.tl2label || "Dinner & Dancing", tl2labelAr: "",
+    memoriesEnabled: false,
+    hideEmojis: false,
+    envelopeColor: "black",
+  })
+
+  const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
+
+  useEffect(() => {
+    const loadExisting = async () => {
+      try {
+        const { getDocs, getDoc, query, collection: col, where, doc: firestoreDoc } = await import("firebase/firestore")
+        let d = null, docId = null
+        const q = query(col(db, "invitations"), where("orderId", "==", order.id))
+        const qSnap = await getDocs(q)
+        if (!qSnap.empty) {
+          docId = qSnap.docs[0].id
+          d = qSnap.docs[0].data()
+          savedDocIdRef.current = docId
+          setSlug(docId)
+        } else {
+          const snap = await getDoc(firestoreDoc(db, "invitations", slug))
+          if (snap.exists()) { d = snap.data(); docId = slug; savedDocIdRef.current = slug }
+        }
+
+        if (d) {
+          setExtraData({
+            icon: d.icon || order.eventIcon || "💍",
+            titleAr: d.titleAr || "",
+            eventTypeAr: d.eventTypeAr || "",
+            subtitleAr: d.subtitleAr || "",
+            venuePlaceAr: d.venue?.placeAr || "",
+            venueAr: d.venue?.locationAr || "",
+            venueMapUrl: d.venue?.map || "",
+            dressCodeAr: d.dressCodeAr || "",
+            quote: d.quote || "The best thing to hold onto in life is each other.",
+            quoteAr: d.quoteAr || "أفضل ما يمكن التمسك به في الحياة هو بعضنا البعض.",
+            quoteRef: d.quoteRef ?? "Audrey Hepburn",
+            hideQuote: d.hideQuote ?? false,
+            messageEn: d.message || "Please join us as we celebrate this special moment together",
+            messageAr: d.messageAr || "انضموا إلينا للاحتفال بهذه اللحظة المميزة معاً",
+            noteEn: d.noteEn || "",
+            noteAr: d.noteAr || "",
+            rsvpDeadline: d.rsvpDeadline || "",
+            music: d.music || "",
+            musicStart: d.musicStart ?? null,
+            musicEnd: d.musicEnd ?? null,
+            hideTimeline: d.hideTimeline ?? false,
+            tl0: d.timeline?.[0]?.time || "7:00 PM", tl0loc: d.timeline?.[0]?.location || "", tl0label: d.timeline?.[0]?.label || "Welcome Reception", tl0labelAr: d.timeline?.[0]?.labelAr || "",
+            tl1: d.timeline?.[1]?.time || "8:00 PM", tl1loc: d.timeline?.[1]?.location || "", tl1label: d.timeline?.[1]?.label || "Toast & Blessing", tl1labelAr: d.timeline?.[1]?.labelAr || "",
+            tl2: d.timeline?.[2]?.time || "9:00 PM", tl2loc: d.timeline?.[2]?.location || "", tl2label: d.timeline?.[2]?.label || "Dinner & Dancing", tl2labelAr: d.timeline?.[2]?.labelAr || "",
+            memoriesEnabled: d.memoriesEnabled ?? false,
+            hideEmojis: d.hideEmojis ?? false,
+            envelopeColor: d.envelopeColor || "black",
+          })
+          if (d.photo) setHeroPhoto(d.photo)
+          if (d.venue?.photo) setVenuePhoto(d.venue.photo)
+          setSaved(true)
+        }
+      } catch (e) { /* no existing invitation */ }
+      setLoading(false)
+    }
+    loadExisting()
+  }, [])
+
+  if (loading) return (
+    <div className="border-t border-white/5 p-5">
+      <p className="text-white/20 text-xs text-center animate-pulse">Loading...</p>
+    </div>
+  )
+
+  const uploadOne = async (file, setUploading, setUrl) => {
+    setUploading(true)
+    try {
+      const apiKey = import.meta.env.VITE_IMGBB_KEY
+      const formData = new FormData()
+      formData.append("image", file)
+      const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, { method: "POST", body: formData })
+      const data = await res.json()
+      if (!data.success) throw new Error(data.error?.message || "Upload failed")
+      setUrl(data.data.url)
+    } catch (e) {
+      alert("Upload error: " + e.message)
+    }
+    setUploading(false)
+  }
+
+  const buildInvitationData = () => ({
+    icon: extraData.icon || "💍",
+    eventType: order.eventType || "",
+    eventTypeAr: extraData.eventTypeAr || order.eventType || "",
+    title: order.groomName,
+    titleAr: extraData.titleAr || order.groomName,
+    subtitle: order.eventSubtitle || "",
+    subtitleAr: extraData.subtitleAr || order.eventSubtitle || "",
+    date: order.weddingDate + "T19:00:00",
+    template: "occasion",
+    photo: heroPhoto || "",
+    venue: {
+      label: "The Celebration", labelAr: "الاحتفال",
+      time: order.ceremonyTime || "",
+      place: order.ceremonyPlace || "",
+      placeAr: extraData.venuePlaceAr || order.ceremonyPlace || "",
+      location: order.city || "",
+      locationAr: extraData.venueAr || order.city || "",
+      map: extraData.venueMapUrl || null,
+      photo: venuePhoto || "",
+    },
+    dressCode: order.dressCode || "",
+    dressCodeAr: extraData.dressCodeAr || "",
+    quote: extraData.quote,
+    quoteAr: extraData.quoteAr,
+    quoteRef: extraData.quoteRef,
+    hideQuote: extraData.hideQuote ?? false,
+    message: extraData.messageEn,
+    messageAr: extraData.messageAr,
+    noteEn: extraData.noteEn || "",
+    noteAr: extraData.noteAr || "",
+    rsvpDeadline: extraData.rsvpDeadline || "",
+    music: extraData.music,
+    musicStart: extraData.musicStart ?? null,
+    musicEnd: extraData.musicEnd ?? null,
+    hideTimeline: extraData.hideTimeline ?? false,
+    timeline: [
+      { time: extraData.tl0, label: extraData.tl0label || "Welcome Reception", labelAr: extraData.tl0labelAr || extraData.tl0label || "", location: extraData.tl0loc, locationAr: extraData.tl0loc },
+      { time: extraData.tl1, label: extraData.tl1label || "Toast & Blessing", labelAr: extraData.tl1labelAr || extraData.tl1label || "", location: extraData.tl1loc, locationAr: extraData.tl1loc },
+      { time: extraData.tl2, label: extraData.tl2label || "Dinner & Dancing", labelAr: extraData.tl2labelAr || extraData.tl2label || "", location: extraData.tl2loc, locationAr: extraData.tl2loc },
+    ],
+    memoriesEnabled: extraData.memoriesEnabled ?? false,
+    hideEmojis: extraData.hideEmojis ?? false,
+    envelopeColor: extraData.envelopeColor || "black",
+    package: order.package,
+    orderId: order.id,
+  })
+
+  const handleSaveDraft = async () => {
+    if (!slug) return alert("Please enter an Invitation URL Slug first")
+    setDraftSaving(true)
+    try {
+      const { setDoc, doc: firestoreDoc } = await import("firebase/firestore")
+      await setDoc(firestoreDoc(db, "invitations", slug), { ...buildInvitationData(), _draft: true }, { merge: true })
+      if (savedDocIdRef.current && savedDocIdRef.current !== slug) {
+        const { deleteDoc } = await import("firebase/firestore")
+        await deleteDoc(firestoreDoc(db, "invitations", savedDocIdRef.current)).catch(() => {})
+      }
+      savedDocIdRef.current = slug
+      await updateDoc(firestoreDoc(db, "orders", order.id), { slug })
+      setDraftSaved(true)
+      setTimeout(() => setDraftSaved(false), 3000)
+    } catch (e) {
+      alert("Save draft error: " + e.message)
+    }
+    setDraftSaving(false)
+  }
+
+  const handleBuild = async () => {
+    setSaving(true)
+    try {
+      const { setDoc, doc } = await import("firebase/firestore")
+      await setDoc(doc(db, "invitations", slug), { ...buildInvitationData(), slug, createdAt: new Date() })
+      if (savedDocIdRef.current && savedDocIdRef.current !== slug) {
+        const { deleteDoc } = await import("firebase/firestore")
+        await deleteDoc(doc(db, "invitations", savedDocIdRef.current)).catch(() => {})
+      }
+      savedDocIdRef.current = slug
+      await updateDoc(doc(db, "orders", order.id), { status: "delivered" })
+      setSaved(true)
+    } catch (e) {
+      alert("Error: " + e.message)
+    }
+    setSaving(false)
+  }
+
+  const liveUrl = `https://www.lumivite.net/i/${slug}`
+  const previewUrl = `https://www.lumivite.net/api/preview/${slug}`
+  const dashboardUrl = `https://www.lumivite.net/dashboard/${slug}`
+
+  return (
+    <div className="border-t border-white/5 p-5">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-[#c9a96e] text-xs uppercase tracking-widest font-semibold">✨ Build Event Invitation</p>
+        <button onClick={handleSaveDraft} disabled={draftSaving}
+          className="text-xs px-4 py-1.5 rounded-full font-medium transition disabled:opacity-50"
+          style={{ background: draftSaved ? "rgba(74,222,128,0.15)" : "rgba(201,169,110,0.12)", border: `1px solid ${draftSaved ? "rgba(74,222,128,0.4)" : "rgba(201,169,110,0.35)"}`, color: draftSaved ? "#4ade80" : "#c9a96e" }}>
+          {draftSaving ? "Saving…" : draftSaved ? "✓ Saved" : "💾 Save Draft"}
+        </button>
+      </div>
+
+      {saved ? (
+        <div className="bg-[#4ade80]/10 border border-[#4ade80]/20 rounded-xl p-4">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[#4ade80] font-medium">✅ Invitation is LIVE!</p>
+            <button onClick={() => setSaved(false)}
+              className="text-xs px-3 py-1 rounded-lg border border-white/10 text-white/40 hover:text-white hover:border-white/30 transition">
+              ✏️ Edit
+            </button>
+          </div>
+          <div className="space-y-2 mb-3">
+            <div>
+              <p className="text-white/30 text-xs mb-1">💌 Invitation Link (share with guests)</p>
+              <a href={liveUrl} target="_blank" rel="noopener noreferrer"
+                className="text-[#c9a96e] text-xs underline break-all">{liveUrl}</a>
+            </div>
+            <div>
+              <p className="text-white/30 text-xs mb-1">📊 RSVP Dashboard</p>
+              <a href={dashboardUrl} target="_blank" rel="noopener noreferrer"
+                className="text-[#c9a96e] text-xs underline break-all">{dashboardUrl}</a>
+            </div>
+            {extraData.memoriesEnabled && (
+              <div>
+                <p className="text-white/30 text-xs mb-1">📸 Memory Wall</p>
+                <a href={`https://www.lumivite.net/memories/${slug}`} target="_blank" rel="noopener noreferrer"
+                  className="text-[#c9a96e] text-xs underline break-all">https://www.lumivite.net/memories/{slug}</a>
+              </div>
+            )}
+          </div>
+          <div className="flex gap-2 justify-center flex-wrap">
+            <button onClick={() => navigator.clipboard.writeText(liveUrl).then(() => alert("Invitation link copied!"))}
+              className="text-xs px-3 py-2 rounded-xl border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
+              📋 Copy Invitation
+            </button>
+            <button onClick={() => navigator.clipboard.writeText(dashboardUrl).then(() => alert("Dashboard link copied!"))}
+              className="text-xs px-3 py-2 rounded-xl border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
+              📊 Copy Dashboard
+            </button>
+            <a href={`https://wa.me/${order.yourPhone?.replace(/[^0-9]/g,"")}?text=${encodeURIComponent(`Hi ${order.yourName}! ${extraData.icon} Your ${order.eventType || "event"} invitation is ready!\n\n📩 Invitation link (share with guests):\n${previewUrl}\n\n📊 Your RSVP dashboard (see who's attending):\n${dashboardUrl}\n\n🤍 Lumivite`)}`}
+              target="_blank" rel="noopener noreferrer"
+              className="text-xs px-3 py-2 rounded-xl text-black font-medium transition"
+              style={{ background: "#25D366" }}>
+              💬 Send Both to Client
+            </a>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold"
+            style={{
+              background: tier === "gold" ? "rgba(255,215,0,0.07)" : tier === "silver" ? "rgba(201,169,110,0.07)" : "rgba(205,127,50,0.07)",
+              borderColor: tier === "gold" ? "rgba(255,215,0,0.3)" : tier === "silver" ? "rgba(201,169,110,0.3)" : "rgba(205,127,50,0.3)",
+              color: tier === "gold" ? "#ffd700" : tier === "silver" ? "#c9a96e" : "#cd7f32",
+            }}>
+            {tier === "gold" ? "🥇 Gold Package" : tier === "silver" ? "🥈 Silver Package" : "🥉 Bronze Package"}
+          </div>
+
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">✨ Crest Icon</label>
+            <div className="flex gap-2">
+              {OCCASION_ICONS.map(icon => (
+                <button key={icon} type="button" onClick={() => update("icon", icon)}
+                  className="w-11 h-11 rounded-xl border text-lg flex items-center justify-center transition"
+                  style={{ borderColor: extraData.icon === icon ? "#c9a96e" : "rgba(255,255,255,0.1)", background: extraData.icon === icon ? "rgba(201,169,110,0.12)" : "rgba(255,255,255,0.03)" }}>
+                  {icon}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">🎬 Envelope Color</label>
+            <div className="flex gap-3">
+              {[
+                { id: "black", label: "⬛ Black", desc: "Classic dark" },
+                { id: "white", label: "⬜ White", desc: "Clean & bright" },
+                { id: "creamy", label: "🟡 Creamy", desc: "Warm & elegant" },
+              ].map(opt => (
+                <button key={opt.id} type="button" onClick={() => update("envelopeColor", opt.id)}
+                  className="flex-1 py-2.5 px-3 rounded-xl border text-xs font-medium transition text-center"
+                  style={{
+                    borderColor: extraData.envelopeColor === opt.id ? "#c9a96e" : "rgba(255,255,255,0.1)",
+                    background: extraData.envelopeColor === opt.id ? "rgba(201,169,110,0.12)" : "rgba(255,255,255,0.03)",
+                    color: extraData.envelopeColor === opt.id ? "#c9a96e" : "rgba(255,255,255,0.45)",
+                  }}>
+                  {opt.label}
+                  <span className="block text-white/25 text-xs font-normal mt-0.5">{opt.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Invitation URL Slug</label>
+            <div className="flex items-center gap-2">
+              <span className="text-white/20 text-sm">lumivite.net/i/</span>
+              <input value={slug} onChange={e => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, "-"))}
+                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Title (Arabic)</label>
+              <input value={extraData.titleAr} onChange={e => update("titleAr", e.target.value)}
+                placeholder="ليا ومارك" dir="rtl"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Event Type (Arabic)</label>
+              <input value={extraData.eventTypeAr} onChange={e => update("eventTypeAr", e.target.value)}
+                placeholder="خطوبة" dir="rtl"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+          </div>
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Tagline (Arabic)</label>
+            <input value={extraData.subtitleAr} onChange={e => update("subtitleAr", e.target.value)}
+              placeholder="يُعلنان خطوبتهما" dir="rtl"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Dress Code (Arabic)</label>
+            <input value={extraData.dressCodeAr} onChange={e => update("dressCodeAr", e.target.value)}
+              placeholder="أنيق راقٍ" dir="rtl"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+
+          {/* Sub-heading message */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Message (English)</label>
+              <input value={extraData.messageEn} onChange={e => update("messageEn", e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Message (Arabic)</label>
+              <input value={extraData.messageAr} onChange={e => update("messageAr", e.target.value)}
+                dir="rtl"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+          </div>
+
+          {/* Quote */}
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <input type="checkbox" checked={extraData.hideQuote ?? false} onChange={e => update("hideQuote", e.target.checked)}
+              className="w-4 h-4 rounded accent-[#c9a96e]" />
+            <p className="text-white/60 text-sm">🚫 Hide quote section</p>
+          </label>
+          <div style={{ opacity: extraData.hideQuote ? 0.3 : 1, pointerEvents: extraData.hideQuote ? "none" : "auto" }}>
+            <label className="text-white/30 text-xs mb-1 block">Quote (English)</label>
+            <input value={extraData.quote} onChange={e => update("quote", e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+          <div style={{ opacity: extraData.hideQuote ? 0.3 : 1, pointerEvents: extraData.hideQuote ? "none" : "auto" }}>
+            <label className="text-white/30 text-xs mb-1 block">Quote (Arabic)</label>
+            <input value={extraData.quoteAr} onChange={e => update("quoteAr", e.target.value)}
+              dir="rtl"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+          <div style={{ opacity: extraData.hideQuote ? 0.3 : 1, pointerEvents: extraData.hideQuote ? "none" : "auto" }}>
+            <label className="text-white/30 text-xs mb-1 block">Quote Author / Reference</label>
+            <input value={extraData.quoteRef} onChange={e => update("quoteRef", e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+
+          {/* Music — Silver and Gold only */}
+          {tier !== "bronze" && <div>
+            <label className="text-white/30 text-xs mb-1 block">Music URL (optional)</label>
+            <input value={extraData.music} onChange={e => update("music", e.target.value)}
+              placeholder="https://... or leave empty for default"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            <div className="flex gap-3 mt-2">
+              <div className="flex-1">
+                <label className="text-white/25 text-xs mb-1 block">Start (seconds)</label>
+                <input type="number" min="0" value={extraData.musicStart ?? ""} onChange={e => update("musicStart", e.target.value === "" ? null : Number(e.target.value))}
+                  placeholder="0"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              </div>
+              <div className="flex-1">
+                <label className="text-white/25 text-xs mb-1 block">End (seconds)</label>
+                <input type="number" min="0" value={extraData.musicEnd ?? ""} onChange={e => update("musicEnd", e.target.value === "" ? null : Number(e.target.value))}
+                  placeholder="leave empty to play full track"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              </div>
+            </div>
+          </div>}
+
+          {/* RSVP Deadline */}
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">RSVP Deadline</label>
+            <input type="date" value={extraData.rsvpDeadline} onChange={e => update("rsvpDeadline", e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+
+          {/* Venue details */}
+          <p className="text-white/20 text-xs uppercase tracking-widest pt-1">📍 Venue Details</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Venue Place (Arabic)</label>
+              <input value={extraData.venuePlaceAr} onChange={e => update("venuePlaceAr", e.target.value)}
+                dir="rtl"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Hero Location Text (Arabic)</label>
+              <input value={extraData.venueAr} onChange={e => update("venueAr", e.target.value)}
+                dir="rtl"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+          </div>
+          {tier === "gold" && (
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Venue — Google Maps URL</label>
+              <input value={extraData.venueMapUrl} onChange={e => update("venueMapUrl", e.target.value)}
+                placeholder="https://maps.google.com/?q=..."
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+          )}
+
+          {/* Program */}
+          <p className="text-white/20 text-xs uppercase tracking-widest pt-1">🕐 Program</p>
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <input type="checkbox" checked={extraData.hideTimeline ?? false} onChange={e => update("hideTimeline", e.target.checked)}
+              className="w-4 h-4 rounded accent-[#c9a96e]" />
+            <p className="text-white/60 text-sm">🚫 Hide program section</p>
+          </label>
+          {["tl0", "tl1", "tl2"].map((key, i) => (
+            <div key={key} className="border border-white/8 rounded-xl p-3 space-y-2">
+              <p className="text-white/30 text-xs">Program Item {i + 1}</p>
+              <div className="grid grid-cols-2 gap-2">
+                <input value={extraData[key + "label"]} onChange={e => update(key + "label", e.target.value)}
+                  placeholder="Label (English)"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                <input value={extraData[key + "labelAr"]} onChange={e => update(key + "labelAr", e.target.value)}
+                  placeholder="العنوان بالعربية" dir="rtl"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <input value={extraData[key]} onChange={e => update(key, e.target.value)}
+                  placeholder="Time"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                <input value={extraData[key + "loc"]} onChange={e => update(key + "loc", e.target.value)}
+                  placeholder="Location"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              </div>
+            </div>
+          ))}
+
+          {/* Additional Note */}
+          <p className="text-white/20 text-xs uppercase tracking-widest pt-1">📝 Additional Note (optional)</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Note (English)</label>
+              <textarea value={extraData.noteEn} onChange={e => update("noteEn", e.target.value)}
+                rows={3}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e] resize-none" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Note (Arabic)</label>
+              <textarea value={extraData.noteAr} onChange={e => update("noteAr", e.target.value)}
+                rows={3} dir="rtl"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e] resize-none" />
+            </div>
+          </div>
+
+          {/* Memories feature toggle — Gold only */}
+          {tier === "gold" && <div className="border border-white/8 rounded-xl p-4" style={{ background: "rgba(196,163,90,0.03)" }}>
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input type="checkbox" checked={extraData.memoriesEnabled ?? false} onChange={e => update("memoriesEnabled", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <div>
+                <p className="text-white/60 text-sm">📸 Enable Guest Memory Upload</p>
+                <p className="text-white/25 text-xs mt-0.5">Guests can upload photos from the event to a shared memory wall</p>
+              </div>
+            </label>
+          </div>}
+
+          {/* Hide decorative emojis toggle */}
+          <div className="border border-white/8 rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input type="checkbox" checked={extraData.hideEmojis ?? false} onChange={e => update("hideEmojis", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <p className="text-white/60 text-sm">✨ Hide decorative sparkles</p>
+            </label>
+          </div>
+
+          {/* Photo Uploads */}
+          <p className="text-white/20 text-xs uppercase tracking-widest pt-1">📷 Photos</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Hero Photo (behind the title)</label>
+              <input ref={heroInputRef} type="file" accept="image/*" className="hidden"
+                onChange={e => e.target.files[0] && uploadOne(e.target.files[0], setUploadingHero, setHeroPhoto)} />
+              {heroPhoto && (
+                <div className="relative aspect-square rounded-lg overflow-hidden mb-2 group">
+                  <img src={heroPhoto} alt="hero" className="w-full h-full object-cover" />
+                  <button onClick={() => setHeroPhoto("")}
+                    className="absolute top-1 right-1 bg-black/70 text-white text-xs w-5 h-5 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center">×</button>
+                </div>
+              )}
+              <button onClick={() => heroInputRef.current?.click()} disabled={uploadingHero}
+                className="w-full py-2 rounded-lg border border-dashed border-white/20 text-white/40 text-sm hover:border-[#c9a96e]/50 hover:text-[#c9a96e]/70 transition disabled:opacity-30">
+                {uploadingHero ? "Uploading..." : heroPhoto ? "🔄 Replace" : "📷 Upload"}
+              </button>
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Venue Photo</label>
+              <input ref={venueInputRef} type="file" accept="image/*" className="hidden"
+                onChange={e => e.target.files[0] && uploadOne(e.target.files[0], setUploadingVenue, setVenuePhoto)} />
+              {venuePhoto && (
+                <div className="relative aspect-square rounded-lg overflow-hidden mb-2 group">
+                  <img src={venuePhoto} alt="venue" className="w-full h-full object-cover" />
+                  <button onClick={() => setVenuePhoto("")}
+                    className="absolute top-1 right-1 bg-black/70 text-white text-xs w-5 h-5 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center">×</button>
+                </div>
+              )}
+              <button onClick={() => venueInputRef.current?.click()} disabled={uploadingVenue}
+                className="w-full py-2 rounded-lg border border-dashed border-white/20 text-white/40 text-sm hover:border-[#c9a96e]/50 hover:text-[#c9a96e]/70 transition disabled:opacity-30">
+                {uploadingVenue ? "Uploading..." : venuePhoto ? "🔄 Replace" : "📷 Upload"}
+              </button>
+            </div>
+          </div>
+
+          <button onClick={handleBuild} disabled={saving}
+            className="w-full py-3 rounded-xl font-semibold text-black transition disabled:opacity-50"
+            style={{ background: "#c9a96e" }}>
+            {saving ? "Building..." : "🚀 Build & Publish Invitation"}
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 
 
 export default function Admin() {
@@ -1577,9 +2150,10 @@ export default function Admin() {
     if (!confirm("Delete this order? This will also delete the invitation and all RSVPs. Cannot be undone.")) return
     try {
       const order = orders.find(o => o.id === orderId)
-      const isBirthdayOrder = order.template === "birthday"
-      const slug = order.slug || (isBirthdayOrder
+      const slug = order.slug || (order.template === "birthday"
         ? `${order.groomName?.toLowerCase()}-birthday`.replace(/\s/g, "")
+        : order.template === "occasion"
+        ? `${order.groomName?.toLowerCase()}-occasion`.replace(/\s/g, "")
         : `${order.groomName?.toLowerCase()}-${order.brideName?.toLowerCase()}`.replace(/\s/g, ""))
       const weddingName = orderTitle(order)
 
@@ -1618,15 +2192,17 @@ export default function Admin() {
   }
 
   const exportOrders = () => {
-    const csv = ["Name,Phone,Email,Package,Template,Groom,Bride,Age,Date,City,Guests,Ceremony,Party,Notes",
-      ...orders.map(o => `"${o.yourName}","${o.yourPhone}","${o.yourEmail || ""}","${o.package}","${o.template}","${o.groomName}","${o.brideName || ""}","${o.age || ""}","${o.weddingDate}","${o.city}","${o.guestCount}","${o.ceremonyPlace}","${o.partyPlace || ""}","${o.notes || ""}"`)
+    const csv = ["Name,Phone,Email,Package,Template,Groom,Bride,Age,EventType,Date,City,Guests,Ceremony,Party,Notes",
+      ...orders.map(o => `"${o.yourName}","${o.yourPhone}","${o.yourEmail || ""}","${o.package}","${o.template}","${o.groomName}","${o.brideName || ""}","${o.age || ""}","${o.eventType || ""}","${o.weddingDate}","${o.city}","${o.guestCount}","${o.ceremonyPlace}","${o.partyPlace || ""}","${o.notes || ""}"`)
     ].join("\n")
     const blob = new Blob([csv], { type: "text/csv" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a"); a.href = url; a.download = "orders.csv"; a.click()
   }
 
-  const orderTitle = o => o.template === "birthday" ? `${o.groomName}'s ${o.age}th Birthday` : `${o.groomName} & ${o.brideName}`
+  const orderTitle = o => o.template === "birthday" ? `${o.groomName}'s ${o.age}th Birthday`
+    : o.template === "occasion" ? `${o.groomName} — ${o.eventType}`
+    : `${o.groomName} & ${o.brideName}`
   const weddings = orders.map(orderTitle)
   const weddingRsvps = rsvpWedding === "all" ? rsvps : rsvps.filter(r => r.wedding === rsvpWedding)
 
@@ -1635,8 +2211,8 @@ export default function Admin() {
   const totalPersons = weddingRsvps.filter(r => r.attending).reduce((sum, r) => sum + (r.persons || 1), 0)
 
   const packageColor = { bronze: "#cd7f32", silver: "#c9a96e", gold: "#ffd700" }
-  const templateIcon = { dark: "🌑", botanical: "🌿", rosegold: "🌸", sand: "🏺", birthday: "🎂" }
-  const templateName = { dark: "Dark Luxury", botanical: "Botanical", rosegold: "Rose Gold", sand: "Cinematic Sand & Seal", birthday: "Golden Soirée" }
+  const templateIcon = { dark: "🌑", botanical: "🌿", rosegold: "🌸", sand: "🏺", birthday: "🎂", occasion: "✨" }
+  const templateName = { dark: "Dark Luxury", botanical: "Botanical", rosegold: "Rose Gold", sand: "Cinematic Sand & Seal", birthday: "Golden Soirée", occasion: "The Occasion" }
 
   const filteredRsvps = weddingRsvps.filter(r => rsvpFilter === "all" ? true : rsvpFilter === "attending" ? r.attending : !r.attending)
 
@@ -1806,7 +2382,7 @@ export default function Admin() {
                               </div>
 
                               <div className="px-5 pb-5 flex gap-3">
-                                <a href={`https://wa.me/${order.yourPhone?.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(order.template === "birthday" ? `Hi ${order.yourName}! 👋 Thank you for ordering your birthday invitation with Lumivite! We're working on ${order.groomName}'s ${order.age}th birthday invitation and will send you a preview soon. 🎂` : `Hi ${order.yourName}! 👋 Thank you for ordering your wedding invitation with Lumivite! We're working on ${order.groomName} & ${order.brideName}'s invitation and will send you a preview soon. 💍`)}`}
+                                <a href={`https://wa.me/${order.yourPhone?.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(order.template === "birthday" ? `Hi ${order.yourName}! 👋 Thank you for ordering your birthday invitation with Lumivite! We're working on ${order.groomName}'s ${order.age}th birthday invitation and will send you a preview soon. 🎂` : order.template === "occasion" ? `Hi ${order.yourName}! 👋 Thank you for ordering your ${order.eventType || "event"} invitation with Lumivite! We're working on ${order.groomName}'s invitation and will send you a preview soon. ✨` : `Hi ${order.yourName}! 👋 Thank you for ordering your wedding invitation with Lumivite! We're working on ${order.groomName} & ${order.brideName}'s invitation and will send you a preview soon. 💍`)}`}
                                   target="_blank" rel="noopener noreferrer"
                                   className="flex items-center gap-2 text-sm px-4 py-2 rounded-xl transition text-black font-medium"
                                   style={{ background: "#25D366" }}>
@@ -1825,6 +2401,8 @@ export default function Admin() {
                                <div onClick={e => e.stopPropagation()}>
                                  {order.template === "birthday"
                                    ? <BuildBirthdayModal order={order} onClose={() => setSelectedOrder(null)} />
+                                   : order.template === "occasion"
+                                   ? <BuildOccasionModal order={order} onClose={() => setSelectedOrder(null)} />
                                    : <BuildInvitationModal order={order} onClose={() => setSelectedOrder(null)} />}
                                </div>
                                 )}
@@ -1960,6 +2538,8 @@ export default function Admin() {
                       {orders.map(o => {
                         const slug = o.slug || (o.template === "birthday"
                           ? `${o.groomName?.toLowerCase()}-birthday`.replace(/\s/g, "")
+                          : o.template === "occasion"
+                          ? `${o.groomName?.toLowerCase()}-occasion`.replace(/\s/g, "")
                           : `${o.groomName?.toLowerCase()}-${o.brideName?.toLowerCase()}`.replace(/\s/g, ""))
                         return <option key={o.id} value={slug}>{orderTitle(o)}</option>
                       })}

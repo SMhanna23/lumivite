@@ -39,13 +39,22 @@ const THEMES = {
     image: "demo-og-birthday.png",
     kind: "birthday",
   },
+  6: {
+    path: "/demo-occasion",
+    name: "The Occasion",
+    description: "An elegant emerald & gold digital invitation that flexes to any event — engagement, baptism, graduation, and more — with RSVP tracking and music. Preview The Occasion template.",
+    image: "demo-og-occasion.png",
+    kind: "occasion",
+  },
 }
 
 export default async function handler(req, res) {
   const variant = THEMES[req.query.v] ? req.query.v : "1"
   const theme = THEMES[variant]
 
-  const title   = theme.kind === "birthday" ? `${theme.name} — Birthday Invitation Template 🎂` : `${theme.name} — Wedding Invitation Template 💍`
+  const title   = theme.kind === "birthday" ? `${theme.name} — Birthday Invitation Template 🎂`
+    : theme.kind === "occasion" ? `${theme.name} — Event Invitation Template ✨`
+    : `${theme.name} — Wedding Invitation Template 💍`
   const image   = `https://www.lumivite.net/${theme.image}`
   const pageUrl = `https://www.lumivite.net${theme.path}`
   const appUrl  = `${pageUrl}?_app=1`

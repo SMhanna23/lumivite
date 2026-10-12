@@ -50,6 +50,16 @@ export default async function handler(req, res) {
           ? `Join us in celebrating ${d.name}'s ${d.age}th birthday on ${dateStr}. Open to view the full invitation.`
           : `Join us in celebrating ${d.name}'s ${d.age}th birthday! Open to view the full invitation.`
         if (d.photo) image = d.photo
+      } else if (d.template === "occasion" && d.title) {
+        const icon = d.icon || "✨"
+        title = `${d.title} — ${d.eventType || "You're Invited"} ${icon}`
+        const dateStr = date
+          ? new Date(date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+          : ""
+        description = dateStr
+          ? `You're invited to ${d.title}'s ${d.eventType || "celebration"} on ${dateStr}. Open to view the full invitation.`
+          : `You're invited to ${d.title}'s ${d.eventType || "celebration"}! Open to view the full invitation.`
+        if (d.photo) image = d.photo
       } else {
         const groom = d.groom  || d.groomAr || ""
         const bride = d.bride  || d.brideAr || ""

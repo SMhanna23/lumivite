@@ -115,11 +115,13 @@ export default function MyOrder() {
           <div className="space-y-2 text-sm">
             {order.template === "birthday" ? (
               <div className="flex justify-between"><span className="text-white/40">Celebrant</span><span className="text-white">{order.groomName} — {order.age}th Birthday</span></div>
+            ) : order.template === "occasion" ? (
+              <div className="flex justify-between"><span className="text-white/40">Event</span><span className="text-white">{order.groomName} — {order.eventType}</span></div>
             ) : (
               <div className="flex justify-between"><span className="text-white/40">Couple</span><span className="text-white">{order.groomName} & {order.brideName}</span></div>
             )}
             <div className="flex justify-between"><span className="text-white/40">Package</span><span className="text-white capitalize">{order.package}</span></div>
-            <div className="flex justify-between"><span className="text-white/40">{order.template === "birthday" ? "Event Date" : "Wedding Date"}</span><span className="text-white">{order.weddingDate}</span></div>
+            <div className="flex justify-between"><span className="text-white/40">{order.template === "birthday" || order.template === "occasion" ? "Event Date" : "Wedding Date"}</span><span className="text-white">{order.weddingDate}</span></div>
             <div className="flex justify-between"><span className="text-white/40">Order ID</span><span className="text-white/40 font-mono text-xs">{orderId}</span></div>
           </div>
         </div>
@@ -167,7 +169,7 @@ export default function MyOrder() {
 
         {/* Pending Payment — WhatsApp button */}
         {status === "pending_payment" && (
-          <a href={`https://wa.me/96171444328?text=${encodeURIComponent(order.template === "birthday" ? `Hi! I placed an order for ${order.groomName}'s ${order.age}th birthday invitation (Order ID: ${orderId}). I'm ready to arrange payment.` : `Hi! I placed an order for ${order.groomName} & ${order.brideName}'s invitation (Order ID: ${orderId}). I'm ready to arrange payment.`)}`}
+          <a href={`https://wa.me/96171444328?text=${encodeURIComponent(order.template === "birthday" ? `Hi! I placed an order for ${order.groomName}'s ${order.age}th birthday invitation (Order ID: ${orderId}). I'm ready to arrange payment.` : order.template === "occasion" ? `Hi! I placed an order for ${order.groomName}'s ${order.eventType} invitation (Order ID: ${orderId}). I'm ready to arrange payment.` : `Hi! I placed an order for ${order.groomName} & ${order.brideName}'s invitation (Order ID: ${orderId}). I'm ready to arrange payment.`)}`}
             target="_blank" rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full py-4 rounded-xl font-medium text-white text-sm mb-4 transition"
             style={{ background: "#25D366" }}>

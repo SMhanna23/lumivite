@@ -7,6 +7,7 @@ import Invitation2 from "./Invitation2"
 import Invitation3 from "./Invitation3"
 import Invitation4 from "./Invitation4"
 import Birthday from "./Birthday"
+import Occasion from "./Occasion"
 
 export default function Invitation_Live() {
   const { slug } = useParams()
@@ -63,6 +64,7 @@ export default function Invitation_Live() {
   const tier = pkg.includes("gold") ? "gold" : pkg.includes("silver") ? "silver" : "bronze"
   const template = data.template || "dark"
   if (template === "birthday") return <Birthday override={data} />
+  if (template === "occasion") return <Occasion override={data} />
   if (tier !== "bronze") {
     if (template === "botanical") return <Invitation2 override={data} />
     if (template === "rosegold") return <Invitation3 override={data} />

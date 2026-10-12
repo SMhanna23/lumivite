@@ -95,7 +95,9 @@ export default function Dashboard() {
         if (!invSnap.exists()) { setStatus("notfound"); return }
         const inv = invSnap.data()
         setInvitation(inv)
-        const weddingName = inv.template === "birthday" ? `${inv.name}'s ${inv.age}th Birthday` : `${inv.groom} & ${inv.bride}`
+        const weddingName = inv.template === "birthday" ? `${inv.name}'s ${inv.age}th Birthday`
+          : inv.template === "occasion" ? `${inv.title} — ${inv.eventType}`
+          : `${inv.groom} & ${inv.bride}`
         const rSnap = await getDocs(query(collection(db, "rsvps"), where("wedding", "==", weddingName)))
         setRsvps(rSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => b.createdAt?.toDate?.() - a.createdAt?.toDate?.()))
         setStatus("ready")
@@ -136,9 +138,13 @@ export default function Dashboard() {
 
       {/* Header */}
       <div className="text-center pt-14 pb-8 px-6">
-        <p className="text-[#c9a96e] text-xs tracking-[0.3em] uppercase mb-2">{invitation.template === "birthday" ? "Birthday RSVP Dashboard" : "Wedding RSVP Dashboard"}</p>
+        <p className="text-[#c9a96e] text-xs tracking-[0.3em] uppercase mb-2">
+          {invitation.template === "birthday" ? "Birthday RSVP Dashboard" : invitation.template === "occasion" ? `${invitation.eventType || "Event"} RSVP Dashboard` : "Wedding RSVP Dashboard"}
+        </p>
         <h1 className="font-serif text-4xl font-light text-white mb-1">
-          {invitation.template === "birthday" ? `${invitation.name}'s ${invitation.age}th Birthday` : `${invitation.groom} & ${invitation.bride}`}
+          {invitation.template === "birthday" ? `${invitation.name}'s ${invitation.age}th Birthday`
+            : invitation.template === "occasion" ? `${invitation.title} — ${invitation.eventType}`
+            : `${invitation.groom} & ${invitation.bride}`}
         </h1>
         {weddingDate && (
           <p className="text-white/40 text-sm mt-2">
