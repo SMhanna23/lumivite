@@ -18,7 +18,7 @@ const DEFAULT_EVENT = {
   subtitle: "are getting engaged",
   subtitleAr: "يُعلنان خطوبتهما",
   date: "2027-05-08T19:00:00",
-  photo: "",
+  photo: "/occasion-demo-portrait.jpg",
   venue: { label: "The Celebration", labelAr: "الاحتفال", time: "7:00 PM", place: "La Maison Blanche, Beirut", placeAr: "لاميزون بلانش، بيروت", location: "Beirut, Lebanon", locationAr: "بيروت، لبنان", map: "https://maps.google.com/?q=Beirut+Lebanon", photo: "/birthday-venue-phoenicia.jpg" },
   dressCode: "Smart Elegant",
   dressCodeAr: "أنيق راقٍ",
