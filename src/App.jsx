@@ -6,6 +6,7 @@ import Invitation from "./pages/Invitation"
 import Invitation2 from "./pages/Invitation2"
 import Invitation3 from "./pages/Invitation3"
 import Invitation4 from "./pages/Invitation4"
+import Invitation5 from "./pages/Invitation5"
 import Birthday from "./pages/Birthday"
 import Occasion from "./pages/Occasion"
 import Invitation_Live from "./pages/Invitation_Live"
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/demo2" element={<Invitation2 />} />
         <Route path="/demo3" element={<Invitation3 />} />
         <Route path="/demo4" element={<Invitation4 />} />
+        <Route path="/demo5" element={<Invitation5 />} />
         <Route path="/demo-birthday" element={<Birthday />} />
         <Route path="/demo-occasion" element={<Occasion />} />
         <Route path="/i/:slug" element={<Invitation_Live />} />
