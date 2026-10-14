@@ -332,9 +332,9 @@ export default function Invitation({ override = null }) {
           <Countdown targetDate={WEDDING.date} ar={ar} />
         </motion.div>
 
-        <motion.div className="absolute bottom-10 flex flex-col items-center gap-2 z-10"
+        <motion.div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10"
           animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
-          <span className="text-[#4a7c59]/40 text-xs tracking-widest">SCROLL</span>
+          <span className="text-[#4a7c59] text-sm font-bold tracking-widest">SCROLL</span>
           <div className="w-px h-10 bg-gradient-to-b from-[#4a7c59]/40 to-transparent" />
         </motion.div>
       </section>
@@ -540,7 +540,7 @@ export default function Invitation({ override = null }) {
                 {item.name === "Wish Money" ? (
                   <div className="p-5 rounded-2xl bg-white shadow-sm" style={{ border: "1px solid rgba(74,124,89,0.15)" }}>
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: "rgba(74,124,89,0.08)" }}>💳</div>
+                      <img src="/whish-money-logo.png" alt="Whish Money" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" />
                       <p className="font-medium text-[#2d3a2e]">Wish Money</p>
                     </div>
                     {item.acc && <div className="flex items-center justify-between py-2 border-t border-[#4a7c59]/10">

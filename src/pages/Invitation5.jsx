@@ -112,7 +112,7 @@ function ScrollHint({ ar }) {
   return (
     <motion.div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20 pointer-events-none"
       animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
-      <span className="text-white/40 text-xs tracking-widest uppercase">{ar ? "مرّروا للأسفل" : "Scroll"}</span>
+      <span className="text-white/70 text-sm font-bold tracking-widest uppercase">{ar ? "مرّروا للأسفل" : "Scroll"}</span>
       <div className="w-px h-10 bg-gradient-to-b from-white/40 to-transparent" />
     </motion.div>
   )
@@ -319,13 +319,32 @@ export default function Invitation5({ override = null }) {
     const audio = audioRef.current
     if (!audio) return
     audio.currentTime = musicStart
+    audio.muted = false
     audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
   }
 
-  // When there's a save-the-date video, the invitation's music stays silent
-  // until the guest scrolls past it — the video's own sound carries that moment instead.
+  // When there's a save-the-date video, the invitation's music stays silent (muted)
+  // until the guest scrolls past it. It still starts playing right now, muted — begun
+  // inside this same tap gesture — because browsers block a *fresh* autoplay call fired
+  // later from a scroll handler, but freely allow unmuting audio that's already playing.
   const handleEnvelopeOpen = () => {
-    if (!WEDDING.video) startMusic()
+    if (!WEDDING.video) { startMusic(); return }
+    if (tier === "bronze") return
+    const audio = audioRef.current
+    if (!audio) return
+    audio.currentTime = musicStart
+    audio.muted = true
+    audio.play().catch(() => {})
+  }
+
+  // Scroll-triggered handoff — just unmounts the mute flag on already-playing audio.
+  const revealMusic = () => {
+    if (tier === "bronze") return
+    const audio = audioRef.current
+    if (!audio) return
+    audio.muted = false
+    if (audio.paused) { audio.currentTime = musicStart; audio.play().catch(() => {}) }
+    setPlaying(true)
   }
 
   const toggleMusic = () => {
@@ -333,8 +352,9 @@ export default function Invitation5({ override = null }) {
     if (!audio) return
     if (playing) { audio.pause(); setPlaying(false) }
     else {
-      audio.currentTime = musicStart
-      audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
+      audio.muted = false
+      if (audio.paused) { audio.currentTime = musicStart; audio.play().catch(() => {}) }
+      setPlaying(true)
     }
   }
 
@@ -403,7 +423,7 @@ export default function Invitation5({ override = null }) {
         {!WEDDING.hideEmojis && <Petals />}
 
         {/* Opening sequence — scroll-native, no taps required */}
-        {WEDDING.video && <VideoHeroSection videoUrl={WEDDING.video} ar={ar} onScrolledPast={startMusic} />}
+        {WEDDING.video && <VideoHeroSection videoUrl={WEDDING.video} ar={ar} onScrolledPast={revealMusic} />}
         <HeroSection WEDDING={WEDDING} photos={photos} ar={ar} />
         <CalendarSection WEDDING={WEDDING} ar={ar} />
 
@@ -599,7 +619,7 @@ export default function Invitation5({ override = null }) {
                   transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
                   {item.name === "Wish Money" ? (
                     <div className="p-5 rounded-2xl border border-white/10 bg-white/3">
-                      <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: `${GOLD}1a` }}>💳</div><p className="font-medium text-white">Wish Money</p></div>
+                      <div className="flex items-center gap-3 mb-3"><img src="/whish-money-logo.png" alt="Whish Money" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" /><p className="font-medium text-white">Wish Money</p></div>
                       {item.acc && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">Acc# {item.acc}</span><button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-xs rounded-full px-3 py-1 hover:bg-white/5 transition" style={{ color: GOLD, border: `1px solid ${GOLD}4d` }}>{copiedKey === "wish-acc" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
                       {item.phone && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">{item.phone}</span><button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-xs rounded-full px-3 py-1 hover:bg-white/5 transition" style={{ color: GOLD, border: `1px solid ${GOLD}4d` }}>{copiedKey === "wish-phone" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
                       {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs px-3 py-1 rounded-full" style={{ color: GOLD, border: `1px solid ${GOLD}4d` }}>Visit →</a>}

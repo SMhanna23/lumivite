@@ -261,9 +261,9 @@ export default function Occasion({ override = null }) {
             <Countdown targetDate={EVENT.date} ar={ar} />
           </motion.div>
 
-          <motion.div className="absolute bottom-10 flex flex-col items-center gap-2 z-10"
+          <motion.div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10"
             animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
-            <span className="text-white/30 text-xs tracking-widest">SCROLL</span>
+            <span className="text-white/70 text-sm font-bold tracking-widest">SCROLL</span>
             <div className="w-px h-10 bg-gradient-to-b from-white/30 to-transparent" />
           </motion.div>
         </section>
