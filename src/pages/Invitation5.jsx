@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import EnvelopeScreen from "../components/EnvelopeScreen"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
@@ -108,54 +108,69 @@ function Petals() {
 }
 
 // ── Continue affordance shared by all 3 intro pages ──────────────────────────
-function ContinueHint({ ar, onClick }) {
+function ScrollHint({ ar }) {
   return (
-    <motion.button onClick={onClick}
-      className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20"
+    <motion.div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20 pointer-events-none"
       animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
-      <span className="text-white/40 text-xs tracking-widest uppercase">{ar ? "تابع" : "Continue"}</span>
+      <span className="text-white/40 text-xs tracking-widest uppercase">{ar ? "مرّروا للأسفل" : "Scroll"}</span>
       <div className="w-px h-10 bg-gradient-to-b from-white/40 to-transparent" />
-    </motion.button>
+    </motion.div>
   )
 }
 
-// ── PAGE 1 — Video intro (the save-the-date / pre-wedding clip) ─────────────
-function VideoIntroPage({ videoUrl, ar, onNext }) {
+// ── Video hero section — plays as you arrive, hands off to invitation music as you scroll past ──
+function VideoHeroSection({ videoUrl, ar, onScrolledPast }) {
+  const sectionRef = useRef(null)
   const videoRef = useRef(null)
-  const [muted, setMuted] = useState(true)
+  const [muted, setMuted] = useState(false)
+  const triggeredRef = useRef(false)
   const ytId = getYouTubeId(videoUrl)
   const vimeoId = getVimeoId(videoUrl)
   const isDirect = isDirectVideo(videoUrl)
 
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] })
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.12])
+  const opacity = useTransform(scrollYProgress, [0, 0.75, 1], [1, 0.9, 0])
+
   useEffect(() => {
-    if (!isDirect || !ytId && !vimeoId) {
-      const t = setTimeout(onNext, 16000)
-      return () => clearTimeout(t)
+    const v = videoRef.current
+    if (isDirect && v) {
+      v.play().catch(() => { setMuted(true); v.muted = true; v.play().catch(() => {}) })
     }
-  }, [])
+  }, [isDirect])
+
+  useEffect(() => {
+    const unsub = scrollYProgress.on("change", v => {
+      if (v > 0.9 && !triggeredRef.current) {
+        triggeredRef.current = true
+        videoRef.current?.pause()
+        onScrolledPast()
+      }
+    })
+    return unsub
+  }, [onScrolledPast])
 
   return (
-    <motion.div className="fixed inset-0 z-30" style={{ background: "#0b0a09" }}
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}>
-      {isDirect ? (
-        <video ref={videoRef} autoPlay playsInline muted={muted} onEnded={onNext}
-          className="absolute inset-0 w-full h-full object-cover">
-          <source src={videoUrl} />
-        </video>
-      ) : ytId ? (
-        <iframe className="absolute inset-0 w-full h-full"
-          src={`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1`}
-          allow="autoplay; fullscreen" title="Save the Date" style={{ border: "none" }} />
-      ) : vimeoId ? (
-        <iframe className="absolute inset-0 w-full h-full"
-          src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1&muted=1&controls=0&title=0&byline=0&portrait=0`}
-          allow="autoplay; fullscreen" title="Save the Date" style={{ border: "none" }} />
-      ) : null}
-
-      {(ytId || vimeoId) && <div className="absolute inset-0 z-[1]" onClick={onNext} />}
+    <section ref={sectionRef} className="relative min-h-screen overflow-hidden">
+      <motion.div className="absolute inset-0" style={{ scale, opacity }}>
+        {isDirect ? (
+          <video ref={videoRef} playsInline loop muted={muted}
+            className="absolute inset-0 w-full h-full object-cover">
+            <source src={videoUrl} />
+          </video>
+        ) : ytId ? (
+          <iframe className="absolute inset-0 w-full h-full"
+            src={`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${ytId}`}
+            allow="autoplay; fullscreen" title="Save the Date" style={{ border: "none" }} />
+        ) : vimeoId ? (
+          <iframe className="absolute inset-0 w-full h-full"
+            src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0`}
+            allow="autoplay; fullscreen" title="Save the Date" style={{ border: "none" }} />
+        ) : null}
+      </motion.div>
 
       <div className="absolute inset-0 pointer-events-none z-[2]"
-        style={{ background: "linear-gradient(to bottom, rgba(11,10,9,0.75) 0%, transparent 22%, transparent 68%, rgba(11,10,9,0.85) 100%)" }} />
+        style={{ background: "linear-gradient(to bottom, rgba(11,10,9,0.7) 0%, transparent 25%, transparent 65%, rgba(11,10,9,0.9) 100%)" }} />
 
       <p className="absolute top-10 left-0 right-0 text-center z-10 pointer-events-none"
         style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.62rem", letterSpacing: "0.5em", color: `${GOLD}cc`, textTransform: "uppercase" }}>
@@ -163,29 +178,22 @@ function VideoIntroPage({ videoUrl, ar, onNext }) {
       </p>
 
       {isDirect && (
-        <button onClick={e => { e.stopPropagation(); setMuted(m => !m) }}
+        <button onClick={() => { setMuted(m => { const next = !m; if (videoRef.current) videoRef.current.muted = next; return next }) }}
           className="absolute top-8 right-6 z-20 w-11 h-11 rounded-full flex items-center justify-center text-lg"
           style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "white", backdropFilter: "blur(8px)" }}>
           {muted ? "🔇" : "🔊"}
         </button>
       )}
 
-      <button onClick={onNext}
-        className="absolute top-8 left-6 z-20 text-xs tracking-widest uppercase px-4 py-2 rounded-full transition"
-        style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.6)", fontFamily: "'Jost', sans-serif", backdropFilter: "blur(8px)" }}>
-        {ar ? "تخطي" : "Skip"}
-      </button>
-
-      <ContinueHint ar={ar} onClick={onNext} />
-    </motion.div>
+      <ScrollHint ar={ar} />
+    </section>
   )
 }
 
-// ── PAGE 2 — Photo hero with names, date & countdown ─────────────────────────
-function HeroIntroPage({ WEDDING, photos, ar, onNext }) {
+// ── Photo hero with names, date & countdown ──────────────────────────────────
+function HeroSection({ WEDDING, photos, ar }) {
   return (
-    <motion.div className="fixed inset-0 z-30 flex flex-col items-center justify-center px-6 text-center overflow-hidden"
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}>
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden">
       <div className="absolute inset-0 z-0" style={{
         backgroundImage: `url(${photos[1] || photos[0]})`,
         backgroundSize: "cover", backgroundPosition: "center",
@@ -195,7 +203,7 @@ function HeroIntroPage({ WEDDING, photos, ar, onNext }) {
       <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(11,10,9,0.6) 100%)" }} />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5 pointer-events-none" />
 
-      <motion.div className="relative z-10" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 1 }}>
+      <motion.div className="relative z-10" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} viewport={{ once: true }}>
         <p className="tracking-[0.4em] text-sm uppercase mb-8" style={{ color: GOLD }}>{ar ? "نحن نتزوج" : "We're getting married"}</p>
         <h1 className="text-6xl md:text-8xl font-light text-white mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
         <p className="text-4xl italic mb-2" style={{ color: GOLD, fontFamily: "'Cormorant Garamond', serif" }}>&</p>
@@ -207,13 +215,13 @@ function HeroIntroPage({ WEDDING, photos, ar, onNext }) {
         <Countdown targetDate={WEDDING.date} ar={ar} />
       </motion.div>
 
-      <ContinueHint ar={ar} onClick={onNext} />
-    </motion.div>
+      <ScrollHint ar={ar} />
+    </section>
   )
 }
 
-// ── PAGE 3 — Save-the-date calendar with a heart marker (signature feature) ──
-function CalendarIntroPage({ WEDDING, ar, onNext }) {
+// ── Save-the-date calendar with a heart marker (signature feature) ───────────
+function CalendarSection({ WEDDING, ar }) {
   const d = new Date(WEDDING.date)
   const year = d.getFullYear()
   const month = d.getMonth()
@@ -226,12 +234,12 @@ function CalendarIntroPage({ WEDDING, ar, onNext }) {
   while (cells.length % 7 !== 0) cells.push(null)
 
   return (
-    <motion.div className="fixed inset-0 z-30 flex flex-col items-center justify-center px-6 text-center"
-      style={{ background: "radial-gradient(ellipse at 50% 30%, #1a140c 0%, #0b0a09 70%)" }}
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}>
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center"
+      style={{ background: "radial-gradient(ellipse at 50% 30%, #1a140c 0%, #0b0a09 70%)" }}>
       <div className="absolute inset-[18px] md:inset-10 pointer-events-none" style={{ border: `1px solid ${GOLD}2e` }} />
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.9 }} className="relative z-10 w-full max-w-sm">
+      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.9 }} viewport={{ once: true }}
+        className="relative z-10 w-full max-w-sm">
         <p className="tracking-[0.4em] text-xs uppercase mb-2" style={{ color: GOLD }}>{ar ? "احفظوا التاريخ" : "Save the Date"}</p>
         <h2 className="mb-8 text-white font-light" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "2rem" }}>
           {ar ? `${arMonthName(d)} ${toArabicDigits(year)}` : `${d.toLocaleString("en-US", { month: "long" })} ${year}`}
@@ -246,7 +254,7 @@ function CalendarIntroPage({ WEDDING, ar, onNext }) {
               {day && (
                 day === weddingDay ? (
                   <motion.div className="relative w-9 h-9 rounded-full flex items-center justify-center"
-                    initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }}
+                    initial={{ scale: 0.7, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3, duration: 0.5 }} viewport={{ once: true }}
                     style={{ background: `${GOLD}22`, border: `1.5px solid ${GOLD}` }}>
                     <motion.span className="absolute text-lg"
                       animate={{ scale: [1, 1.18, 1] }} transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}>
@@ -268,8 +276,8 @@ function CalendarIntroPage({ WEDDING, ar, onNext }) {
         </p>
       </motion.div>
 
-      <ContinueHint ar={ar} onClick={onNext} />
-    </motion.div>
+      <ScrollHint ar={ar} />
+    </section>
   )
 }
 
@@ -279,7 +287,6 @@ export default function Invitation5({ override = null }) {
              : (WEDDING.package || "").toLowerCase().includes("silver") ? "silver"
              : "bronze"
   const [started, setStarted] = useState(false)
-  const [introStage, setIntroStage] = useState(WEDDING.video ? 0 : 1)
   const [name, setName] = useState(() => tier !== "bronze" ? (new URLSearchParams(window.location.search).get("gn") || "") : "")
   const [attending, setAttending] = useState(null)
   const [eventChoice, setEventChoice] = useState(null)
@@ -313,6 +320,12 @@ export default function Invitation5({ override = null }) {
     if (!audio) return
     audio.currentTime = musicStart
     audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
+  }
+
+  // When there's a save-the-date video, the invitation's music stays silent
+  // until the guest scrolls past it — the video's own sound carries that moment instead.
+  const handleEnvelopeOpen = () => {
+    if (!WEDDING.video) startMusic()
   }
 
   const toggleMusic = () => {
@@ -368,8 +381,6 @@ export default function Invitation5({ override = null }) {
     }
   }
 
-  const introDone = introStage >= 3
-
   return (
     <div className={started ? "min-h-screen bg-[#0b0a09] text-white overflow-x-hidden relative" : "fixed inset-0"}
       dir={ar ? "rtl" : "ltr"}
@@ -380,7 +391,7 @@ export default function Invitation5({ override = null }) {
       {!started && (
         <EnvelopeScreen
           guestName={guestName}
-          onOpen={startMusic}
+          onOpen={handleEnvelopeOpen}
           onVideoEnd={() => setStarted(true)}
           ar={ar}
           setLang={setLang}
@@ -389,21 +400,12 @@ export default function Invitation5({ override = null }) {
       )}
 
       {started && (<>
-        {/* 3-page intro — video, photo + countdown, save-the-date calendar */}
-        <AnimatePresence mode="wait">
-          {!introDone && introStage === 0 && (
-            <VideoIntroPage key="intro-video" videoUrl={WEDDING.video} ar={ar} onNext={() => setIntroStage(1)} />
-          )}
-          {!introDone && introStage === 1 && (
-            <HeroIntroPage key="intro-hero" WEDDING={WEDDING} photos={photos} ar={ar} onNext={() => setIntroStage(2)} />
-          )}
-          {!introDone && introStage === 2 && (
-            <CalendarIntroPage key="intro-calendar" WEDDING={WEDDING} ar={ar} onNext={() => setIntroStage(3)} />
-          )}
-        </AnimatePresence>
-
-        {introDone && (<>
         {!WEDDING.hideEmojis && <Petals />}
+
+        {/* Opening sequence — scroll-native, no taps required */}
+        {WEDDING.video && <VideoHeroSection videoUrl={WEDDING.video} ar={ar} onScrolledPast={startMusic} />}
+        <HeroSection WEDDING={WEDDING} photos={photos} ar={ar} />
+        <CalendarSection WEDDING={WEDDING} ar={ar} />
 
         {tier !== "bronze" && (
           <motion.button onClick={toggleMusic}
@@ -732,7 +734,6 @@ export default function Invitation5({ override = null }) {
         <footer className="text-center py-10 text-white/20 text-sm border-t border-white/5 relative z-10">
           {ar ? "صُنع بـ ✦ بواسطة" : "Made with ✦ by"}<span style={{ color: GOLD }}> Lumivite</span>
         </footer>
-        </>)}
       </>)}
     </div>
   )
