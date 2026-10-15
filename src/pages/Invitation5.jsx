@@ -110,8 +110,8 @@ function Petals() {
 // ── Continue affordance shared by all 3 intro pages ──────────────────────────
 function ScrollHint({ ar }) {
   return (
-    <motion.div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20 pointer-events-none"
-      animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
+    <motion.div className="absolute bottom-10 left-1/2 flex flex-col items-center gap-2 z-20 pointer-events-none"
+      initial={{ x: "-50%" }} animate={{ x: "-50%", y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
       <span className="text-white/70 text-sm font-bold tracking-widest uppercase">{ar ? "مرّروا للأسفل" : "Scroll"}</span>
       <div className="w-px h-10 bg-gradient-to-b from-white/40 to-transparent" />
     </motion.div>
@@ -630,7 +630,7 @@ export default function Invitation5({ override = null }) {
                   transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
                   {item.name === "Wish Money" ? (
                     <div className="p-5 rounded-2xl border border-white/10 bg-white/3">
-                      <div className="flex items-center gap-3 mb-3"><img src="/whish-money-logo.png" alt="Whish Money" className="w-10 h-10 rounded-xl object-cover flex-shrink-0" /><p className="font-medium text-white">Wish Money</p></div>
+                      <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0"><img src="/whish-money-logo.png" alt="Whish Money" className="w-full h-full object-cover scale-125" /></div><p className="font-medium text-white">Wish Money</p></div>
                       {item.acc && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">Acc# {item.acc}</span><button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-xs rounded-full px-3 py-1 hover:bg-white/5 transition" style={{ color: GOLD, border: `1px solid ${GOLD}4d` }}>{copiedKey === "wish-acc" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
                       {item.phone && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">{item.phone}</span><button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-xs rounded-full px-3 py-1 hover:bg-white/5 transition" style={{ color: GOLD, border: `1px solid ${GOLD}4d` }}>{copiedKey === "wish-phone" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
                       {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs px-3 py-1 rounded-full" style={{ color: GOLD, border: `1px solid ${GOLD}4d` }}>Visit →</a>}
