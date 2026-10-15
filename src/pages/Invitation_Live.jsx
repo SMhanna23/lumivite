@@ -6,6 +6,7 @@ import Invitation from "./Invitation"
 import Invitation2 from "./Invitation2"
 import Invitation3 from "./Invitation3"
 import Invitation4 from "./Invitation4"
+import Invitation5 from "./Invitation5"
 import Birthday from "./Birthday"
 import Occasion from "./Occasion"
 
@@ -69,6 +70,7 @@ export default function Invitation_Live() {
     if (template === "botanical") return <Invitation2 override={data} />
     if (template === "rosegold") return <Invitation3 override={data} />
     if (template === "sand") return <Invitation4 override={data} />
+    if (template === "premiere") return <Invitation5 override={data} />
   }
   return <Invitation override={data} />
 }

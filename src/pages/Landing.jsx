@@ -3,7 +3,7 @@ import { useState } from "react"
 import Logo from "../components/Logo"
 
 const features = [
-  { icon: "💍", title: "Stunning Templates", desc: "6 luxury designs that make guests say WOW the moment they open their invitation" },
+  { icon: "💍", title: "Stunning Templates", desc: "7 luxury designs that make guests say WOW the moment they open their invitation" },
   { icon: "🎬", title: "Cinematic Video", desc: "Envelope opening animation + full pre-wedding video support via YouTube, Vimeo, or direct upload" },
   { icon: "🎵", title: "Background Music", desc: "Set the mood with romantic music that plays automatically when guests open" },
   { icon: "📊", title: "RSVP Dashboard", desc: "Track every response in real time. Know exactly who's coming to your big day" },
@@ -159,7 +159,7 @@ export default function Landing() {
       <section id="demos" className="py-24 px-6 text-center">
       <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
       <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-3">Choose Your Style</p>
-      <h2 className="font-serif text-4xl font-light mb-4">Six Stunning Templates</h2>
+      <h2 className="font-serif text-4xl font-light mb-4">Seven Stunning Templates</h2>
       <p className="text-white/40 mb-12 text-sm">Click any template to see a live demo</p>
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
 
@@ -317,6 +317,34 @@ export default function Landing() {
             style={{ background: "rgba(191,161,95,0.06)", borderTop: "1px solid rgba(191,161,95,0.15)" }}>
             <span className="text-sm font-medium" style={{ color: "#bfa15f" }}>✨ The Occasion — Any Event</span>
             <span className="text-xs transition group-hover:opacity-100" style={{ color: "rgba(191,161,95,0.5)" }}>View Demo →</span>
+          </div>
+        </motion.div>
+      </a>
+
+      {/* Template 7 - Premiere */}
+      <a href="/demo5" className="group block">
+        <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}
+          className="rounded-3xl overflow-hidden shadow-2xl relative"
+          style={{ background: "radial-gradient(ellipse at 50% 30%, #1a140c 0%, #0b0a09 70%)", border: "1px solid rgba(224,181,137,0.25)" }}>
+          <div className="p-10 text-center relative overflow-hidden">
+            <div className="absolute top-5 right-5 w-9 h-9 rounded-full flex items-center justify-center text-sm"
+              style={{ background: "rgba(224,181,137,0.12)", border: "1px solid rgba(224,181,137,0.3)" }}>🎬</div>
+            <p className="text-xs tracking-widest uppercase mb-4 font-medium" style={{ color: "#e0b589" }}>We're getting married</p>
+            <p className="font-serif text-4xl font-light text-white mb-1">Christopher</p>
+            <p className="text-2xl font-serif italic" style={{ color: "#e0b589" }}>&</p>
+            <p className="font-serif text-4xl font-light text-white mb-6">Joelle</p>
+            <div className="flex gap-2 justify-center mb-4">
+              {["341","05","29","48"].map((v,i) => (
+                <div key={i} className="w-12 h-12 rounded-lg flex items-center justify-center text-sm font-bold"
+                  style={{ background: "rgba(224,181,137,0.1)", border: "1px solid rgba(224,181,137,0.3)", color: "#e0b589" }}>{v}</div>
+              ))}
+            </div>
+            <p className="text-xs tracking-widest opacity-40" style={{ color: "#e0b589" }}>SCROLL TO BEGIN</p>
+          </div>
+          <div className="py-3 px-6 flex items-center justify-between"
+            style={{ background: "rgba(224,181,137,0.06)", borderTop: "1px solid rgba(224,181,137,0.15)" }}>
+            <span className="text-sm font-medium" style={{ color: "#e0b589" }}>🎬 Premiere — Video &amp; Calendar</span>
+            <span className="text-xs transition group-hover:opacity-100" style={{ color: "rgba(224,181,137,0.5)" }}>View Demo →</span>
           </div>
         </motion.div>
       </a>

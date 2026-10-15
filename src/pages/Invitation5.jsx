@@ -119,7 +119,7 @@ function ScrollHint({ ar }) {
 }
 
 // ── Video hero section — plays as you arrive, hands off to invitation music as you scroll past ──
-function VideoHeroSection({ videoUrl, ar, onScrolledPast }) {
+function VideoHeroSection({ videoUrl, videoStart, videoEnd, ar, onScrolledPast }) {
   const sectionRef = useRef(null)
   const videoRef = useRef(null)
   const [muted, setMuted] = useState(false)
@@ -138,6 +138,17 @@ function VideoHeroSection({ videoUrl, ar, onScrolledPast }) {
       v.play().catch(() => { setMuted(true); v.muted = true; v.play().catch(() => {}) })
     }
   }, [isDirect])
+
+  // Clip trimming — seek to the chosen start, loop back to it at the chosen end
+  useEffect(() => {
+    const v = videoRef.current
+    if (!isDirect || !v) return
+    const onLoaded = () => { if (videoStart != null) v.currentTime = videoStart }
+    const onTimeUpdate = () => { if (videoEnd != null && v.currentTime >= videoEnd) v.currentTime = videoStart ?? 0 }
+    v.addEventListener("loadedmetadata", onLoaded)
+    v.addEventListener("timeupdate", onTimeUpdate)
+    return () => { v.removeEventListener("loadedmetadata", onLoaded); v.removeEventListener("timeupdate", onTimeUpdate) }
+  }, [isDirect, videoStart, videoEnd])
 
   useEffect(() => {
     const unsub = scrollYProgress.on("change", v => {
@@ -160,11 +171,11 @@ function VideoHeroSection({ videoUrl, ar, onScrolledPast }) {
           </video>
         ) : ytId ? (
           <iframe className="absolute inset-0 w-full h-full"
-            src={`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${ytId}`}
+            src={`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${ytId}${videoStart != null ? `&start=${Math.floor(videoStart)}` : ""}${videoEnd != null ? `&end=${Math.floor(videoEnd)}` : ""}`}
             allow="autoplay; fullscreen" title="Save the Date" style={{ border: "none" }} />
         ) : vimeoId ? (
           <iframe className="absolute inset-0 w-full h-full"
-            src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0`}
+            src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0${videoStart != null ? `#t=${Math.floor(videoStart)}s` : ""}`}
             allow="autoplay; fullscreen" title="Save the Date" style={{ border: "none" }} />
         ) : null}
       </motion.div>
@@ -423,7 +434,7 @@ export default function Invitation5({ override = null }) {
         {!WEDDING.hideEmojis && <Petals />}
 
         {/* Opening sequence — scroll-native, no taps required */}
-        {WEDDING.video && <VideoHeroSection videoUrl={WEDDING.video} ar={ar} onScrolledPast={revealMusic} />}
+        {WEDDING.video && <VideoHeroSection videoUrl={WEDDING.video} videoStart={WEDDING.videoStart} videoEnd={WEDDING.videoEnd} ar={ar} onScrolledPast={revealMusic} />}
         <HeroSection WEDDING={WEDDING} photos={photos} ar={ar} />
         <CalendarSection WEDDING={WEDDING} ar={ar} />
 

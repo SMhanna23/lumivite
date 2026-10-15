@@ -17,6 +17,7 @@ const templates = [
   { id: "botanical", name: "Garden Romance", nameAr: "رومانسية الحديقة", preview: "🌿", desc: "Fresh white & sage green", descAr: "أبيض منعش مع أخضر حكيمي", link: "/demo2" },
   { id: "rosegold", name: "Rose Gold & Blush", nameAr: "ذهبي وردي", preview: "🌸", desc: "Romantic blush pink tones", descAr: "درجات وردية رومانسية", link: "/demo3" },
   { id: "sand", name: "Cinematic Sand & Seal", nameAr: "رملي سينمائي", preview: "🏺", desc: "Warm sand tones with cinematic elegance", descAr: "درجات رملية دافئة بأناقة سينمائية", link: "/demo4" },
+  { id: "premiere", name: "Premiere", nameAr: "بريمير", preview: "🎬", desc: "A save-the-date video hero and a calendar that marks your day", descAr: "فيديو احفظوا التاريخ وتقويم يحدد يومكم", link: "/demo5" },
 ]
 
 const birthdayTemplate = { id: "birthday", name: "Golden Soirée", nameAr: "سواريه ذهبية", preview: "🎂", desc: "Magnificent black & gold milestone birthday invitation", descAr: "دعوة عيد ميلاد فاخرة بالأسود والذهبي", link: "/demo-birthday" }
@@ -136,6 +137,7 @@ const T = {
     locationPh: "Venue name",
     videoSection: "Pre-Wedding Video (optional)",
     videoSectionSub: "For the Cinematic Sand & Seal template — YouTube, Vimeo, or a direct video link",
+    videoSectionSubPremiere: "Your save-the-date or pre-wedding video — this is what guests see first. YouTube, Vimeo, or a direct video link",
     videoUrl: "Video URL",
     videoUrlPh: "https://youtu.be/... or https://vimeo.com/...",
     videoClip: "Video Clip (optional)",
@@ -322,6 +324,7 @@ const T = {
     locationPh: "اسم المكان",
     videoSection: "فيديو ما قبل الزفاف (اختياري)",
     videoSectionSub: "لقالب رملي سينمائي فقط — يوتيوب أو فيميو أو رابط فيديو مباشر",
+    videoSectionSubPremiere: "فيديو احفظوا التاريخ أو ما قبل الزفاف — هذا أول ما يراه ضيوفكم. يوتيوب أو فيميو أو رابط فيديو مباشر",
     videoUrl: "رابط الفيديو",
     videoUrlPh: "https://youtu.be/... أو https://vimeo.com/...",
     videoClip: "مقطع الفيديو (اختياري)",
@@ -1147,10 +1150,10 @@ export default function Order() {
                   ))}
                 </div>
 
-                {form.template === "sand" && (
+                {(form.template === "sand" || form.template === "premiere") && (
                   <div className="pt-2">
                     <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-1">{t.videoSection}</p>
-                    <p className="text-white/20 text-xs mb-4">{t.videoSectionSub}</p>
+                    <p className="text-white/20 text-xs mb-4">{form.template === "premiere" ? t.videoSectionSubPremiere : t.videoSectionSub}</p>
                     <div className="mb-3">
                       <label className="text-white/30 text-xs mb-2 block">{t.videoUrl}</label>
                       <input value={form.video} onChange={e => update("video", e.target.value)} placeholder={t.videoUrlPh} className={inp} />

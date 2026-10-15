@@ -704,14 +704,15 @@ function BuildInvitationModal({ order }) {
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
 
-          {/* Video + Clip + Mute — for Cinematic Sand template */}
-          {order.template === "sand" && (
+          {/* Video + Clip — for Cinematic Sand and Premiere templates */}
+          {(order.template === "sand" || order.template === "premiere") && (
             <>
               <div>
-                <label className="text-white/30 text-xs mb-1 block">🎬 Wedding Video URL <span className="text-white/20">(YouTube, Vimeo, or direct MP4 link)</span></label>
+                <label className="text-white/30 text-xs mb-1 block">🎬 {order.template === "premiere" ? "Save-the-Date / Pre-Wedding Video URL" : "Wedding Video URL"} <span className="text-white/20">(YouTube, Vimeo, or direct MP4 link)</span></label>
                 <input value={extraData.video || ""} onChange={e => update("video", e.target.value)}
                   placeholder="https://youtu.be/... or https://vimeo.com/... or https://example.com/video.mp4"
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                {order.template === "premiere" && <p className="text-white/20 text-xs mt-1">Plays with sound the moment guests open the envelope — leave empty to skip straight to the photo hero</p>}
               </div>
 
 
@@ -734,15 +735,15 @@ function BuildInvitationModal({ order }) {
                 </div>
               </div>
 
-              {/* Mute video checkbox */}
-              <label className="flex items-center gap-3 cursor-pointer select-none py-1">
+              {/* Mute video checkbox — Cinematic Sand only; Premiere's video always plays with sound by design */}
+              {order.template === "sand" && <label className="flex items-center gap-3 cursor-pointer select-none py-1">
                 <input type="checkbox" checked={extraData.muteVideo ?? false} onChange={e => update("muteVideo", e.target.checked)}
                   className="w-4 h-4 rounded accent-[#c9a96e]" />
                 <div>
                   <p className="text-white/60 text-sm">🔇 Mute video &amp; play background music</p>
                   <p className="text-white/25 text-xs mt-0.5">Check this if the couple wants their chosen music instead of the original video audio</p>
                 </div>
-              </label>
+              </label>}
             </>
           )}
 
@@ -2203,8 +2204,8 @@ export default function Admin() {
   const totalPersons = weddingRsvps.filter(r => r.attending).reduce((sum, r) => sum + (r.persons || 1), 0)
 
   const packageColor = { bronze: "#cd7f32", silver: "#c9a96e", gold: "#ffd700" }
-  const templateIcon = { dark: "🌑", botanical: "🌿", rosegold: "🌸", sand: "🏺", birthday: "🎂", occasion: "✨" }
-  const templateName = { dark: "Dark Luxury", botanical: "Botanical", rosegold: "Rose Gold", sand: "Cinematic Sand & Seal", birthday: "Golden Soirée", occasion: "The Occasion" }
+  const templateIcon = { dark: "🌑", botanical: "🌿", rosegold: "🌸", sand: "🏺", premiere: "🎬", birthday: "🎂", occasion: "✨" }
+  const templateName = { dark: "Dark Luxury", botanical: "Botanical", rosegold: "Rose Gold", sand: "Cinematic Sand & Seal", premiere: "Premiere", birthday: "Golden Soirée", occasion: "The Occasion" }
 
   const filteredRsvps = weddingRsvps.filter(r => rsvpFilter === "all" ? true : rsvpFilter === "attending" ? r.attending : !r.attending)
 
