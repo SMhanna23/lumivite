@@ -242,7 +242,7 @@ export default function Landing() {
       <a href="/demo4" className="group block">
         <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}
           className="rounded-3xl overflow-hidden shadow-2xl"
-          style={{ background: "radial-gradient(ellipse at 50% 0%, #1a1508, #0c0b09)", border: "1px solid rgba(196,163,90,0.25)" }}>
+          style={{ background: "radial-gradient(ellipse at 50% 0%, #5c4420, #1f1810)", border: "1px solid rgba(196,163,90,0.3)" }}>
           <div className="p-10 text-center">
             <p className="text-xs tracking-widest uppercase mb-4 font-medium" style={{ color: "#c4a35a" }}>You're invited</p>
             <p className="font-serif text-4xl font-light text-white mb-1">Christopher</p>
@@ -268,7 +268,7 @@ export default function Landing() {
       <a href="/demo5" className="group block">
         <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}
           className="rounded-3xl overflow-hidden shadow-2xl relative"
-          style={{ background: "radial-gradient(ellipse at 50% 30%, #1a140c 0%, #0b0a09 70%)", border: "1px solid rgba(224,181,137,0.25)" }}>
+          style={{ background: "radial-gradient(ellipse at 50% 30%, #3d1018 0%, #140608 70%)", border: "1px solid rgba(224,181,137,0.3)" }}>
           <div className="p-10 text-center relative overflow-hidden">
             <div className="absolute top-5 right-5 w-9 h-9 rounded-full flex items-center justify-center text-sm"
               style={{ background: "rgba(224,181,137,0.12)", border: "1px solid rgba(224,181,137,0.3)" }}>🎬</div>
@@ -296,7 +296,7 @@ export default function Landing() {
       <a href="/demo-birthday" className="group block">
         <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.3 }}
           className="rounded-3xl overflow-hidden shadow-2xl relative"
-          style={{ background: "radial-gradient(ellipse at 50% 38%, #221a10 0%, #130f0a 45%, #0a0806 85%)", border: "1px solid rgba(212,175,55,0.25)" }}>
+          style={{ background: "radial-gradient(ellipse at 50% 38%, #141c2e 0%, #0e1320 45%, #0a0e18 85%)", border: "1px solid rgba(212,175,55,0.3)" }}>
           <div className="p-10 text-center relative overflow-hidden">
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
               style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "9rem", color: "rgba(212,175,55,0.12)", lineHeight: 1 }}>
