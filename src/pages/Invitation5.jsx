@@ -119,11 +119,11 @@ function ScrollHint({ ar }) {
 }
 
 // ── Video hero section — plays as you arrive, hands off to invitation music as you scroll past ──
-function VideoHeroSection({ videoUrl, videoStart, videoEnd, ar, onScrolledPast }) {
+function VideoHeroSection({ videoUrl, videoStart, videoEnd, ar, onScrolledPast, onScrolledBack }) {
   const sectionRef = useRef(null)
   const videoRef = useRef(null)
   const [muted, setMuted] = useState(false)
-  const triggeredRef = useRef(false)
+  const inVideoRef = useRef(true)
   const ytId = getYouTubeId(videoUrl)
   const vimeoId = getVimeoId(videoUrl)
   const isDirect = isDirectVideo(videoUrl)
@@ -150,16 +150,23 @@ function VideoHeroSection({ videoUrl, videoStart, videoEnd, ar, onScrolledPast }
     return () => { v.removeEventListener("loadedmetadata", onLoaded); v.removeEventListener("timeupdate", onTimeUpdate) }
   }, [isDirect, videoStart, videoEnd])
 
+  // Bidirectional handoff — leaving the video section pauses it and reveals the
+  // invitation's music; scrolling back up resumes the video (with its own sound)
+  // and mutes the music again, so the moment replays exactly as it did the first time.
   useEffect(() => {
     const unsub = scrollYProgress.on("change", v => {
-      if (v > 0.9 && !triggeredRef.current) {
-        triggeredRef.current = true
+      if (v > 0.9 && inVideoRef.current) {
+        inVideoRef.current = false
         videoRef.current?.pause()
         onScrolledPast()
+      } else if (v < 0.8 && !inVideoRef.current) {
+        inVideoRef.current = true
+        videoRef.current?.play().catch(() => {})
+        onScrolledBack()
       }
     })
     return unsub
-  }, [onScrolledPast])
+  }, [onScrolledPast, onScrolledBack])
 
   return (
     <section ref={sectionRef} className="relative min-h-screen overflow-hidden">
@@ -358,6 +365,16 @@ export default function Invitation5({ override = null }) {
     setPlaying(true)
   }
 
+  // Scrolling back up into the video section — mute the music again so the
+  // video's own sound takes over, exactly as it did on first open.
+  const muteMusicForReplay = () => {
+    if (tier === "bronze") return
+    const audio = audioRef.current
+    if (!audio) return
+    audio.muted = true
+    setPlaying(false)
+  }
+
   const toggleMusic = () => {
     const audio = audioRef.current
     if (!audio) return
@@ -434,7 +451,7 @@ export default function Invitation5({ override = null }) {
         {!WEDDING.hideEmojis && <Petals />}
 
         {/* Opening sequence — scroll-native, no taps required */}
-        {WEDDING.video && <VideoHeroSection videoUrl={WEDDING.video} videoStart={WEDDING.videoStart} videoEnd={WEDDING.videoEnd} ar={ar} onScrolledPast={revealMusic} />}
+        {WEDDING.video && <VideoHeroSection videoUrl={WEDDING.video} videoStart={WEDDING.videoStart} videoEnd={WEDDING.videoEnd} ar={ar} onScrolledPast={revealMusic} onScrolledBack={muteMusicForReplay} />}
         <HeroSection WEDDING={WEDDING} photos={photos} ar={ar} />
         <CalendarSection WEDDING={WEDDING} ar={ar} />
 
