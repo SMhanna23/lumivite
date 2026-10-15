@@ -46,6 +46,19 @@ const THEMES = {
     image: "demo-og-occasion.png",
     kind: "occasion",
   },
+  7: {
+    path: "/demo5",
+    name: "Premiere",
+    description: "A cinematic wedding invitation with a save-the-date video, a calendar marking your day, music, and RSVP tracking.",
+    image: "demo-og-premiere.png",
+  },
+  8: {
+    path: "/demo-dashboard",
+    name: "RSVP Dashboard",
+    description: "See exactly who's coming in real time — a live sample dashboard with 100 guest responses, built into every Lumivite invitation.",
+    image: "demo-og-dashboard.png",
+    kind: "dashboard",
+  },
 }
 
 export default async function handler(req, res) {
@@ -54,6 +67,7 @@ export default async function handler(req, res) {
 
   const title   = theme.kind === "birthday" ? `${theme.name} — Birthday Invitation Template 🎂`
     : theme.kind === "occasion" ? `${theme.name} — Event Invitation Template ✨`
+    : theme.kind === "dashboard" ? `${theme.name} — See Who's Coming 📊`
     : `${theme.name} — Wedding Invitation Template 💍`
   const image   = `https://www.lumivite.net/${theme.image}`
   const pageUrl = `https://www.lumivite.net${theme.path}`

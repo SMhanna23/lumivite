@@ -55,6 +55,18 @@
       "destination": "/index.html"
     },
     { "source": "/demo-occasion", "destination": "/api/demo-preview?v=6" },
+    {
+      "source": "/demo5",
+      "has": [{ "type": "query", "key": "_app", "value": "1" }],
+      "destination": "/index.html"
+    },
+    { "source": "/demo5", "destination": "/api/demo-preview?v=7" },
+    {
+      "source": "/demo-dashboard",
+      "has": [{ "type": "query", "key": "_app", "value": "1" }],
+      "destination": "/index.html"
+    },
+    { "source": "/demo-dashboard", "destination": "/api/demo-preview?v=8" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
