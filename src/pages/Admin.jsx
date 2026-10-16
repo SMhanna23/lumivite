@@ -2218,8 +2218,10 @@ export default function Admin() {
       const name = parts[0].trim()
       const parsed = parseInt(parts[1]?.trim())
       const persons = !isNaN(parsed) && parsed > 0 ? parsed : null
-      const url = `https://www.lumivite.net/i/${guestSlug}?gn=${encodeURIComponent(name)}${persons ? `&np=${persons}` : ""}`
-      return { name, persons, url }
+      // 3rd field hides the gift registry for this guest's link — "no"/"n"/"hide" (case-insensitive)
+      const hideGifts = /^(no|n|hide)\b/i.test(parts[2]?.trim() || "")
+      const url = `https://www.lumivite.net/i/${guestSlug}?gn=${encodeURIComponent(name)}${persons ? `&np=${persons}` : ""}${hideGifts ? "&hg=1" : ""}`
+      return { name, persons, hideGifts, url }
     })
 
   return (
@@ -2559,7 +2561,7 @@ export default function Admin() {
                   <div className="mb-6">
                     <div className="flex items-center justify-between mb-2">
                       <label className="text-white/30 text-xs uppercase tracking-widest">
-                        Guest List <span className="text-white/20 normal-case font-normal">(one per line — add ", 2" for couples/families)</span>
+                        Guest List <span className="text-white/20 normal-case font-normal">(one per line — add ", 2" for couples/families, then ", NO" to hide the gift registry from them)</span>
                       </label>
                       <label className="cursor-pointer text-xs px-3 py-1.5 rounded-lg border transition flex items-center gap-1.5"
                         style={{ borderColor: "rgba(201,169,110,0.3)", color: "#c9a96e", background: "rgba(201,169,110,0.06)" }}>
@@ -2580,11 +2582,11 @@ export default function Admin() {
                       </label>
                     </div>
                     <textarea value={guestLines} onChange={e => setGuestLines(e.target.value)}
-                      placeholder={"Sarah & Michael\nJohn Smith, 2\nNadia Haddad\nThe Abboud Family, 4\nLara Khoury"}
+                      placeholder={"Sarah & Michael\nJohn Smith, 2\nNadia Haddad\nThe Abboud Family, 4\nElie & Joelle Khoury, 2, NO\nLara Khoury"}
                       rows={10}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e] resize-none font-mono" />
                     <p className="text-white/20 text-xs mt-1">
-                      {guestLines.split("\n").filter(l => l.trim()).length} guests · Format: <span className="font-mono">Name</span> or <span className="font-mono">Name, 2</span>
+                      {guestLines.split("\n").filter(l => l.trim()).length} guests · Format: <span className="font-mono">Name</span>, <span className="font-mono">Name, 2</span>, or <span className="font-mono">Name, 2, NO</span> (NO hides the gift registry for that guest)
                     </p>
                   </div>
 
@@ -2617,6 +2619,7 @@ export default function Admin() {
                               <p className="text-white text-sm font-medium">
                                 {g.name}
                                 {g.persons && <span className="text-white/40 text-xs ml-2">({g.persons} {g.persons === 1 ? "person" : "persons"})</span>}
+                                {g.hideGifts && <span className="text-xs ml-2 px-2 py-0.5 rounded-full" style={{ background: "rgba(248,113,113,0.12)", color: "#f87171" }}>🚫 No Gifts</span>}
                               </p>
                               <p className="text-white/25 text-xs truncate font-mono mt-0.5">{g.url}</p>
                             </div>

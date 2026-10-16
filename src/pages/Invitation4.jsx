@@ -689,6 +689,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
   const [copiedKey, setCopiedKey] = useState(null)
   const copyToClipboard = (text, key) => { navigator.clipboard.writeText(text); setCopiedKey(key); setTimeout(() => setCopiedKey(null), 1500) }
   const [searchParams] = useSearchParams()
+  const hideGifts = searchParams.get("hg") === "1"
 
   // Per-event attendance choice — asked in addition to Attending/Decline, only when both venues are shown
   const showEventChoice = (w.askEventAttendance ?? false) && !w.hideCeremony && (w.venues?.length ?? 0) >= 2
@@ -870,7 +871,7 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                 </button>
 
                 {/* Registry — Gold only */}
-                {tier === "gold" && w.registry?.length > 0 && (
+                {tier === "gold" && !hideGifts && w.registry?.length > 0 && (
                   <div className="pt-4 space-y-2">
                     <p className="text-center mb-3" style={{ color: "rgba(255,255,255,0.6)", fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "1.2rem" : "1.8rem" }}>
                       {ar ? "قائمة الهدايا" : "Gift Registry"}

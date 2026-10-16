@@ -112,6 +112,7 @@ export default function Invitation({ override = null }) {
   const copyToClipboard = (text, key) => { navigator.clipboard.writeText(text); setCopiedKey(key); setTimeout(() => setCopiedKey(null), 1500) }
   const [playing, setPlaying] = useState(false)
   const [searchParams] = useSearchParams()
+  const hideGifts = searchParams.get("hg") === "1"
   const [lang, setLang] = useState("en")
   const ar = lang === "ar"
   const guestName = tier !== "bronze" ? (searchParams.get("gn") || "") : ""
@@ -475,7 +476,7 @@ export default function Invitation({ override = null }) {
       </section>}
 
       {/* Gift Registry (Gold only) */}
-      {tier === "gold" && WEDDING.registry?.length > 0 && <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
+      {tier === "gold" && !hideGifts && WEDDING.registry?.length > 0 && <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
   <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
     <p className="text-[#c9a96e] tracking-[0.3em] text-sm uppercase text-center mb-2">{ar ? "بكل محبة" : "With Love"}</p>
     <h2 className="font-light text-center mb-4 text-white"

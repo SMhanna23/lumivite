@@ -141,6 +141,7 @@ export default function Invitation({ override = null }) {
     "/photo9.jpg",
   ]
   const [searchParams] = useSearchParams()
+  const hideGifts = searchParams.get("hg") === "1"
   const namesFont = WEDDING.namesFont === "script" ? "'Great Vibes', cursive" : "'Cormorant Garamond', serif"
   const namesClass = WEDDING.namesFont === "script" ? "text-7xl md:text-9xl" : "text-6xl md:text-8xl"
   const subtextSize = WEDDING.heroSubtextSize === "lg" ? "1.125rem" : WEDDING.heroSubtextSize === "md" ? "1rem" : "0.875rem"
@@ -523,7 +524,7 @@ export default function Invitation({ override = null }) {
       </section>}
 
       {/* Gift Registry (Gold only) */}
-      {tier === "gold" && WEDDING.registry?.length > 0 && <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
+      {tier === "gold" && !hideGifts && WEDDING.registry?.length > 0 && <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
           <p className="tracking-[0.3em] text-sm uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>
             {ar ? "بكل محبة" : "With Love"}
