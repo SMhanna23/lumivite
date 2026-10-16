@@ -146,6 +146,8 @@ function BuildInvitationModal({ order }) {
     registryIban: order.registryIban || "",
     registryBic: order.registryBic || "",
     registrySubtitle: order.registrySubtitle || "",
+    registryAfterRsvp: false,
+    accentColor: order.accentColor || "",
     hideCeremony: false,
     hideTimeline: false,
     askEventAttendance: false,
@@ -222,6 +224,8 @@ function BuildInvitationModal({ order }) {
             registryIban: d.registry?.find(r => r.name === "Bank Transfer")?.iban || d.registry?.find(r => r.name === "Bank Transfer")?.desc?.replace("iban: ", "") || "",
             registryBic: d.registry?.find(r => r.name === "Bank Transfer")?.bic || "",
             registrySubtitle: d.registrySubtitle || "",
+            registryAfterRsvp: d.registryAfterRsvp ?? false,
+            accentColor: d.accentColor || "",
             hideCeremony: d.hideCeremony ?? false,
             hideTimeline: d.hideTimeline ?? false,
             askEventAttendance: d.askEventAttendance ?? false,
@@ -338,6 +342,8 @@ function BuildInvitationModal({ order }) {
         hideEmojis: extraData.hideEmojis ?? false,
         envelopeColor: extraData.envelopeColor || "black",
         registrySubtitle: extraData.registrySubtitle || "",
+        registryAfterRsvp: extraData.registryAfterRsvp ?? false,
+        accentColor: extraData.accentColor || "",
         hideCeremony: extraData.hideCeremony ?? false,
         hideTimeline: extraData.hideTimeline ?? false,
         askEventAttendance: extraData.askEventAttendance ?? false,
@@ -419,6 +425,8 @@ function BuildInvitationModal({ order }) {
         hideEmojis: extraData.hideEmojis ?? false,
         envelopeColor: extraData.envelopeColor || "black",
         registrySubtitle: extraData.registrySubtitle || "",
+        registryAfterRsvp: extraData.registryAfterRsvp ?? false,
+        accentColor: extraData.accentColor || "",
         hideCeremony: extraData.hideCeremony ?? false,
         hideTimeline: extraData.hideTimeline ?? false,
         askEventAttendance: extraData.askEventAttendance ?? false,
@@ -549,6 +557,25 @@ function BuildInvitationModal({ order }) {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Accent Color — overrides the template's default gold/rose/etc. with any color the client wants */}
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">🎨 Invitation Accent Color (optional — overrides the template default)</label>
+            <div className="flex items-center gap-3">
+              <input type="color" value={extraData.accentColor || "#c9a96e"} onChange={e => update("accentColor", e.target.value)}
+                className="w-10 h-10 rounded-lg border border-white/10 bg-transparent cursor-pointer p-0" />
+              <input value={extraData.accentColor} onChange={e => update("accentColor", e.target.value)}
+                placeholder="Leave blank for the template's default color"
+                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
+              {extraData.accentColor && (
+                <button type="button" onClick={() => update("accentColor", "")}
+                  className="text-xs px-3 py-2 rounded-lg border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition">
+                  Reset
+                </button>
+              )}
+            </div>
+            <p className="text-white/25 text-xs mt-1">Pick any color (or paste a hex code) and the whole invitation's accent — headings, borders, buttons, icons — will use it instead of the template's built-in color.</p>
           </div>
 
           {/* Slug */}
@@ -870,6 +897,14 @@ function BuildInvitationModal({ order }) {
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
             </div>
           </div>
+          <label className="flex items-center gap-3 cursor-pointer select-none py-1">
+            <input type="checkbox" checked={extraData.registryAfterRsvp ?? false} onChange={e => update("registryAfterRsvp", e.target.checked)}
+              className="w-4 h-4 rounded accent-[#c9a96e]" />
+            <div>
+              <p className="text-white/60 text-sm">📍 Move Gift Registry to the very end</p>
+              <p className="text-white/25 text-xs mt-0.5">Shows the registry after the RSVP/attendance section instead of before it — some clients prefer gifts to be the last thing guests see</p>
+            </div>
+          </label>
           </>}
 
           {/* Wedding Timeline */}
@@ -1065,6 +1100,7 @@ function BuildBirthdayModal({ order }) {
     memoriesEnabled: false,
     hideEmojis: false,
     envelopeColor: "black",
+    accentColor: order.accentColor || "",
   })
 
   const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
@@ -1112,6 +1148,7 @@ function BuildBirthdayModal({ order }) {
             memoriesEnabled: d.memoriesEnabled ?? false,
             hideEmojis: d.hideEmojis ?? false,
             envelopeColor: d.envelopeColor || "black",
+            accentColor: d.accentColor || "",
           })
           if (d.photo) setHeroPhoto(d.photo)
           if (d.venue?.photo) setVenuePhoto(d.venue.photo)
@@ -1185,6 +1222,7 @@ function BuildBirthdayModal({ order }) {
     memoriesEnabled: extraData.memoriesEnabled ?? false,
     hideEmojis: extraData.hideEmojis ?? false,
     envelopeColor: extraData.envelopeColor || "black",
+    accentColor: extraData.accentColor || "",
     package: order.package,
     orderId: order.id,
   })
@@ -1313,6 +1351,23 @@ function BuildBirthdayModal({ order }) {
                   <span className="block text-white/25 text-xs font-normal mt-0.5">{opt.desc}</span>
                 </button>
               ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">🎨 Invitation Accent Color (optional — overrides the template default)</label>
+            <div className="flex items-center gap-3">
+              <input type="color" value={extraData.accentColor || "#c9a96e"} onChange={e => update("accentColor", e.target.value)}
+                className="w-10 h-10 rounded-lg border border-white/10 bg-transparent cursor-pointer p-0" />
+              <input value={extraData.accentColor} onChange={e => update("accentColor", e.target.value)}
+                placeholder="Leave blank for the template's default color"
+                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
+              {extraData.accentColor && (
+                <button type="button" onClick={() => update("accentColor", "")}
+                  className="text-xs px-3 py-2 rounded-lg border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition">
+                  Reset
+                </button>
+              )}
             </div>
           </div>
 
@@ -1587,6 +1642,7 @@ function BuildOccasionModal({ order }) {
     memoriesEnabled: false,
     hideEmojis: false,
     envelopeColor: "black",
+    accentColor: order.accentColor || "",
   })
 
   const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
@@ -1637,6 +1693,7 @@ function BuildOccasionModal({ order }) {
             memoriesEnabled: d.memoriesEnabled ?? false,
             hideEmojis: d.hideEmojis ?? false,
             envelopeColor: d.envelopeColor || "black",
+            accentColor: d.accentColor || "",
           })
           if (d.photo) setHeroPhoto(d.photo)
           if (d.venue?.photo) setVenuePhoto(d.venue.photo)
@@ -1714,6 +1771,7 @@ function BuildOccasionModal({ order }) {
     memoriesEnabled: extraData.memoriesEnabled ?? false,
     hideEmojis: extraData.hideEmojis ?? false,
     envelopeColor: extraData.envelopeColor || "black",
+    accentColor: extraData.accentColor || "",
     package: order.package,
     orderId: order.id,
   })
@@ -1855,6 +1913,23 @@ function BuildOccasionModal({ order }) {
                   <span className="block text-white/25 text-xs font-normal mt-0.5">{opt.desc}</span>
                 </button>
               ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">🎨 Invitation Accent Color (optional — overrides the template default)</label>
+            <div className="flex items-center gap-3">
+              <input type="color" value={extraData.accentColor || "#c9a96e"} onChange={e => update("accentColor", e.target.value)}
+                className="w-10 h-10 rounded-lg border border-white/10 bg-transparent cursor-pointer p-0" />
+              <input value={extraData.accentColor} onChange={e => update("accentColor", e.target.value)}
+                placeholder="Leave blank for the template's default color"
+                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
+              {extraData.accentColor && (
+                <button type="button" onClick={() => update("accentColor", "")}
+                  className="text-xs px-3 py-2 rounded-lg border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition">
+                  Reset
+                </button>
+              )}
             </div>
           </div>
 

@@ -106,6 +106,7 @@ function getYouTubeId(url) {
 
 export default function Invitation({ override = null }) {
   const WEDDING = override ? { ...DEFAULT_WEDDING, ...override } : DEFAULT_WEDDING
+  const roseGold = WEDDING.accentColor || "#B76E79"
   const tier = (WEDDING.package || "gold").toLowerCase().includes("gold") ? "gold"
              : (WEDDING.package || "").toLowerCase().includes("silver") ? "silver"
              : "bronze"
@@ -227,6 +228,47 @@ export default function Invitation({ override = null }) {
   }
 
   // Single return — media element stays mounted so it never reloads when started changes
+      const registrySection = tier === "gold" && !hideGifts && WEDDING.registry?.length > 0 && <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+          <p className="tracking-[0.3em] text-sm uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>
+            {ar ? "بكل محبة" : "With Love"}
+          </p>
+          <h2 className="font-light text-center mb-4"
+            style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem", color: dark }}>
+            {ar ? "قائمة الهدايا" : "Gift Registry"}
+          </h2>
+          <p className="text-sm text-center mb-12 opacity-40">
+            {ar ? "وجودكم معنا هو أجمل هدية! لمن يرغب تتوفر قائمة الهدايا :" : (WEDDING.registrySubtitle || "Your presence is our greatest gift. If you wish to honor us further:")}
+          </p>
+          <div className="grid gap-4">
+            {WEDDING.registry.map((item, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
+                {item.name === "Wish Money" ? (
+                  <div className="p-5 rounded-2xl bg-white shadow-sm" style={{ border: `1px solid ${roseGold}20` }}>
+                    <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0"><img src="/whish-money-logo.png" alt="Whish Money" className="w-full h-full object-cover scale-125" /></div><p className="font-medium" style={{ color: dark }}>Wish Money</p></div>
+                    {item.acc && <div className="flex items-center justify-between py-2 border-t" style={{ borderColor: `${roseGold}20` }}><span className="text-xs font-mono opacity-50">{`Acc# ${item.acc}`}</span><button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-xs rounded-full px-3 py-1 transition" style={{ color: copiedKey === "wish-acc" ? "#4ade80" : roseGold, border: copiedKey === "wish-acc" ? "1px solid #4ade80" : `1px solid ${roseGold}40` }}>{copiedKey === "wish-acc" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
+                    {item.phone && <div className="flex items-center justify-between py-2 border-t" style={{ borderColor: `${roseGold}20` }}><span className="text-xs font-mono opacity-50">{item.phone}</span><button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-xs rounded-full px-3 py-1 transition" style={{ color: copiedKey === "wish-phone" ? "#4ade80" : roseGold, border: copiedKey === "wish-phone" ? "1px solid #4ade80" : `1px solid ${roseGold}40` }}>{copiedKey === "wish-phone" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
+                    {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs px-3 py-1 rounded-full" style={{ color: roseGold, border: `1px solid ${roseGold}40` }}>Visit →</a>}
+                  </div>
+                ) : item.name === "Bank Transfer" ? (
+                  <div className="p-5 rounded-2xl bg-white shadow-sm" style={{ border: `1px solid ${roseGold}20` }}>
+                    <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: `${roseGold}10` }}>🏦</div><div><p className="font-medium" style={{ color: dark }}>{ar ? "تحويل بنكي" : "Bank Transfer"}</p>{item.beneficiary && <p className="text-xs opacity-50">{item.beneficiary}</p>}</div></div>
+                    {(item.iban || item.desc) && <div className="flex items-center justify-between py-2 border-t" style={{ borderColor: `${roseGold}20` }}><span className="text-xs font-mono opacity-50">{item.iban || item.desc?.replace("iban: ", "")}</span><button onClick={() => copyToClipboard(item.iban || item.desc?.replace("iban: ", ""), "bank-iban")} className="text-xs rounded-full px-3 py-1 transition" style={{ color: copiedKey === "bank-iban" ? "#4ade80" : roseGold, border: copiedKey === "bank-iban" ? "1px solid #4ade80" : `1px solid ${roseGold}40` }}>{copiedKey === "bank-iban" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
+                    {item.bic && <div className="flex items-center justify-between py-2 border-t" style={{ borderColor: `${roseGold}20` }}><span className="text-xs opacity-50">BIC/Swift: <span className="font-mono">{item.bic}</span></span><button onClick={() => copyToClipboard(item.bic, "bank-bic")} className="text-xs rounded-full px-3 py-1 transition" style={{ color: copiedKey === "bank-bic" ? "#4ade80" : roseGold, border: copiedKey === "bank-bic" ? "1px solid #4ade80" : `1px solid ${roseGold}40` }}>{copiedKey === "bank-bic" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
+                  </div>
+                ) : item.link ? (
+                  <a href={item.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-5 p-5 rounded-2xl bg-white shadow-sm hover:shadow-md transition group" style={{ border: `1px solid ${roseGold}20` }}>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: `${roseGold}10` }}>{item.icon}</div>
+                    <div className="flex-1 text-left"><p className="font-medium" style={{ color: dark }}>{item.name}</p><p className="text-sm opacity-50">{ar ? item.descAr : item.desc}</p></div>
+                    <span className="text-sm opacity-0 group-hover:opacity-100 transition" style={{ color: roseGold }}>→</span>
+                  </a>
+                ) : null}
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
   return (
     <div className={started ? "min-h-screen overflow-x-hidden relative" : "fixed inset-0"}
       dir={ar ? "rtl" : "ltr"}
@@ -523,47 +565,9 @@ export default function Invitation({ override = null }) {
         </div>
       </section>}
 
-      {/* Gift Registry (Gold only) */}
-      {tier === "gold" && !hideGifts && WEDDING.registry?.length > 0 && <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="tracking-[0.3em] text-sm uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>
-            {ar ? "بكل محبة" : "With Love"}
-          </p>
-          <h2 className="font-light text-center mb-4"
-            style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem", color: dark }}>
-            {ar ? "قائمة الهدايا" : "Gift Registry"}
-          </h2>
-          <p className="text-sm text-center mb-12 opacity-40">
-            {ar ? "وجودكم معنا هو أجمل هدية! لمن يرغب تتوفر قائمة الهدايا :" : (WEDDING.registrySubtitle || "Your presence is our greatest gift. If you wish to honor us further:")}
-          </p>
-          <div className="grid gap-4">
-            {WEDDING.registry.map((item, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
-                {item.name === "Wish Money" ? (
-                  <div className="p-5 rounded-2xl bg-white shadow-sm" style={{ border: `1px solid ${roseGold}20` }}>
-                    <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0"><img src="/whish-money-logo.png" alt="Whish Money" className="w-full h-full object-cover scale-125" /></div><p className="font-medium" style={{ color: dark }}>Wish Money</p></div>
-                    {item.acc && <div className="flex items-center justify-between py-2 border-t" style={{ borderColor: `${roseGold}20` }}><span className="text-xs font-mono opacity-50">{`Acc# ${item.acc}`}</span><button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-xs rounded-full px-3 py-1 transition" style={{ color: copiedKey === "wish-acc" ? "#4ade80" : roseGold, border: copiedKey === "wish-acc" ? "1px solid #4ade80" : `1px solid ${roseGold}40` }}>{copiedKey === "wish-acc" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
-                    {item.phone && <div className="flex items-center justify-between py-2 border-t" style={{ borderColor: `${roseGold}20` }}><span className="text-xs font-mono opacity-50">{item.phone}</span><button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-xs rounded-full px-3 py-1 transition" style={{ color: copiedKey === "wish-phone" ? "#4ade80" : roseGold, border: copiedKey === "wish-phone" ? "1px solid #4ade80" : `1px solid ${roseGold}40` }}>{copiedKey === "wish-phone" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
-                    {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs px-3 py-1 rounded-full" style={{ color: roseGold, border: `1px solid ${roseGold}40` }}>Visit →</a>}
-                  </div>
-                ) : item.name === "Bank Transfer" ? (
-                  <div className="p-5 rounded-2xl bg-white shadow-sm" style={{ border: `1px solid ${roseGold}20` }}>
-                    <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: `${roseGold}10` }}>🏦</div><div><p className="font-medium" style={{ color: dark }}>{ar ? "تحويل بنكي" : "Bank Transfer"}</p>{item.beneficiary && <p className="text-xs opacity-50">{item.beneficiary}</p>}</div></div>
-                    {(item.iban || item.desc) && <div className="flex items-center justify-between py-2 border-t" style={{ borderColor: `${roseGold}20` }}><span className="text-xs font-mono opacity-50">{item.iban || item.desc?.replace("iban: ", "")}</span><button onClick={() => copyToClipboard(item.iban || item.desc?.replace("iban: ", ""), "bank-iban")} className="text-xs rounded-full px-3 py-1 transition" style={{ color: copiedKey === "bank-iban" ? "#4ade80" : roseGold, border: copiedKey === "bank-iban" ? "1px solid #4ade80" : `1px solid ${roseGold}40` }}>{copiedKey === "bank-iban" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
-                    {item.bic && <div className="flex items-center justify-between py-2 border-t" style={{ borderColor: `${roseGold}20` }}><span className="text-xs opacity-50">BIC/Swift: <span className="font-mono">{item.bic}</span></span><button onClick={() => copyToClipboard(item.bic, "bank-bic")} className="text-xs rounded-full px-3 py-1 transition" style={{ color: copiedKey === "bank-bic" ? "#4ade80" : roseGold, border: copiedKey === "bank-bic" ? "1px solid #4ade80" : `1px solid ${roseGold}40` }}>{copiedKey === "bank-bic" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
-                  </div>
-                ) : item.link ? (
-                  <a href={item.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-5 p-5 rounded-2xl bg-white shadow-sm hover:shadow-md transition group" style={{ border: `1px solid ${roseGold}20` }}>
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: `${roseGold}10` }}>{item.icon}</div>
-                    <div className="flex-1 text-left"><p className="font-medium" style={{ color: dark }}>{item.name}</p><p className="text-sm opacity-50">{ar ? item.descAr : item.desc}</p></div>
-                    <span className="text-sm opacity-0 group-hover:opacity-100 transition" style={{ color: roseGold }}>→</span>
-                  </a>
-                ) : null}
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </section>}
+      {/* Gift Registry (Gold only) -- position controlled by WEDDING.registryAfterRsvp */}
+      {!WEDDING.registryAfterRsvp && registrySection}
+
 
       {/* Additional Note */}
       {(ar ? WEDDING.noteAr : WEDDING.noteEn) && (
@@ -681,6 +685,9 @@ export default function Invitation({ override = null }) {
           </a>
         </section>
       )}
+
+      {/* Gift Registry shown last, if the client chose that */}
+      {WEDDING.registryAfterRsvp && registrySection}
 
       <footer className="text-center py-10 text-sm border-t relative z-10"
         style={{ color: `${roseGold}60`, borderColor: `${roseGold}15` }}>

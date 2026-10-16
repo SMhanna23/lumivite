@@ -87,6 +87,7 @@ function Sparkles() {
 
 export default function Occasion({ override = null }) {
   const EVENT = override ? { ...DEFAULT_EVENT, ...override } : DEFAULT_EVENT
+  const GOLD = EVENT.accentColor || "#bfa15f"
   const tier = (EVENT.package || "gold").toLowerCase().includes("gold") ? "gold"
              : (EVENT.package || "").toLowerCase().includes("silver") ? "silver"
              : "bronze"

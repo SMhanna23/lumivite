@@ -8,6 +8,13 @@ import { formatArabicDate, toArabicDigits, toArabicTime, personsLabelAr } from "
 
 const COUNTDOWN_LABELS_AR = { days: "أيام", hours: "ساعات", mins: "دقائق", secs: "ثواني" }
 
+function hexToRgbChannels(hex) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex || "")
+  if (!m) return "201 169 110"
+  const n = parseInt(m[1], 16)
+  return `${(n >> 16) & 255} ${(n >> 8) & 255} ${n & 255}`
+}
+
 const DEFAULT_WEDDING = {
   groom: "Christopher",
   bride: "Joelle",
@@ -97,6 +104,7 @@ function getYouTubeId(url) {
 
 export default function Invitation({ override = null }) {
   const WEDDING = override ? { ...DEFAULT_WEDDING, ...override } : DEFAULT_WEDDING
+  const accentRgb = hexToRgbChannels(WEDDING.accentColor || "#c9a96e")
   const tier = (WEDDING.package || "gold").toLowerCase().includes("gold") ? "gold"
              : (WEDDING.package || "").toLowerCase().includes("silver") ? "silver"
              : "bronze"
@@ -223,11 +231,51 @@ export default function Invitation({ override = null }) {
   }
 }
 
+  const registrySection = tier === "gold" && !hideGifts && WEDDING.registry?.length > 0 && <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
+  <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+    <p className="text-[rgb(var(--accent-rgb))] tracking-[0.3em] text-sm uppercase text-center mb-2">{ar ? "بكل محبة" : "With Love"}</p>
+    <h2 className="font-light text-center mb-4 text-white"
+      style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem" }}>
+      {ar ? "قائمة الهدايا" : "Gift Registry"}
+    </h2>
+    <p className="text-white/40 text-sm text-center mb-12">{ar ? "وجودكم معنا هو أجمل هدية! لمن يرغب تتوفر قائمة الهدايا :" : (WEDDING.registrySubtitle || "Your presence is our greatest gift. If you wish to honor us further:")}</p>
+    <div className="grid gap-4">
+      {WEDDING.registry.map((item, i) => (
+        <motion.div key={i}
+          initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
+          {item.name === "Wish Money" ? (
+            <div className="p-5 rounded-2xl border border-white/10 bg-white/3">
+              <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0"><img src="/whish-money-logo.png" alt="Whish Money" className="w-full h-full object-cover scale-125" /></div><p className="font-medium text-white">Wish Money</p></div>
+              {item.acc && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">Acc# {item.acc}</span><button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-[rgb(var(--accent-rgb))] text-xs border border-[rgb(var(--accent-rgb)/0.3)] rounded-full px-3 py-1 hover:bg-[rgb(var(--accent-rgb)/0.1)] transition">{copiedKey === "wish-acc" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
+              {item.phone && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">{item.phone}</span><button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-[rgb(var(--accent-rgb))] text-xs border border-[rgb(var(--accent-rgb)/0.3)] rounded-full px-3 py-1 hover:bg-[rgb(var(--accent-rgb)/0.1)] transition">{copiedKey === "wish-phone" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
+              {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs px-3 py-1 rounded-full text-[rgb(var(--accent-rgb))] border border-[rgb(var(--accent-rgb)/0.3)]">Visit →</a>}
+            </div>
+          ) : item.name === "Bank Transfer" ? (
+            <div className="p-5 rounded-2xl border border-white/10 bg-white/3">
+              <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl bg-[rgb(var(--accent-rgb)/0.1)] flex items-center justify-center text-xl flex-shrink-0">🏦</div><div><p className="font-medium text-white">{ar ? "تحويل بنكي" : "Bank Transfer"}</p>{item.beneficiary && <p className="text-white/40 text-xs">{item.beneficiary}</p>}</div></div>
+              {(item.iban || item.desc) && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">{item.iban || item.desc?.replace("iban: ", "")}</span><button onClick={() => copyToClipboard(item.iban || item.desc?.replace("iban: ", ""), "bank-iban")} className="text-[rgb(var(--accent-rgb))] text-xs border border-[rgb(var(--accent-rgb)/0.3)] rounded-full px-3 py-1 hover:bg-[rgb(var(--accent-rgb)/0.1)] transition">{copiedKey === "bank-iban" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
+              {item.bic && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs">BIC/Swift: <span className="font-mono">{item.bic}</span></span><button onClick={() => copyToClipboard(item.bic, "bank-bic")} className="text-[rgb(var(--accent-rgb))] text-xs border border-[rgb(var(--accent-rgb)/0.3)] rounded-full px-3 py-1 hover:bg-[rgb(var(--accent-rgb)/0.1)] transition">{copiedKey === "bank-bic" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
+            </div>
+          ) : item.link ? (
+            <a href={item.link} target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-5 p-5 rounded-2xl border border-white/10 bg-white/3 hover:border-[rgb(var(--accent-rgb)/0.4)] hover:bg-white/5 transition group">
+              <div className="w-12 h-12 rounded-xl bg-[rgb(var(--accent-rgb)/0.1)] flex items-center justify-center text-2xl flex-shrink-0">{item.icon}</div>
+              <div className="flex-1 text-left"><p className="font-medium text-white">{item.name}</p><p className="text-white/40 text-sm">{ar ? item.descAr : item.desc}</p></div>
+              <span className="text-[rgb(var(--accent-rgb))] text-sm opacity-0 group-hover:opacity-100 transition">→</span>
+            </a>
+          ) : null}
+        </motion.div>
+      ))}
+    </div>
+  </motion.div>
+</section>
+
   // Single return — media element stays mounted so it never reloads when started changes
   return (
     <div className={started ? "min-h-screen bg-[#0d0a08] text-white overflow-x-hidden relative" : "fixed inset-0"}
       dir={ar ? "rtl" : "ltr"}
-      style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol'" : "inherit" }}>
+      style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol'" : "inherit", "--accent-rgb": accentRgb }}>
 
       {/* Music — Silver and Gold only */}
       {tier !== "bronze" && (ytId ? (
@@ -260,7 +308,7 @@ export default function Invitation({ override = null }) {
         <motion.button onClick={toggleMusic}
           initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 1 }}
-          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#c9a96e] text-black flex items-center justify-center shadow-2xl hover:bg-[#b8965d] transition text-xl">
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[rgb(var(--accent-rgb))] text-black flex items-center justify-center shadow-2xl hover:brightness-90 transition text-xl">
           {playing ? "⏸" : "🎵"}
         </motion.button>
       )}
@@ -270,7 +318,7 @@ export default function Invitation({ override = null }) {
          initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.2 }}
         className="fixed bottom-6 left-6 z-50 h-10 px-4 rounded-full flex items-center justify-center shadow-2xl text-sm font-medium transition"
-        style={{ background: "rgba(201,169,110,0.15)", border: "1px solid rgba(201,169,110,0.4)", color: "#c9a96e" }}>
+        style={{ background: "rgb(var(--accent-rgb)/0.15)", border: "1px solid rgb(var(--accent-rgb)/0.4)", color: "rgb(var(--accent-rgb))" }}>
          {ar ? "EN" : "عربي"}
         </motion.button>
 
@@ -290,9 +338,9 @@ export default function Invitation({ override = null }) {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5 pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full border border-white/5 pointer-events-none" />
         <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
-          <p className="text-[#c9a96e] tracking-[0.4em] text-sm uppercase mb-8">{ar ? "نحن نتزوج" : "We're getting married"}</p>
+          <p className="text-[rgb(var(--accent-rgb))] tracking-[0.4em] text-sm uppercase mb-8">{ar ? "نحن نتزوج" : "We're getting married"}</p>
           <h1 className={`${namesClass} font-light text-white mb-2`} style={{ fontFamily: namesFont }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
-          <p className="text-[#c9a96e] text-4xl italic mb-2" style={{ fontFamily: namesFont }}>&</p>
+          <p className="text-[rgb(var(--accent-rgb))] text-4xl italic mb-2" style={{ fontFamily: namesFont }}>&</p>
           <h1 className={`${namesClass} font-light text-white mb-10`} style={{ fontFamily: namesFont }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
           <p className={`tracking-widest uppercase mb-2 ${WEDDING.heroSubtextBold ? "text-white/90" : "text-white/50"}`}
             style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
@@ -317,10 +365,10 @@ export default function Invitation({ override = null }) {
       <section className="py-16 px-6 text-center max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
           {!WEDDING.hideQuote && (<>
-            {!WEDDING.hideEmojis && <div className="text-[#c9a96e] text-2xl mb-6">✦</div>}
+            {!WEDDING.hideEmojis && <div className="text-[rgb(var(--accent-rgb))] text-2xl mb-6">✦</div>}
             <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>"{ar ? WEDDING.quoteAr : WEDDING.quote}"</p>
-            {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-[#c9a96e] text-sm mt-3 tracking-widest">— {WEDDING.quoteRef}</p>}
-            {!WEDDING.hideEmojis && <div className="text-[#c9a96e] text-2xl mt-8 mb-10">✦</div>}
+            {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-[rgb(var(--accent-rgb))] text-sm mt-3 tracking-widest">— {WEDDING.quoteRef}</p>}
+            {!WEDDING.hideEmojis && <div className="text-[rgb(var(--accent-rgb))] text-2xl mt-8 mb-10">✦</div>}
           </>)}
 
           {/* Parents cards */}
@@ -329,9 +377,9 @@ export default function Invitation({ override = null }) {
               <motion.div key={i}
                 initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.15 }} viewport={{ once: true }}
-                className="border border-[#c9a96e]/30 rounded-xl px-4 py-5 text-center"
-                style={{ background: "rgba(201,169,110,0.05)" }}>
-                <p className="text-[#c9a96e] text-xs tracking-[0.3em] uppercase mb-2">{ar ? "عائلة" : "Mr. & Mrs."}</p>
+                className="border border-[rgb(var(--accent-rgb)/0.3)] rounded-xl px-4 py-5 text-center"
+                style={{ background: "rgb(var(--accent-rgb)/0.05)" }}>
+                <p className="text-[rgb(var(--accent-rgb))] text-xs tracking-[0.3em] uppercase mb-2">{ar ? "عائلة" : "Mr. & Mrs."}</p>
                 <p className="text-white font-light text-sm leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>{p}</p>
               </motion.div>
             ))}
@@ -344,14 +392,14 @@ export default function Invitation({ override = null }) {
       {tier !== "bronze" && <section className="py-12 px-6 max-w-xl mx-auto relative z-10">
         <motion.div className="text-center mb-10"
           initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="text-[#c9a96e] tracking-[0.3em] text-sm uppercase mb-3">{ar ? "قبل الأبد" : "Before Forever"}</p>
+          <p className="text-[rgb(var(--accent-rgb))] tracking-[0.3em] text-sm uppercase mb-3">{ar ? "قبل الأبد" : "Before Forever"}</p>
           <h2 className="mb-3" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.5rem" : "3.8rem", color: "white", fontWeight: 400, lineHeight: 1.2 }}>
             {ar ? "لمحة منّا" : "A glimpse of us"}
           </h2>
           <div className="flex items-center justify-center gap-4 mb-10">
-            <div className="h-px w-20 bg-gradient-to-r from-transparent to-[#c9a96e]/60" />
-            {!WEDDING.hideEmojis && <span className="text-[#c9a96e]">✦</span>}
-            <div className="h-px w-20 bg-gradient-to-l from-transparent to-[#c9a96e]/60" />
+            <div className="h-px w-20 bg-gradient-to-r from-transparent to-[rgb(var(--accent-rgb)/0.6)]" />
+            {!WEDDING.hideEmojis && <span className="text-[rgb(var(--accent-rgb))]">✦</span>}
+            <div className="h-px w-20 bg-gradient-to-l from-transparent to-[rgb(var(--accent-rgb)/0.6)]" />
           </div>
         </motion.div>
         <motion.div
@@ -370,7 +418,7 @@ export default function Invitation({ override = null }) {
       {/* Venues */}
         <section className="py-16 px-6 max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="text-[#c9a96e] tracking-[0.3em] text-sm uppercase text-center mb-2">{ar ? "انضموا إلينا" : "Join Us"}</p>
+          <p className="text-[rgb(var(--accent-rgb))] tracking-[0.3em] text-sm uppercase text-center mb-2">{ar ? "انضموا إلينا" : "Join Us"}</p>
           <h2 className="font-light text-center mb-12 text-white"
             style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem" }}>
             {ar ? "الاحتفال" : "The Celebration"}
@@ -381,7 +429,7 @@ export default function Invitation({ override = null }) {
               return (
           <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.2 }} viewport={{ once: true }}
-          className="bg-white/3 border border-white/10 rounded-2xl overflow-hidden hover:border-[#c9a96e]/30 transition">
+          className="bg-white/3 border border-white/10 rounded-2xl overflow-hidden hover:border-[rgb(var(--accent-rgb)/0.3)] transition">
           {/* Venue photo */}
           <div className="h-52 w-full overflow-hidden">
             <img
@@ -391,14 +439,14 @@ export default function Invitation({ override = null }) {
             />
           </div>
           <div className="p-6 text-center">
-            <p className="text-[#c9a96e] text-sm tracking-widest uppercase mb-2">{ar ? v.labelAr : v.label}</p>
+            <p className="text-[rgb(var(--accent-rgb))] text-sm tracking-widest uppercase mb-2">{ar ? v.labelAr : v.label}</p>
             <p className="font-serif text-2xl font-light mb-1">{ar ? toArabicTime(v.time) : v.time}</p>
             <p className="text-white font-medium mb-1">{ar ? v.placeAr : v.place}</p>
             <p className="text-white/40 text-sm mb-4">{ar ? v.locationAr : v.location}</p>
             {tier === "gold" && (
               <a href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
                 target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-[#c9a96e] text-sm border border-[#c9a96e]/30 rounded-full px-4 py-2 hover:bg-[#c9a96e]/10 transition">
+                className="inline-flex items-center gap-2 text-[rgb(var(--accent-rgb))] text-sm border border-[rgb(var(--accent-rgb)/0.3)] rounded-full px-4 py-2 hover:bg-[rgb(var(--accent-rgb)/0.1)] transition">
                 📍 Open in Google Maps
               </a>
             )}
@@ -432,7 +480,7 @@ export default function Invitation({ override = null }) {
       {/* Timeline */}
       {!WEDDING.hideTimeline && <section className="py-24 px-6 max-w-lg mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase text-center mb-2">{ar ? "اليوم" : "The Day"}</p>
+          <p className="text-[rgb(var(--accent-rgb))] tracking-[0.3em] text-xs uppercase text-center mb-2">{ar ? "اليوم" : "The Day"}</p>
           <h2 className="font-serif text-4xl font-light text-center mb-16">{ar ? "برنامج حفل الزفاف" : "Wedding Timeline"}</h2>
           <div className="relative">
             <div className="absolute left-[88px] top-0 bottom-0 w-px bg-white/10" />
@@ -443,7 +491,7 @@ export default function Invitation({ override = null }) {
                 <div className="text-right w-16 pt-1">
                   <span className="text-white/40 text-xs">{ar ? toArabicTime(item.time) : item.time}</span>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-[#1a1510] border border-[#c9a96e]/40 flex items-center justify-center text-sm flex-shrink-0 relative z-10">
+                <div className="w-8 h-8 rounded-full bg-[#1a1510] border border-[rgb(var(--accent-rgb)/0.4)] flex items-center justify-center text-sm flex-shrink-0 relative z-10">
                   {item.icon}
                 </div>
                 <div>
@@ -475,54 +523,16 @@ export default function Invitation({ override = null }) {
         </div>
       </section>}
 
-      {/* Gift Registry (Gold only) */}
-      {tier === "gold" && !hideGifts && WEDDING.registry?.length > 0 && <section className="py-24 px-6 max-w-2xl mx-auto relative z-10">
-  <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-    <p className="text-[#c9a96e] tracking-[0.3em] text-sm uppercase text-center mb-2">{ar ? "بكل محبة" : "With Love"}</p>
-    <h2 className="font-light text-center mb-4 text-white"
-      style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem" }}>
-      {ar ? "قائمة الهدايا" : "Gift Registry"}
-    </h2>
-    <p className="text-white/40 text-sm text-center mb-12">{ar ? "وجودكم معنا هو أجمل هدية! لمن يرغب تتوفر قائمة الهدايا :" : (WEDDING.registrySubtitle || "Your presence is our greatest gift. If you wish to honor us further:")}</p>
-    <div className="grid gap-4">
-      {WEDDING.registry.map((item, i) => (
-        <motion.div key={i}
-          initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
-          {item.name === "Wish Money" ? (
-            <div className="p-5 rounded-2xl border border-white/10 bg-white/3">
-              <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0"><img src="/whish-money-logo.png" alt="Whish Money" className="w-full h-full object-cover scale-125" /></div><p className="font-medium text-white">Wish Money</p></div>
-              {item.acc && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">Acc# {item.acc}</span><button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">{copiedKey === "wish-acc" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
-              {item.phone && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">{item.phone}</span><button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">{copiedKey === "wish-phone" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
-              {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs px-3 py-1 rounded-full text-[#c9a96e] border border-[#c9a96e]/30">Visit →</a>}
-            </div>
-          ) : item.name === "Bank Transfer" ? (
-            <div className="p-5 rounded-2xl border border-white/10 bg-white/3">
-              <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl bg-[#c9a96e]/10 flex items-center justify-center text-xl flex-shrink-0">🏦</div><div><p className="font-medium text-white">{ar ? "تحويل بنكي" : "Bank Transfer"}</p>{item.beneficiary && <p className="text-white/40 text-xs">{item.beneficiary}</p>}</div></div>
-              {(item.iban || item.desc) && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">{item.iban || item.desc?.replace("iban: ", "")}</span><button onClick={() => copyToClipboard(item.iban || item.desc?.replace("iban: ", ""), "bank-iban")} className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">{copiedKey === "bank-iban" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
-              {item.bic && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs">BIC/Swift: <span className="font-mono">{item.bic}</span></span><button onClick={() => copyToClipboard(item.bic, "bank-bic")} className="text-[#c9a96e] text-xs border border-[#c9a96e]/30 rounded-full px-3 py-1 hover:bg-[#c9a96e]/10 transition">{copiedKey === "bank-bic" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
-            </div>
-          ) : item.link ? (
-            <a href={item.link} target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-5 p-5 rounded-2xl border border-white/10 bg-white/3 hover:border-[#c9a96e]/40 hover:bg-white/5 transition group">
-              <div className="w-12 h-12 rounded-xl bg-[#c9a96e]/10 flex items-center justify-center text-2xl flex-shrink-0">{item.icon}</div>
-              <div className="flex-1 text-left"><p className="font-medium text-white">{item.name}</p><p className="text-white/40 text-sm">{ar ? item.descAr : item.desc}</p></div>
-              <span className="text-[#c9a96e] text-sm opacity-0 group-hover:opacity-100 transition">→</span>
-            </a>
-          ) : null}
-        </motion.div>
-      ))}
-    </div>
-  </motion.div>
-</section>}
+      {/* Gift Registry (Gold only) — position controlled by WEDDING.registryAfterRsvp */}
+      {!WEDDING.registryAfterRsvp && registrySection}
 
       {/* Additional Note */}
       {(ar ? WEDDING.noteAr : WEDDING.noteEn) && (
         <section className="py-10 px-6 max-w-lg mx-auto text-center relative z-10">
           <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#c9a96e]/40" />
-            <div className="w-1.5 h-1.5 rounded-full bg-[#c9a96e]/40" />
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#c9a96e]/40" />
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-[rgb(var(--accent-rgb)/0.4)]" />
+            <div className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--accent-rgb)/0.4)]" />
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-[rgb(var(--accent-rgb)/0.4)]" />
           </div>
           <p className="text-white/85 font-medium leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif", fontSize: ar ? "1.2rem" : "1.1rem", fontStyle: "italic" }}>
             {ar ? WEDDING.noteAr : WEDDING.noteEn}
@@ -533,7 +543,7 @@ export default function Invitation({ override = null }) {
       {/* RSVP */}
       <section className="py-24 px-6 max-w-md mx-auto text-center relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
-          <p className="text-[#c9a96e] tracking-[0.3em] text-sm uppercase mb-4">
+          <p className="text-[rgb(var(--accent-rgb))] tracking-[0.3em] text-sm uppercase mb-4">
             {ar
               ? `يرجى الرد قبل ${WEDDING.rsvpDeadline ? formatArabicDate(new Date(WEDDING.rsvpDeadline + "T12:00:00"), { withYear: false }) : "١ آب"}`
               : `Kindly Reply By ${WEDDING.rsvpDeadline ? new Date(WEDDING.rsvpDeadline + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" }) : "August 1st"}`}
@@ -543,7 +553,7 @@ export default function Invitation({ override = null }) {
             {status === "success" ? (
               <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="py-16">
                 <div className="text-5xl mb-4">💌</div>
-                <p className="text-[#c9a96e] font-serif text-2xl mb-2">{ar ? `شكراً، ${name}!` : `Thank you, ${name}!`}</p>
+                <p className="text-[rgb(var(--accent-rgb))] font-serif text-2xl mb-2">{ar ? `شكراً، ${name}!` : `Thank you, ${name}!`}</p>
                 <p className="text-white/50">{ar ? "تم استلام ردك. لا يسعنا الانتظار للاحتفال معك." : "Your RSVP has been received. We can't wait to celebrate with you."}</p>
               </motion.div>
             ) : (
@@ -551,14 +561,14 @@ export default function Invitation({ override = null }) {
                 <input value={name} onChange={e => setName(e.target.value)}
                   type="text" placeholder={ar ? "اسمك الكامل" : "Your Full Name"}
                   disabled={tier !== "bronze" && !!searchParams.get("gn")}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-[#c9a96e] transition disabled:opacity-60 disabled:cursor-not-allowed" />
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-[rgb(var(--accent-rgb))] transition disabled:opacity-60 disabled:cursor-not-allowed" />
                 <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white focus:outline-none focus:border-[#c9a96e] transition">
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white focus:outline-none focus:border-[rgb(var(--accent-rgb))] transition">
                   {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n} className="bg-[#1a1510]">{ar ? personsLabelAr(n) : `${n} ${n === 1 ? "person" : "persons"}`}</option>)}
                 </select>
                 <div className="flex gap-3">
                   <button onClick={() => setAttending(true)}
-                    className={`flex-1 py-4 rounded-lg border transition font-medium tracking-wider ${attending === true ? "bg-[#c9a96e] border-[#c9a96e] text-black" : "border-white/20 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e]"}`}>
+                    className={`flex-1 py-4 rounded-lg border transition font-medium tracking-wider ${attending === true ? "bg-[rgb(var(--accent-rgb))] border-[rgb(var(--accent-rgb))] text-black" : "border-white/20 text-white/50 hover:border-[rgb(var(--accent-rgb))] hover:text-[rgb(var(--accent-rgb))]"}`}>
                     {ar ? "✓ حاضر" : "✓ Attending"}
                   </button>
                   <button onClick={() => { setAttending(false); setEventChoice(null) }}
@@ -570,9 +580,9 @@ export default function Invitation({ override = null }) {
                   <div className="space-y-2.5" dir={ar ? "rtl" : "ltr"}>
                     {eventOptions.map(opt => (
                       <button key={opt.id} type="button" onClick={() => setEventChoice(opt.id)}
-                        className={`w-full flex items-center gap-3 p-4 rounded-lg border transition ${ar ? "text-right" : "text-left"} ${eventChoice === opt.id ? "border-[#c9a96e] bg-[#c9a96e]/10" : "border-white/15 hover:border-white/30"}`}>
-                        <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition ${eventChoice === opt.id ? "border-[#c9a96e]" : "border-white/30"}`}>
-                          {eventChoice === opt.id && <span className="w-2.5 h-2.5 rounded-full bg-[#c9a96e]" />}
+                        className={`w-full flex items-center gap-3 p-4 rounded-lg border transition ${ar ? "text-right" : "text-left"} ${eventChoice === opt.id ? "border-[rgb(var(--accent-rgb))] bg-[rgb(var(--accent-rgb)/0.1)]" : "border-white/15 hover:border-white/30"}`}>
+                        <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition ${eventChoice === opt.id ? "border-[rgb(var(--accent-rgb))]" : "border-white/30"}`}>
+                          {eventChoice === opt.id && <span className="w-2.5 h-2.5 rounded-full bg-[rgb(var(--accent-rgb))]" />}
                         </span>
                         <span className={`text-sm leading-snug ${eventChoice === opt.id ? "text-white" : "text-white/60"}`}>{ar ? opt.labelAr : opt.label}</span>
                       </button>
@@ -582,11 +592,11 @@ export default function Invitation({ override = null }) {
                 <textarea value={wishes} onChange={e => setWishes(e.target.value)}
                   placeholder={ar ? "شاركنا أمنياتك... (اختياري)" : "Share your wishes... (optional)"}
                   rows={3} maxLength={200}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-[#c9a96e] transition resize-none" />
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-[rgb(var(--accent-rgb))] transition resize-none" />
                 <p className="text-white/20 text-xs text-right">{wishes.length}/200</p>
                 {rsvpError && <p className="text-red-400 text-sm text-center">{rsvpError}</p>}
                 <button onClick={handleRSVP} disabled={status === "loading"}
-                  className="w-full py-4 bg-[#c9a96e] text-black font-semibold rounded-lg hover:bg-[#b8965d] transition tracking-wider disabled:opacity-50">
+                  className="w-full py-4 bg-[rgb(var(--accent-rgb))] text-black font-semibold rounded-lg hover:brightness-90 transition tracking-wider disabled:opacity-50">
                   {status === "loading" ? (ar ? "جارٍ الإرسال..." : "Sending...") : (ar ? "إرسال التأكيد" : "SEND RSVP")}
                 </button>
               </motion.div>
@@ -598,7 +608,7 @@ export default function Invitation({ override = null }) {
       {/* Memories — Gold only */}
       {tier === "gold" && WEDDING.memoriesEnabled && (
         <section className="py-12 px-6 max-w-md mx-auto text-center relative z-10">
-          <p className="text-[#c9a96e] text-2xl mb-3">📸</p>
+          <p className="text-[rgb(var(--accent-rgb))] text-2xl mb-3">📸</p>
           <h3 className="font-serif text-2xl font-light text-white mb-2">
             {ar ? "شاركونا ذكرياتكم" : "Share Your Memories"}
           </h3>
@@ -609,14 +619,17 @@ export default function Invitation({ override = null }) {
           </p>
           <a href={`/memories/${WEDDING.slug || "demo"}`} target="_blank" rel="noopener noreferrer"
             className="inline-block px-8 py-3 rounded-full text-sm tracking-wider transition"
-            style={{ background: "rgba(201,169,110,0.1)", border: "1px solid rgba(201,169,110,0.35)", color: "#c9a96e" }}>
+            style={{ background: "rgb(var(--accent-rgb)/0.1)", border: "1px solid rgb(var(--accent-rgb)/0.35)", color: "rgb(var(--accent-rgb))" }}>
             {ar ? "📸 شارك الذكريات" : "📸 Share Memories"}
           </a>
         </section>
       )}
 
+      {/* Gift Registry shown last, if the client chose that */}
+      {WEDDING.registryAfterRsvp && registrySection}
+
       <footer className="text-center py-10 text-white/20 text-sm border-t border-white/5 relative z-10">
-       {ar ? "صُنع بـ ✦ بواسطة" : "Made with ✦ by"}<span className="text-[#c9a96e]"> Lumivite</span>
+       {ar ? "صُنع بـ ✦ بواسطة" : "Made with ✦ by"}<span className="text-[rgb(var(--accent-rgb))]"> Lumivite</span>
       </footer>
     </>)}
     </div>

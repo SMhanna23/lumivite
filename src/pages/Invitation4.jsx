@@ -72,7 +72,8 @@ const ENVELOPE_BG        = { black: "#0c0b09",                white: "#f0ede8", 
 const ENVELOPE_TEXT_DEAR = { black: "rgba(255,255,255,0.65)", white: "rgba(40,30,20,0.75)",   creamy: "rgba(60,40,10,0.80)" }
 const ENVELOPE_TEXT_TAP  = { black: "rgba(255,255,255,0.4)",  white: "rgba(40,30,20,0.4)",    creamy: "rgba(60,40,10,0.4)" }
 
-function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang, envelopeColor = "black" }) {
+function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang, envelopeColor = "black", accentColor }) {
+  const GOLD = accentColor || "#c4a35a"
   const videoRef = useRef(null)
   const [started, setStarted] = useState(false)
 
@@ -155,6 +156,7 @@ const SLIDE_DURATION = 5500
 const CONTENT_SECTIONS = ["opening", "timeline", "details", "closing"]
 
 function renderSectionOverlay(section, w, ar) {
+  const GOLD = w.accentColor || "#c4a35a"
   const J  = { fontFamily: "'Jost', sans-serif" }
   const NF = { fontFamily: w.namesFont === "script" ? "'Great Vibes', cursive" : "'Cormorant Garamond', serif" }
   const CG = { fontFamily: "'Cormorant Garamond', serif" }
@@ -451,6 +453,7 @@ function renderSectionOverlay(section, w, ar) {
 
 // ── VIDEO PLAYER ─────────────────────────────────────────────────────────────
 function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
+  const GOLD = w.accentColor || "#c4a35a"
   const videoRef = useRef(null)
   const [sectionIdx, setSectionIdx] = useState(0)
   const [startupCover, setStartupCover] = useState(true)
@@ -592,6 +595,7 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
 // Cinematic slideshow: one photo per slide, each showing a different invitation section
 
 function PhotoFilm({ photos, w, onEnded, ar }) {
+  const GOLD = w.accentColor || "#c4a35a"
   const [slide, setSlide] = useState(0)
   const [prog,  setProg]  = useState(0)
   const rafRef = useRef(null)
@@ -676,6 +680,7 @@ function PhotoFilm({ photos, w, onEnded, ar }) {
 
 // ── RSVP SCREEN ──────────────────────────────────────────────────────────────
 function RSVPScreen({ w, ar, setLang, onReplay }) {
+  const GOLD = w.accentColor || "#c4a35a"
   const tier = (w.package || "gold").toLowerCase().includes("gold") ? "gold"
              : (w.package || "").toLowerCase().includes("silver") ? "silver"
              : "bronze"
@@ -722,6 +727,38 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
       setStatus("success")
     } catch { setStatus("error") }
   }
+
+  const registrySection = tier === "gold" && !hideGifts && w.registry?.length > 0 && (
+    <div className="pt-4 space-y-2">
+      <p className="text-center mb-3" style={{ color: "rgba(255,255,255,0.6)", fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "1.2rem" : "1.8rem" }}>
+        {ar ? "قائمة الهدايا" : "Gift Registry"}
+      </p>
+      {w.registry.map((item, i) => (
+        item.name === "Wish Money" ? (
+          <div key={i} className="px-4 py-3 rounded-xl space-y-2" style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
+            <div className="flex items-center gap-2"><div className="w-6 h-6 rounded-md overflow-hidden flex-shrink-0"><img src="/whish-money-logo.png" alt="Whish Money" className="w-full h-full object-cover scale-125" /></div><p className="text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>Wish Money</p></div>
+            {item.acc && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>Acc# {item.acc}</span><button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "wish-acc" ? "#4ade80" : GOLD, border: copiedKey === "wish-acc" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "wish-acc" ? "Copied!" : "Copy"}</button></div>}
+            {item.phone && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{item.phone}</span><button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "wish-phone" ? "#4ade80" : GOLD, border: copiedKey === "wish-phone" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "wish-phone" ? "Copied!" : "Copy"}</button></div>}
+            {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-xs px-2 py-1 rounded-full inline-block mt-1" style={{ color: GOLD, border: `1px solid ${GOLD}40` }}>Visit →</a>}
+          </div>
+        ) : item.name === "Bank Transfer" ? (
+          <div key={i} className="px-4 py-3 rounded-xl space-y-2" style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
+            <p className="text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>🏦 {ar ? "تحويل بنكي" : "Bank Transfer"}{item.beneficiary && <span className="text-xs ml-2" style={{ color: "rgba(255,255,255,0.4)" }}>{item.beneficiary}</span>}</p>
+            {(item.iban || item.desc) && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{item.iban || item.desc?.replace("iban: ", "")}</span><button onClick={() => copyToClipboard(item.iban || item.desc?.replace("iban: ", ""), "bank-iban")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "bank-iban" ? "#4ade80" : GOLD, border: copiedKey === "bank-iban" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "bank-iban" ? "Copied!" : "Copy"}</button></div>}
+            {item.bic && <div className="flex items-center justify-between"><span className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>BIC/Swift: <span className="font-mono">{item.bic}</span></span><button onClick={() => copyToClipboard(item.bic, "bank-bic")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "bank-bic" ? "#4ade80" : GOLD, border: copiedKey === "bank-bic" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "bank-bic" ? "Copied!" : "Copy"}</button></div>}
+          </div>
+        ) : item.link ? (
+          <a key={i} href={item.link} target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl transition"
+            style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
+            <span>{item.icon}</span>
+            <span className="flex-1 text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>{item.name}</span>
+            <span style={{ color: GOLD, fontSize: 12 }}>→</span>
+          </a>
+        ) : null
+      ))}
+    </div>
+  )
 
   return (
     <motion.div className="min-h-screen flex flex-col relative overflow-hidden"
@@ -870,38 +907,8 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                   {status === "loading" ? (ar ? "جارٍ الإرسال..." : "Sending...") : (ar ? "إرسال التأكيد" : "Send RSVP")}
                 </button>
 
-                {/* Registry — Gold only */}
-                {tier === "gold" && !hideGifts && w.registry?.length > 0 && (
-                  <div className="pt-4 space-y-2">
-                    <p className="text-center mb-3" style={{ color: "rgba(255,255,255,0.6)", fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "1.2rem" : "1.8rem" }}>
-                      {ar ? "قائمة الهدايا" : "Gift Registry"}
-                    </p>
-                    {w.registry.map((item, i) => (
-                      item.name === "Wish Money" ? (
-                        <div key={i} className="px-4 py-3 rounded-xl space-y-2" style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
-                          <div className="flex items-center gap-2"><div className="w-6 h-6 rounded-md overflow-hidden flex-shrink-0"><img src="/whish-money-logo.png" alt="Whish Money" className="w-full h-full object-cover scale-125" /></div><p className="text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>Wish Money</p></div>
-                          {item.acc && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>Acc# {item.acc}</span><button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "wish-acc" ? "#4ade80" : GOLD, border: copiedKey === "wish-acc" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "wish-acc" ? "Copied!" : "Copy"}</button></div>}
-                          {item.phone && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{item.phone}</span><button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "wish-phone" ? "#4ade80" : GOLD, border: copiedKey === "wish-phone" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "wish-phone" ? "Copied!" : "Copy"}</button></div>}
-                          {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-xs px-2 py-1 rounded-full inline-block mt-1" style={{ color: GOLD, border: `1px solid ${GOLD}40` }}>Visit →</a>}
-                        </div>
-                      ) : item.name === "Bank Transfer" ? (
-                        <div key={i} className="px-4 py-3 rounded-xl space-y-2" style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
-                          <p className="text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>🏦 {ar ? "تحويل بنكي" : "Bank Transfer"}{item.beneficiary && <span className="text-xs ml-2" style={{ color: "rgba(255,255,255,0.4)" }}>{item.beneficiary}</span>}</p>
-                          {(item.iban || item.desc) && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{item.iban || item.desc?.replace("iban: ", "")}</span><button onClick={() => copyToClipboard(item.iban || item.desc?.replace("iban: ", ""), "bank-iban")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "bank-iban" ? "#4ade80" : GOLD, border: copiedKey === "bank-iban" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "bank-iban" ? "Copied!" : "Copy"}</button></div>}
-                          {item.bic && <div className="flex items-center justify-between"><span className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>BIC/Swift: <span className="font-mono">{item.bic}</span></span><button onClick={() => copyToClipboard(item.bic, "bank-bic")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "bank-bic" ? "#4ade80" : GOLD, border: copiedKey === "bank-bic" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "bank-bic" ? "Copied!" : "Copy"}</button></div>}
-                        </div>
-                      ) : item.link ? (
-                        <a key={i} href={item.link} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-3 px-4 py-3 rounded-xl transition"
-                          style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
-                          <span>{item.icon}</span>
-                          <span className="flex-1 text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>{item.name}</span>
-                          <span style={{ color: GOLD, fontSize: 12 }}>→</span>
-                        </a>
-                      ) : null
-                    ))}
-                  </div>
-                )}
+                {/* Registry — Gold only, unless the client moved it to the very end */}
+                {!w.registryAfterRsvp && registrySection}
               </motion.div>
             )}
           </AnimatePresence>
@@ -926,6 +933,11 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
             {ar ? "📸 شارك الذكريات" : "📸 Share Memories"}
           </a>
         </div>
+      )}
+
+      {/* Gift Registry shown last, if the client chose that */}
+      {w.registryAfterRsvp && registrySection && (
+        <div className="px-6 pb-6 max-w-sm mx-auto w-full relative z-10">{registrySection}</div>
       )}
 
       <p className="text-center pb-6 text-xs relative z-10" style={{ color: "rgba(255,255,255,0.15)", fontFamily: "'Jost', sans-serif" }}>
@@ -1003,7 +1015,7 @@ export default function Invitation4({ override = null }) {
         {(phase === "envelope" || phase === "opening") && (
           <motion.div key="env" className="fixed inset-0 z-10"
             exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-            <EnvelopeScreen guestName={guestName} onOpen={openEnvelope} onVideoEnd={onEnvelopeVideoEnd} ar={ar} setLang={setLang} envelopeColor={W.envelopeColor || "black"} />
+            <EnvelopeScreen guestName={guestName} onOpen={openEnvelope} onVideoEnd={onEnvelopeVideoEnd} ar={ar} setLang={setLang} envelopeColor={W.envelopeColor || "black"} accentColor={W.accentColor} />
           </motion.div>
         )}
       </AnimatePresence>

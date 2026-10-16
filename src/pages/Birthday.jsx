@@ -83,6 +83,7 @@ function Sparkles() {
 
 export default function Birthday({ override = null }) {
   const CELEBRATION = override ? { ...DEFAULT_CELEBRATION, ...override } : DEFAULT_CELEBRATION
+  const GOLD = CELEBRATION.accentColor || "#d4af37"
   const tier = (CELEBRATION.package || "gold").toLowerCase().includes("gold") ? "gold"
              : (CELEBRATION.package || "").toLowerCase().includes("silver") ? "silver"
              : "bronze"
