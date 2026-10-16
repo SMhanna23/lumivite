@@ -22,6 +22,7 @@ export default async function handler(req, res) {
   const slug = req.query.slug
   const guestName = typeof req.query.gn === "string" ? req.query.gn : ""
   const numPersons = typeof req.query.np === "string" ? req.query.np : ""
+  const hideGifts = req.query.hg === "1"
 
   if (!slug || !/^[a-zA-Z0-9_-]{1,100}$/.test(slug)) {
     return res.redirect(302, "https://www.lumivite.net")
@@ -91,6 +92,7 @@ export default async function handler(req, res) {
   const appParams = new URLSearchParams({ _app: "1" })
   if (guestName) appParams.set("gn", guestName)
   if (numPersons) appParams.set("np", numPersons)
+  if (hideGifts) appParams.set("hg", "1")
   const appUrl = `${pageUrl}?${appParams.toString()}`
 
   const html = `<!DOCTYPE html>
