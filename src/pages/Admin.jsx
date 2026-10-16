@@ -179,8 +179,10 @@ function BuildInvitationModal({ order }) {
         const q = query(col(db, "invitations"), where("orderId", "==", order.id))
         const qSnap = await getDocs(q)
         if (!qSnap.empty) {
-          docId = qSnap.docs[0].id
-          d = qSnap.docs[0].data()
+          // If a duplicate doc ever exists for this order, always use the most recently saved one
+          const freshest = qSnap.docs.slice().sort((a, b) => (b.data().updatedAt?.toMillis?.() || 0) - (a.data().updatedAt?.toMillis?.() || 0))[0]
+          docId = freshest.id
+          d = freshest.data()
           savedDocIdRef.current = docId
           setSlug(docId) // restore the real slug
         } else {
@@ -350,6 +352,7 @@ function BuildInvitationModal({ order }) {
         orderId: order.id,
         package: order.package,
         _draft: true,
+        updatedAt: new Date(),
         ...(photos.length > 0 && { photos }),
       }
       await setDoc(firestoreDoc(db, "invitations", slug), draftData, { merge: true })
@@ -432,6 +435,7 @@ function BuildInvitationModal({ order }) {
         askEventAttendance: extraData.askEventAttendance ?? false,
         slug,
         createdAt: new Date(),
+        updatedAt: new Date(),
         orderId: order.id,
         package: order.package,
         ...(photos.length > 0 && { photos }),
@@ -1113,8 +1117,10 @@ function BuildBirthdayModal({ order }) {
         const q = query(col(db, "invitations"), where("orderId", "==", order.id))
         const qSnap = await getDocs(q)
         if (!qSnap.empty) {
-          docId = qSnap.docs[0].id
-          d = qSnap.docs[0].data()
+          // If a duplicate doc ever exists for this order, always use the most recently saved one
+          const freshest = qSnap.docs.slice().sort((a, b) => (b.data().updatedAt?.toMillis?.() || 0) - (a.data().updatedAt?.toMillis?.() || 0))[0]
+          docId = freshest.id
+          d = freshest.data()
           savedDocIdRef.current = docId
           setSlug(docId)
         } else {
@@ -1225,6 +1231,7 @@ function BuildBirthdayModal({ order }) {
     accentColor: extraData.accentColor || "",
     package: order.package,
     orderId: order.id,
+    updatedAt: new Date(),
   })
 
   const handleSaveDraft = async () => {
@@ -1655,8 +1662,10 @@ function BuildOccasionModal({ order }) {
         const q = query(col(db, "invitations"), where("orderId", "==", order.id))
         const qSnap = await getDocs(q)
         if (!qSnap.empty) {
-          docId = qSnap.docs[0].id
-          d = qSnap.docs[0].data()
+          // If a duplicate doc ever exists for this order, always use the most recently saved one
+          const freshest = qSnap.docs.slice().sort((a, b) => (b.data().updatedAt?.toMillis?.() || 0) - (a.data().updatedAt?.toMillis?.() || 0))[0]
+          docId = freshest.id
+          d = freshest.data()
           savedDocIdRef.current = docId
           setSlug(docId)
         } else {
@@ -1774,6 +1783,7 @@ function BuildOccasionModal({ order }) {
     accentColor: extraData.accentColor || "",
     package: order.package,
     orderId: order.id,
+    updatedAt: new Date(),
   })
 
   const handleSaveDraft = async () => {
