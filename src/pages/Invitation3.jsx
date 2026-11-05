@@ -728,6 +728,17 @@ export default function Invitation({ override = null }) {
         </section>
       )}
 
+      {/* Find My Seat — Gold only, when seating is enabled */}
+      {tier === "gold" && WEDDING.seating?.enabled && (
+        <section className="py-4 px-6 max-w-md mx-auto text-center relative z-10">
+          <a href={`/seat/${WEDDING.slug || "demo3"}`} target="_blank" rel="noopener noreferrer"
+            className="inline-block px-8 py-3 rounded-full text-sm tracking-wider transition"
+            style={{ background: `${roseGold}10`, border: `1px solid ${roseGold}35`, color: roseGold }}>
+            {ar ? "🪑 اعثر على مقعدي" : "🪑 Find My Seat"}
+          </a>
+        </section>
+      )}
+
       {/* Gift Registry shown last, if the client chose that */}
       {WEDDING.registryAfterRsvp && registrySection}
 

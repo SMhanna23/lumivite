@@ -986,6 +986,17 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
         </div>
       )}
 
+      {/* Find My Seat — Gold only, when seating is enabled */}
+      {tier === "gold" && w.seating?.enabled && (
+        <div className="text-center px-6 pb-6 relative z-10">
+          <a href={`/seat/${w.slug || "demo4"}`} target="_blank" rel="noopener noreferrer"
+            className="inline-block px-8 py-3 rounded-full text-sm tracking-wider transition"
+            style={{ background: `rgba(196,163,90,0.1)`, border: `1px solid rgba(196,163,90,0.35)`, color: GOLD, fontFamily: "'Jost', sans-serif" }}>
+            {ar ? "🪑 اعثر على مقعدي" : "🪑 Find My Seat"}
+          </a>
+        </div>
+      )}
+
       {/* Gift Registry shown last, if the client chose that */}
       {w.registryAfterRsvp && registrySection && (
         <div className="px-6 pb-6 max-w-sm mx-auto w-full relative z-10">{registrySection}</div>

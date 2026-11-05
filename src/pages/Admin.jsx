@@ -3,6 +3,7 @@ import { collection, getDocs, orderBy, query, updateDoc, doc, deleteDoc, where }
 import { db } from "../firebase"
 import { getAuth, signOut } from "firebase/auth"
 import { motion, AnimatePresence } from "framer-motion"
+import SeatingPanel from "../components/SeatingPanel"
 
 const STATUS_CONFIG = {
   pending_payment: { label: "Awaiting Payment", color: "#f97316", bg: "#f9731620" },
@@ -2261,6 +2262,7 @@ export default function Admin() {
   const [rsvps, setRsvps] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedOrder, setSelectedOrder] = useState(null)
+  const [seatingOrderId, setSeatingOrderId] = useState(null)
   const [rsvpFilter, setRsvpFilter] = useState("all")
   const [rsvpWedding, setRsvpWedding] = useState("all")
   const [guestSlug, setGuestSlug] = useState("")
@@ -2538,6 +2540,13 @@ export default function Admin() {
                                   style={{ background: "#25D366" }}>
                                   💬 WhatsApp Client
                                 </a>
+                                {order.template !== "birthday" && order.template !== "occasion" && (
+                                  <button onClick={e => { e.stopPropagation(); setSeatingOrderId(seatingOrderId === order.id ? null : order.id) }}
+                                    className="flex items-center gap-2 text-sm px-4 py-2 rounded-xl transition font-medium"
+                                    style={{ background: seatingOrderId === order.id ? "rgba(201,169,110,0.15)" : "rgba(255,255,255,0.05)", color: seatingOrderId === order.id ? "#c9a96e" : "rgba(255,255,255,0.5)", border: "1px solid rgba(201,169,110,0.25)" }}>
+                                    🪑 Seating
+                                  </button>
+                                )}
                                 <button onClick={() => handleDeleteOrder(order.id)}
                                   className="text-sm px-4 py-2 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 transition">
                                   🗑 Delete Order
@@ -2556,6 +2565,11 @@ export default function Admin() {
                                    : <BuildInvitationModal order={order} onClose={() => setSelectedOrder(null)} />}
                                </div>
                                 )}
+                          {seatingOrderId === order.id && (
+                            <div onClick={e => e.stopPropagation()}>
+                              <SeatingPanel order={order} onClose={() => setSeatingOrderId(null)} />
+                            </div>
+                          )}
 
                       </motion.div>
                     ))}
