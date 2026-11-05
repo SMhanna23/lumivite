@@ -18,6 +18,11 @@ const DEFAULT_WEDDING = {
     { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: "6:00 PM", place: "Saint Georges Church", placeAr: "كنيسة مار جرجس", location: "Feytroun, Lebanon", locationAr: "فيترون، لبنان", map: "https://maps.google.com/?q=Saint+Georges+Church+Feytroun+Lebanon" },
     { label: "Wedding Party", labelAr: "حفل الزفاف", time: "8:30 PM", place: "Bois de Roses", placeAr: "بوا دو روز", location: "Feytroun, Lebanon", locationAr: "فيترون، لبنان", map: "https://maps.google.com/?q=Bois+de+Roses+Feytroun+Lebanon" },
   ],
+  hideHouses: false,
+  houses: {
+    groom: { name: "The Abboud Residence", nameAr: "منزل عائلة عبود", map: "" },
+    bride: { name: "The Hanna Residence", nameAr: "منزل عائلة حنا", map: "" },
+  },
   parents: ["Fadi & Dania Abboud", "Nicolas & Marleine Hanna"],
   parentsAr: ["فادي ودانيا عبود", "نيكولا ومرلين حنا"],
   quote: "You are my today and all of my tomorrows.",
@@ -448,6 +453,43 @@ export default function Invitation({ override = null }) {
           </div>
         </motion.div>
       </section>}
+
+      {/* Houses — groom & bride home locations, shown before the venues */}
+      {!WEDDING.hideHouses && (WEDDING.houses?.groom?.name || WEDDING.houses?.bride?.name) && (
+        <section className="py-16 px-6 max-w-2xl mx-auto relative z-10">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+            <p className="tracking-[0.3em] text-sm uppercase text-center mb-2 font-medium" style={{ color: roseGold }}>
+              {ar ? "قبل الزفاف" : "Before We Begin"}
+            </p>
+            <h2 className="font-light text-center mb-12"
+              style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem", color: dark }}>
+              {ar ? "منازل العروسين" : "Our Homes"}
+            </h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              {[
+                { label: ar ? "منزل العريس" : "Groom's House", h: WEDDING.houses?.groom },
+                { label: ar ? "منزل العروس" : "Bride's House", h: WEDDING.houses?.bride },
+              ].filter(x => x.h?.name).map((x, i) => (
+                <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.2 }} viewport={{ once: true }}
+                  className="p-6 text-center rounded-2xl shadow-sm hover:shadow-md transition"
+                  style={{ border: `1px solid ${roseGold}30`, background: "white" }}>
+                  <p className="text-sm tracking-widest uppercase mb-2 font-medium" style={{ color: roseGold }}>{x.label}</p>
+                  <p className="font-medium mb-4">{ar ? (x.h.nameAr || x.h.name) : x.h.name}</p>
+                  {tier === "gold" && (
+                    <a href={x.h.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.h.name)}`}
+                      target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm rounded-full px-4 py-2 transition"
+                      style={{ color: roseGold, border: `1px solid ${roseGold}40` }}>
+                      📍 {ar ? "افتح في خرائط جوجل" : "Open in Google Maps"}
+                    </a>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+      )}
 
       {/* Venues */}
       <section className="py-16 px-6 max-w-2xl mx-auto relative z-10">

@@ -148,6 +148,9 @@ function BuildInvitationModal({ order }) {
     registrySubtitle: order.registrySubtitle || "",
     registryAfterRsvp: false,
     accentColor: order.accentColor || "",
+    hideHouses: false,
+    groomHouseName: "", groomHouseNameAr: "", groomHouseMap: "",
+    brideHouseName: "", brideHouseNameAr: "", brideHouseMap: "",
     hideCeremony: false,
     hideTimeline: false,
     askEventAttendance: false,
@@ -228,6 +231,9 @@ function BuildInvitationModal({ order }) {
             registrySubtitle: d.registrySubtitle || "",
             registryAfterRsvp: d.registryAfterRsvp ?? false,
             accentColor: d.accentColor || "",
+            hideHouses: d.hideHouses ?? false,
+            groomHouseName: d.houses?.groom?.name || "", groomHouseNameAr: d.houses?.groom?.nameAr || "", groomHouseMap: d.houses?.groom?.map || "",
+            brideHouseName: d.houses?.bride?.name || "", brideHouseNameAr: d.houses?.bride?.nameAr || "", brideHouseMap: d.houses?.bride?.map || "",
             hideCeremony: d.hideCeremony ?? false,
             hideTimeline: d.hideTimeline ?? false,
             askEventAttendance: d.askEventAttendance ?? false,
@@ -346,6 +352,11 @@ function BuildInvitationModal({ order }) {
         registrySubtitle: extraData.registrySubtitle || "",
         registryAfterRsvp: extraData.registryAfterRsvp ?? false,
         accentColor: extraData.accentColor || "",
+        hideHouses: extraData.hideHouses ?? false,
+        houses: {
+          groom: { name: extraData.groomHouseName || "", nameAr: extraData.groomHouseNameAr || "", map: extraData.groomHouseMap || "" },
+          bride: { name: extraData.brideHouseName || "", nameAr: extraData.brideHouseNameAr || "", map: extraData.brideHouseMap || "" },
+        },
         hideCeremony: extraData.hideCeremony ?? false,
         hideTimeline: extraData.hideTimeline ?? false,
         askEventAttendance: extraData.askEventAttendance ?? false,
@@ -430,6 +441,11 @@ function BuildInvitationModal({ order }) {
         registrySubtitle: extraData.registrySubtitle || "",
         registryAfterRsvp: extraData.registryAfterRsvp ?? false,
         accentColor: extraData.accentColor || "",
+        hideHouses: extraData.hideHouses ?? false,
+        houses: {
+          groom: { name: extraData.groomHouseName || "", nameAr: extraData.groomHouseNameAr || "", map: extraData.groomHouseMap || "" },
+          bride: { name: extraData.brideHouseName || "", nameAr: extraData.brideHouseNameAr || "", map: extraData.brideHouseMap || "" },
+        },
         hideCeremony: extraData.hideCeremony ?? false,
         hideTimeline: extraData.hideTimeline ?? false,
         askEventAttendance: extraData.askEventAttendance ?? false,
@@ -777,6 +793,57 @@ function BuildInvitationModal({ order }) {
               </label>}
             </>
           )}
+
+          {/* Groom & Bride Houses — shown before Ceremony/Party in the invitation */}
+          <p className="text-white/20 text-xs uppercase tracking-widest pt-1">🏠 Groom &amp; Bride Houses</p>
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <input type="checkbox" checked={extraData.hideHouses ?? false} onChange={e => update("hideHouses", e.target.checked)}
+              className="w-4 h-4 rounded accent-[#c9a96e]" />
+            <div>
+              <p className="text-white/60 text-sm">🚫 Hide groom &amp; bride house locations</p>
+              <p className="text-white/25 text-xs mt-0.5">Leave unchecked to show this section before the Ceremony/Party — leave both house fields blank to skip it automatically</p>
+            </div>
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Groom's House (English)</label>
+              <input value={extraData.groomHouseName} onChange={e => update("groomHouseName", e.target.value)}
+                placeholder="The Abboud Residence"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Groom's House (Arabic)</label>
+              <input value={extraData.groomHouseNameAr} onChange={e => update("groomHouseNameAr", e.target.value)}
+                placeholder="منزل عائلة عبود" dir="rtl"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+          </div>
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Groom's House — Google Maps URL</label>
+            <input value={extraData.groomHouseMap} onChange={e => update("groomHouseMap", e.target.value)}
+              placeholder="https://maps.google.com/?q=..."
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Bride's House (English)</label>
+              <input value={extraData.brideHouseName} onChange={e => update("brideHouseName", e.target.value)}
+                placeholder="The Hanna Residence"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+            <div>
+              <label className="text-white/30 text-xs mb-1 block">Bride's House (Arabic)</label>
+              <input value={extraData.brideHouseNameAr} onChange={e => update("brideHouseNameAr", e.target.value)}
+                placeholder="منزل عائلة حنا" dir="rtl"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            </div>
+          </div>
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">Bride's House — Google Maps URL</label>
+            <input value={extraData.brideHouseMap} onChange={e => update("brideHouseMap", e.target.value)}
+              placeholder="https://maps.google.com/?q=..."
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+          </div>
 
           {/* Venue details */}
           <p className="text-white/20 text-xs uppercase tracking-widest pt-1">📍 Venue Details</p>

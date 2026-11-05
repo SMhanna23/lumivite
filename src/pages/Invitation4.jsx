@@ -16,6 +16,11 @@ const DEFAULT_WEDDING = {
     { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: "6:00 PM", place: "Saint Georges Church", placeAr: "كنيسة مار جرجس", location: "Feytroun, Lebanon", locationAr: "فيترون، لبنان", map: "" },
     { label: "Wedding Party",    labelAr: "حفل الزفاف",   time: "8:30 PM", place: "Bois de Roses",        placeAr: "بوا دو روز",        location: "Feytroun, Lebanon", locationAr: "فيترون، لبنان", map: "" },
   ],
+  hideHouses: false,
+  houses: {
+    groom: { name: "The Abboud Residence", nameAr: "منزل عائلة عبود", map: "" },
+    bride: { name: "The Hanna Residence", nameAr: "منزل عائلة حنا", map: "" },
+  },
   parents:   ["Fadi & Dania Abboud", "Nicolas & Marleine Hanna"],
   parentsAr: ["فادي ودانيا عبود",   "نيكولا ومرلين حنا"],
   quote:    "We love because he first loved us.",
@@ -153,7 +158,12 @@ function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang, envelopeCo
 
 // ── SHARED CONTENT SECTION OVERLAY (used by VideoPlayer + PhotoFilm) ─────────
 const SLIDE_DURATION = 5500
-const CONTENT_SECTIONS = ["opening", "timeline", "details", "closing"]
+function getContentSections(w) {
+  const sections = ["opening"]
+  if (!w.hideHouses && (w.houses?.groom?.name || w.houses?.bride?.name)) sections.push("houses")
+  sections.push("timeline", "details", "closing")
+  return sections
+}
 
 function renderSectionOverlay(section, w, ar) {
   const GOLD = w.accentColor || "#c4a35a"
@@ -252,6 +262,45 @@ function renderSectionOverlay(section, w, ar) {
             textTransform: "uppercase", textShadow: ts, marginTop: 8 }}>
             {ar ? toArabicDigits(year) : year}
           </p>
+        </div>
+      </motion.div>
+    )
+  }
+
+  // ── HOUSES (optional): groom & bride home locations, before ceremony/party ──
+  if (section === "houses") {
+    const houseEntries = [
+      { label: ar ? "منزل العريس" : "Groom's House", h: w.houses?.groom },
+      { label: ar ? "منزل العروس" : "Bride's House", h: w.houses?.bride },
+    ].filter(x => x.h?.name)
+
+    return (
+      <motion.div className="absolute inset-0 pointer-events-none"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 1.0 }}>
+        <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.30)" }} />
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-6">
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <p style={{ ...GV, fontSize: "clamp(1.8rem,5.5vw,2.4rem)", color: GOLD, lineHeight: 0.85 }}>
+              {ar ? "" : "Before We"}
+            </p>
+            <p style={{ ...CG, fontSize: "clamp(1.15rem,3.8vw,1.55rem)", fontWeight: 400, color: "white",
+              letterSpacing: "0.38em", textTransform: "uppercase", lineHeight: 1.1, marginTop: 2 }}>
+              {ar ? "منازل العروسين" : "Begin"}
+            </p>
+          </div>
+          <div style={{ width: "100%", maxWidth: 320 }}>
+            {houseEntries.map((x, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + i * 0.15 }}
+                style={{ textAlign: "center", marginBottom: 22 }}>
+                <p style={{ ...J, fontSize: "0.52rem", letterSpacing: "0.4em", color: GOLD,
+                  textTransform: "uppercase", marginBottom: 4, textShadow: ts }}>{x.label}</p>
+                <p style={{ ...CG, fontSize: "clamp(1rem,3.3vw,1.2rem)", color: "white",
+                  fontWeight: 300, lineHeight: 1.3, textShadow: ts }}>{ar ? (x.h.nameAr || x.h.name) : x.h.name}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </motion.div>
     )
@@ -471,11 +520,12 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
   const videoMuted = !!(w.muteVideo || (isMobile && (ytId || vimeoId || anonMp4Id)))
 
   // Cycle content sections for ALL video types
+  const contentSections = getContentSections(w)
   useEffect(() => {
     if (!hasVideo) return
     const clipDur = (w.videoEnd != null && w.videoStart != null) ? (w.videoEnd - w.videoStart) : null
-    const interval = clipDur ? Math.max(8000, Math.floor((clipDur / CONTENT_SECTIONS.length) * 1000)) : 20000
-    const timer = setInterval(() => setSectionIdx(i => Math.min(i + 1, CONTENT_SECTIONS.length - 1)), interval)
+    const interval = clipDur ? Math.max(8000, Math.floor((clipDur / contentSections.length) * 1000)) : 20000
+    const timer = setInterval(() => setSectionIdx(i => Math.min(i + 1, contentSections.length - 1)), interval)
     return () => clearInterval(timer)
   }, [hasVideo])
 
@@ -514,7 +564,7 @@ function VideoPlayer({ videoUrl, photos, w, onEnded, ar }) {
     ? `https://${anonMp4Domain}/embed/${anonMp4Id}`
     : `https://player.vimeo.com/video/${vimeoId}?${vimeoParts}`
 
-  const section = CONTENT_SECTIONS[sectionIdx]
+  const section = contentSections[sectionIdx]
 
   return (
     <div className="fixed inset-0 z-10" style={{ background: DARK }}>
@@ -617,9 +667,10 @@ function PhotoFilm({ photos, w, onEnded, ar }) {
 
   const photoSrc = photos[slide] || photos[0]
 
+  const contentSections = getContentSections(w)
   const getSection = (idx, total) => {
-    if (total <= CONTENT_SECTIONS.length) return CONTENT_SECTIONS[Math.min(idx, CONTENT_SECTIONS.length - 1)]
-    return CONTENT_SECTIONS[Math.min(Math.floor((idx / total) * CONTENT_SECTIONS.length), CONTENT_SECTIONS.length - 1)]
+    if (total <= contentSections.length) return contentSections[Math.min(idx, contentSections.length - 1)]
+    return contentSections[Math.min(Math.floor((idx / total) * contentSections.length), contentSections.length - 1)]
   }
   const section = getSection(slide, totalSlides)
 
