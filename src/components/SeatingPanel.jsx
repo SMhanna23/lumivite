@@ -28,6 +28,7 @@ export default function SeatingPanel({ order, onClose }) {
   const [syncing, setSyncing] = useState(false)
   const [syncMsg, setSyncMsg] = useState("")
   const [arranging, setArranging] = useState(false)
+  const [fullscreen, setFullscreen] = useState(false)
 
   const floorRef = useRef(null)
   const tableRefs = useRef({})
@@ -55,6 +56,13 @@ export default function SeatingPanel({ order, onClose }) {
     }
     load()
   }, [order.id])
+
+  useEffect(() => {
+    if (!fullscreen) return
+    const onKey = e => { if (e.key === "Escape") setFullscreen(false) }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [fullscreen])
 
   const persist = useCallback(async (next) => {
     setSeating(next)
@@ -249,18 +257,37 @@ export default function SeatingPanel({ order, onClose }) {
         <button onClick={exportCsv} className="text-xs px-3 py-1.5 rounded-full font-medium transition text-white/50 border border-white/10 hover:border-white/20">
           ⬇ Export CSV
         </button>
+        <button onClick={() => setFullscreen(true)} className="text-xs px-3 py-1.5 rounded-full font-medium transition text-white/50 border border-white/10 hover:border-white/20">
+          ⛶ Fullscreen
+        </button>
         {syncMsg && <span className="text-xs text-white/40">{syncMsg}</span>}
       </div>
 
-      <div className="flex gap-4 flex-col lg:flex-row">
+      <div className={fullscreen
+        ? "fixed inset-0 z-[100] bg-[#0c0b09] p-4 flex flex-col"
+        : "flex gap-4 flex-col lg:flex-row"}>
+        {fullscreen && (
+          <div className="flex items-center justify-between mb-3 flex-shrink-0">
+            <p className="text-[#c9a96e] text-sm font-semibold">🪑 Seating Arrangement — Fullscreen</p>
+            <button onClick={() => setFullscreen(false)}
+              className="text-xs px-4 py-2 rounded-full font-medium text-white/60 border border-white/15 hover:border-white/30 transition">
+              ✕ Exit Fullscreen (Esc)
+            </button>
+          </div>
+        )}
+        <div className={fullscreen ? "flex gap-4 flex-1 min-h-0" : "flex gap-4 flex-col lg:flex-row w-full"}>
         {/* Floor plan */}
         <div ref={floorRef} className="relative flex-1 rounded-xl overflow-auto"
-          style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", height: 520 }}>
-          <div style={{ position: "relative", width: 1200, height: 900 }}>
+          style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", height: fullscreen ? "100%" : 560 }}>
+          <div style={{ position: "relative", width: fullscreen ? 2200 : 1200, height: fullscreen ? 1400 : 900 }}>
             {seating.tables.length === 0 && (
-              <p className="absolute inset-0 flex items-center justify-center text-white/20 text-sm">
-                Click "+ Add Table" to start building the floor plan
-              </p>
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-6">
+                <p className="text-white/30 text-base">No tables yet</p>
+                <button onClick={addTable} className="text-sm px-5 py-2.5 rounded-full font-medium transition"
+                  style={{ background: "rgba(201,169,110,0.12)", border: "1px solid rgba(201,169,110,0.35)", color: GOLD }}>
+                  + Add Your First Table
+                </button>
+              </div>
             )}
             {seating.tables.map(table => {
               const fill = tableFill(table, seating.guests)
@@ -336,7 +363,7 @@ export default function SeatingPanel({ order, onClose }) {
 
         {/* Guest pool */}
         <div className="w-full lg:w-72 flex-shrink-0 rounded-xl p-3 flex flex-col"
-          style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", height: 520 }}>
+          style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", height: fullscreen ? "100%" : 560 }}>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search guests..."
             className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-xs mb-2 focus:outline-none focus:border-[#c9a96e]" />
           <p className="text-white/25 text-[10px] uppercase tracking-widest mb-2">
@@ -376,6 +403,7 @@ export default function SeatingPanel({ order, onClose }) {
             </button>
           )}
         </div>
+        </div>
       </div>
 
       <div className="flex justify-end mt-4">
@@ -398,12 +426,21 @@ export default function SeatingPanel({ order, onClose }) {
   )
 }
 
+// framer-motion's PanInfo.point is page-relative (event.pageX/pageY), but table hit-testing
+// uses getBoundingClientRect() which is viewport-relative — read the raw event's clientX/clientY
+// instead so dragging still works correctly when the admin page itself is scrolled.
+function clientPoint(e) {
+  if (e.touches?.length) return { x: e.touches[0].clientX, y: e.touches[0].clientY }
+  if (e.changedTouches?.length) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY }
+  return { x: e.clientX, y: e.clientY }
+}
+
 function GuestChip({ guest, onRemove, onCycleSide, onDragEnd, onDragMove, small, showRemove }) {
   return (
     <motion.div
       drag dragSnapToOrigin dragMomentum={false}
-      onDrag={(e, info) => onDragMove?.({ x: info.point.x, y: info.point.y })}
-      onDragEnd={(e, info) => onDragEnd?.({ x: info.point.x, y: info.point.y })}
+      onDrag={(e) => onDragMove?.(clientPoint(e))}
+      onDragEnd={(e) => onDragEnd?.(clientPoint(e))}
       whileDrag={{ zIndex: 60, scale: 1.05 }}
       className="flex items-center gap-1.5 rounded-full select-none cursor-grab active:cursor-grabbing"
       style={{
