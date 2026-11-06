@@ -9,8 +9,21 @@ const SIDE_COLOR = { groom: "#5b8def", bride: "#e8799e", mixed: GOLD }
 const SIDE_LABEL = { groom: "Groom", bride: "Bride", mixed: "Either" }
 const SIDE_CYCLE = { groom: "bride", bride: "mixed", mixed: "groom" }
 
+const ELEMENT_TYPES = {
+  dancefloor: { icon: "🪩", label: "Dance Floor", color: "#c084fc", w: 170, h: 170 },
+  dj:         { icon: "🎧", label: "DJ Booth",    color: "#a78bfa", w: 120, h: 90 },
+  bar:        { icon: "🍸", label: "Bar",         color: "#fbbf24", w: 150, h: 80 },
+  stage:      { icon: "🎤", label: "Stage",       color: "#f87171", w: 190, h: 90 },
+  cake:       { icon: "🎂", label: "Cake Table",  color: "#f472b6", w: 100, h: 80 },
+  gifts:      { icon: "🎁", label: "Gift Table",  color: GOLD,      w: 100, h: 80 },
+  buffet:     { icon: "🍽️", label: "Buffet",      color: "#fb923c", w: 170, h: 80 },
+  photobooth: { icon: "📸", label: "Photo Booth", color: "#60a5fa", w: 110, h: 100 },
+  entrance:   { icon: "🚪", label: "Entrance",    color: "#4ade80", w: 100, h: 60 },
+  restroom:   { icon: "🚻", label: "Restrooms",   color: "#94a3b8", w: 90, h: 60 },
+}
+
 const uid = () => Math.random().toString(36).slice(2, 10)
-const emptySeating = () => ({ enabled: false, tables: [], guests: [] })
+const emptySeating = () => ({ enabled: false, tables: [], guests: [], elements: [] })
 
 function tableFill(table, guests) {
   return guests.filter(g => g.tableId === table.id).reduce((sum, g) => sum + (g.persons || 1), 0)
@@ -29,6 +42,8 @@ export default function SeatingPanel({ order, onClose }) {
   const [syncMsg, setSyncMsg] = useState("")
   const [arranging, setArranging] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
+  const [showElementPicker, setShowElementPicker] = useState(false)
+  const [editingElementId, setEditingElementId] = useState(null)
 
   const floorRef = useRef(null)
   const tableRefs = useRef({})
@@ -111,6 +126,26 @@ export default function SeatingPanel({ order, onClose }) {
     const newX = Math.max(0, table.x + info.offset.x)
     const newY = Math.max(0, table.y + info.offset.y)
     updateTable(table.id, { x: newX, y: newY })
+  }
+
+  // ── Venue element CRUD (dance floor, DJ, bar, etc.) ───────────────────────
+  const addElement = (type) => {
+    const n = seating.elements.length
+    const element = { id: uid(), type, label: ELEMENT_TYPES[type].label, x: 40 + (n % 3) * 190, y: 700 + Math.floor(n / 3) * 190 }
+    persist({ ...seating, elements: [...seating.elements, element] })
+    setShowElementPicker(false)
+  }
+  const updateElement = (id, patch) => {
+    persist({ ...seating, elements: seating.elements.map(el => el.id === id ? { ...el, ...patch } : el) })
+  }
+  const deleteElement = (id) => {
+    persist({ ...seating, elements: seating.elements.filter(el => el.id !== id) })
+    setEditingElementId(null)
+  }
+  const onElementDragEnd = (element, info) => {
+    const newX = Math.max(0, element.x + info.offset.x)
+    const newY = Math.max(0, element.y + info.offset.y)
+    updateElement(element.id, { x: newX, y: newY })
   }
 
   // ── Guest CRUD ──────────────────────────────────────────────────────────
@@ -242,6 +277,27 @@ export default function SeatingPanel({ order, onClose }) {
           style={{ background: "rgba(201,169,110,0.12)", border: "1px solid rgba(201,169,110,0.35)", color: GOLD }}>
           + Add Table
         </button>
+        <div className="relative">
+          <button onClick={() => setShowElementPicker(p => !p)} className="text-xs px-3 py-1.5 rounded-full font-medium transition"
+            style={{ background: "rgba(192,132,252,0.12)", border: "1px solid rgba(192,132,252,0.35)", color: "#c084fc" }}>
+            + Add Venue Element
+          </button>
+          {showElementPicker && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setShowElementPicker(false)} />
+              <div className="absolute z-50 top-full mt-2 left-0 w-64 rounded-xl p-2 grid grid-cols-2 gap-1.5"
+                style={{ background: "#1a1510", border: "1px solid rgba(192,132,252,0.3)" }}>
+                {Object.entries(ELEMENT_TYPES).map(([type, cfg]) => (
+                  <button key={type} onClick={() => addElement(type)}
+                    className="flex items-center gap-2 text-left px-2 py-2 rounded-lg transition hover:bg-white/5">
+                    <span className="text-lg">{cfg.icon}</span>
+                    <span className="text-white/70 text-xs">{cfg.label}</span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
         <button onClick={autoArrange} disabled={arranging || unassigned.length === 0}
           className="text-xs px-3 py-1.5 rounded-full font-medium transition disabled:opacity-40"
           style={{ background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.3)", color: "#4ade80" }}>
@@ -289,6 +345,38 @@ export default function SeatingPanel({ order, onClose }) {
                 </button>
               </div>
             )}
+            {seating.elements.map(element => {
+              const cfg = ELEMENT_TYPES[element.type] || ELEMENT_TYPES.dancefloor
+              return (
+                <motion.div
+                  key={`${element.id}-${element.x}-${element.y}`}
+                  drag dragMomentum={false}
+                  onDragEnd={(e, info) => onElementDragEnd(element, info)}
+                  style={{ position: "absolute", left: element.x, top: element.y, width: cfg.w, height: cfg.h, cursor: "grab" }}
+                  whileDrag={{ zIndex: 40, cursor: "grabbing" }}
+                  className="rounded-2xl select-none flex flex-col items-center justify-center gap-1"
+                  onTap={() => setEditingElementId(editingElementId === element.id ? null : element.id)}>
+                  <div className="w-full h-full rounded-2xl flex flex-col items-center justify-center gap-1 pointer-events-none"
+                    style={{ background: `${cfg.color}1a`, border: `1.5px dashed ${cfg.color}66` }}>
+                    <span style={{ fontSize: Math.min(cfg.w, cfg.h) * 0.3 }}>{cfg.icon}</span>
+                    <span className="text-[10px] font-medium text-center px-1" style={{ color: cfg.color }}>{element.label}</span>
+                  </div>
+
+                  {editingElementId === element.id && (
+                    <div className="absolute z-50 top-full mt-2 left-0 w-52 rounded-xl p-3 space-y-2"
+                      style={{ background: "#1a1510", border: `1px solid ${cfg.color}55` }}
+                      onPointerDown={e => e.stopPropagation()}>
+                      <input value={element.label} onChange={e => updateElement(element.id, { label: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs focus:outline-none" />
+                      <button onClick={() => deleteElement(element.id)}
+                        className="w-full text-[10px] py-1.5 rounded-lg text-red-400 border border-red-400/30 hover:bg-red-400/10 transition">
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                </motion.div>
+              )
+            })}
             {seating.tables.map(table => {
               const fill = tableFill(table, seating.guests)
               const pct = table.capacity > 0 ? fill / table.capacity : 0
