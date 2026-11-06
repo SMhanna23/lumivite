@@ -2499,7 +2499,7 @@ export default function Admin() {
                           </div>
                           <div className="text-right flex-shrink-0 flex flex-col items-end gap-2">
                             <p className="text-[#c9a96e] font-semibold">
-                              {order.template === "birthday" || order.template === "occasion" ? "$80" : order.package === "bronze" ? "$89" : order.package === "silver" ? "$139" : "$199"}
+                              {order.template === "birthday" || order.template === "occasion" ? "$80" : order.package === "bronze" ? "$89" : order.package === "silver" ? "$139" : "$279"}
                             </p>
                             <p className="text-white/30 text-xs">
                               {order.createdAt?.toDate?.()?.toLocaleDateString() || ""}

@@ -9,7 +9,7 @@ import Logo from "../components/Logo"
 const packages = [
   { id: "bronze", name: "Bronze", nameAr: "برونز", price: "$89", priceValue: 89, color: "#cd7f32", features: ["1 template", "RSVP dashboard", "Countdown timer", "1 shared link"], featuresAr: ["قالب واحد", "لوحة RSVP", "عداد تنازلي", "رابط مشترك واحد"] },
   { id: "silver", name: "Silver", nameAr: "فضي", price: "$139", priceValue: 139, color: "#c9a96e", features: ["Personalized guest links", "Background music", "Photo gallery", "Excel import"], featuresAr: ["روابط مخصصة للضيوف", "موسيقى خلفية", "معرض صور", "استيراد Excel"], popular: true },
-  { id: "gold", name: "Gold", nameAr: "ذهبي", price: "$199", priceValue: 199, color: "#ffd700", features: ["All template choices", "Google Maps embed", "Guest Memory Wall", "Priority support"], featuresAr: ["كل خيارات القوالب", "خريطة Google", "جدار ذكريات الضيوف", "دعم أولوية"] },
+  { id: "gold", name: "Gold", nameAr: "ذهبي", price: "$279", priceValue: 279, color: "#ffd700", features: ["All template choices", "Google Maps embed", "Guest Memory Wall", "Seating Arrangement tool", "Priority support"], featuresAr: ["كل خيارات القوالب", "خريطة Google", "جدار ذكريات الضيوف", "أداة ترتيب الجلوس", "دعم أولوية"] },
 ]
 
 const templates = [
@@ -178,7 +178,7 @@ const T = {
     chooseEventType: "What Are You Celebrating?",
     chooseEventTypeSub: "Pick the kind of invitation you need",
     eventTypeWeddingName: "Wedding",
-    eventTypeWeddingDesc: "Ceremony & reception, 4 template choices",
+    eventTypeWeddingDesc: "Ceremony & reception, 5 template choices",
     eventTypeBirthdayName: "Birthday",
     eventTypeBirthdayDesc: "A magnificent milestone birthday invitation",
     eventTypeOccasionName: "Other Events",
@@ -364,7 +364,7 @@ const T = {
     chooseEventType: "ما هي مناسبتكم؟",
     chooseEventTypeSub: "اختر نوع الدعوة التي تحتاجها",
     eventTypeWeddingName: "زفاف",
-    eventTypeWeddingDesc: "مراسم وحفل استقبال، 4 خيارات قوالب",
+    eventTypeWeddingDesc: "مراسم وحفل استقبال، 5 خيارات قوالب",
     eventTypeBirthdayName: "عيد ميلاد",
     eventTypeBirthdayDesc: "دعوة عيد ميلاد فاخرة لمحطة مميزة",
     eventTypeOccasionName: "مناسبات أخرى",
