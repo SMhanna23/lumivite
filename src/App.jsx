@@ -17,6 +17,7 @@ import Dashboard from "./pages/Dashboard"
 import DemoDashboard from "./pages/DemoDashboard"
 import Memories from "./pages/Memories"
 import SeatFinder from "./pages/SeatFinder"
+import SeatingLink from "./pages/SeatingLink"
 import MyOrder from "./pages/MyOrder"
 import NotFound from "./pages/NotFound"
 import PixelPageView from "./components/PixelPageView"
@@ -54,6 +55,7 @@ export default function App() {
         <Route path="/demo-dashboard" element={<DemoDashboard />} />
         <Route path="/memories/:slug" element={<Memories />} />
         <Route path="/seat/:slug" element={<SeatFinder />} />
+        <Route path="/seating/:slug" element={<SeatingLink />} />
         <Route path="/admin/login" element={user ? <Navigate to="/admin" /> : <Login />} />
         <Route path="/admin" element={<ProtectedRoute user={user}><Admin /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />

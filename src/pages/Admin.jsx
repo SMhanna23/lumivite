@@ -515,6 +515,11 @@ function BuildInvitationModal({ order }) {
                   className="text-[#c9a96e] text-xs underline break-all">https://www.lumivite.net/memories/{slug}</a>
               </div>
             )}
+            <div>
+              <p className="text-white/30 text-xs mb-1">🪑 Seating Link (let the couple or planner build it themselves)</p>
+              <a href={`https://www.lumivite.net/seating/${slug}`} target="_blank" rel="noopener noreferrer"
+                className="text-[#c9a96e] text-xs underline break-all">https://www.lumivite.net/seating/{slug}</a>
+            </div>
           </div>
           <div className="flex gap-2 justify-center flex-wrap">
             <button onClick={() => navigator.clipboard.writeText(liveUrl).then(() => alert("Invitation link copied!"))}
@@ -531,6 +536,10 @@ function BuildInvitationModal({ order }) {
                 📸 Copy Memories
               </button>
             )}
+            <button onClick={() => navigator.clipboard.writeText(`https://www.lumivite.net/seating/${slug}`).then(() => alert("Seating link copied!"))}
+              className="text-xs px-3 py-2 rounded-xl border border-white/10 text-white/50 hover:border-[#c9a96e] hover:text-[#c9a96e] transition">
+              🪑 Copy Seating Link
+            </button>
             <a href={`https://wa.me/${order.yourPhone?.replace(/[^0-9]/g,"")}?text=${encodeURIComponent(`Hi ${order.yourName}! 🎉 Your wedding invitation is ready!\n\n💍 ${order.groomName} & ${order.brideName}\n\n📩 Invitation link (share with guests):\n${previewUrl}\n\n📊 Your RSVP dashboard (see who's attending):\n${dashboardUrl}\n\n🤍 Lumivite`)}`}
               target="_blank" rel="noopener noreferrer"
               className="text-xs px-3 py-2 rounded-xl text-black font-medium transition"
