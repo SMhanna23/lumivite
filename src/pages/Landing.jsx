@@ -451,6 +451,25 @@ export default function Landing() {
         </motion.div>
       </section>
 
+      {/* Signature / Custom Design */}
+      <section className="py-24 px-6 max-w-2xl mx-auto">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="relative rounded-2xl p-8 border text-center"
+          style={{ borderColor: "rgba(201,169,110,0.35)", background: "linear-gradient(135deg, rgba(201,169,110,0.08), rgba(0,0,0,0))" }}>
+          <p className="text-[#c9a96e] tracking-[0.3em] text-xs uppercase mb-3">For the Particular Couple</p>
+          <h2 className="font-serif text-3xl font-light mb-3">Don't love any of our templates?</h2>
+          <p className="text-white/50 text-sm max-w-md mx-auto mb-8">
+            We'll design a one-of-a-kind invitation built just for you — your colors, your style, your story. Starting at $450, delivered in 3-5 days.
+          </p>
+          <a href={`https://wa.me/96171444328?text=${encodeURIComponent("Hi! I didn't love any of the templates — I'd like a custom Signature design made just for us")}`}
+            target="_blank" rel="noopener noreferrer"
+            className="inline-block px-8 py-3 rounded-xl font-semibold text-sm transition"
+            style={{ background: "#c9a96e", color: "black" }}>
+            ✨ Request a Signature Design
+          </a>
+        </motion.div>
+      </section>
+
         {/* Testimonials */}
         <section className="py-24 px-6 max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>

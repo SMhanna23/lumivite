@@ -43,6 +43,8 @@ const T = {
     chooseTemplate: "Choose Your Template",
     chooseTemplateSub: "Pick the style that speaks to you",
     preview: "Preview",
+    customNote: "Don't love any of these?",
+    customCta: "✨ Request a Signature Design — from $450",
     weddingDetails: "Wedding Details",
     weddingDetailsSub: "Tell us about your special day",
     groomName: "Groom's Name",
@@ -230,6 +232,8 @@ const T = {
     chooseTemplate: "اختر القالب",
     chooseTemplateSub: "اختر التصميم الذي يعبّر عنكم",
     preview: "معاينة",
+    customNote: "ما حبيت أي من هذه التصاميم؟",
+    customCta: "✨ اطلب تصميم خاص بك — بدءاً من 450$",
     weddingDetails: "تفاصيل الزفاف",
     weddingDetailsSub: "أخبرنا عن يومكم المميز",
     groomName: "اسم العريس",
@@ -773,6 +777,17 @@ export default function Order() {
                   )
                 })}
               </div>}
+
+              <div className="text-center mt-6">
+                <p className="text-white/40 text-sm mb-2">{t.customNote}</p>
+                <a href={`https://wa.me/96171444328?text=${encodeURIComponent("Hi! I didn't love any of the templates — I'd like a custom Signature design made just for us")}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="inline-block text-xs border rounded-full px-4 py-2 transition hover:bg-[#c9a96e]/10"
+                  style={{ color: "#c9a96e", borderColor: "rgba(201,169,110,0.3)" }}>
+                  {t.customCta}
+                </a>
+              </div>
+
               <div className="flex gap-3 mt-8">
                 <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
                 <button onClick={() => setStep(3)} disabled={!form.template}
