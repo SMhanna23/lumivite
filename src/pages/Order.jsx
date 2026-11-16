@@ -884,7 +884,7 @@ export default function Order({ plannerPreset } = {}) {
                     </div>
                     <div>
                       <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.guestCount}</label>
-                      <input value={form.guestCount} onChange={e => update("guestCount", e.target.value)} placeholder="80" type="number" className={inp} />
+                      <input value={form.guestCount} onChange={e => update("guestCount", e.target.value)} placeholder="80" type="number" min="1" className={inp} />
                     </div>
                   </div>
                   <div>
@@ -899,11 +899,11 @@ export default function Order({ plannerPreset } = {}) {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="text-white/30 text-xs mb-2 block">{t.startSec}</label>
-                          <input value={form.musicStart} onChange={e => update("musicStart", e.target.value)} placeholder="0" type="number" className={inp} />
+                          <input value={form.musicStart} onChange={e => update("musicStart", e.target.value)} placeholder="0" type="number" min="0" className={inp} />
                         </div>
                         <div>
                           <label className="text-white/30 text-xs mb-2 block">{t.endSec}</label>
-                          <input value={form.musicEnd} onChange={e => update("musicEnd", e.target.value)} placeholder="90" type="number" className={inp} />
+                          <input value={form.musicEnd} onChange={e => update("musicEnd", e.target.value)} placeholder="90" type="number" min="0" className={inp} />
                         </div>
                       </div>
                     </div>
@@ -918,7 +918,7 @@ export default function Order({ plannerPreset } = {}) {
                     </div>
                     <div>
                       <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.age}</label>
-                      <input value={form.age} onChange={e => update("age", e.target.value)} placeholder={t.agePh} type="number" className={inp} />
+                      <input value={form.age} onChange={e => update("age", e.target.value)} placeholder={t.agePh} type="number" min="1" max="120" className={inp} />
                     </div>
                   </div>
                   <div>
@@ -962,7 +962,7 @@ export default function Order({ plannerPreset } = {}) {
                     </div>
                     <div>
                       <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.guestCount}</label>
-                      <input value={form.guestCount} onChange={e => update("guestCount", e.target.value)} placeholder="80" type="number" className={inp} />
+                      <input value={form.guestCount} onChange={e => update("guestCount", e.target.value)} placeholder="80" type="number" min="1" className={inp} />
                     </div>
                   </div>
                   <div>
@@ -977,11 +977,11 @@ export default function Order({ plannerPreset } = {}) {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="text-white/30 text-xs mb-2 block">{t.startSec}</label>
-                          <input value={form.musicStart} onChange={e => update("musicStart", e.target.value)} placeholder="0" type="number" className={inp} />
+                          <input value={form.musicStart} onChange={e => update("musicStart", e.target.value)} placeholder="0" type="number" min="0" className={inp} />
                         </div>
                         <div>
                           <label className="text-white/30 text-xs mb-2 block">{t.endSec}</label>
-                          <input value={form.musicEnd} onChange={e => update("musicEnd", e.target.value)} placeholder="90" type="number" className={inp} />
+                          <input value={form.musicEnd} onChange={e => update("musicEnd", e.target.value)} placeholder="90" type="number" min="0" className={inp} />
                         </div>
                       </div>
                     </div>
@@ -1070,7 +1070,7 @@ export default function Order({ plannerPreset } = {}) {
                     </div>
                     <div>
                       <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.guestCount}</label>
-                      <input value={form.guestCount} onChange={e => update("guestCount", e.target.value)} placeholder="150" type="number" className={inp} />
+                      <input value={form.guestCount} onChange={e => update("guestCount", e.target.value)} placeholder="150" type="number" min="1" className={inp} />
                     </div>
                   </div>
                   {form.package !== "bronze" && (
@@ -1081,11 +1081,11 @@ export default function Order({ plannerPreset } = {}) {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="text-white/30 text-xs mb-2 block">{t.startSec}</label>
-                          <input value={form.musicStart} onChange={e => update("musicStart", e.target.value)} placeholder="0" type="number" className={inp} />
+                          <input value={form.musicStart} onChange={e => update("musicStart", e.target.value)} placeholder="0" type="number" min="0" className={inp} />
                         </div>
                         <div>
                           <label className="text-white/30 text-xs mb-2 block">{t.endSec}</label>
-                          <input value={form.musicEnd} onChange={e => update("musicEnd", e.target.value)} placeholder="90" type="number" className={inp} />
+                          <input value={form.musicEnd} onChange={e => update("musicEnd", e.target.value)} placeholder="90" type="number" min="0" className={inp} />
                         </div>
                       </div>
                     </div>
@@ -1187,11 +1187,11 @@ export default function Order({ plannerPreset } = {}) {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="text-white/30 text-xs mb-2 block">{t.startSec}</label>
-                        <input value={form.videoStart} onChange={e => update("videoStart", e.target.value)} placeholder="0" type="number" className={inp} />
+                        <input value={form.videoStart} onChange={e => update("videoStart", e.target.value)} placeholder="0" type="number" min="0" className={inp} />
                       </div>
                       <div>
                         <label className="text-white/30 text-xs mb-2 block">{t.endSec}</label>
-                        <input value={form.videoEnd} onChange={e => update("videoEnd", e.target.value)} placeholder="90" type="number" className={inp} />
+                        <input value={form.videoEnd} onChange={e => update("videoEnd", e.target.value)} placeholder="90" type="number" min="0" className={inp} />
                       </div>
                     </div>
                   </div>
