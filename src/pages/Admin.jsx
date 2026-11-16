@@ -2289,16 +2289,19 @@ export default function Admin() {
   const fetchAll = async () => {
     setLoading(true)
     try {
-      const [oSnap, rSnap, pSnap] = await Promise.all([
+      const [oSnap, rSnap] = await Promise.all([
         getDocs(query(collection(db, "orders"), orderBy("createdAt", "desc"))),
         getDocs(query(collection(db, "rsvps"), orderBy("createdAt", "desc"))),
-        getDocs(query(collection(db, "plannerLinks"), orderBy("createdAt", "desc")))
       ])
       setOrders(oSnap.docs.map(d => ({ id: d.id, ...d.data() })))
       setRsvps(rSnap.docs.map(d => ({ id: d.id, ...d.data() })))
-      setPlannerLinks(pSnap.docs.map(d => ({ id: d.id, ...d.data() })))
     } catch (e) { console.error(e) }
     setLoading(false)
+
+    try {
+      const pSnap = await getDocs(query(collection(db, "plannerLinks"), orderBy("createdAt", "desc")))
+      setPlannerLinks(pSnap.docs.map(d => ({ id: d.id, ...d.data() })))
+    } catch (e) { console.error(e) }
   }
 
   const createPlannerLink = async () => {
