@@ -2299,8 +2299,10 @@ export default function Admin() {
     setLoading(false)
 
     try {
-      const pSnap = await getDocs(query(collection(db, "plannerLinks"), orderBy("createdAt", "desc")))
-      setPlannerLinks(pSnap.docs.map(d => ({ id: d.id, ...d.data() })))
+      const token = await getAuth().currentUser.getIdToken()
+      const res = await fetch("/api/planner-link?list=1", { headers: { Authorization: `Bearer ${token}` } })
+      const data = await res.json()
+      setPlannerLinks(data.links || [])
     } catch (e) { console.error(e) }
   }
 
@@ -2309,18 +2311,23 @@ export default function Admin() {
     if (!price || price <= 0) return
     setPlannerCreating(true)
     try {
-      const docRef = await addDoc(collection(db, "plannerLinks"), {
-        eventType: plannerForm.eventType,
-        package: plannerForm.eventType === "wedding" ? plannerForm.package : "gold",
-        template: plannerForm.eventType === "wedding" ? plannerForm.template : plannerForm.eventType,
-        customPrice: price,
-        note: plannerForm.note,
-        createdAt: serverTimestamp(),
-        usedAt: null,
-        orderId: null,
+      const token = await getAuth().currentUser.getIdToken()
+      const res = await fetch("/api/planner-link", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          eventType: plannerForm.eventType,
+          package: plannerForm.eventType === "wedding" ? plannerForm.package : "gold",
+          template: plannerForm.eventType === "wedding" ? plannerForm.template : plannerForm.eventType,
+          customPrice: price,
+          note: plannerForm.note,
+        }),
       })
-      setPlannerLinks(links => [{ id: docRef.id, eventType: plannerForm.eventType, package: plannerForm.eventType === "wedding" ? plannerForm.package : "gold", template: plannerForm.eventType === "wedding" ? plannerForm.template : plannerForm.eventType, customPrice: price, note: plannerForm.note, createdAt: { toDate: () => new Date() }, usedAt: null, orderId: null }, ...links])
-      setPlannerForm(f => ({ ...f, customPrice: "", note: "" }))
+      if (res.ok) {
+        const { id } = await res.json()
+        setPlannerLinks(links => [{ id, eventType: plannerForm.eventType, package: plannerForm.eventType === "wedding" ? plannerForm.package : "gold", template: plannerForm.eventType === "wedding" ? plannerForm.template : plannerForm.eventType, customPrice: price, note: plannerForm.note, usedAt: null, orderId: null }, ...links])
+        setPlannerForm(f => ({ ...f, customPrice: "", note: "" }))
+      }
     } catch (e) { console.error(e) }
     setPlannerCreating(false)
   }
