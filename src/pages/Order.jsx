@@ -860,7 +860,7 @@ export default function Order({ plannerPreset } = {}) {
                       </div>
                       <div>
                         <label className="text-white/40 text-xs mb-2 block">{t.time}</label>
-                        <input value={form.ceremonyTime} onChange={e => update("ceremonyTime", e.target.value)} placeholder="7:00 PM" className={inp} />
+                        <input value={form.ceremonyTime} onChange={e => update("ceremonyTime", e.target.value)} type="time" className={inp} />
                       </div>
                     </div>
                     <div className="mt-4">
@@ -938,7 +938,7 @@ export default function Order({ plannerPreset } = {}) {
                       </div>
                       <div>
                         <label className="text-white/40 text-xs mb-2 block">{t.time}</label>
-                        <input value={form.ceremonyTime} onChange={e => update("ceremonyTime", e.target.value)} placeholder="8:00 PM" className={inp} />
+                        <input value={form.ceremonyTime} onChange={e => update("ceremonyTime", e.target.value)} type="time" className={inp} />
                       </div>
                     </div>
                     <div className="mt-4">
@@ -1029,7 +1029,7 @@ export default function Order({ plannerPreset } = {}) {
                       </div>
                       <div>
                         <label className="text-white/40 text-xs mb-2 block">{t.time}</label>
-                        <input value={form.ceremonyTime} onChange={e => update("ceremonyTime", e.target.value)} placeholder={t.ceremonyTimePh} className={inp} />
+                        <input value={form.ceremonyTime} onChange={e => update("ceremonyTime", e.target.value)} type="time" className={inp} />
                       </div>
                     </div>
                     <div className="mt-4">
@@ -1046,7 +1046,7 @@ export default function Order({ plannerPreset } = {}) {
                       </div>
                       <div>
                         <label className="text-white/40 text-xs mb-2 block">{t.time}</label>
-                        <input value={form.partyTime} onChange={e => update("partyTime", e.target.value)} placeholder={t.partyTimePh} className={inp} />
+                        <input value={form.partyTime} onChange={e => update("partyTime", e.target.value)} type="time" className={inp} />
                       </div>
                     </div>
                     <div className="mt-4">
@@ -1145,7 +1145,7 @@ export default function Order({ plannerPreset } = {}) {
                         </div>
                         <div>
                           <label className="text-white/30 text-xs mb-2 block">{t.time}</label>
-                          <input value={form[timeKey]} onChange={e => update(timeKey, e.target.value)} placeholder={timePh} className={inp} />
+                          <input value={form[timeKey]} onChange={e => update(timeKey, e.target.value)} type="time" className={inp} />
                         </div>
                         <div>
                           <label className="text-white/30 text-xs mb-2 block">{t.placeName}</label>
@@ -1165,7 +1165,7 @@ export default function Order({ plannerPreset } = {}) {
                     <div key={timeKey} className="grid grid-cols-2 gap-4 mb-3">
                       <div>
                         <label className="text-white/30 text-xs mb-2 block">{label} — {t.time}</label>
-                        <input value={form[timeKey]} onChange={e => update(timeKey, e.target.value)} placeholder={timePh} className={inp} />
+                        <input value={form[timeKey]} onChange={e => update(timeKey, e.target.value)} type="time" className={inp} />
                       </div>
                       <div>
                         <label className="text-white/30 text-xs mb-2 block">{label} — {t.placeName}</label>

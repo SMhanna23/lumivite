@@ -5,6 +5,18 @@ import { getAuth, signOut } from "firebase/auth"
 import { motion, AnimatePresence } from "framer-motion"
 import SeatingPanel from "../components/SeatingPanel"
 
+// Order.jsx's time fields now use <input type="time">, which stores 24h "HH:MM" —
+// convert to a 12h "h:mm AM/PM" string for display on the invitation. Older orders
+// stored a free-text string like "6:00 PM" directly; those don't match and pass through.
+function formatTime12(t) {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(t || "")
+  if (!m) return t || ""
+  let h = parseInt(m[1], 10)
+  const ampm = h >= 12 ? "PM" : "AM"
+  h = h % 12 || 12
+  return `${h}:${m[2]} ${ampm}`
+}
+
 const STATUS_CONFIG = {
   pending_payment: { label: "Awaiting Payment", color: "#f97316", bg: "#f9731620" },
   paid:            { label: "Paid ✓",           color: "#60a5fa", bg: "#60a5fa20" },
@@ -155,9 +167,9 @@ function BuildInvitationModal({ order }) {
     hideCeremony: false,
     hideTimeline: false,
     askEventAttendance: false,
-    tl0: order.tl0 || "5:00 PM",    tl0loc: order.tl0loc || "",
-    tl1: order.tl1 || "7:00 PM",    tl1loc: order.tl1loc || "",
-    tl2: order.tl2 || "11:00 PM",   tl2loc: order.tl2loc || "",
+    tl0: formatTime12(order.tl0) || "5:00 PM",    tl0loc: order.tl0loc || "",
+    tl1: formatTime12(order.tl1) || "7:00 PM",    tl1loc: order.tl1loc || "",
+    tl2: formatTime12(order.tl2) || "11:00 PM",   tl2loc: order.tl2loc || "",
     dressCode: order.dressCode || "",
     transport: order.transport || "",
     accommodation: order.accommodation || "",
@@ -326,8 +338,8 @@ function BuildInvitationModal({ order }) {
         parents: extraData.parentsEn ? extraData.parentsEn.split("\n") : [],
         parentsAr: extraData.parentsAr ? extraData.parentsAr.split("\n") : [],
         venues: [
-          { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: order.ceremonyTime, place: order.ceremonyPlace, placeAr: extraData.ceremonyPlaceAr || order.ceremonyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.ceremonyMapUrl || null },
-          { label: "Wedding Party", labelAr: "حفل الزفاف", time: order.partyTime, place: order.partyPlace, placeAr: extraData.partyPlaceAr || order.partyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.partyMapUrl || null },
+          { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: formatTime12(order.ceremonyTime), place: order.ceremonyPlace, placeAr: extraData.ceremonyPlaceAr || order.ceremonyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.ceremonyMapUrl || null },
+          { label: "Wedding Party", labelAr: "حفل الزفاف", time: formatTime12(order.partyTime), place: order.partyPlace, placeAr: extraData.partyPlaceAr || order.partyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.partyMapUrl || null },
         ],
         registry: [
           ...(extraData.registryWishMoneyAcc || extraData.registryWishMoneyPhone || extraData.registryLink1 ? [{ name: "Wish Money", icon: "💳", acc: extraData.registryWishMoneyAcc || null, phone: extraData.registryWishMoneyPhone || null, link: extraData.registryLink1 || null, color: "#c9a96e" }] : []),
@@ -415,8 +427,8 @@ function BuildInvitationModal({ order }) {
         parents: extraData.parentsEn ? extraData.parentsEn.split("\n") : [],
         parentsAr: extraData.parentsAr ? extraData.parentsAr.split("\n") : [],
         venues: [
-          { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: order.ceremonyTime, place: order.ceremonyPlace, placeAr: extraData.ceremonyPlaceAr || order.ceremonyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.ceremonyMapUrl || null },
-          { label: "Wedding Party", labelAr: "حفل الزفاف", time: order.partyTime, place: order.partyPlace, placeAr: extraData.partyPlaceAr || order.partyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.partyMapUrl || null },
+          { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: formatTime12(order.ceremonyTime), place: order.ceremonyPlace, placeAr: extraData.ceremonyPlaceAr || order.ceremonyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.ceremonyMapUrl || null },
+          { label: "Wedding Party", labelAr: "حفل الزفاف", time: formatTime12(order.partyTime), place: order.partyPlace, placeAr: extraData.partyPlaceAr || order.partyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.partyMapUrl || null },
         ],
         registry: [
           ...(extraData.registryWishMoneyAcc || extraData.registryWishMoneyPhone || extraData.registryLink1 ? [{ name: "Wish Money", icon: "💳", acc: extraData.registryWishMoneyAcc || null, phone: extraData.registryWishMoneyPhone || null, link: extraData.registryLink1 || null, color: "#c9a96e" }] : []),
@@ -1175,9 +1187,9 @@ function BuildBirthdayModal({ order }) {
     musicStart: order.musicStart ? Number(order.musicStart) : null,
     musicEnd: order.musicEnd ? Number(order.musicEnd) : null,
     hideTimeline: false,
-    tl0: order.tl0 || "8:00 PM", tl0loc: order.tl0loc || "Rooftop Terrace",
-    tl1: order.tl1 || "9:00 PM", tl1loc: order.tl1loc || "Grand Ballroom",
-    tl2: order.tl2 || "11:00 PM", tl2loc: order.tl2loc || "Grand Ballroom",
+    tl0: formatTime12(order.tl0) || "8:00 PM", tl0loc: order.tl0loc || "Rooftop Terrace",
+    tl1: formatTime12(order.tl1) || "9:00 PM", tl1loc: order.tl1loc || "Grand Ballroom",
+    tl2: formatTime12(order.tl2) || "11:00 PM", tl2loc: order.tl2loc || "Grand Ballroom",
     memoriesEnabled: false,
     hideEmojis: false,
     envelopeColor: "black",
@@ -1274,7 +1286,7 @@ function BuildBirthdayModal({ order }) {
     photo: heroPhoto || "",
     venue: {
       label: "The Celebration", labelAr: "الاحتفال",
-      time: order.ceremonyTime || "",
+      time: formatTime12(order.ceremonyTime),
       place: order.ceremonyPlace || "",
       placeAr: extraData.venuePlaceAr || order.ceremonyPlace || "",
       location: order.city || "",
@@ -1720,9 +1732,9 @@ function BuildOccasionModal({ order }) {
     musicStart: order.musicStart ? Number(order.musicStart) : null,
     musicEnd: order.musicEnd ? Number(order.musicEnd) : null,
     hideTimeline: false,
-    tl0: order.tl0 || "7:00 PM", tl0loc: order.tl0loc || "", tl0label: order.tl0label || "Welcome Reception", tl0labelAr: "",
-    tl1: order.tl1 || "8:00 PM", tl1loc: order.tl1loc || "", tl1label: order.tl1label || "Toast & Blessing", tl1labelAr: "",
-    tl2: order.tl2 || "9:00 PM", tl2loc: order.tl2loc || "", tl2label: order.tl2label || "Dinner & Dancing", tl2labelAr: "",
+    tl0: formatTime12(order.tl0) || "7:00 PM", tl0loc: order.tl0loc || "", tl0label: order.tl0label || "Welcome Reception", tl0labelAr: "",
+    tl1: formatTime12(order.tl1) || "8:00 PM", tl1loc: order.tl1loc || "", tl1label: order.tl1label || "Toast & Blessing", tl1labelAr: "",
+    tl2: formatTime12(order.tl2) || "9:00 PM", tl2loc: order.tl2loc || "", tl2label: order.tl2label || "Dinner & Dancing", tl2labelAr: "",
     memoriesEnabled: false,
     hideEmojis: false,
     envelopeColor: "black",
@@ -1826,7 +1838,7 @@ function BuildOccasionModal({ order }) {
     photo: heroPhoto || "",
     venue: {
       label: "The Celebration", labelAr: "الاحتفال",
-      time: order.ceremonyTime || "",
+      time: formatTime12(order.ceremonyTime),
       place: order.ceremonyPlace || "",
       placeAr: extraData.venuePlaceAr || order.ceremonyPlace || "",
       location: order.city || "",
