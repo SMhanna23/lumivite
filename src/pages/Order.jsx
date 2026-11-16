@@ -414,16 +414,17 @@ const T = {
   }
 }
 
-export default function Order() {
+export default function Order({ plannerPreset } = {}) {
   const navigate = useNavigate()
-  const [step, setStep] = useState(0)
+  const locked = !!plannerPreset
+  const [step, setStep] = useState(locked ? 3 : 0)
   const [status, setStatus] = useState("idle")
   const [lang, setLang] = useState("en")
   const t = T[lang]
   const isAr = lang === "ar"
 
   const [form, setForm] = useState({
-    package: "", template: "", groomName: "", brideName: "", groomAr: "", brideAr: "",
+    package: plannerPreset?.package || "", template: plannerPreset?.template || "", groomName: "", brideName: "", groomAr: "", brideAr: "",
     age: "",
     eventType: "", eventTypeAr: "", eventSubtitle: "", eventSubtitleAr: "", eventIcon: "💍",
     parentsEn: "", parentsAr: "",
@@ -447,18 +448,19 @@ export default function Order() {
 
   const isBirthday = form.template === "birthday"
   const isOccasion = form.template === "occasion"
-  const [tplTab, setTplTab] = useState("wedding")
+  const [tplTab, setTplTab] = useState(plannerPreset?.eventType || "wedding")
   const selectedTemplateName = isBirthday ? birthdayTemplate.name : isOccasion ? occasionTemplate.name : templates.find(tmpl => tmpl.id === form.template)?.name
   const eventSummaryLabel = isBirthday ? t.celebrant : isOccasion ? t.occasionType : t.couple
   const eventSummaryValue = isBirthday ? `${form.groomName} — ${form.age}th Birthday`
     : isOccasion ? `${form.groomName} — ${form.eventType}`
     : `${form.groomName} & ${form.brideName}`
   const isFlatPriced = isBirthday || isOccasion
-  const displayPrice = isFlatPriced ? "$80" : packages.find(p => p.id === form.package)?.price
-  const displayPriceValue = isFlatPriced ? 80 : packages.find(p => p.id === form.package)?.priceValue
+  const displayPrice = locked ? `$${plannerPreset.customPrice}` : isFlatPriced ? "$80" : packages.find(p => p.id === form.package)?.price
+  const displayPriceValue = locked ? Number(plannerPreset.customPrice) : isFlatPriced ? 80 : packages.find(p => p.id === form.package)?.priceValue
 
   // Auto-select dark template when Bronze is chosen on the wedding tab — it's the only option
   useEffect(() => {
+    if (locked) return
     if (form.package === "bronze" && form.template !== "birthday" && form.template !== "occasion") update("template", "dark")
   }, [form.package])
 
@@ -472,8 +474,16 @@ export default function Order() {
       const docRef = await addDoc(collection(db, "orders"), {
         ...form,
         status: "pending_payment",
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
+        ...(locked ? { source: "planner", plannerLinkId: plannerPreset.linkId, customPrice: Number(plannerPreset.customPrice) } : {}),
       })
+      if (locked) {
+        fetch("/api/planner-link", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: plannerPreset.linkId, orderId: docRef.id }),
+        }).catch(() => {})
+      }
       if (typeof window.fbq === "function") {
         window.fbq("track", "Lead", {
           value: displayPriceValue,
@@ -1083,7 +1093,7 @@ export default function Order() {
                 </div>
               )}
               <div className="flex gap-3 mt-8">
-                <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>
+                {!locked && <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-xl border border-white/10 text-white/50 hover:border-white/20 transition">{t.back}</button>}
                 <button onClick={() => setStep(4)} disabled={isOccasion ? (!form.groomName || !form.eventType || !form.weddingDate) : isBirthday ? (!form.groomName || !form.age || !form.weddingDate) : (!form.groomName || !form.brideName || !form.weddingDate)}
                   className="flex-1 py-4 rounded-xl font-semibold tracking-wider text-black disabled:opacity-30 transition"
                   style={{ background: "#c9a96e" }}>{t.continue}</button>

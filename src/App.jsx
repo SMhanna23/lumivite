@@ -13,6 +13,7 @@ import Invitation_Live from "./pages/Invitation_Live"
 import Admin from "./pages/Admin"
 import Login from "./pages/Login"
 import Order from "./pages/Order"
+import PlannerOrder from "./pages/PlannerOrder"
 import Dashboard from "./pages/Dashboard"
 import DemoDashboard from "./pages/DemoDashboard"
 import Memories from "./pages/Memories"
@@ -50,6 +51,7 @@ export default function App() {
         <Route path="/demo-occasion" element={<Occasion />} />
         <Route path="/i/:slug" element={<Invitation_Live />} />
         <Route path="/order" element={<Order />} />
+        <Route path="/planner-order/:linkId" element={<PlannerOrder />} />
         <Route path="/my-order/:orderId" element={<MyOrder />} />
         <Route path="/dashboard/:slug" element={<Dashboard />} />
         <Route path="/demo-dashboard" element={<DemoDashboard />} />

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { collection, getDocs, orderBy, query, updateDoc, doc, deleteDoc, where } from "firebase/firestore"
+import { collection, getDocs, orderBy, query, updateDoc, doc, deleteDoc, where, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { getAuth, signOut } from "firebase/auth"
 import { motion, AnimatePresence } from "framer-motion"
@@ -2279,20 +2279,47 @@ export default function Admin() {
   const [guestCopied, setGuestCopied] = useState(null)
   const [orderPage, setOrderPage] = useState(0)
   const ORDERS_PER_PAGE = 15
+  const [plannerLinks, setPlannerLinks] = useState([])
+  const [plannerForm, setPlannerForm] = useState({ eventType: "wedding", package: "bronze", template: "dark", customPrice: "", note: "" })
+  const [plannerCreating, setPlannerCreating] = useState(false)
+  const [plannerCopied, setPlannerCopied] = useState(null)
 
   useEffect(() => { fetchAll() }, [])
 
   const fetchAll = async () => {
     setLoading(true)
     try {
-      const [oSnap, rSnap] = await Promise.all([
+      const [oSnap, rSnap, pSnap] = await Promise.all([
         getDocs(query(collection(db, "orders"), orderBy("createdAt", "desc"))),
-        getDocs(query(collection(db, "rsvps"), orderBy("createdAt", "desc")))
+        getDocs(query(collection(db, "rsvps"), orderBy("createdAt", "desc"))),
+        getDocs(query(collection(db, "plannerLinks"), orderBy("createdAt", "desc")))
       ])
       setOrders(oSnap.docs.map(d => ({ id: d.id, ...d.data() })))
       setRsvps(rSnap.docs.map(d => ({ id: d.id, ...d.data() })))
+      setPlannerLinks(pSnap.docs.map(d => ({ id: d.id, ...d.data() })))
     } catch (e) { console.error(e) }
     setLoading(false)
+  }
+
+  const createPlannerLink = async () => {
+    const price = Number(plannerForm.customPrice)
+    if (!price || price <= 0) return
+    setPlannerCreating(true)
+    try {
+      const docRef = await addDoc(collection(db, "plannerLinks"), {
+        eventType: plannerForm.eventType,
+        package: plannerForm.eventType === "wedding" ? plannerForm.package : "gold",
+        template: plannerForm.eventType === "wedding" ? plannerForm.template : plannerForm.eventType,
+        customPrice: price,
+        note: plannerForm.note,
+        createdAt: serverTimestamp(),
+        usedAt: null,
+        orderId: null,
+      })
+      setPlannerLinks(links => [{ id: docRef.id, eventType: plannerForm.eventType, package: plannerForm.eventType === "wedding" ? plannerForm.package : "gold", template: plannerForm.eventType === "wedding" ? plannerForm.template : plannerForm.eventType, customPrice: price, note: plannerForm.note, createdAt: { toDate: () => new Date() }, usedAt: null, orderId: null }, ...links])
+      setPlannerForm(f => ({ ...f, customPrice: "", note: "" }))
+    } catch (e) { console.error(e) }
+    setPlannerCreating(false)
   }
 
   const handleStatusChange = async (orderId, newStatus) => {
@@ -2435,6 +2462,7 @@ export default function Admin() {
             { id: "orders", label: `Orders (${orders.length})`, icon: "📦" },
             { id: "rsvps", label: `RSVPs (${rsvps.length})`, icon: "💌" },
             { id: "guests", label: "Guest Links", icon: "🔗" },
+            { id: "planner", label: "Planner Orders", icon: "🧑‍💼" },
           ].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
               className="px-5 py-2.5 rounded-xl text-sm font-medium transition"
@@ -2499,7 +2527,7 @@ export default function Admin() {
                           </div>
                           <div className="text-right flex-shrink-0 flex flex-col items-end gap-2">
                             <p className="text-[#c9a96e] font-semibold">
-                              {order.template === "birthday" || order.template === "occasion" ? "$80" : order.package === "bronze" ? "$89" : order.package === "silver" ? "$139" : "$279"}
+                              {order.customPrice ? `$${order.customPrice}` : order.template === "birthday" || order.template === "occasion" ? "$80" : order.package === "bronze" ? "$89" : order.package === "silver" ? "$139" : "$279"}
                             </p>
                             <p className="text-white/30 text-xs">
                               {order.createdAt?.toDate?.()?.toLocaleDateString() || ""}
@@ -2820,6 +2848,125 @@ export default function Admin() {
 
                   {guestLinks.length > 0 && !guestSlug && (
                     <p className="text-yellow-400/60 text-sm text-center py-4">Select a wedding above to generate links.</p>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {/* PLANNER ORDERS TAB */}
+            {tab === "planner" && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <div className="max-w-2xl">
+                  <p className="text-white/40 text-sm mb-6">
+                    Generate a locked order link for a wedding planner or a custom-price deal. The client opens the link, starts straight at Details, and never sees package pricing or a back button — the package, template, and price are already fixed by you.
+                  </p>
+
+                  <div className="mb-4">
+                    <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Event Type</label>
+                    <div className="flex gap-2">
+                      {[
+                        { id: "wedding", label: "💍 Wedding" },
+                        { id: "birthday", label: "🎂 Birthday" },
+                        { id: "occasion", label: "✨ Occasion" },
+                      ].map(opt => (
+                        <button key={opt.id} onClick={() => setPlannerForm(f => ({ ...f, eventType: opt.id }))}
+                          className="px-4 py-2.5 rounded-xl text-sm font-medium transition"
+                          style={{ background: plannerForm.eventType === opt.id ? "#c9a96e" : "rgba(255,255,255,0.05)", color: plannerForm.eventType === opt.id ? "black" : "rgba(255,255,255,0.5)" }}>
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {plannerForm.eventType === "wedding" && (
+                    <>
+                      <div className="mb-4">
+                        <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Package <span className="text-white/20 normal-case font-normal">(controls which features the client gets — not shown to them)</span></label>
+                        <div className="flex gap-2">
+                          {["bronze", "silver", "gold"].map(id => (
+                            <button key={id} onClick={() => setPlannerForm(f => ({ ...f, package: id, template: id === "bronze" ? "dark" : f.template }))}
+                              className="px-4 py-2.5 rounded-xl text-sm font-medium capitalize transition"
+                              style={{ background: plannerForm.package === id ? packageColor[id] : "rgba(255,255,255,0.05)", color: plannerForm.package === id ? "black" : "rgba(255,255,255,0.5)" }}>
+                              {id}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="mb-6">
+                        <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Template</label>
+                        <div className="flex gap-2 flex-wrap">
+                          {["dark", "botanical", "rosegold", "sand", "premiere"].map(id => {
+                            const tmplLocked = plannerForm.package === "bronze" && id !== "dark"
+                            return (
+                              <button key={id} disabled={tmplLocked} onClick={() => setPlannerForm(f => ({ ...f, template: id }))}
+                                className="px-4 py-2.5 rounded-xl text-sm font-medium transition disabled:opacity-30 disabled:cursor-not-allowed"
+                                style={{ background: plannerForm.template === id ? "#c9a96e" : "rgba(255,255,255,0.05)", color: plannerForm.template === id ? "black" : "rgba(255,255,255,0.5)" }}>
+                                {templateIcon[id]} {templateName[id]}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  <div className="mb-4">
+                    <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Fixed Price ($)</label>
+                    <input value={plannerForm.customPrice} onChange={e => setPlannerForm(f => ({ ...f, customPrice: e.target.value }))}
+                      type="number" placeholder="150"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                  </div>
+
+                  <div className="mb-6">
+                    <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Note <span className="text-white/20 normal-case font-normal">(for your reference only — never shown to the client)</span></label>
+                    <input value={plannerForm.note} onChange={e => setPlannerForm(f => ({ ...f, note: e.target.value }))}
+                      placeholder="e.g. Maya — wedding planner deal"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                  </div>
+
+                  <button onClick={createPlannerLink} disabled={plannerCreating || !plannerForm.customPrice}
+                    className="px-6 py-3 rounded-xl font-semibold text-sm text-black disabled:opacity-30 transition"
+                    style={{ background: "#c9a96e" }}>
+                    {plannerCreating ? "Creating..." : "🔗 Create Order Link"}
+                  </button>
+
+                  {plannerLinks.length > 0 && (
+                    <div className="mt-8">
+                      <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-3">{plannerLinks.length} Links Created</p>
+                      <div className="grid gap-2">
+                        {plannerLinks.map(link => {
+                          const url = `https://www.lumivite.net/planner-order/${link.id}`
+                          return (
+                            <div key={link.id} className="bg-white/3 border border-white/8 rounded-xl p-3 flex items-center gap-3 hover:border-white/15 transition">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-white text-sm font-medium">
+                                  {link.eventType === "wedding" ? `${link.package} · ${templateName[link.template] || link.template}` : (templateName[link.template] || link.eventType)}
+                                  <span className="text-[#c9a96e] ml-2">${link.customPrice}</span>
+                                  {link.usedAt && <span className="text-xs ml-2 px-2 py-0.5 rounded-full" style={{ background: "rgba(74,222,128,0.12)", color: "#4ade80" }}>✓ Used</span>}
+                                </p>
+                                {link.note && <p className="text-white/30 text-xs mt-0.5">{link.note}</p>}
+                                <p className="text-white/25 text-xs truncate font-mono mt-0.5">{url}</p>
+                              </div>
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(url)
+                                  setPlannerCopied(link.id)
+                                  setTimeout(() => setPlannerCopied(null), 2000)
+                                }}
+                                className="flex-shrink-0 text-xs px-3 py-1.5 rounded-lg border transition"
+                                style={{
+                                  borderColor: plannerCopied === link.id ? "rgba(74,222,128,0.4)" : "rgba(201,169,110,0.3)",
+                                  color: plannerCopied === link.id ? "#4ade80" : "#c9a96e",
+                                  background: plannerCopied === link.id ? "rgba(74,222,128,0.08)" : "rgba(201,169,110,0.06)"
+                                }}>
+                                {plannerCopied === link.id ? "✓" : "Copy"}
+                              </button>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
                   )}
                 </div>
               </motion.div>
