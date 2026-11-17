@@ -3117,6 +3117,7 @@ export default function Admin() {
                                 </p>
                                 {link.note && <p className="text-white/30 text-xs mt-0.5">{link.note}</p>}
                                 <p className="text-white/25 text-xs truncate font-mono mt-0.5">{url}</p>
+                                {link.createdAt && <p className="text-white/20 text-xs mt-0.5">Created {new Date(link.createdAt).toLocaleString()}</p>}
                               </div>
                               <button
                                 onClick={() => {

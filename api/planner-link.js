@@ -44,6 +44,7 @@ export default async function handler(req, res) {
               template: v.template,
               customPrice: v.customPrice,
               note: v.note || "",
+              createdAt: v.createdAt ? v.createdAt.toDate?.()?.toISOString() || v.createdAt : null,
               usedAt: v.usedAt ? v.usedAt.toDate?.()?.toISOString() || v.usedAt : null,
               orderId: v.orderId || null,
             }
