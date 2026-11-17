@@ -585,6 +585,7 @@ function BuildInvitationModal({ order }) {
                 { id: "black",  label: "⬛ Black",  desc: "Classic dark" },
                 { id: "white",  label: "⬜ White",  desc: "Clean & bright" },
                 { id: "creamy", label: "🟡 Creamy", desc: "Warm & elegant" },
+                { id: "burgundy", label: "🟥 Burgundy", desc: "Rich & romantic" },
               ].map(opt => (
                 <button key={opt.id} type="button"
                   onClick={() => update("envelopeColor", opt.id)}
@@ -1435,6 +1436,7 @@ function BuildBirthdayModal({ order }) {
                 { id: "black", label: "⬛ Black", desc: "Classic dark" },
                 { id: "white", label: "⬜ White", desc: "Clean & bright" },
                 { id: "creamy", label: "🟡 Creamy", desc: "Warm & elegant" },
+                { id: "burgundy", label: "🟥 Burgundy", desc: "Rich & romantic" },
               ].map(opt => (
                 <button key={opt.id} type="button" onClick={() => update("envelopeColor", opt.id)}
                   className="flex-1 py-2.5 px-3 rounded-xl border text-xs font-medium transition text-center"
@@ -2000,6 +2002,7 @@ function BuildOccasionModal({ order }) {
                 { id: "black", label: "⬛ Black", desc: "Classic dark" },
                 { id: "white", label: "⬜ White", desc: "Clean & bright" },
                 { id: "creamy", label: "🟡 Creamy", desc: "Warm & elegant" },
+                { id: "burgundy", label: "🟥 Burgundy", desc: "Rich & romantic" },
               ].map(opt => (
                 <button key={opt.id} type="button" onClick={() => update("envelopeColor", opt.id)}
                   className="flex-1 py-2.5 px-3 rounded-xl border text-xs font-medium transition text-center"

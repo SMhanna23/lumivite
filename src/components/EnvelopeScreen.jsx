@@ -4,18 +4,19 @@ import { motion } from "framer-motion"
 const GOLD = "#c4a35a"
 
 const ENVELOPE_VIDEO = {
-  black:  "/BlackEnvelope.mp4",
-  white:  "/WhiteEnvelope.mp4",
-  creamy: "/CreamyEnvelope.mp4",
+  black:    "/BlackEnvelope.mp4",
+  white:    "/WhiteEnvelope.mp4",
+  creamy:   "/CreamyEnvelope.mp4",
+  burgundy: "/BurngundyEnvelope.mp4",
 }
 const ENVELOPE_BG = {
-  black: "#0c0b09", white: "#f0ede8", creamy: "#e8d4a0",
+  black: "#0c0b09", white: "#f0ede8", creamy: "#e8d4a0", burgundy: "#2a0a10",
 }
 const ENVELOPE_TEXT_DEAR = {
-  black: "rgba(255,255,255,0.65)", white: "rgba(40,30,20,0.75)", creamy: "rgba(60,40,10,0.80)",
+  black: "rgba(255,255,255,0.65)", white: "rgba(40,30,20,0.75)", creamy: "rgba(60,40,10,0.80)", burgundy: "rgba(255,255,255,0.75)",
 }
 const ENVELOPE_TEXT_TAP = {
-  black: "rgba(255,255,255,0.4)", white: "rgba(40,30,20,0.4)", creamy: "rgba(60,40,10,0.4)",
+  black: "rgba(255,255,255,0.4)", white: "rgba(40,30,20,0.4)", creamy: "rgba(60,40,10,0.4)", burgundy: "rgba(255,255,255,0.45)",
 }
 
 export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang, envelopeColor = "black" }) {
