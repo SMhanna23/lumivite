@@ -4,3 +4,11 @@
 
 .font-serif { font-family: 'Cormorant Garamond', serif; }
 body { font-family: 'Jost', sans-serif; }
+
+/* Admin-set "Font Color" override — recolors every piece of text on an
+   invitation (headings, body copy, RSVP form) to one chosen color.
+   .text-black is excluded since it's always used deliberately for
+   contrast against a light/accent-colored button background. */
+.lumi-force-text, .lumi-force-text *:not(.text-black) {
+  color: var(--force-text-color) !important;
+}
