@@ -7,7 +7,7 @@ const ENVELOPE_VIDEO = {
   black:    "/BlackEnvelope.mp4",
   white:    "/WhiteEnvelope.mp4",
   creamy:   "/CreamyEnvelope.mp4",
-  burgundy: "/BurngundyEnvelope.mp4",
+  burgundy: "/BurgundyEnvelope.mp4",
 }
 const ENVELOPE_BG = {
   black: "#0c0b09", white: "#f0ede8", creamy: "#e8d4a0", burgundy: "#2a0a10",
