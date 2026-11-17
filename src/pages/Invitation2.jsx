@@ -307,9 +307,9 @@ export default function Invitation({ override = null }) {
       </section>
 
   return (
-    <div className={`${started ? "min-h-screen text-[#2d3a2e] overflow-x-hidden relative" : "fixed inset-0"}${WEDDING.fontColor ? " lumi-force-text" : ""}`}
+    <div className={`${started ? "min-h-screen text-[#2d3a2e] overflow-x-hidden relative" : "fixed inset-0"}${WEDDING.fontColor ? " lumi-force-text" : ""}${WEDDING.bgColor ? " lumi-force-bg" : ""}`}
       dir={ar ? "rtl" : "ltr"}
-      style={{ background: "#faf8f3", fontFamily: ar ? "'Noto Naskh Arabic', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol'" : "inherit", "--accent-rgb": accentRgb, "--force-text-color": WEDDING.fontColor || undefined }}>
+      style={{ background: "#faf8f3", fontFamily: ar ? "'Noto Naskh Arabic', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol'" : "inherit", "--accent-rgb": accentRgb, "--force-text-color": WEDDING.fontColor || undefined, "--force-bg-color": WEDDING.bgColor || undefined }}>
 
       {/* Music — Silver and Gold only */}
       {tier !== "bronze" && (ytId ? (

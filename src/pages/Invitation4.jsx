@@ -812,9 +812,9 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
   )
 
   return (
-    <motion.div className={`min-h-screen flex flex-col relative overflow-hidden${w.fontColor ? " lumi-force-text" : ""}`}
+    <motion.div className={`min-h-screen flex flex-col relative overflow-hidden${w.fontColor ? " lumi-force-text" : ""}${w.bgColor ? " lumi-force-bg" : ""}`}
       dir={ar ? "rtl" : "ltr"}
-      style={{ background: DARK, "--force-text-color": w.fontColor || undefined }}
+      style={{ background: DARK, "--force-text-color": w.fontColor || undefined, "--force-bg-color": w.bgColor || undefined }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2 }}>
 
       {/* Glow */}

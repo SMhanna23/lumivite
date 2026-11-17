@@ -12,3 +12,16 @@ body { font-family: 'Jost', sans-serif; }
 .lumi-force-text, .lumi-force-text *:not(.text-black) {
   color: var(--force-text-color) !important;
 }
+
+/* Admin-set "Background Color" override — recolors every solid-fill
+   background on an invitation (page background, cards, panels) to one
+   chosen color. Images/videos are excluded since they paint their own
+   pixels regardless of background-color; gradient panels are left as-is
+   since a flat background-color can't replace a background-image.
+   .text-black is excluded too — it always marks a button/chip that's
+   meant to sit on its own accent-colored background for contrast
+   (e.g. the RSVP submit button), so forcing that background to match
+   everything else would make its black text unreadable. */
+.lumi-force-bg, .lumi-force-bg *:not(img):not(video):not(.text-black) {
+  background-color: var(--force-bg-color) !important;
+}

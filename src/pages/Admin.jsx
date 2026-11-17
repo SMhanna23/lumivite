@@ -162,6 +162,7 @@ function BuildInvitationModal({ order }) {
     registryAfterRsvp: false,
     accentColor: order.accentColor || "",
     fontColor: order.fontColor || "",
+    bgColor: order.bgColor || "",
     hideHouses: false,
     groomHouseName: "", groomHouseNameAr: "", groomHouseMap: "",
     brideHouseName: "", brideHouseNameAr: "", brideHouseMap: "",
@@ -246,6 +247,7 @@ function BuildInvitationModal({ order }) {
             registryAfterRsvp: d.registryAfterRsvp ?? false,
             accentColor: d.accentColor || "",
             fontColor: d.fontColor || "",
+            bgColor: d.bgColor || "",
             hideHouses: d.hideHouses ?? false,
             groomHouseName: d.houses?.groom?.name || "", groomHouseNameAr: d.houses?.groom?.nameAr || "", groomHouseMap: d.houses?.groom?.map || "",
             brideHouseName: d.houses?.bride?.name || "", brideHouseNameAr: d.houses?.bride?.nameAr || "", brideHouseMap: d.houses?.bride?.map || "",
@@ -368,6 +370,7 @@ function BuildInvitationModal({ order }) {
         registryAfterRsvp: extraData.registryAfterRsvp ?? false,
         accentColor: extraData.accentColor || "",
         fontColor: extraData.fontColor || "",
+        bgColor: extraData.bgColor || "",
         hideHouses: extraData.hideHouses ?? false,
         houses: {
           groom: { name: extraData.groomHouseName || "", nameAr: extraData.groomHouseNameAr || "", map: extraData.groomHouseMap || "" },
@@ -458,6 +461,7 @@ function BuildInvitationModal({ order }) {
         registryAfterRsvp: extraData.registryAfterRsvp ?? false,
         accentColor: extraData.accentColor || "",
         fontColor: extraData.fontColor || "",
+        bgColor: extraData.bgColor || "",
         hideHouses: extraData.hideHouses ?? false,
         houses: {
           groom: { name: extraData.groomHouseName || "", nameAr: extraData.groomHouseNameAr || "", map: extraData.groomHouseMap || "" },
@@ -642,6 +646,25 @@ function BuildInvitationModal({ order }) {
               )}
             </div>
             <p className="text-white/25 text-xs mt-1">Overrides every single text color on the invitation — headings, body text, RSVP labels and buttons — with this one color, including over the Accent Color above. Leave blank unless the client specifically wants a monochrome look.</p>
+          </div>
+
+          {/* Background Color — recolors every solid panel/section background (page, cards, RSVP form) to one color */}
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">🖼️ Invitation Background Color (optional — recolors ALL backgrounds)</label>
+            <div className="flex items-center gap-3">
+              <input type="color" value={extraData.bgColor || "#0d0a08"} onChange={e => update("bgColor", e.target.value)}
+                className="w-10 h-10 rounded-lg border border-white/10 bg-transparent cursor-pointer p-0" />
+              <input value={extraData.bgColor} onChange={e => update("bgColor", e.target.value)}
+                placeholder="Leave blank for the template's default background"
+                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
+              {extraData.bgColor && (
+                <button type="button" onClick={() => update("bgColor", "")}
+                  className="text-xs px-3 py-2 rounded-lg border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition">
+                  Reset
+                </button>
+              )}
+            </div>
+            <p className="text-white/25 text-xs mt-1">Overrides every solid background on the invitation — the page, cards, panels, and the RSVP form — with this one color. Pick a Font Color above with good contrast against it, or text can become hard to read.</p>
           </div>
 
           {/* Slug */}
@@ -1219,6 +1242,7 @@ function BuildBirthdayModal({ order }) {
     envelopeColor: "black",
     accentColor: order.accentColor || "",
     fontColor: order.fontColor || "",
+    bgColor: order.bgColor || "",
   })
 
   const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
@@ -1270,6 +1294,7 @@ function BuildBirthdayModal({ order }) {
             envelopeColor: d.envelopeColor || "black",
             accentColor: d.accentColor || "",
             fontColor: d.fontColor || "",
+            bgColor: d.bgColor || "",
           })
           if (d.photo) setHeroPhoto(d.photo)
           if (d.venue?.photo) setVenuePhoto(d.venue.photo)
@@ -1344,6 +1369,8 @@ function BuildBirthdayModal({ order }) {
     hideEmojis: extraData.hideEmojis ?? false,
     envelopeColor: extraData.envelopeColor || "black",
     accentColor: extraData.accentColor || "",
+    fontColor: extraData.fontColor || "",
+    bgColor: extraData.bgColor || "",
     package: order.package,
     orderId: order.id,
     updatedAt: new Date(),
@@ -1511,6 +1538,25 @@ function BuildBirthdayModal({ order }) {
               )}
             </div>
             <p className="text-white/25 text-xs mt-1">Overrides every single text color on the invitation — headings, body text, RSVP labels and buttons — with this one color, including over the Accent Color above. Leave blank unless the client specifically wants a monochrome look.</p>
+          </div>
+
+          {/* Background Color — recolors every solid panel/section background (page, cards, RSVP form) to one color */}
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">🖼️ Invitation Background Color (optional — recolors ALL backgrounds)</label>
+            <div className="flex items-center gap-3">
+              <input type="color" value={extraData.bgColor || "#0d0a08"} onChange={e => update("bgColor", e.target.value)}
+                className="w-10 h-10 rounded-lg border border-white/10 bg-transparent cursor-pointer p-0" />
+              <input value={extraData.bgColor} onChange={e => update("bgColor", e.target.value)}
+                placeholder="Leave blank for the template's default background"
+                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
+              {extraData.bgColor && (
+                <button type="button" onClick={() => update("bgColor", "")}
+                  className="text-xs px-3 py-2 rounded-lg border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition">
+                  Reset
+                </button>
+              )}
+            </div>
+            <p className="text-white/25 text-xs mt-1">Overrides every solid background on the invitation — the page, cards, panels, and the RSVP form — with this one color. Pick a Font Color above with good contrast against it, or text can become hard to read.</p>
           </div>
 
           <div>
@@ -1786,6 +1832,7 @@ function BuildOccasionModal({ order }) {
     envelopeColor: "black",
     accentColor: order.accentColor || "",
     fontColor: order.fontColor || "",
+    bgColor: order.bgColor || "",
   })
 
   const update = (k, v) => setExtraData(p => ({ ...p, [k]: v }))
@@ -1840,6 +1887,7 @@ function BuildOccasionModal({ order }) {
             envelopeColor: d.envelopeColor || "black",
             accentColor: d.accentColor || "",
             fontColor: d.fontColor || "",
+            bgColor: d.bgColor || "",
           })
           if (d.photo) setHeroPhoto(d.photo)
           if (d.venue?.photo) setVenuePhoto(d.venue.photo)
@@ -1918,6 +1966,8 @@ function BuildOccasionModal({ order }) {
     hideEmojis: extraData.hideEmojis ?? false,
     envelopeColor: extraData.envelopeColor || "black",
     accentColor: extraData.accentColor || "",
+    fontColor: extraData.fontColor || "",
+    bgColor: extraData.bgColor || "",
     package: order.package,
     orderId: order.id,
     updatedAt: new Date(),
@@ -2098,6 +2148,25 @@ function BuildOccasionModal({ order }) {
               )}
             </div>
             <p className="text-white/25 text-xs mt-1">Overrides every single text color on the invitation — headings, body text, RSVP labels and buttons — with this one color, including over the Accent Color above. Leave blank unless the client specifically wants a monochrome look.</p>
+          </div>
+
+          {/* Background Color — recolors every solid panel/section background (page, cards, RSVP form) to one color */}
+          <div>
+            <label className="text-white/30 text-xs mb-1 block">🖼️ Invitation Background Color (optional — recolors ALL backgrounds)</label>
+            <div className="flex items-center gap-3">
+              <input type="color" value={extraData.bgColor || "#0d0a08"} onChange={e => update("bgColor", e.target.value)}
+                className="w-10 h-10 rounded-lg border border-white/10 bg-transparent cursor-pointer p-0" />
+              <input value={extraData.bgColor} onChange={e => update("bgColor", e.target.value)}
+                placeholder="Leave blank for the template's default background"
+                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-[#c9a96e]" />
+              {extraData.bgColor && (
+                <button type="button" onClick={() => update("bgColor", "")}
+                  className="text-xs px-3 py-2 rounded-lg border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition">
+                  Reset
+                </button>
+              )}
+            </div>
+            <p className="text-white/25 text-xs mt-1">Overrides every solid background on the invitation — the page, cards, panels, and the RSVP form — with this one color. Pick a Font Color above with good contrast against it, or text can become hard to read.</p>
           </div>
 
           <div>
