@@ -3084,6 +3084,17 @@ export default function Admin() {
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
                   </div>
 
+                  <div className="mb-4 flex items-center gap-2 px-4 py-3 rounded-xl border"
+                    style={{ borderColor: "rgba(201,169,110,0.3)", background: "rgba(201,169,110,0.06)" }}>
+                    <span className="text-white/40 text-xs uppercase tracking-widest">About to create:</span>
+                    <span className="text-[#c9a96e] text-sm font-medium">
+                      {plannerForm.eventType === "wedding"
+                        ? `${templateIcon[plannerForm.template] || ""} ${templateName[plannerForm.template] || plannerForm.template} · ${plannerForm.package} package`
+                        : `${templateIcon[plannerForm.eventType] || ""} ${templateName[plannerForm.eventType] || plannerForm.eventType}`}
+                      {" · "}{plannerForm.customPrice ? `$${plannerForm.customPrice}` : "no price set"}
+                    </span>
+                  </div>
+
                   <button onClick={createPlannerLink} disabled={plannerCreating || !plannerForm.customPrice}
                     className="px-6 py-3 rounded-xl font-semibold text-sm text-black disabled:opacity-30 transition"
                     style={{ background: "#c9a96e" }}>
