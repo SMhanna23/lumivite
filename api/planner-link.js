@@ -126,6 +126,23 @@ export default async function handler(req, res) {
     }
   }
 
-  res.setHeader("Allow", "GET, PUT, POST")
+  if (req.method === "DELETE") {
+    // Admin-only: permanently remove a planner link.
+    if (!(await requireAdmin(req))) return res.status(401).json({ error: "Unauthorized" })
+
+    const { id } = req.query || {}
+    if (!id || !ID_RE.test(id)) {
+      return res.status(400).json({ error: "Invalid link id" })
+    }
+    try {
+      const db = getFirestore()
+      await db.collection("plannerLinks").doc(id).delete()
+      return res.status(200).json({ success: true })
+    } catch (e) {
+      return res.status(500).json({ error: "Delete failed" })
+    }
+  }
+
+  res.setHeader("Allow", "GET, PUT, POST, DELETE")
   return res.status(405).json({ error: "Method not allowed" })
 }

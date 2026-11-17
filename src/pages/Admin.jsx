@@ -2481,6 +2481,18 @@ export default function Admin() {
     setPlannerCreating(false)
   }
 
+  const deletePlannerLink = async (id) => {
+    if (!confirm("Delete this planner link? This can't be undone.")) return
+    try {
+      const token = await getAuth().currentUser.getIdToken()
+      const res = await fetch(`/api/planner-link?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (res.ok) setPlannerLinks(links => links.filter(l => l.id !== id))
+    } catch (e) { console.error(e) }
+  }
+
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       await updateDoc(doc(db, "orders", orderId), { status: newStatus })
@@ -3132,6 +3144,10 @@ export default function Admin() {
                                   background: plannerCopied === link.id ? "rgba(74,222,128,0.08)" : "rgba(201,169,110,0.06)"
                                 }}>
                                 {plannerCopied === link.id ? "✓" : "Copy"}
+                              </button>
+                              <button onClick={() => deletePlannerLink(link.id)}
+                                className="flex-shrink-0 text-xs px-3 py-1.5 rounded-lg border border-white/10 text-white/40 hover:text-red-400 hover:border-red-400/30 transition">
+                                🗑
                               </button>
                             </div>
                           )
