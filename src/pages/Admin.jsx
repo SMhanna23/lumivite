@@ -2477,6 +2477,9 @@ export default function Admin() {
   const [plannerForm, setPlannerForm] = useState({ eventType: "wedding", package: "bronze", template: "dark", customPrice: "", note: "" })
   const [plannerCreating, setPlannerCreating] = useState(false)
   const [plannerCopied, setPlannerCopied] = useState(null)
+  const [financeEntries, setFinanceEntries] = useState([])
+  const [financeForm, setFinanceForm] = useState({ clientName: "", amount: "", date: new Date().toISOString().slice(0, 10), note: "" })
+  const [financeSaving, setFinanceSaving] = useState(false)
 
   useEffect(() => { fetchAll() }, [])
 
@@ -2497,6 +2500,51 @@ export default function Admin() {
       const res = await fetch("/api/planner-link?list=1", { headers: { Authorization: `Bearer ${token}` } })
       const data = await res.json()
       setPlannerLinks(data.links || [])
+    } catch (e) { console.error(e) }
+
+    try {
+      const token = await getAuth().currentUser.getIdToken()
+      const res = await fetch("/api/finance", { headers: { Authorization: `Bearer ${token}` } })
+      const data = await res.json()
+      setFinanceEntries(data.entries || [])
+    } catch (e) { console.error(e) }
+  }
+
+  const addFinanceEntry = async () => {
+    const amount = Number(financeForm.amount)
+    if (!financeForm.clientName.trim() || !amount || amount <= 0 || !financeForm.date) return
+    setFinanceSaving(true)
+    try {
+      const entry = {
+        clientName: financeForm.clientName.trim(),
+        amount,
+        date: financeForm.date,
+        note: financeForm.note.trim(),
+      }
+      const token = await getAuth().currentUser.getIdToken()
+      const res = await fetch("/api/finance", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(entry),
+      })
+      if (res.ok) {
+        const { id } = await res.json()
+        setFinanceEntries(entries => [...entries, { id, ...entry }].sort((a, b) => b.date.localeCompare(a.date)))
+        setFinanceForm(f => ({ ...f, clientName: "", amount: "", note: "" }))
+      }
+    } catch (e) { console.error(e) }
+    setFinanceSaving(false)
+  }
+
+  const deleteFinanceEntry = async (id) => {
+    if (!confirm("Delete this finance entry?")) return
+    try {
+      const token = await getAuth().currentUser.getIdToken()
+      const res = await fetch(`/api/finance?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (res.ok) setFinanceEntries(entries => entries.filter(e => e.id !== id))
     } catch (e) { console.error(e) }
   }
 
@@ -2615,6 +2663,18 @@ export default function Admin() {
 
   const filteredRsvps = weddingRsvps.filter(r => rsvpFilter === "all" ? true : rsvpFilter === "attending" ? r.attending : !r.attending)
 
+  const financeTotal = financeEntries.reduce((sum, e) => sum + (e.amount || 0), 0)
+  const financeByMonth = (() => {
+    const groups = {}
+    for (const e of financeEntries) {
+      const key = e.date ? e.date.slice(0, 7) : "Unknown"
+      if (!groups[key]) groups[key] = []
+      groups[key].push(e)
+    }
+    return Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0]))
+  })()
+  const monthLabel = key => key === "Unknown" ? "Unknown Date" : new Date(key + "-02").toLocaleDateString("en-US", { month: "long", year: "numeric" })
+
   const guestLinks = guestLines
     .split("\n")
     .map(l => l.trim())
@@ -2679,6 +2739,7 @@ export default function Admin() {
             { id: "rsvps", label: `RSVPs (${rsvps.length})`, icon: "💌" },
             { id: "guests", label: "Guest Links", icon: "🔗" },
             { id: "planner", label: "Planner Orders", icon: "🧑‍💼" },
+            { id: "finance", label: "Finance", icon: "💰" },
           ].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
               className="px-5 py-2.5 rounded-xl text-sm font-medium transition"
@@ -3198,6 +3259,100 @@ export default function Admin() {
                           )
                         })}
                       </div>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {/* FINANCE TAB */}
+            {tab === "finance" && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <div className="max-w-2xl">
+                  <p className="text-white/40 text-sm mb-6">
+                    Keep a simple ledger of what clients actually paid — separate from the Orders tab, so you can log any payment (cash, a planner deal, a partial payment) with its own date.
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-3 mb-6">
+                    <div className="bg-white/3 border border-white/8 rounded-2xl p-5">
+                      <p className="text-white/40 text-xs uppercase tracking-wider mb-2">Total Collected</p>
+                      <p className="text-3xl font-light" style={{ color: "#c9a96e" }}>${financeTotal.toLocaleString()}</p>
+                    </div>
+                    <div className="bg-white/3 border border-white/8 rounded-2xl p-5">
+                      <p className="text-white/40 text-xs uppercase tracking-wider mb-2">Entries</p>
+                      <p className="text-3xl font-light text-white">{financeEntries.length}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div>
+                      <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Client Name</label>
+                      <input value={financeForm.clientName} onChange={e => setFinanceForm(f => ({ ...f, clientName: e.target.value }))}
+                        placeholder="e.g. Didier & Jessica-Rita"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                    </div>
+                    <div>
+                      <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Amount Paid ($)</label>
+                      <input value={financeForm.amount} onChange={e => setFinanceForm(f => ({ ...f, amount: e.target.value }))}
+                        type="number" min="0" placeholder="150"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div>
+                      <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Date</label>
+                      <input value={financeForm.date} onChange={e => setFinanceForm(f => ({ ...f, date: e.target.value }))}
+                        type="date"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" style={{ colorScheme: "dark" }} />
+                    </div>
+                    <div>
+                      <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Note (optional)</label>
+                      <input value={financeForm.note} onChange={e => setFinanceForm(f => ({ ...f, note: e.target.value }))}
+                        placeholder="e.g. Gold package, paid cash"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                    </div>
+                  </div>
+
+                  <button onClick={addFinanceEntry} disabled={financeSaving || !financeForm.clientName || !financeForm.amount}
+                    className="px-6 py-3 rounded-xl font-semibold text-sm text-black disabled:opacity-30 transition mb-8"
+                    style={{ background: "#c9a96e" }}>
+                    {financeSaving ? "Adding..." : "+ Add Entry"}
+                  </button>
+
+                  {financeByMonth.length === 0 ? (
+                    <p className="text-white/20 text-sm text-center py-10">No finance entries yet</p>
+                  ) : (
+                    <div className="space-y-6">
+                      {financeByMonth.map(([month, entries]) => {
+                        const subtotal = entries.reduce((sum, e) => sum + (e.amount || 0), 0)
+                        return (
+                          <div key={month}>
+                            <div className="flex items-center justify-between mb-2">
+                              <p className="text-[#c9a96e] text-xs uppercase tracking-widest">{monthLabel(month)}</p>
+                              <p className="text-white/40 text-xs">${subtotal.toLocaleString()}</p>
+                            </div>
+                            <div className="grid gap-2">
+                              {entries.map(entry => (
+                                <div key={entry.id} className="bg-white/3 border border-white/8 rounded-xl p-3 flex items-center gap-3 hover:border-white/15 transition">
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-white text-sm font-medium">
+                                      {entry.clientName}
+                                      <span className="text-[#c9a96e] ml-2">${Number(entry.amount).toLocaleString()}</span>
+                                    </p>
+                                    <p className="text-white/30 text-xs mt-0.5">
+                                      {entry.date} {entry.note && `· ${entry.note}`}
+                                    </p>
+                                  </div>
+                                  <button onClick={() => deleteFinanceEntry(entry.id)}
+                                    className="flex-shrink-0 text-xs px-3 py-1.5 rounded-lg border border-white/10 text-white/40 hover:text-red-400 hover:border-red-400/30 transition">
+                                    🗑
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )
+                      })}
                     </div>
                   )}
                 </div>
