@@ -170,9 +170,9 @@ function BuildInvitationModal({ order }) {
     hideCeremony: false,
     hideTimeline: false,
     askEventAttendance: false,
-    tl0: formatTime12(order.tl0) || "5:00 PM",    tl0loc: order.tl0loc || "",
-    tl1: formatTime12(order.tl1) || "7:00 PM",    tl1loc: order.tl1loc || "",
-    tl2: formatTime12(order.tl2) || "11:00 PM",   tl2loc: order.tl2loc || "",
+    tl0: formatTime12(order.tl0) || "5:00 PM",    tl0loc: order.tl0loc || "",    tl0locAr: order.tl0locAr || "",
+    tl1: formatTime12(order.tl1) || "7:00 PM",    tl1loc: order.tl1loc || "",    tl1locAr: order.tl1locAr || "",
+    tl2: formatTime12(order.tl2) || "11:00 PM",   tl2loc: order.tl2loc || "",    tl2locAr: order.tl2locAr || "",
     dressCode: order.dressCode || "",
     transport: order.transport || "",
     accommodation: order.accommodation || "",
@@ -256,9 +256,9 @@ function BuildInvitationModal({ order }) {
             hideCeremony: d.hideCeremony ?? false,
             hideTimeline: d.hideTimeline ?? false,
             askEventAttendance: d.askEventAttendance ?? false,
-            tl0: d.timeline?.[0]?.time || "5:00 PM",    tl0loc: d.timeline?.[0]?.location || "",
-            tl1: d.timeline?.[1]?.time || "7:00 PM",    tl1loc: d.timeline?.[1]?.location || "",
-            tl2: d.timeline?.[2]?.time || "11:00 PM",   tl2loc: d.timeline?.[2]?.location || "",
+            tl0: d.timeline?.[0]?.time || "5:00 PM",    tl0loc: d.timeline?.[0]?.location || "",    tl0locAr: d.timeline?.[0]?.locationAr || "",
+            tl1: d.timeline?.[1]?.time || "7:00 PM",    tl1loc: d.timeline?.[1]?.location || "",    tl1locAr: d.timeline?.[1]?.locationAr || "",
+            tl2: d.timeline?.[2]?.time || "11:00 PM",   tl2loc: d.timeline?.[2]?.location || "",    tl2locAr: d.timeline?.[2]?.locationAr || "",
             dressCode: d.dressCode || "",
             transport: d.transport || "",
             accommodation: d.accommodation || "",
@@ -355,9 +355,9 @@ function BuildInvitationModal({ order }) {
           ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", beneficiary: extraData.registryBeneficiary || null, iban: extraData.registryIban, bic: extraData.registryBic || null, link: null, color: "#c9a96e" }] : []),
         ],
         timeline: [
-          { time: extraData.tl0, label: "Ceremony",      labelAr: "مراسم الزواج",   icon: "💒", location: extraData.tl0loc, desc: extraData.tl0loc || "Join us as we say our vows" },
-          { time: extraData.tl1, label: "Welcome Drink", labelAr: "مشروب الترحيب", icon: "🥂", location: extraData.tl1loc, desc: extraData.tl1loc || "Celebrate with drinks & canapés" },
-          { time: extraData.tl2, label: "Party",         labelAr: "الحفلة",         icon: "🎉", location: extraData.tl2loc, desc: extraData.tl2loc || "Dance the night away with us" },
+          { time: extraData.tl0, label: "Ceremony",      labelAr: "مراسم الزواج",   icon: "💒", location: extraData.tl0loc, locationAr: extraData.tl0locAr || extraData.tl0loc, desc: extraData.tl0loc || "Join us as we say our vows" },
+          { time: extraData.tl1, label: "Welcome Drink", labelAr: "مشروب الترحيب", icon: "🥂", location: extraData.tl1loc, locationAr: extraData.tl1locAr || extraData.tl1loc, desc: extraData.tl1loc || "Celebrate with drinks & canapés" },
+          { time: extraData.tl2, label: "Party",         labelAr: "الحفلة",         icon: "🎉", location: extraData.tl2loc, locationAr: extraData.tl2locAr || extraData.tl2loc, desc: extraData.tl2loc || "Dance the night away with us" },
         ],
         dressCode: extraData.dressCode || "",
         transport: extraData.transport || "",
@@ -448,9 +448,9 @@ function BuildInvitationModal({ order }) {
           ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", beneficiary: extraData.registryBeneficiary || null, iban: extraData.registryIban, bic: extraData.registryBic || null, link: null, color: "#c9a96e" }] : []),
         ],
         timeline: [
-          { time: extraData.tl0, label: "Ceremony",      labelAr: "مراسم الزواج",   icon: "💒", location: extraData.tl0loc, desc: extraData.tl0loc || "Join us as we say our vows" },
-          { time: extraData.tl1, label: "Welcome Drink", labelAr: "مشروب الترحيب", icon: "🥂", location: extraData.tl1loc, desc: extraData.tl1loc || "Celebrate with drinks & canapés" },
-          { time: extraData.tl2, label: "Party",         labelAr: "الحفلة",         icon: "🎉", location: extraData.tl2loc, desc: extraData.tl2loc || "Dance the night away with us" },
+          { time: extraData.tl0, label: "Ceremony",      labelAr: "مراسم الزواج",   icon: "💒", location: extraData.tl0loc, locationAr: extraData.tl0locAr || extraData.tl0loc, desc: extraData.tl0loc || "Join us as we say our vows" },
+          { time: extraData.tl1, label: "Welcome Drink", labelAr: "مشروب الترحيب", icon: "🥂", location: extraData.tl1loc, locationAr: extraData.tl1locAr || extraData.tl1loc, desc: extraData.tl1loc || "Celebrate with drinks & canapés" },
+          { time: extraData.tl2, label: "Party",         labelAr: "الحفلة",         icon: "🎉", location: extraData.tl2loc, locationAr: extraData.tl2locAr || extraData.tl2loc, desc: extraData.tl2loc || "Dance the night away with us" },
         ],
         dressCode: extraData.dressCode || "",
         transport: extraData.transport || "",
@@ -1083,6 +1083,12 @@ function BuildInvitationModal({ order }) {
                   placeholder="Venue name"
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
               </div>
+              <div className="col-span-2">
+                <label className="text-white/30 text-xs mb-1 block">{label} — Location (Arabic)</label>
+                <input value={extraData[key + "locAr"]} onChange={e => update(key + "locAr", e.target.value)}
+                  dir="rtl"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              </div>
             </div>
           ))}
 
@@ -1247,9 +1253,9 @@ function BuildBirthdayModal({ order }) {
     musicStart: order.musicStart ? Number(order.musicStart) : null,
     musicEnd: order.musicEnd ? Number(order.musicEnd) : null,
     hideTimeline: false,
-    tl0: formatTime12(order.tl0) || "8:00 PM", tl0loc: order.tl0loc || "Rooftop Terrace",
-    tl1: formatTime12(order.tl1) || "9:00 PM", tl1loc: order.tl1loc || "Grand Ballroom",
-    tl2: formatTime12(order.tl2) || "11:00 PM", tl2loc: order.tl2loc || "Grand Ballroom",
+    tl0: formatTime12(order.tl0) || "8:00 PM", tl0loc: order.tl0loc || "Rooftop Terrace", tl0locAr: order.tl0locAr || "",
+    tl1: formatTime12(order.tl1) || "9:00 PM", tl1loc: order.tl1loc || "Grand Ballroom", tl1locAr: order.tl1locAr || "",
+    tl2: formatTime12(order.tl2) || "11:00 PM", tl2loc: order.tl2loc || "Grand Ballroom", tl2locAr: order.tl2locAr || "",
     memoriesEnabled: false,
     hideEmojis: false,
     envelopeColor: "black",
@@ -1300,9 +1306,9 @@ function BuildBirthdayModal({ order }) {
             musicStart: d.musicStart ?? null,
             musicEnd: d.musicEnd ?? null,
             hideTimeline: d.hideTimeline ?? false,
-            tl0: d.timeline?.[0]?.time || "8:00 PM", tl0loc: d.timeline?.[0]?.location || "",
-            tl1: d.timeline?.[1]?.time || "9:00 PM", tl1loc: d.timeline?.[1]?.location || "",
-            tl2: d.timeline?.[2]?.time || "11:00 PM", tl2loc: d.timeline?.[2]?.location || "",
+            tl0: d.timeline?.[0]?.time || "8:00 PM", tl0loc: d.timeline?.[0]?.location || "", tl0locAr: d.timeline?.[0]?.locationAr || "",
+            tl1: d.timeline?.[1]?.time || "9:00 PM", tl1loc: d.timeline?.[1]?.location || "", tl1locAr: d.timeline?.[1]?.locationAr || "",
+            tl2: d.timeline?.[2]?.time || "11:00 PM", tl2loc: d.timeline?.[2]?.location || "", tl2locAr: d.timeline?.[2]?.locationAr || "",
             memoriesEnabled: d.memoriesEnabled ?? false,
             hideEmojis: d.hideEmojis ?? false,
             envelopeColor: d.envelopeColor || "black",
@@ -1376,9 +1382,9 @@ function BuildBirthdayModal({ order }) {
     musicEnd: extraData.musicEnd ?? null,
     hideTimeline: extraData.hideTimeline ?? false,
     timeline: [
-      { time: extraData.tl0, label: "Cocktail Hour", labelAr: "ساعة الكوكتيل", icon: "🥂", location: extraData.tl0loc },
-      { time: extraData.tl1, label: "Dinner & Toasts", labelAr: "العشاء ونخب", icon: "🍽️", location: extraData.tl1loc },
-      { time: extraData.tl2, label: "Dancing Till Late", labelAr: "سهرة راقصة", icon: "💃", location: extraData.tl2loc },
+      { time: extraData.tl0, label: "Cocktail Hour", labelAr: "ساعة الكوكتيل", icon: "🥂", location: extraData.tl0loc, locationAr: extraData.tl0locAr || extraData.tl0loc },
+      { time: extraData.tl1, label: "Dinner & Toasts", labelAr: "العشاء ونخب", icon: "🍽️", location: extraData.tl1loc, locationAr: extraData.tl1locAr || extraData.tl1loc },
+      { time: extraData.tl2, label: "Dancing Till Late", labelAr: "سهرة راقصة", icon: "💃", location: extraData.tl2loc, locationAr: extraData.tl2locAr || extraData.tl2loc },
     ],
     memoriesEnabled: extraData.memoriesEnabled ?? false,
     hideEmojis: extraData.hideEmojis ?? false,
@@ -1713,6 +1719,12 @@ function BuildBirthdayModal({ order }) {
                 <input value={extraData[key + "loc"]} onChange={e => update(key + "loc", e.target.value)}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
               </div>
+              <div className="col-span-2">
+                <label className="text-white/30 text-xs mb-1 block">{label} — Location (Arabic)</label>
+                <input value={extraData[key + "locAr"]} onChange={e => update(key + "locAr", e.target.value)}
+                  dir="rtl"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+              </div>
             </div>
           ))}
 
@@ -1844,9 +1856,9 @@ function BuildOccasionModal({ order }) {
     musicStart: order.musicStart ? Number(order.musicStart) : null,
     musicEnd: order.musicEnd ? Number(order.musicEnd) : null,
     hideTimeline: false,
-    tl0: formatTime12(order.tl0) || "7:00 PM", tl0loc: order.tl0loc || "", tl0label: order.tl0label || "Welcome Reception", tl0labelAr: "",
-    tl1: formatTime12(order.tl1) || "8:00 PM", tl1loc: order.tl1loc || "", tl1label: order.tl1label || "Toast & Blessing", tl1labelAr: "",
-    tl2: formatTime12(order.tl2) || "9:00 PM", tl2loc: order.tl2loc || "", tl2label: order.tl2label || "Dinner & Dancing", tl2labelAr: "",
+    tl0: formatTime12(order.tl0) || "7:00 PM", tl0loc: order.tl0loc || "", tl0locAr: order.tl0locAr || "", tl0label: order.tl0label || "Welcome Reception", tl0labelAr: "",
+    tl1: formatTime12(order.tl1) || "8:00 PM", tl1loc: order.tl1loc || "", tl1locAr: order.tl1locAr || "", tl1label: order.tl1label || "Toast & Blessing", tl1labelAr: "",
+    tl2: formatTime12(order.tl2) || "9:00 PM", tl2loc: order.tl2loc || "", tl2locAr: order.tl2locAr || "", tl2label: order.tl2label || "Dinner & Dancing", tl2labelAr: "",
     memoriesEnabled: false,
     hideEmojis: false,
     envelopeColor: "black",
@@ -1900,9 +1912,9 @@ function BuildOccasionModal({ order }) {
             musicStart: d.musicStart ?? null,
             musicEnd: d.musicEnd ?? null,
             hideTimeline: d.hideTimeline ?? false,
-            tl0: d.timeline?.[0]?.time || "7:00 PM", tl0loc: d.timeline?.[0]?.location || "", tl0label: d.timeline?.[0]?.label || "Welcome Reception", tl0labelAr: d.timeline?.[0]?.labelAr || "",
-            tl1: d.timeline?.[1]?.time || "8:00 PM", tl1loc: d.timeline?.[1]?.location || "", tl1label: d.timeline?.[1]?.label || "Toast & Blessing", tl1labelAr: d.timeline?.[1]?.labelAr || "",
-            tl2: d.timeline?.[2]?.time || "9:00 PM", tl2loc: d.timeline?.[2]?.location || "", tl2label: d.timeline?.[2]?.label || "Dinner & Dancing", tl2labelAr: d.timeline?.[2]?.labelAr || "",
+            tl0: d.timeline?.[0]?.time || "7:00 PM", tl0loc: d.timeline?.[0]?.location || "", tl0locAr: d.timeline?.[0]?.locationAr || "", tl0label: d.timeline?.[0]?.label || "Welcome Reception", tl0labelAr: d.timeline?.[0]?.labelAr || "",
+            tl1: d.timeline?.[1]?.time || "8:00 PM", tl1loc: d.timeline?.[1]?.location || "", tl1locAr: d.timeline?.[1]?.locationAr || "", tl1label: d.timeline?.[1]?.label || "Toast & Blessing", tl1labelAr: d.timeline?.[1]?.labelAr || "",
+            tl2: d.timeline?.[2]?.time || "9:00 PM", tl2loc: d.timeline?.[2]?.location || "", tl2locAr: d.timeline?.[2]?.locationAr || "", tl2label: d.timeline?.[2]?.label || "Dinner & Dancing", tl2labelAr: d.timeline?.[2]?.labelAr || "",
             memoriesEnabled: d.memoriesEnabled ?? false,
             hideEmojis: d.hideEmojis ?? false,
             envelopeColor: d.envelopeColor || "black",
@@ -1980,9 +1992,9 @@ function BuildOccasionModal({ order }) {
     musicEnd: extraData.musicEnd ?? null,
     hideTimeline: extraData.hideTimeline ?? false,
     timeline: [
-      { time: extraData.tl0, label: extraData.tl0label || "Welcome Reception", labelAr: extraData.tl0labelAr || extraData.tl0label || "", location: extraData.tl0loc, locationAr: extraData.tl0loc },
-      { time: extraData.tl1, label: extraData.tl1label || "Toast & Blessing", labelAr: extraData.tl1labelAr || extraData.tl1label || "", location: extraData.tl1loc, locationAr: extraData.tl1loc },
-      { time: extraData.tl2, label: extraData.tl2label || "Dinner & Dancing", labelAr: extraData.tl2labelAr || extraData.tl2label || "", location: extraData.tl2loc, locationAr: extraData.tl2loc },
+      { time: extraData.tl0, label: extraData.tl0label || "Welcome Reception", labelAr: extraData.tl0labelAr || extraData.tl0label || "", location: extraData.tl0loc, locationAr: extraData.tl0locAr || extraData.tl0loc },
+      { time: extraData.tl1, label: extraData.tl1label || "Toast & Blessing", labelAr: extraData.tl1labelAr || extraData.tl1label || "", location: extraData.tl1loc, locationAr: extraData.tl1locAr || extraData.tl1loc },
+      { time: extraData.tl2, label: extraData.tl2label || "Dinner & Dancing", labelAr: extraData.tl2labelAr || extraData.tl2label || "", location: extraData.tl2loc, locationAr: extraData.tl2locAr || extraData.tl2loc },
     ],
     memoriesEnabled: extraData.memoriesEnabled ?? false,
     hideEmojis: extraData.hideEmojis ?? false,
@@ -2349,6 +2361,9 @@ function BuildOccasionModal({ order }) {
                   placeholder="Location"
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
               </div>
+              <input value={extraData[key + "locAr"]} onChange={e => update(key + "locAr", e.target.value)}
+                placeholder="الموقع بالعربية" dir="rtl"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
             </div>
           ))}
 

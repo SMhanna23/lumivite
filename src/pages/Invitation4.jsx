@@ -367,7 +367,7 @@ function renderSectionOverlay(section, w, ar) {
                         {ar ? (item.labelAr || item.label) : item.label}
                       </p>
                       {item.location && <p style={{ ...J, fontSize: "0.46rem", letterSpacing: "0.1em",
-                        color: "rgba(255,255,255,0.42)", marginTop: 2 }}>{item.location}</p>}
+                        color: "rgba(255,255,255,0.42)", marginTop: 2 }}>{ar ? (item.locationAr || item.location) : item.location}</p>}
                     </div>
                     <div style={{ width: 7, height: 7, borderRadius: "50%", background: GOLD,
                       flexShrink: 0, position: "relative", zIndex: 1 }} />
@@ -393,7 +393,7 @@ function renderSectionOverlay(section, w, ar) {
                         {ar ? (item.labelAr || item.label) : item.label}
                       </p>
                       {item.location && <p style={{ ...J, fontSize: "0.46rem", letterSpacing: "0.1em",
-                        color: "rgba(255,255,255,0.42)", marginTop: 2 }}>{item.location}</p>}
+                        color: "rgba(255,255,255,0.42)", marginTop: 2 }}>{ar ? (item.locationAr || item.location) : item.location}</p>}
                     </div>
                   </>
                 )}

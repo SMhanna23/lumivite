@@ -616,8 +616,8 @@ export default function Invitation({ override = null }) {
                   {item.icon}
                 </div>
                 <div>
-                  <p className="font-medium text-[#2d3a2e]">{item.label}</p>
-                  <p className="text-[rgb(var(--accent-rgb)/0.6)] text-sm mt-0.5">{item.location || item.desc}</p>
+                  <p className="font-medium text-[#2d3a2e]">{ar ? (item.labelAr || item.label) : item.label}</p>
+                  <p className="text-[rgb(var(--accent-rgb)/0.6)] text-sm mt-0.5">{ar ? (item.locationAr || item.location || item.desc) : (item.location || item.desc)}</p>
                 </div>
               </motion.div>
             ))}

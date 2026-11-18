@@ -439,7 +439,7 @@ export default function Order({ plannerPreset } = {}) {
     messageEn: "", messageAr: "",
     quote: "", quoteAr: "", quoteRef: "", quoteRefAr: "",
     rsvpDeadline: "",
-    tl0: "", tl0loc: "", tl0label: "", tl1: "", tl1loc: "", tl1label: "", tl2: "", tl2loc: "", tl2label: "",
+    tl0: "", tl0loc: "", tl0locAr: "", tl0label: "", tl1: "", tl1loc: "", tl1locAr: "", tl1label: "", tl2: "", tl2loc: "", tl2locAr: "", tl2label: "",
     video: "", videoStart: "", videoEnd: "",
     dressCode: "", transport: "", accommodation: "",
     registrySubtitle: "", registryWishMoneyAcc: "", registryWishMoneyPhone: "",
@@ -1146,18 +1146,24 @@ export default function Order({ plannerPreset } = {}) {
                   <p className="text-white/20 text-xs mb-4">{isOccasion ? t.occasionProgramSub : t.timelineSub}</p>
                   {isOccasion ? (
                     [["tl0", "tl0label", "tl0loc", "7:00 PM"], ["tl1", "tl1label", "tl1loc", "8:00 PM"], ["tl2", "tl2label", "tl2loc", "9:00 PM"]].map(([timeKey, labelKey, locKey, timePh], i) => (
-                      <div key={timeKey} className="grid grid-cols-3 gap-3 mb-3">
-                        <div>
-                          <label className="text-white/30 text-xs mb-2 block">{t.programLabel} {i + 1}</label>
-                          <input value={form[labelKey]} onChange={e => update(labelKey, e.target.value)} placeholder={t.programLabelPh} className={inp} />
+                      <div key={timeKey} className="mb-3">
+                        <div className="grid grid-cols-3 gap-3">
+                          <div>
+                            <label className="text-white/30 text-xs mb-2 block">{t.programLabel} {i + 1}</label>
+                            <input value={form[labelKey]} onChange={e => update(labelKey, e.target.value)} placeholder={t.programLabelPh} className={inp} />
+                          </div>
+                          <div>
+                            <label className="text-white/30 text-xs mb-2 block">{t.time}</label>
+                            <input value={form[timeKey]} onChange={e => update(timeKey, e.target.value)} type="time" className={inp} />
+                          </div>
+                          <div>
+                            <label className="text-white/30 text-xs mb-2 block">{t.placeName}</label>
+                            <input value={form[locKey]} onChange={e => update(locKey, e.target.value)} placeholder={t.locationPh} className={inp} />
+                          </div>
                         </div>
-                        <div>
-                          <label className="text-white/30 text-xs mb-2 block">{t.time}</label>
-                          <input value={form[timeKey]} onChange={e => update(timeKey, e.target.value)} type="time" className={inp} />
-                        </div>
-                        <div>
-                          <label className="text-white/30 text-xs mb-2 block">{t.placeName}</label>
-                          <input value={form[locKey]} onChange={e => update(locKey, e.target.value)} placeholder={t.locationPh} className={inp} />
+                        <div className="mt-2">
+                          <label className="text-white/30 text-xs mb-2 block">{t.placeNameAr}</label>
+                          <input value={form[locKey + "Ar"]} onChange={e => update(locKey + "Ar", e.target.value)} dir="rtl" className={inp} />
                         </div>
                       </div>
                     ))
@@ -1170,14 +1176,20 @@ export default function Order({ plannerPreset } = {}) {
                     [t.welcomeLabel, "tl1", "tl1loc", "8:00 PM"],
                     [t.partyLabel, "tl2", "tl2loc", "11:00 PM"],
                   ]).map(([label, timeKey, locKey, timePh]) => (
-                    <div key={timeKey} className="grid grid-cols-2 gap-4 mb-3">
-                      <div>
-                        <label className="text-white/30 text-xs mb-2 block">{label} — {t.time}</label>
-                        <input value={form[timeKey]} onChange={e => update(timeKey, e.target.value)} type="time" className={inp} />
+                    <div key={timeKey} className="mb-3">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{label} — {t.time}</label>
+                          <input value={form[timeKey]} onChange={e => update(timeKey, e.target.value)} type="time" className={inp} />
+                        </div>
+                        <div>
+                          <label className="text-white/30 text-xs mb-2 block">{label} — {t.placeName}</label>
+                          <input value={form[locKey]} onChange={e => update(locKey, e.target.value)} placeholder={t.locationPh} className={inp} />
+                        </div>
                       </div>
-                      <div>
-                        <label className="text-white/30 text-xs mb-2 block">{label} — {t.placeName}</label>
-                        <input value={form[locKey]} onChange={e => update(locKey, e.target.value)} placeholder={t.locationPh} className={inp} />
+                      <div className="mt-2">
+                        <label className="text-white/30 text-xs mb-2 block">{label} — {t.placeNameAr}</label>
+                        <input value={form[locKey + "Ar"]} onChange={e => update(locKey + "Ar", e.target.value)} dir="rtl" className={inp} />
                       </div>
                     </div>
                   ))}
