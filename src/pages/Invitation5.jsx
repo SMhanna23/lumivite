@@ -229,7 +229,7 @@ function HeroSection({ WEDDING, photos, ar }) {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5 pointer-events-none" />
 
       <motion.div className="relative z-10" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} viewport={{ once: true }}>
-        <p className="tracking-[0.4em] text-sm uppercase mb-8" style={{ color: GOLD }}>{ar ? "نحن نتزوج" : "We're getting married"}</p>
+        <p className="tracking-[0.4em] text-sm uppercase mb-8" style={{ color: GOLD }}>{ar ? "نحتفل بزفافنا" : "We're getting married"}</p>
         <h1 className="text-6xl md:text-8xl font-light text-white mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
         <p className="text-4xl italic mb-2" style={{ color: GOLD, fontFamily: "'Cormorant Garamond', serif" }}>&</p>
         <h1 className="text-6xl md:text-8xl font-light text-white mb-10" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>

@@ -353,7 +353,7 @@ export default function Invitation({ override = null }) {
 
         <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
           <p className="tracking-[0.4em] text-sm uppercase mb-8 font-medium" style={{ color: roseGold }}>
-            {ar ? "نحن نتزوج" : "We're getting married"}
+            {ar ? "نحتفل بزفافنا" : "We're getting married"}
           </p>
 
           {/* Ornamental divider */}

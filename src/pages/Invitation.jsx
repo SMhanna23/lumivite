@@ -350,7 +350,7 @@ export default function Invitation({ override = null }) {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5 pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full border border-white/5 pointer-events-none" />
         <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
-          <p className="text-[rgb(var(--accent-rgb))] tracking-[0.4em] text-sm uppercase mb-8">{ar ? "نحن نتزوج" : "We're getting married"}</p>
+          <p className="text-[rgb(var(--accent-rgb))] tracking-[0.4em] text-sm uppercase mb-8">{ar ? "نحتفل بزفافنا" : "We're getting married"}</p>
           <h1 className={`${namesClass} font-light text-white mb-2`} style={{ fontFamily: namesFont }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
           <p className="text-[rgb(var(--accent-rgb))] text-4xl italic mb-2" style={{ fontFamily: namesFont }}>&</p>
           <h1 className={`${namesClass} font-light text-white mb-10`} style={{ fontFamily: namesFont }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
