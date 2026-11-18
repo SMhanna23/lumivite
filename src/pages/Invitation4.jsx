@@ -270,8 +270,8 @@ function renderSectionOverlay(section, w, ar) {
   // ── HOUSES (optional): groom & bride home locations, before ceremony/party ──
   if (section === "houses") {
     const houseEntries = [
-      { label: ar ? "منزل العريس" : "Meet the Groom", h: w.houses?.groom },
-      { label: ar ? "منزل العروس" : "Meet the Bride", h: w.houses?.bride },
+      { label: ar ? "مكان العريس" : "Meet the Groom", h: w.houses?.groom },
+      { label: ar ? "مكان العروس" : "Meet the Bride", h: w.houses?.bride },
     ].filter(x => x.h?.name)
 
     return (
