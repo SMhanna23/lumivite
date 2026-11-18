@@ -12,7 +12,7 @@ const features = [
   { icon: "🌸", title: "Animations", desc: "Floating petals, smooth transitions, and cinematic reveals that impress everyone" },
   { icon: "📍", title: "Venue & Timeline", desc: "Interactive maps, wedding timeline, and all details beautifully presented" },
   { icon: "📸", title: "Memory Wall", desc: "Guests upload photos from the wedding — the couple sees them all in a beautiful private gallery" },
-  { icon: "🎁", title: "Gift Registry", desc: "WishMoney, store links, and IBAN — all elegantly presented inside the invitation" },
+  { icon: "🎁", title: "Gift Registry", desc: "Whish Money, store links, and IBAN — all elegantly presented inside the invitation" },
   { icon: "🪑", title: "Seating Arrangement", desc: "A visual drag-and-drop floor plan with tables, dance floor, bar, and more — guests scan a QR code to find their table instantly" },
 ]
 

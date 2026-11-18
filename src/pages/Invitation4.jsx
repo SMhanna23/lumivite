@@ -33,7 +33,7 @@ const DEFAULT_WEDDING = {
   transport: "Shuttle service available from Jounieh at 6:00 PM",
   accommodation: "Kempinski Summerland Hotel — special rates for guests",
   registry: [
-    { name: "Wish Money",    icon: "💳", desc: "Contribute to our honeymoon fund",  descAr: "ساهم في صندوق شهر العسل", link: "https://www.wishmoney.io" },
+    { name: "Whish Money",    icon: "💳", desc: "Contribute to our honeymoon fund",  descAr: "ساهم في صندوق شهر العسل", link: "https://www.wishmoney.io" },
     { name: "ABC Store",     icon: "🎁", desc: "Browse our gift registry",           descAr: "تصفح قائمة هداياي",        link: "https://www.abc.com.lb" },
     { name: "Bank Transfer", icon: "🏦", desc: "iban: LB62 0099 0000 0001 0019 2000 9123", descAr: "iban: LB62 0099 0000 0001 0019 2000 9123", link: null },
   ],
@@ -791,9 +791,9 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
         {ar ? "قائمة الهدايا" : "Gift Registry"}
       </p>
       {w.registry.map((item, i) => (
-        item.name === "Wish Money" ? (
+        (item.name === "Wish Money" || item.name === "Whish Money") ? (
           <div key={i} className="px-4 py-3 rounded-xl space-y-2" style={{ background: "rgba(196,163,90,0.06)", border: `1px solid ${GOLD}25` }}>
-            <div className="flex items-center gap-2"><div className="w-6 h-6 rounded-md overflow-hidden flex-shrink-0"><img src="/whish-money-logo.png" alt="Whish Money" className="w-full h-full object-cover scale-125" /></div><p className="text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>Wish Money</p></div>
+            <div className="flex items-center gap-2"><div className="w-6 h-6 rounded-md overflow-hidden flex-shrink-0"><img src="/whish-money-logo.png" alt="Whish Money" className="w-full h-full object-cover scale-125" /></div><p className="text-sm" style={{ color: "rgba(255,255,255,0.7)", fontFamily: "'Jost', sans-serif" }}>Whish Money</p></div>
             {item.acc && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>Acc# {item.acc}</span><button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "wish-acc" ? "#4ade80" : GOLD, border: copiedKey === "wish-acc" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "wish-acc" ? "Copied!" : "Copy"}</button></div>}
             {item.phone && <div className="flex items-center justify-between"><span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{item.phone}</span><button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-xs px-2 py-1 rounded-full transition" style={{ color: copiedKey === "wish-phone" ? "#4ade80" : GOLD, border: copiedKey === "wish-phone" ? "1px solid #4ade80" : `1px solid ${GOLD}40` }}>{copiedKey === "wish-phone" ? "Copied!" : "Copy"}</button></div>}
             {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-xs px-2 py-1 rounded-full inline-block mt-1" style={{ color: GOLD, border: `1px solid ${GOLD}40` }}>Visit →</a>}

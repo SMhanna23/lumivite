@@ -44,7 +44,7 @@ const DEFAULT_WEDDING = {
   slug: "demo",
   envelopeColor: "black",
   registry: [
-    { name: "Wish Money", icon: "💳", desc: "Contribute to our honeymoon fund", descAr: "ساهم في صندوق شهر العسل", link: "https://www.wishmoney.io", color: "#c9a96e" },
+    { name: "Whish Money", icon: "💳", desc: "Contribute to our honeymoon fund", descAr: "ساهم في صندوق شهر العسل", link: "https://www.wishmoney.io", color: "#c9a96e" },
     { name: "ABC Store", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: "https://www.abc.com.lb", color: "#c9a96e" },
     { name: "Bank Transfer", icon: "🏦", desc: "iban: LB62 0099 0000 0001 0019 2000 9123", descAr: "iban: LB62 0099 0000 0001 0019 2000 9123", link: null, color: "#c9a96e" },
   ],
@@ -257,9 +257,9 @@ export default function Invitation({ override = null }) {
         <motion.div key={i}
           initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
-          {item.name === "Wish Money" ? (
+          {(item.name === "Wish Money" || item.name === "Whish Money") ? (
             <div className="p-5 rounded-2xl border border-white/10 bg-white/3">
-              <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0"><img src="/whish-money-logo.png" alt="Whish Money" className="w-full h-full object-cover scale-125" /></div><p className="font-medium text-white">Wish Money</p></div>
+              <div className="flex items-center gap-3 mb-3"><div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0"><img src="/whish-money-logo.png" alt="Whish Money" className="w-full h-full object-cover scale-125" /></div><p className="font-medium text-white">Whish Money</p></div>
               {item.acc && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">Acc# {item.acc}</span><button onClick={() => copyToClipboard(item.acc, "wish-acc")} className="text-[rgb(var(--accent-rgb))] text-xs border border-[rgb(var(--accent-rgb)/0.3)] rounded-full px-3 py-1 hover:bg-[rgb(var(--accent-rgb)/0.1)] transition">{copiedKey === "wish-acc" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
               {item.phone && <div className="flex items-center justify-between py-2 border-t border-white/10"><span className="text-white/40 text-xs font-mono">{item.phone}</span><button onClick={() => copyToClipboard(item.phone, "wish-phone")} className="text-[rgb(var(--accent-rgb))] text-xs border border-[rgb(var(--accent-rgb)/0.3)] rounded-full px-3 py-1 hover:bg-[rgb(var(--accent-rgb)/0.1)] transition">{copiedKey === "wish-phone" ? (ar ? "تم النسخ!" : "Copied!") : (ar ? "نسخ" : "Copy")}</button></div>}
               {item.link && <a href={item.link} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs px-3 py-1 rounded-full text-[rgb(var(--accent-rgb))] border border-[rgb(var(--accent-rgb)/0.3)]">Visit →</a>}

@@ -239,9 +239,9 @@ function BuildInvitationModal({ order }) {
             videoEnd: d.videoEnd ?? null,
             muteVideo: d.muteVideo ?? false,
             rsvpDeadline: d.rsvpDeadline || "",
-            registryWishMoneyAcc: d.registry?.find(r => r.name === "Wish Money")?.acc || "",
-            registryWishMoneyPhone: d.registry?.find(r => r.name === "Wish Money")?.phone || "",
-            registryLink1: d.registry?.find(r => r.name === "Wish Money")?.link || "",
+            registryWishMoneyAcc: d.registry?.find(r => r.name === "Wish Money" || r.name === "Whish Money")?.acc || "",
+            registryWishMoneyPhone: d.registry?.find(r => r.name === "Wish Money" || r.name === "Whish Money")?.phone || "",
+            registryLink1: d.registry?.find(r => r.name === "Wish Money" || r.name === "Whish Money")?.link || "",
             registryLink2: d.registry?.find(r => r.name === "Gift Registry")?.link || "",
             registryBeneficiary: d.registry?.find(r => r.name === "Bank Transfer")?.beneficiary || "",
             registryIban: d.registry?.find(r => r.name === "Bank Transfer")?.iban || d.registry?.find(r => r.name === "Bank Transfer")?.desc?.replace("iban: ", "") || "",
@@ -352,7 +352,7 @@ function BuildInvitationModal({ order }) {
           { label: "Wedding Party", labelAr: "حفل الزفاف", time: formatTime12(order.partyTime), place: order.partyPlace, placeAr: extraData.partyPlaceAr || order.partyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.partyMapUrl || null },
         ],
         registry: [
-          ...(extraData.registryWishMoneyAcc || extraData.registryWishMoneyPhone || extraData.registryLink1 ? [{ name: "Wish Money", icon: "💳", acc: extraData.registryWishMoneyAcc || null, phone: extraData.registryWishMoneyPhone || null, link: extraData.registryLink1 || null, color: "#c9a96e" }] : []),
+          ...(extraData.registryWishMoneyAcc || extraData.registryWishMoneyPhone || extraData.registryLink1 ? [{ name: "Whish Money", icon: "💳", acc: extraData.registryWishMoneyAcc || null, phone: extraData.registryWishMoneyPhone || null, link: extraData.registryLink1 || null, color: "#c9a96e" }] : []),
           ...(extraData.registryLink2 ? [{ name: "Gift Registry", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: extraData.registryLink2, color: "#c9a96e" }] : []),
           ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", beneficiary: extraData.registryBeneficiary || null, iban: extraData.registryIban, bic: extraData.registryBic || null, link: null, color: "#c9a96e" }] : []),
         ],
@@ -446,7 +446,7 @@ function BuildInvitationModal({ order }) {
           { label: "Wedding Party", labelAr: "حفل الزفاف", time: formatTime12(order.partyTime), place: order.partyPlace, placeAr: extraData.partyPlaceAr || order.partyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.partyMapUrl || null },
         ],
         registry: [
-          ...(extraData.registryWishMoneyAcc || extraData.registryWishMoneyPhone || extraData.registryLink1 ? [{ name: "Wish Money", icon: "💳", acc: extraData.registryWishMoneyAcc || null, phone: extraData.registryWishMoneyPhone || null, link: extraData.registryLink1 || null, color: "#c9a96e" }] : []),
+          ...(extraData.registryWishMoneyAcc || extraData.registryWishMoneyPhone || extraData.registryLink1 ? [{ name: "Whish Money", icon: "💳", acc: extraData.registryWishMoneyAcc || null, phone: extraData.registryWishMoneyPhone || null, link: extraData.registryLink1 || null, color: "#c9a96e" }] : []),
           ...(extraData.registryLink2 ? [{ name: "Gift Registry", icon: "🎁", desc: "Browse our gift registry", descAr: "تصفح قائمة هداياي", link: extraData.registryLink2, color: "#c9a96e" }] : []),
           ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", beneficiary: extraData.registryBeneficiary || null, iban: extraData.registryIban, bic: extraData.registryBic || null, link: null, color: "#c9a96e" }] : []),
         ],
@@ -1002,8 +1002,8 @@ function BuildInvitationModal({ order }) {
               placeholder="Your presence is our greatest gift. If you wish to honor us further:"
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
-          {/* Wish Money */}
-          <p className="text-white/20 text-xs uppercase tracking-widest">💳 Wish Money</p>
+          {/* Whish Money */}
+          <p className="text-white/20 text-xs uppercase tracking-widest">💳 Whish Money</p>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-white/30 text-xs mb-1 block">Account ID</label>
@@ -1019,7 +1019,7 @@ function BuildInvitationModal({ order }) {
             </div>
           </div>
           <div>
-            <label className="text-white/30 text-xs mb-1 block">Wish Money Link (optional)</label>
+            <label className="text-white/30 text-xs mb-1 block">Whish Money Link (optional)</label>
             <input value={extraData.registryLink1} onChange={e => update("registryLink1", e.target.value)}
               placeholder="https://www.wishmoney.io/..."
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
