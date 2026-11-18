@@ -1015,6 +1015,13 @@ export default function Invitation4({ override = null }) {
   const tier = (W.package || "gold").toLowerCase().includes("gold") ? "gold"
              : (W.package || "").toLowerCase().includes("silver") ? "silver"
              : "bronze"
+  // Admin's "Invitation Text Size" field — scales every piece of text on the
+  // page proportionally (headings, body, RSVP) by resizing the root font-size,
+  // since Tailwind's text-* utilities are all rem-based. "sm"/unset = default.
+  useEffect(() => {
+    document.documentElement.style.fontSize = W.heroSubtextSize === "lg" ? "122%" : W.heroSubtextSize === "md" ? "110%" : "100%"
+    return () => { document.documentElement.style.fontSize = "" }
+  }, [W.heroSubtextSize])
   const [phase,   setPhase] = useState("envelope") // envelope | video | rsvp
   const [lang,    setLang]  = useState("en")
   const ar = lang === "ar"

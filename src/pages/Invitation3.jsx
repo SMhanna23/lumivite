@@ -115,6 +115,13 @@ export default function Invitation({ override = null }) {
   const tier = (WEDDING.package || "gold").toLowerCase().includes("gold") ? "gold"
              : (WEDDING.package || "").toLowerCase().includes("silver") ? "silver"
              : "bronze"
+  // Admin's "Invitation Text Size" field — scales every piece of text on the
+  // page proportionally (headings, body, RSVP) by resizing the root font-size,
+  // since Tailwind's text-* utilities are all rem-based. "sm"/unset = default.
+  useEffect(() => {
+    document.documentElement.style.fontSize = WEDDING.heroSubtextSize === "lg" ? "122%" : WEDDING.heroSubtextSize === "md" ? "110%" : "100%"
+    return () => { document.documentElement.style.fontSize = "" }
+  }, [WEDDING.heroSubtextSize])
   const [started, setStarted] = useState(false)
   const [name, setName] = useState(() => tier !== "bronze" ? (new URLSearchParams(window.location.search).get("gn") || "") : "")
   const [attending, setAttending] = useState(null)

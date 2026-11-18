@@ -696,9 +696,9 @@ function BuildInvitationModal({ order }) {
             </div>
           </div>
           <div>
-            <label className="text-white/30 text-xs mb-2 block">Date & Location — Size</label>
+            <label className="text-white/30 text-xs mb-2 block">✒️ Invitation Text Size (resizes ALL text on the invitation)</label>
             <div className="flex gap-2">
-              {[{ id: "sm", label: "Small (default)" }, { id: "md", label: "Medium" }, { id: "lg", label: "Large" }].map(opt => (
+              {[{ id: "sm", label: "Default" }, { id: "md", label: "Larger (+10%)" }, { id: "lg", label: "Largest (+22%)" }].map(opt => (
                 <button key={opt.id} type="button" onClick={() => update("heroSubtextSize", opt.id)}
                   className="flex-1 py-2 rounded-xl border text-xs font-medium transition"
                   style={{ borderColor: extraData.heroSubtextSize === opt.id ? "#c9a96e" : "rgba(255,255,255,0.1)", background: extraData.heroSubtextSize === opt.id ? "rgba(201,169,110,0.1)" : "rgba(255,255,255,0.03)", color: extraData.heroSubtextSize === opt.id ? "#c9a96e" : "rgba(255,255,255,0.45)" }}>
@@ -706,10 +706,11 @@ function BuildInvitationModal({ order }) {
                 </button>
               ))}
             </div>
+            <p className="text-white/25 text-xs mt-1">Scales headings, body text, and the RSVP form together, so everything stays proportional — good for older guests or clients who want a bolder, easier-to-read look.</p>
             <label className="flex items-center gap-2 cursor-pointer select-none mt-2">
               <input type="checkbox" checked={extraData.heroSubtextBold ?? false} onChange={e => update("heroSubtextBold", e.target.checked)}
                 className="w-4 h-4 rounded accent-[#c9a96e]" />
-              <span className="text-white/35 text-xs">Bold & more visible</span>
+              <span className="text-white/35 text-xs">Bold the Date & Location line specifically</span>
             </label>
           </div>
 
