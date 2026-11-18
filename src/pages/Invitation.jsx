@@ -157,7 +157,7 @@ export default function Invitation({ override = null }) {
   ]
   const namesFont = WEDDING.namesFont === "script" ? "'Great Vibes', cursive" : "'Cormorant Garamond', serif"
   const namesClass = WEDDING.namesFont === "script" ? "text-7xl md:text-9xl" : "text-6xl md:text-8xl"
-  const subtextSize = WEDDING.heroSubtextSize === "lg" ? "1.125rem" : WEDDING.heroSubtextSize === "md" ? "1rem" : "0.875rem"
+  const subtextSize = WEDDING.heroSubtextSize === "lg" ? "1.25rem" : WEDDING.heroSubtextSize === "md" ? "1.125rem" : "1rem"
   const subtextWeight = WEDDING.heroSubtextBold ? 600 : 400
   const audioRef = useRef(null)
   const ytRef = useRef(null)

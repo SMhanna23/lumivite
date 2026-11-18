@@ -251,12 +251,12 @@ export default function Occasion({ override = null }) {
               </p>
               <svg width="28" height="16" viewBox="0 0 28 16" fill="none" style={{ transform: "scaleX(-1)" }}><path d="M26 2C20 2 15 7 14 14C13 7 8 2 2 2" stroke={GOLD} strokeWidth="1" strokeLinecap="round" opacity="0.6" /></svg>
             </div>
-            <p className="tracking-widest uppercase mb-2 text-white/50 text-sm">
+            <p className="tracking-widest uppercase mb-2 text-white/50 text-base">
               {ar
                 ? formatArabicDate(new Date(EVENT.date))
                 : new Date(EVENT.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
             </p>
-            <p className="mb-12 text-white/45 text-sm">
+            <p className="mb-12 text-white/45 text-base">
               {ar ? EVENT.venue.locationAr : EVENT.venue.location}
             </p>
             <Countdown targetDate={EVENT.date} ar={ar} />

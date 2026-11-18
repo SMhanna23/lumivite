@@ -242,12 +242,12 @@ export default function Birthday({ override = null }) {
               </p>
               <svg width="28" height="16" viewBox="0 0 28 16" fill="none" style={{ transform: "scaleX(-1)" }}><path d="M26 2C20 2 15 7 14 14C13 7 8 2 2 2" stroke={GOLD} strokeWidth="1" strokeLinecap="round" opacity="0.6" /></svg>
             </div>
-            <p className="tracking-widest uppercase mb-2 text-white/50 text-sm">
+            <p className="tracking-widest uppercase mb-2 text-white/50 text-base">
               {ar
                 ? formatArabicDate(new Date(CELEBRATION.date))
                 : new Date(CELEBRATION.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
             </p>
-            <p className="mb-12 text-white/45 text-sm">
+            <p className="mb-12 text-white/45 text-base">
               {ar ? CELEBRATION.venue.locationAr : CELEBRATION.venue.location}
             </p>
             <Countdown targetDate={CELEBRATION.date} ar={ar} />
