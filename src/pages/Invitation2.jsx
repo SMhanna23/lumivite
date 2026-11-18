@@ -97,7 +97,8 @@ function Leaves() {
 const timeline = [
   { time: "5:00 PM", label: "Ceremony", icon: "💒", desc: "Join us as we say our vows" },
   { time: "7:00 PM", label: "Welcome Drink", icon: "🥂", desc: "Celebrate with drinks & canapés" },
-  { time: "11:00 PM", label: "Party", icon: "🎉", desc: "Dance the night away with us" },
+  { time: "9:00 PM", label: "Wedding Celebration", icon: "🎉", desc: "Join us for dinner and celebration" },
+  { time: "11:00 PM", label: "After Party", icon: "🥳", desc: "Dance the night away with us" },
 ]
 
 function getYouTubeId(url) {

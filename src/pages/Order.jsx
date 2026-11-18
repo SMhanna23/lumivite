@@ -137,7 +137,8 @@ const T = {
     timelineSub: "Times & locations for each part of the day",
     ceremonyLabel: "Ceremony",
     welcomeLabel: "Welcome Drink",
-    partyLabel: "Party",
+    partyLabel: "Wedding Celebration",
+    afterPartyLabel: "After Party",
     locationPh: "Venue name",
     videoSection: "Pre-Wedding Video (optional)",
     videoSectionSub: "For the Cinematic Sand & Seal template — YouTube, Vimeo, or a direct video link",
@@ -328,7 +329,8 @@ const T = {
     timelineSub: "الأوقات والأماكن لكل جزء من اليوم",
     ceremonyLabel: "المراسم",
     welcomeLabel: "مشروب الترحيب",
-    partyLabel: "الحفلة",
+    partyLabel: "احتفال الزفاف",
+    afterPartyLabel: "سهرة راقصة",
     locationPh: "اسم المكان",
     videoSection: "فيديو ما قبل الزفاف (اختياري)",
     videoSectionSub: "لقالب رملي سينمائي فقط — يوتيوب أو فيميو أو رابط فيديو مباشر",
@@ -439,7 +441,7 @@ export default function Order({ plannerPreset } = {}) {
     messageEn: "", messageAr: "",
     quote: "", quoteAr: "", quoteRef: "", quoteRefAr: "",
     rsvpDeadline: "",
-    tl0: "", tl0loc: "", tl0locAr: "", tl0label: "", tl1: "", tl1loc: "", tl1locAr: "", tl1label: "", tl2: "", tl2loc: "", tl2locAr: "", tl2label: "",
+    tl0: "", tl0loc: "", tl0locAr: "", tl0label: "", tl1: "", tl1loc: "", tl1locAr: "", tl1label: "", tl2: "", tl2loc: "", tl2locAr: "", tl2label: "", tl3: "", tl3loc: "", tl3locAr: "",
     video: "", videoStart: "", videoEnd: "",
     dressCode: "", transport: "", accommodation: "",
     registrySubtitle: "", registryWishMoneyAcc: "", registryWishMoneyPhone: "",
@@ -1174,7 +1176,8 @@ export default function Order({ plannerPreset } = {}) {
                   ] : [
                     [t.ceremonyLabel, "tl0", "tl0loc", t.ceremonyTimePh],
                     [t.welcomeLabel, "tl1", "tl1loc", "8:00 PM"],
-                    [t.partyLabel, "tl2", "tl2loc", "11:00 PM"],
+                    [t.partyLabel, "tl2", "tl2loc", "9:00 PM"],
+                    [t.afterPartyLabel, "tl3", "tl3loc", "11:00 PM"],
                   ]).map(([label, timeKey, locKey, timePh]) => (
                     <div key={timeKey} className="mb-3">
                       <div className="grid grid-cols-2 gap-4">

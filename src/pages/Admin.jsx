@@ -172,7 +172,8 @@ function BuildInvitationModal({ order }) {
     askEventAttendance: false,
     tl0: formatTime12(order.tl0) || "5:00 PM",    tl0loc: order.tl0loc || "",    tl0locAr: order.tl0locAr || "",
     tl1: formatTime12(order.tl1) || "7:00 PM",    tl1loc: order.tl1loc || "",    tl1locAr: order.tl1locAr || "",
-    tl2: formatTime12(order.tl2) || "11:00 PM",   tl2loc: order.tl2loc || "",    tl2locAr: order.tl2locAr || "",
+    tl2: formatTime12(order.tl2) || "9:00 PM",    tl2loc: order.tl2loc || "",    tl2locAr: order.tl2locAr || "",
+    tl3: formatTime12(order.tl3) || "11:00 PM",   tl3loc: order.tl3loc || "",    tl3locAr: order.tl3locAr || "",
     dressCode: order.dressCode || "",
     transport: order.transport || "",
     accommodation: order.accommodation || "",
@@ -258,7 +259,8 @@ function BuildInvitationModal({ order }) {
             askEventAttendance: d.askEventAttendance ?? false,
             tl0: d.timeline?.[0]?.time || "5:00 PM",    tl0loc: d.timeline?.[0]?.location || "",    tl0locAr: d.timeline?.[0]?.locationAr || "",
             tl1: d.timeline?.[1]?.time || "7:00 PM",    tl1loc: d.timeline?.[1]?.location || "",    tl1locAr: d.timeline?.[1]?.locationAr || "",
-            tl2: d.timeline?.[2]?.time || "11:00 PM",   tl2loc: d.timeline?.[2]?.location || "",    tl2locAr: d.timeline?.[2]?.locationAr || "",
+            tl2: d.timeline?.[2]?.time || "9:00 PM",    tl2loc: d.timeline?.[2]?.location || "",    tl2locAr: d.timeline?.[2]?.locationAr || "",
+            tl3: d.timeline?.[3]?.time || "11:00 PM",   tl3loc: d.timeline?.[3]?.location || "",    tl3locAr: d.timeline?.[3]?.locationAr || "",
             dressCode: d.dressCode || "",
             transport: d.transport || "",
             accommodation: d.accommodation || "",
@@ -355,9 +357,10 @@ function BuildInvitationModal({ order }) {
           ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", beneficiary: extraData.registryBeneficiary || null, iban: extraData.registryIban, bic: extraData.registryBic || null, link: null, color: "#c9a96e" }] : []),
         ],
         timeline: [
-          { time: extraData.tl0, label: "Ceremony",      labelAr: "مراسم الزواج",   icon: "💒", location: extraData.tl0loc, locationAr: extraData.tl0locAr || extraData.tl0loc, desc: extraData.tl0loc || "Join us as we say our vows" },
-          { time: extraData.tl1, label: "Welcome Drink", labelAr: "مشروب الترحيب", icon: "🥂", location: extraData.tl1loc, locationAr: extraData.tl1locAr || extraData.tl1loc, desc: extraData.tl1loc || "Celebrate with drinks & canapés" },
-          { time: extraData.tl2, label: "Party",         labelAr: "الحفلة",         icon: "🎉", location: extraData.tl2loc, locationAr: extraData.tl2locAr || extraData.tl2loc, desc: extraData.tl2loc || "Dance the night away with us" },
+          { time: extraData.tl0, label: "Ceremony",          labelAr: "مراسم الزواج",     icon: "💒", location: extraData.tl0loc, locationAr: extraData.tl0locAr || extraData.tl0loc, desc: extraData.tl0loc || "Join us as we say our vows" },
+          { time: extraData.tl1, label: "Welcome Drink",     labelAr: "مشروب الترحيب",   icon: "🥂", location: extraData.tl1loc, locationAr: extraData.tl1locAr || extraData.tl1loc, desc: extraData.tl1loc || "Celebrate with drinks & canapés" },
+          { time: extraData.tl2, label: "Wedding Celebration", labelAr: "احتفال الزفاف", icon: "🎉", location: extraData.tl2loc, locationAr: extraData.tl2locAr || extraData.tl2loc, desc: extraData.tl2loc || "Join us for dinner and celebration" },
+          { time: extraData.tl3, label: "After Party",       labelAr: "سهرة راقصة",       icon: "🥳", location: extraData.tl3loc, locationAr: extraData.tl3locAr || extraData.tl3loc, desc: extraData.tl3loc || "Dance the night away with us" },
         ],
         dressCode: extraData.dressCode || "",
         transport: extraData.transport || "",
@@ -448,9 +451,10 @@ function BuildInvitationModal({ order }) {
           ...(extraData.registryIban ? [{ name: "Bank Transfer", icon: "🏦", beneficiary: extraData.registryBeneficiary || null, iban: extraData.registryIban, bic: extraData.registryBic || null, link: null, color: "#c9a96e" }] : []),
         ],
         timeline: [
-          { time: extraData.tl0, label: "Ceremony",      labelAr: "مراسم الزواج",   icon: "💒", location: extraData.tl0loc, locationAr: extraData.tl0locAr || extraData.tl0loc, desc: extraData.tl0loc || "Join us as we say our vows" },
-          { time: extraData.tl1, label: "Welcome Drink", labelAr: "مشروب الترحيب", icon: "🥂", location: extraData.tl1loc, locationAr: extraData.tl1locAr || extraData.tl1loc, desc: extraData.tl1loc || "Celebrate with drinks & canapés" },
-          { time: extraData.tl2, label: "Party",         labelAr: "الحفلة",         icon: "🎉", location: extraData.tl2loc, locationAr: extraData.tl2locAr || extraData.tl2loc, desc: extraData.tl2loc || "Dance the night away with us" },
+          { time: extraData.tl0, label: "Ceremony",          labelAr: "مراسم الزواج",     icon: "💒", location: extraData.tl0loc, locationAr: extraData.tl0locAr || extraData.tl0loc, desc: extraData.tl0loc || "Join us as we say our vows" },
+          { time: extraData.tl1, label: "Welcome Drink",     labelAr: "مشروب الترحيب",   icon: "🥂", location: extraData.tl1loc, locationAr: extraData.tl1locAr || extraData.tl1loc, desc: extraData.tl1loc || "Celebrate with drinks & canapés" },
+          { time: extraData.tl2, label: "Wedding Celebration", labelAr: "احتفال الزفاف", icon: "🎉", location: extraData.tl2loc, locationAr: extraData.tl2locAr || extraData.tl2loc, desc: extraData.tl2loc || "Join us for dinner and celebration" },
+          { time: extraData.tl3, label: "After Party",       labelAr: "سهرة راقصة",       icon: "🥳", location: extraData.tl3loc, locationAr: extraData.tl3locAr || extraData.tl3loc, desc: extraData.tl3loc || "Dance the night away with us" },
         ],
         dressCode: extraData.dressCode || "",
         transport: extraData.transport || "",
@@ -1069,7 +1073,7 @@ function BuildInvitationModal({ order }) {
               <p className="text-white/25 text-xs mt-0.5">Remove the timeline from the invitation</p>
             </div>
           </label>
-          {[["Ceremony", "tl0"], ["Welcome Drink", "tl1"], ["Party", "tl2"]].map(([label, key]) => (
+          {[["Ceremony", "tl0"], ["Welcome Drink", "tl1"], ["Wedding Celebration", "tl2"], ["After Party", "tl3"]].map(([label, key]) => (
             <div key={key} className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-white/30 text-xs mb-1 block">{label} — Time</label>

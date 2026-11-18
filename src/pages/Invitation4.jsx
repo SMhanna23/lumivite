@@ -173,9 +173,10 @@ function renderSectionOverlay(section, w, ar) {
   const GV = { fontFamily: "'Great Vibes', cursive" }
   const isScript = w.namesFont === "script"
   const defaultTimeline = [
-    { time: "5:00 PM",  label: "Ceremony",      labelAr: "مراسم الزواج",    location: "Saint Georges Church" },
-    { time: "7:00 PM",  label: "Welcome Drink", labelAr: "مشروب الترحيب",  location: "" },
-    { time: "11:00 PM", label: "Party",         labelAr: "الحفلة",          location: "" },
+    { time: "5:00 PM",  label: "Ceremony",            labelAr: "مراسم الزواج",     location: "Saint Georges Church" },
+    { time: "7:00 PM",  label: "Welcome Drink",       labelAr: "مشروب الترحيب",   location: "" },
+    { time: "9:00 PM",  label: "Wedding Celebration", labelAr: "احتفال الزفاف",   location: "" },
+    { time: "11:00 PM", label: "After Party",         labelAr: "سهرة راقصة",       location: "" },
   ]
   const tl = w.timeline || defaultTimeline
 
@@ -322,11 +323,16 @@ function renderSectionOverlay(section, w, ar) {
         <line x1="9" y1="34" x2="23" y2="34" stroke={GOLD} strokeWidth="1.5"/>
         <circle cx="22" cy="8" r="2" stroke={GOLD} strokeWidth="1"/>
       </svg>,
-      // Party — speaker
+      // Wedding Celebration — speaker
       <svg key="party" viewBox="0 0 36 36" width="28" height="28" fill="none">
         <rect x="2" y="11" width="12" height="14" rx="2" stroke={GOLD} strokeWidth="1.5"/>
         <path d="M14 11 L26 4 L26 32 L14 25" stroke={GOLD} strokeWidth="1.5" strokeLinejoin="round"/>
         <path d="M30 13 Q36 18 30 23" stroke={GOLD} strokeWidth="1.5" fill="none"/>
+      </svg>,
+      // After Party — moon & stars
+      <svg key="afterparty" viewBox="0 0 36 36" width="28" height="28" fill="none">
+        <path d="M22 4 A13 13 0 1 0 22 32 A10 10 0 0 1 22 4 Z" stroke={GOLD} strokeWidth="1.5" strokeLinejoin="round"/>
+        <path d="M30 6 L31 9 L34 10 L31 11 L30 14 L29 11 L26 10 L29 9 Z" fill={GOLD} opacity="0.85"/>
       </svg>,
     ]
 
@@ -352,7 +358,7 @@ function renderSectionOverlay(section, w, ar) {
             <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1,
               background: `${GOLD}50`, transform: "translateX(-50%)" }} />
 
-            {tl.slice(0, 3).map((item, i) => (
+            {tl.slice(0, 4).map((item, i) => (
               <motion.div key={i}
                 initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 + i * 0.08 }}
                 style={{ display: "flex", alignItems: "center", padding: "7px 0", position: "relative" }}>
