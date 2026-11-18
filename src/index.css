@@ -15,13 +15,23 @@ body { font-family: 'Jost', sans-serif; }
 
 /* Admin-set "Background Color" override — recolors every solid-fill
    background on an invitation (page background, cards, panels) to one
-   chosen color. Images/videos are excluded since they paint their own
-   pixels regardless of background-color; gradient panels are left as-is
-   since a flat background-color can't replace a background-image.
-   .text-black is excluded too — it always marks a button/chip that's
-   meant to sit on its own accent-colored background for contrast
-   (e.g. the RSVP submit button), so forcing that background to match
-   everything else would make its black text unreadable. */
-.lumi-force-bg, .lumi-force-bg *:not(img):not(video):not(.text-black) {
+   chosen color.
+   Only elements that already declare SOME background (a bg-* class or
+   an inline background style) are touched — a plain decorative element
+   like a border-only ring has neither, so it's left alone instead of
+   getting filled solid, which previously turned "transparent" rings
+   into opaque white discs.
+   Images/videos are excluded since they paint their own pixels
+   regardless of background-color. .text-black is excluded too — it
+   always marks a button/chip meant to sit on its own accent-colored
+   background for contrast (e.g. the RSVP submit button), so forcing
+   that background to match everything else would make its black text
+   unreadable. [style*="gradient"]/[style*="url("] are excluded since
+   every hero photo and its vignette overlay sets its background inline
+   that way — forcing a solid color underneath a gradient with
+   transparent stops fills the "see-through" areas with a flat color
+   instead of letting the photo show through, washing it out. */
+.lumi-force-bg,
+.lumi-force-bg *:is([class*="bg-"], [style*="background"]):not(img):not(video):not(.text-black):not([style*="gradient"]):not([style*="url("]) {
   background-color: var(--force-bg-color) !important;
 }

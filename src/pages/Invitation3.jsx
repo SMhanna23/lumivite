@@ -282,7 +282,7 @@ export default function Invitation({ override = null }) {
       </section>
 
   return (
-    <div className={`${started ? "min-h-screen overflow-x-hidden relative" : "fixed inset-0"}${WEDDING.fontColor ? " lumi-force-text" : ""}${WEDDING.bgColor ? " lumi-force-bg" : ""}`}
+    <div className={`${started ? "min-h-screen overflow-x-hidden relative" : "fixed inset-0"}${(started && WEDDING.fontColor) ? " lumi-force-text" : ""}${(started && WEDDING.bgColor) ? " lumi-force-bg" : ""}`}
       dir={ar ? "rtl" : "ltr"}
       style={{ background: cream, color: dark, fontFamily: ar ? "'Noto Naskh Arabic', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol'" : "inherit", "--force-text-color": WEDDING.fontColor || undefined, "--force-bg-color": WEDDING.bgColor || undefined }}>
 
