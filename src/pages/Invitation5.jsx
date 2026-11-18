@@ -538,7 +538,7 @@ export default function Invitation5({ override = null }) {
             <div className="mb-10">
               {!WEDDING.hideEmojis && <div className="text-2xl mb-6" style={{ color: GOLD }}>✦</div>}
               <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>"{ar ? WEDDING.quoteAr : WEDDING.quote}"</p>
-              {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-sm mt-6 tracking-widest" style={{ color: GOLD }}>— {WEDDING.quoteRef}</p>}
+              {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-sm mt-6 tracking-widest" style={{ color: GOLD }}>— {ar ? (WEDDING.quoteRefAr || WEDDING.quoteRef) : WEDDING.quoteRef}</p>}
               {!WEDDING.hideEmojis && <div className="text-2xl mt-8" style={{ color: GOLD }}>✦</div>}
             </div>
             )}

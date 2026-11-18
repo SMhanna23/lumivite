@@ -137,6 +137,7 @@ function BuildInvitationModal({ order }) {
     quote: order.quote || "We love because he first loved us.",
     quoteAr: order.quoteAr || "نحن نحب لأنه هو أحبنا أولاً",
     quoteRef: order.quoteRef || "1 John 4:19",
+    quoteRefAr: order.quoteRefAr || "",
     hideQuote: false,
     hideQuoteRef: false,
     ceremonyPlaceAr: order.ceremonyPlaceAr || "",
@@ -222,6 +223,7 @@ function BuildInvitationModal({ order }) {
             quote: d.quote || "We love because he first loved us.",
             quoteAr: d.quoteAr || "نحن نحب لأنه هو أحبنا أولاً",
             quoteRef: d.quoteRef ?? "1 John 4:19",
+            quoteRefAr: d.quoteRefAr ?? "",
             hideQuote: d.hideQuote ?? false,
             hideQuoteRef: d.hideQuoteRef ?? false,
             ceremonyPlaceAr: d.venues?.[0]?.placeAr || "",
@@ -329,6 +331,8 @@ function BuildInvitationModal({ order }) {
         quote: extraData.quote,
         quoteAr: extraData.quoteAr,
         quoteRef: extraData.quoteRef,
+    quoteRefAr: extraData.quoteRefAr,
+        quoteRefAr: extraData.quoteRefAr,
         hideQuote: extraData.hideQuote ?? false,
         hideQuoteRef: extraData.hideQuoteRef ?? false,
         music: extraData.music,
@@ -420,6 +424,8 @@ function BuildInvitationModal({ order }) {
         quote: extraData.quote,
         quoteAr: extraData.quoteAr,
         quoteRef: extraData.quoteRef,
+    quoteRefAr: extraData.quoteRefAr,
+        quoteRefAr: extraData.quoteRefAr,
         hideQuote: extraData.hideQuote ?? false,
         hideQuoteRef: extraData.hideQuoteRef ?? false,
         music: extraData.music,
@@ -782,6 +788,11 @@ function BuildInvitationModal({ order }) {
             <label className="text-white/30 text-xs mb-1 block">Quote Author / Reference</label>
             <input value={extraData.quoteRef} onChange={e => update("quoteRef", e.target.value)}
               placeholder="1 John 4:19"
+              disabled={extraData.hideQuoteRef}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e] disabled:opacity-30" />
+            <label className="text-white/30 text-xs mb-1 mt-2 block">Quote Author / Reference (Arabic — optional, falls back to the English version)</label>
+            <input value={extraData.quoteRefAr} onChange={e => update("quoteRefAr", e.target.value)}
+              placeholder="١ يوحنا ٤:١٩" dir="rtl"
               disabled={extraData.hideQuoteRef}
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e] disabled:opacity-30" />
             <label className="flex items-center gap-2 cursor-pointer select-none mt-2">
@@ -1225,6 +1236,7 @@ function BuildBirthdayModal({ order }) {
     quote: order.quote || "Grow old along with me, the best is yet to be.",
     quoteAr: order.quoteAr || "كِبَر معي، فالأجمل لم يأتِ بعد.",
     quoteRef: order.quoteRef || "Robert Browning",
+    quoteRefAr: order.quoteRefAr || "",
     hideQuote: false,
     messageEn: order.messageEn || "Please join us for an unforgettable night of celebration",
     messageAr: order.messageAr || "انضموا إلينا لليلة احتفال لا تُنسى",
@@ -1277,6 +1289,7 @@ function BuildBirthdayModal({ order }) {
             quote: d.quote || "Grow old along with me, the best is yet to be.",
             quoteAr: d.quoteAr || "كِبَر معي، فالأجمل لم يأتِ بعد.",
             quoteRef: d.quoteRef ?? "Robert Browning",
+            quoteRefAr: d.quoteRefAr ?? "",
             hideQuote: d.hideQuote ?? false,
             messageEn: d.message || "Please join us for an unforgettable night of celebration",
             messageAr: d.messageAr || "انضموا إلينا لليلة احتفال لا تُنسى",
@@ -1351,6 +1364,7 @@ function BuildBirthdayModal({ order }) {
     quote: extraData.quote,
     quoteAr: extraData.quoteAr,
     quoteRef: extraData.quoteRef,
+    quoteRefAr: extraData.quoteRefAr,
     hideQuote: extraData.hideQuote ?? false,
     message: extraData.messageEn,
     messageAr: extraData.messageAr,
@@ -1620,6 +1634,10 @@ function BuildBirthdayModal({ order }) {
             <label className="text-white/30 text-xs mb-1 block">Quote Author / Reference</label>
             <input value={extraData.quoteRef} onChange={e => update("quoteRef", e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            <label className="text-white/30 text-xs mb-1 mt-2 block">Quote Author / Reference (Arabic — optional, falls back to the English version)</label>
+            <input value={extraData.quoteRefAr} onChange={e => update("quoteRefAr", e.target.value)}
+              dir="rtl"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
 
           {/* Music — Silver and Gold only */}
@@ -1815,6 +1833,7 @@ function BuildOccasionModal({ order }) {
     quote: order.quote || "The best thing to hold onto in life is each other.",
     quoteAr: order.quoteAr || "أفضل ما يمكن التمسك به في الحياة هو بعضنا البعض.",
     quoteRef: order.quoteRef || "Audrey Hepburn",
+    quoteRefAr: order.quoteRefAr || "",
     hideQuote: false,
     messageEn: order.messageEn || "Please join us as we celebrate this special moment together",
     messageAr: order.messageAr || "انضموا إلينا للاحتفال بهذه اللحظة المميزة معاً",
@@ -1870,6 +1889,7 @@ function BuildOccasionModal({ order }) {
             quote: d.quote || "The best thing to hold onto in life is each other.",
             quoteAr: d.quoteAr || "أفضل ما يمكن التمسك به في الحياة هو بعضنا البعض.",
             quoteRef: d.quoteRef ?? "Audrey Hepburn",
+            quoteRefAr: d.quoteRefAr ?? "",
             hideQuote: d.hideQuote ?? false,
             messageEn: d.message || "Please join us as we celebrate this special moment together",
             messageAr: d.messageAr || "انضموا إلينا للاحتفال بهذه اللحظة المميزة معاً",
@@ -1948,6 +1968,7 @@ function BuildOccasionModal({ order }) {
     quote: extraData.quote,
     quoteAr: extraData.quoteAr,
     quoteRef: extraData.quoteRef,
+    quoteRefAr: extraData.quoteRefAr,
     hideQuote: extraData.hideQuote ?? false,
     message: extraData.messageEn,
     messageAr: extraData.messageAr,
@@ -2241,6 +2262,10 @@ function BuildOccasionModal({ order }) {
           <div style={{ opacity: extraData.hideQuote ? 0.3 : 1, pointerEvents: extraData.hideQuote ? "none" : "auto" }}>
             <label className="text-white/30 text-xs mb-1 block">Quote Author / Reference</label>
             <input value={extraData.quoteRef} onChange={e => update("quoteRef", e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            <label className="text-white/30 text-xs mb-1 mt-2 block">Quote Author / Reference (Arabic — optional, falls back to the English version)</label>
+            <input value={extraData.quoteRefAr} onChange={e => update("quoteRefAr", e.target.value)}
+              dir="rtl"
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
           </div>
 

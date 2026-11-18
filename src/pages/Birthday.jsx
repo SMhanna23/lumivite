@@ -269,7 +269,7 @@ export default function Birthday({ override = null }) {
               <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
                 "{ar ? CELEBRATION.quoteAr : CELEBRATION.quote}"
               </p>
-              {CELEBRATION.quoteRef && <p className="text-sm mt-6 tracking-widest" style={{ color: GOLD }}>— {CELEBRATION.quoteRef}</p>}
+              {CELEBRATION.quoteRef && <p className="text-sm mt-6 tracking-widest" style={{ color: GOLD }}>— {ar ? (CELEBRATION.quoteRefAr || CELEBRATION.quoteRef) : CELEBRATION.quoteRef}</p>}
               {!CELEBRATION.hideEmojis && <div className="text-2xl mt-8" style={{ color: GOLD }}>✦</div>}
             </div>
             )}

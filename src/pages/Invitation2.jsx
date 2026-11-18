@@ -442,7 +442,7 @@ export default function Invitation({ override = null }) {
               style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
               "{ar ? WEDDING.quoteAr : WEDDING.quote}"
             </p>
-            {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-[rgb(var(--accent-rgb))] text-sm mt-6 tracking-widest">— {WEDDING.quoteRef}</p>}
+            {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-[rgb(var(--accent-rgb))] text-sm mt-6 tracking-widest">— {ar ? (WEDDING.quoteRefAr || WEDDING.quoteRef) : WEDDING.quoteRef}</p>}
             <div className="flex items-center gap-4 justify-center mt-8 mb-10">
               <div className="h-px w-20 bg-[rgb(var(--accent-rgb)/0.3)]" />
               {!WEDDING.hideEmojis && <span className="text-2xl">🌸</span>}

@@ -130,6 +130,8 @@ const T = {
     quoteArPh: "نحن نحب لأنه هو أحبنا أولاً",
     quoteRefLabel: "Quote Author / Reference (optional)",
     quoteRefPh: "1 John 4:19",
+    quoteRefArLabel: "Quote Author / Reference — Arabic (optional)",
+    quoteRefArPh: "١ يوحنا ٤:١٩",
     rsvpDeadline: "RSVP Deadline (optional)",
     timeline: "Wedding Day Timeline (optional)",
     timelineSub: "Times & locations for each part of the day",
@@ -319,6 +321,8 @@ const T = {
     quoteArPh: "نحن نحب لأنه هو أحبنا أولاً",
     quoteRefLabel: "كاتب الاقتباس / المرجع (اختياري)",
     quoteRefPh: "1 يوحنا 4:19",
+    quoteRefArLabel: "كاتب الاقتباس / المرجع بالعربية (اختياري)",
+    quoteRefArPh: "١ يوحنا ٤:١٩",
     rsvpDeadline: "الموعد النهائي للرد (اختياري)",
     timeline: "جدول يوم الزفاف (اختياري)",
     timelineSub: "الأوقات والأماكن لكل جزء من اليوم",
@@ -433,7 +437,7 @@ export default function Order({ plannerPreset } = {}) {
     venue: "", venueAr: "",
     city: "", guestCount: "", music: "", musicStart: "", musicEnd: "",
     messageEn: "", messageAr: "",
-    quote: "", quoteAr: "", quoteRef: "",
+    quote: "", quoteAr: "", quoteRef: "", quoteRefAr: "",
     rsvpDeadline: "",
     tl0: "", tl0loc: "", tl0label: "", tl1: "", tl1loc: "", tl1label: "", tl2: "", tl2loc: "", tl2label: "",
     video: "", videoStart: "", videoEnd: "",
@@ -1127,6 +1131,10 @@ export default function Order({ plannerPreset } = {}) {
                 <div>
                   <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.quoteRefLabel}</label>
                   <input value={form.quoteRef} onChange={e => update("quoteRef", e.target.value)} placeholder={t.quoteRefPh} className={inp} />
+                </div>
+                <div>
+                  <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.quoteRefArLabel}</label>
+                  <input value={form.quoteRefAr} onChange={e => update("quoteRefAr", e.target.value)} placeholder={t.quoteRefArPh} dir="rtl" className={inp} />
                 </div>
                 <div>
                   <label className="text-white/40 text-xs uppercase tracking-widest mb-2 block">{t.rsvpDeadline}</label>
