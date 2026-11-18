@@ -277,7 +277,7 @@ export default function Occasion({ override = null }) {
               <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
                 "{ar ? EVENT.quoteAr : EVENT.quote}"
               </p>
-              {EVENT.quoteRef && <p className="text-sm mt-3 tracking-widest" style={{ color: GOLD }}>— {EVENT.quoteRef}</p>}
+              {EVENT.quoteRef && <p className="text-sm mt-6 tracking-widest" style={{ color: GOLD }}>— {EVENT.quoteRef}</p>}
               {!EVENT.hideEmojis && <div className="text-2xl mt-8 mb-6" style={{ color: GOLD }}>✦</div>}
             </>)}
             <p className="text-white/40 text-sm italic">{ar ? EVENT.messageAr : EVENT.message}</p>
