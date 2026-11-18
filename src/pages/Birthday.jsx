@@ -166,7 +166,7 @@ export default function Birthday({ override = null }) {
   return (
     <div className={`${started ? "min-h-screen bg-[#0d0a08] text-white overflow-x-hidden relative" : "fixed inset-0"}${(started && CELEBRATION.fontColor) ? " lumi-force-text" : ""}${(started && CELEBRATION.bgColor) ? " lumi-force-bg" : ""}`}
       dir={ar ? "rtl" : "ltr"}
-      style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol'" : "inherit", "--force-text-color": CELEBRATION.fontColor || undefined, "--force-bg-color": CELEBRATION.bgColor || undefined }}>
+      style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol'" : "inherit", "--force-text-color": CELEBRATION.fontColor || undefined, "--force-bg-color": CELEBRATION.bgColor || undefined, "--force-border-color": GOLD + "80" }}>
 
       {/* Music — Silver and Gold only */}
       {tier !== "bronze" && <audio ref={audioRef} loop src={CELEBRATION.music || "/music.mp3"} preload="auto" />}

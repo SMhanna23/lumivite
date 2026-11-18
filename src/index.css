@@ -13,6 +13,17 @@ body { font-family: 'Jost', sans-serif; }
   color: var(--force-text-color) !important;
 }
 
+/* Input placeholder text is a pseudo-element (::placeholder), so the
+   rule above never reaches it — it was quietly staying at its original
+   faint white, which is invisible once the page is no longer dark.
+   Kept at reduced opacity so it still visually reads as a placeholder
+   rather than real filled-in text. */
+.lumi-force-text input::placeholder,
+.lumi-force-text textarea::placeholder {
+  color: var(--force-text-color) !important;
+  opacity: 0.45;
+}
+
 /* Admin-set "Background Color" override — recolors every solid-fill
    background on an invitation (page background, cards, panels) to one
    chosen color.
@@ -34,4 +45,19 @@ body { font-family: 'Jost', sans-serif; }
 .lumi-force-bg,
 .lumi-force-bg *:is([class*="bg-"], [style*="background"]):not(img):not(video):not(.text-black):not([style*="gradient"]):not([style*="url("]) {
   background-color: var(--force-bg-color) !important;
+}
+
+/* Every card/input/divider border on these templates is a low-opacity
+   white (e.g. border-white/10, via a Tailwind class) or a low-opacity
+   accent color (some templates set it as an inline style instead, e.g.
+   style={{borderColor: `${GOLD}40`}}), tuned to read clearly against
+   the template's own near-black background. Once a custom Background
+   Color is set, those same faint borders can become nearly invisible
+   (white-on-white being the worst case) — so whenever .lumi-force-bg
+   is active, every bordered element (however it declared its border)
+   switches to a visible accent-colored border instead, via its own
+   --force-border-color (set per-template from that template's accent
+   color, since --accent-rgb itself isn't defined on every template). */
+.lumi-force-bg :is([class*="border-"], [style*="border"]) {
+  border-color: var(--force-border-color) !important;
 }

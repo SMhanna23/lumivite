@@ -491,7 +491,7 @@ export default function Invitation5({ override = null }) {
   return (
     <div className={`${started ? "min-h-screen bg-[#0b0a09] text-white overflow-x-hidden relative" : "fixed inset-0"}${(started && WEDDING.fontColor) ? " lumi-force-text" : ""}${(started && WEDDING.bgColor) ? " lumi-force-bg" : ""}`}
       dir={ar ? "rtl" : "ltr"}
-      style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol'" : "inherit", "--force-text-color": WEDDING.fontColor || undefined, "--force-bg-color": WEDDING.bgColor || undefined }}>
+      style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol'" : "inherit", "--force-text-color": WEDDING.fontColor || undefined, "--force-bg-color": WEDDING.bgColor || undefined, "--force-border-color": GOLD + "80" }}>
 
       {tier !== "bronze" && <audio ref={audioRef} loop src={WEDDING.music || "/music.mp3"} preload="auto" />}
 
