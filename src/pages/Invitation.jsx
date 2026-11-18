@@ -376,12 +376,14 @@ export default function Invitation({ override = null }) {
       {/* Quote + Parents */}
       <section className="py-16 px-6 text-center max-w-2xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
-          {!WEDDING.hideQuote && (<>
+          {!WEDDING.hideQuote && (
+          <div className="mb-10">
             {!WEDDING.hideEmojis && <div className="text-[rgb(var(--accent-rgb))] text-2xl mb-6">✦</div>}
             <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>"{ar ? WEDDING.quoteAr : WEDDING.quote}"</p>
             {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-[rgb(var(--accent-rgb))] text-sm mt-6 tracking-widest">— {WEDDING.quoteRef}</p>}
-            {!WEDDING.hideEmojis && <div className="text-[rgb(var(--accent-rgb))] text-2xl mt-8 mb-10">✦</div>}
-          </>)}
+            {!WEDDING.hideEmojis && <div className="text-[rgb(var(--accent-rgb))] text-2xl mt-8">✦</div>}
+          </div>
+          )}
 
           {/* Parents cards */}
           <div className="grid grid-cols-2 gap-4 mb-6">

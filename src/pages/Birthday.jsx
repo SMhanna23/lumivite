@@ -263,14 +263,16 @@ export default function Birthday({ override = null }) {
         {/* Quote + Message */}
         <section className="py-16 px-6 text-center max-w-2xl mx-auto relative z-10">
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
-            {!CELEBRATION.hideQuote && (<>
+            {!CELEBRATION.hideQuote && (
+            <div className="mb-6">
               {!CELEBRATION.hideEmojis && <div className="text-2xl mb-6" style={{ color: GOLD }}>✦</div>}
               <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
                 "{ar ? CELEBRATION.quoteAr : CELEBRATION.quote}"
               </p>
               {CELEBRATION.quoteRef && <p className="text-sm mt-6 tracking-widest" style={{ color: GOLD }}>— {CELEBRATION.quoteRef}</p>}
-              {!CELEBRATION.hideEmojis && <div className="text-2xl mt-8 mb-6" style={{ color: GOLD }}>✦</div>}
-            </>)}
+              {!CELEBRATION.hideEmojis && <div className="text-2xl mt-8" style={{ color: GOLD }}>✦</div>}
+            </div>
+            )}
             <p className="text-white/40 text-sm italic">{ar ? CELEBRATION.messageAr : CELEBRATION.message}</p>
           </motion.div>
         </section>

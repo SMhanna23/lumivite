@@ -272,14 +272,16 @@ export default function Occasion({ override = null }) {
         {/* Quote + Message */}
         <section className="py-16 px-6 text-center max-w-2xl mx-auto relative z-10">
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
-            {!EVENT.hideQuote && (<>
+            {!EVENT.hideQuote && (
+            <div className="mb-6">
               {!EVENT.hideEmojis && <div className="text-2xl mb-6" style={{ color: GOLD }}>✦</div>}
               <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
                 "{ar ? EVENT.quoteAr : EVENT.quote}"
               </p>
               {EVENT.quoteRef && <p className="text-sm mt-6 tracking-widest" style={{ color: GOLD }}>— {EVENT.quoteRef}</p>}
-              {!EVENT.hideEmojis && <div className="text-2xl mt-8 mb-6" style={{ color: GOLD }}>✦</div>}
-            </>)}
+              {!EVENT.hideEmojis && <div className="text-2xl mt-8" style={{ color: GOLD }}>✦</div>}
+            </div>
+            )}
             <p className="text-white/40 text-sm italic">{ar ? EVENT.messageAr : EVENT.message}</p>
           </motion.div>
         </section>
