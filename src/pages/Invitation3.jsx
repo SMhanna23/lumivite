@@ -474,8 +474,8 @@ export default function Invitation({ override = null }) {
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
               {[
-                { label: ar ? "منزل العريس" : "Groom's House", h: WEDDING.houses?.groom },
-                { label: ar ? "منزل العروس" : "Bride's House", h: WEDDING.houses?.bride },
+                { label: ar ? "منزل العريس" : "Meet the Groom", h: WEDDING.houses?.groom },
+                { label: ar ? "منزل العروس" : "Meet the Bride", h: WEDDING.houses?.bride },
               ].filter(x => x.h?.name).map((x, i) => (
                 <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.2 }} viewport={{ once: true }}
