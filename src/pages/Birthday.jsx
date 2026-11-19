@@ -233,7 +233,7 @@ export default function Birthday({ override = null }) {
 
           <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
             <p className="tracking-[0.4em] text-sm uppercase mb-6" style={{ color: GOLD }}>{ar ? "أنتم مدعوون" : "You're Invited"}</p>
-            <h1 className="text-7xl md:text-9xl font-light text-white mb-3" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            <h1 className="font-light text-white mb-3" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.75rem, 18.4vw, 8rem)" }}>
               {ar ? CELEBRATION.nameAr : CELEBRATION.name}
             </h1>
             <div className="flex items-center justify-center gap-3 mb-10">

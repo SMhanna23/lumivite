@@ -159,7 +159,8 @@ export default function Invitation({ override = null }) {
   const [searchParams] = useSearchParams()
   const hideGifts = searchParams.get("hg") === "1"
   const namesFont = WEDDING.namesFont === "script" ? "'Great Vibes', cursive" : WEDDING.namesFont === "formal" ? "'Pinyon Script', cursive" : "'Cormorant Garamond', serif"
-  const namesClass = WEDDING.namesFont === "script" || WEDDING.namesFont === "formal" ? "text-7xl md:text-9xl" : "text-6xl md:text-8xl"
+  const isScriptName = WEDDING.namesFont === "script" || WEDDING.namesFont === "formal"
+  const namesFontSize = isScriptName ? "clamp(2.75rem, 18.4vw, 8rem)" : "clamp(2.25rem, 15.4vw, 6rem)"
   const subtextSize = WEDDING.heroSubtextSize === "lg" ? "1.25rem" : WEDDING.heroSubtextSize === "md" ? "1.125rem" : "1rem"
   const subtextWeight = WEDDING.heroSubtextBold ? 600 : 400
   const audioRef = useRef(null)
@@ -368,13 +369,13 @@ export default function Invitation({ override = null }) {
             <div className="h-px w-16" style={{ background: `${roseGold}50` }} />
           </div>
 
-          <h1 style={{ fontFamily: namesFont, color: dark }}
-            className={`${namesClass} font-light mb-1`}>
+          <h1 style={{ fontFamily: namesFont, color: dark, fontSize: namesFontSize }}
+            className="font-light mb-1">
             {ar ? WEDDING.groomAr : WEDDING.groom}
           </h1>
           <p className="text-3xl italic my-2" style={{ color: roseGold, fontFamily: namesFont }}>&</p>
-          <h1 style={{ fontFamily: namesFont, color: dark }}
-            className={`${namesClass} font-light mb-8`}>
+          <h1 style={{ fontFamily: namesFont, color: dark, fontSize: namesFontSize }}
+            className="font-light mb-8">
             {ar ? WEDDING.brideAr : WEDDING.bride}
           </h1>
 

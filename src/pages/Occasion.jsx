@@ -242,7 +242,7 @@ export default function Occasion({ override = null }) {
 
           <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
             <p className="tracking-[0.4em] text-sm uppercase mb-6" style={{ color: GOLD }}>{ar ? "أنتم مدعوون" : "You're Invited"}</p>
-            <h1 className="text-6xl md:text-8xl font-light text-white mb-3" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            <h1 className="font-light text-white mb-3" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.25rem, 15.4vw, 6rem)" }}>
               {ar ? EVENT.titleAr : EVENT.title}
             </h1>
             <div className="flex items-center justify-center gap-3 mb-10">

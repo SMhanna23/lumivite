@@ -158,7 +158,8 @@ export default function Invitation({ override = null }) {
     "/photo9.jpg",
   ]
   const namesFont = WEDDING.namesFont === "script" ? "'Great Vibes', cursive" : WEDDING.namesFont === "formal" ? "'Pinyon Script', cursive" : "'Cormorant Garamond', serif"
-  const namesClass = WEDDING.namesFont === "script" || WEDDING.namesFont === "formal" ? "text-7xl md:text-9xl" : "text-6xl md:text-8xl"
+  const isScriptName = WEDDING.namesFont === "script" || WEDDING.namesFont === "formal"
+  const namesFontSize = isScriptName ? "clamp(2.75rem, 18.4vw, 8rem)" : "clamp(2.25rem, 15.4vw, 6rem)"
   const subtextSize = WEDDING.heroSubtextSize === "lg" ? "1.25rem" : WEDDING.heroSubtextSize === "md" ? "1.125rem" : "1rem"
   const subtextWeight = WEDDING.heroSubtextBold ? 600 : 400
   const audioRef = useRef(null)
@@ -354,9 +355,9 @@ export default function Invitation({ override = null }) {
 
         <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
           <p className="text-[rgb(var(--accent-rgb))] tracking-[0.4em] text-sm uppercase mb-8">{ar ? "نحتفل بزفافنا" : "We're getting married"}</p>
-          <h1 className={`${namesClass} font-light text-white mb-2`} style={{ fontFamily: namesFont }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
+          <h1 className="font-light text-white mb-2" style={{ fontFamily: namesFont, fontSize: namesFontSize }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
           <p className="text-[rgb(var(--accent-rgb))] text-4xl italic mb-2" style={{ fontFamily: namesFont }}>&</p>
-          <h1 className={`${namesClass} font-light text-white mb-10`} style={{ fontFamily: namesFont }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
+          <h1 className="font-light text-white mb-10" style={{ fontFamily: namesFont, fontSize: namesFontSize }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
           <p className={`tracking-widest uppercase mb-2 ${WEDDING.heroSubtextBold ? "text-white/90" : "text-white/50"}`}
             style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
             {ar

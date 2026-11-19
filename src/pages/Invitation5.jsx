@@ -231,9 +231,9 @@ function HeroSection({ WEDDING, photos, ar }) {
       <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(11,10,9,0.6) 100%)" }} />
       <motion.div className="relative z-10" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} viewport={{ once: true }}>
         <p className="tracking-[0.4em] text-sm uppercase mb-8" style={{ color: GOLD }}>{ar ? "نحتفل بزفافنا" : "We're getting married"}</p>
-        <h1 className="text-6xl md:text-8xl font-light text-white mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
+        <h1 className="font-light text-white mb-2" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.25rem, 15.4vw, 6rem)" }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
         <p className="text-4xl italic mb-2" style={{ color: GOLD, fontFamily: "'Cormorant Garamond', serif" }}>&</p>
-        <h1 className="text-6xl md:text-8xl font-light text-white mb-10" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
+        <h1 className="font-light text-white mb-10" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.25rem, 15.4vw, 6rem)" }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
         <p className="tracking-widest uppercase mb-2 text-white/50 text-base">
           {ar ? formatArabicDate(new Date(WEDDING.date)) : new Date(WEDDING.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
         </p>
