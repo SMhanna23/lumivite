@@ -699,11 +699,12 @@ function BuildInvitationModal({ order }) {
               {[
                 { id: "serif", label: "Elegant Serif", preview: "Cormorant Garamond", desc: "Classic & refined" },
                 { id: "script", label: "Italic Script", preview: "Great Vibes", desc: "Romantic cursive" },
+                { id: "formal", label: "Formal Script", preview: "Pinyon Script", desc: "Engraved invitation style" },
               ].map(opt => (
                 <button key={opt.id} type="button" onClick={() => update("namesFont", opt.id)}
                   className="flex-1 py-3 px-3 rounded-xl border text-center transition"
                   style={{ borderColor: extraData.namesFont === opt.id ? "#c9a96e" : "rgba(255,255,255,0.1)", background: extraData.namesFont === opt.id ? "rgba(201,169,110,0.1)" : "rgba(255,255,255,0.03)" }}>
-                  <p className="text-white/80 text-sm" style={{ fontFamily: opt.id === "script" ? "'Great Vibes', cursive" : "'Cormorant Garamond', serif", fontSize: opt.id === "script" ? "1.3rem" : "1rem" }}>{opt.preview}</p>
+                  <p className="text-white/80 text-sm" style={{ fontFamily: opt.id === "script" ? "'Great Vibes', cursive" : opt.id === "formal" ? "'Pinyon Script', cursive" : "'Cormorant Garamond', serif", fontSize: opt.id === "serif" ? "1rem" : "1.3rem" }}>{opt.preview}</p>
                   <p className="text-white/30 text-xs mt-1">{opt.desc}</p>
                 </button>
               ))}

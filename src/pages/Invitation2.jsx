@@ -154,8 +154,8 @@ export default function Invitation({ override = null }) {
   ]
   const [searchParams] = useSearchParams()
   const hideGifts = searchParams.get("hg") === "1"
-  const namesFont = WEDDING.namesFont === "script" ? "'Great Vibes', cursive" : "'Cormorant Garamond', serif"
-  const namesClass = WEDDING.namesFont === "script" ? "text-7xl md:text-9xl" : "text-6xl md:text-8xl"
+  const namesFont = WEDDING.namesFont === "script" ? "'Great Vibes', cursive" : WEDDING.namesFont === "formal" ? "'Pinyon Script', cursive" : "'Cormorant Garamond', serif"
+  const namesClass = WEDDING.namesFont === "script" || WEDDING.namesFont === "formal" ? "text-7xl md:text-9xl" : "text-6xl md:text-8xl"
   const subtextSize = WEDDING.heroSubtextSize === "lg" ? "1.25rem" : WEDDING.heroSubtextSize === "md" ? "1.125rem" : "1rem"
   const subtextWeight = WEDDING.heroSubtextBold ? 600 : 400
   const audioRef = useRef(null)

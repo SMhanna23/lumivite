@@ -169,10 +169,10 @@ function getContentSections(w) {
 function renderSectionOverlay(section, w, ar) {
   const GOLD = w.accentColor || "#c4a35a"
   const J  = { fontFamily: "'Jost', sans-serif" }
-  const NF = { fontFamily: w.namesFont === "script" ? "'Great Vibes', cursive" : "'Cormorant Garamond', serif" }
+  const NF = { fontFamily: w.namesFont === "script" ? "'Great Vibes', cursive" : w.namesFont === "formal" ? "'Pinyon Script', cursive" : "'Cormorant Garamond', serif" }
   const CG = { fontFamily: "'Cormorant Garamond', serif" }
   const GV = { fontFamily: "'Great Vibes', cursive" }
-  const isScript = w.namesFont === "script"
+  const isScript = w.namesFont === "script" || w.namesFont === "formal"
   const defaultTimeline = [
     { time: "5:00 PM",  label: "Ceremony",            labelAr: "مراسم الزواج",     location: "Saint Georges Church" },
     { time: "7:00 PM",  label: "Welcome Drink",       labelAr: "مشروب الترحيب",   location: "" },
