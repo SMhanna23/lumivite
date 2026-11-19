@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import EnvelopeScreen from "../components/EnvelopeScreen"
+import ChristmasVibes from "../components/ChristmasVibes"
 import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
@@ -171,6 +172,8 @@ export default function Occasion({ override = null }) {
     <div className={`${started ? "min-h-screen bg-[#070d09] text-white overflow-x-hidden relative" : "fixed inset-0"}${(started && EVENT.fontColor) ? " lumi-force-text" : ""}${(started && EVENT.bgColor) ? " lumi-force-bg" : ""}`}
       dir={ar ? "rtl" : "ltr"}
       style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol'" : "inherit", "--force-text-color": EVENT.fontColor || undefined, "--force-bg-color": EVENT.bgColor || undefined, "--force-border-color": GOLD + "80" }}>
+
+      {started && EVENT.christmasVibes && <ChristmasVibes />}
 
       {/* Music — Silver and Gold only */}
       {tier !== "bronze" && <audio ref={audioRef} loop src={EVENT.music || "/music.mp3"} preload="auto" />}

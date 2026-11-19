@@ -61,3 +61,16 @@ body { font-family: 'Jost', sans-serif; }
 .lumi-force-bg :is([class*="border-"], [style*="border"]) {
   border-color: var(--force-border-color) !important;
 }
+
+@keyframes christmas-vibes-fall {
+  0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+  8% { opacity: 0.85; }
+  92% { opacity: 0.85; }
+  100% { transform: translateY(110vh) translateX(var(--christmas-drift)) rotate(360deg); opacity: 0; }
+}
+.christmas-vibes-fall {
+  animation-name: christmas-vibes-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}

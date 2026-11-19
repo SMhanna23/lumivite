@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import EnvelopeScreen from "../components/EnvelopeScreen"
+import ChristmasVibes from "../components/ChristmasVibes"
 import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
@@ -318,6 +319,8 @@ export default function Invitation({ override = null }) {
     <div className={`${started ? "min-h-screen text-[#2d3a2e] overflow-x-hidden relative" : "fixed inset-0"}${(started && WEDDING.fontColor) ? " lumi-force-text" : ""}${(started && WEDDING.bgColor) ? " lumi-force-bg" : ""}`}
       dir={ar ? "rtl" : "ltr"}
       style={{ background: "#faf8f3", fontFamily: ar ? "'Noto Naskh Arabic', serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol'" : "inherit", "--accent-rgb": accentRgb, "--force-text-color": WEDDING.fontColor || undefined, "--force-bg-color": WEDDING.bgColor || undefined, "--force-border-color": (WEDDING.accentColor || "#4a7c59") + "80" }}>
+
+      {started && WEDDING.christmasVibes && <ChristmasVibes />}
 
       {/* Music — Silver and Gold only */}
       {tier !== "bronze" && (ytId ? (

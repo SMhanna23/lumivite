@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import ChristmasVibes from "../components/ChristmasVibes"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams } from "react-router-dom"
@@ -822,6 +823,8 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
       dir={ar ? "rtl" : "ltr"}
       style={{ background: DARK, "--force-text-color": w.fontColor || undefined, "--force-bg-color": w.bgColor || undefined, "--force-border-color": GOLD + "80" }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2 }}>
+
+      {w.christmasVibes && <ChristmasVibes />}
 
       {/* Glow */}
       <div className="absolute inset-0 pointer-events-none"

@@ -184,6 +184,7 @@ function BuildInvitationModal({ order }) {
     noteAr: order.noteAr || "",
     memoriesEnabled: false,
     hideEmojis: false,
+    christmasVibes: false,
     envelopeColor: "black",
   })
 
@@ -271,6 +272,7 @@ function BuildInvitationModal({ order }) {
             noteAr: d.noteAr || "",
             memoriesEnabled: d.memoriesEnabled ?? false,
             hideEmojis: d.hideEmojis ?? false,
+            christmasVibes: d.christmasVibes ?? false,
             envelopeColor: d.envelopeColor || "black",
           })
           if (d.photos?.length) setPhotos(d.photos)
@@ -372,6 +374,7 @@ function BuildInvitationModal({ order }) {
         noteAr: extraData.noteAr || "",
         memoriesEnabled: extraData.memoriesEnabled ?? false,
         hideEmojis: extraData.hideEmojis ?? false,
+        christmasVibes: extraData.christmasVibes ?? false,
         envelopeColor: extraData.envelopeColor || "black",
         registrySubtitle: extraData.registrySubtitle || "",
         registryAfterRsvp: extraData.registryAfterRsvp ?? false,
@@ -466,6 +469,7 @@ function BuildInvitationModal({ order }) {
         noteAr: extraData.noteAr || "",
         memoriesEnabled: extraData.memoriesEnabled ?? false,
         hideEmojis: extraData.hideEmojis ?? false,
+        christmasVibes: extraData.christmasVibes ?? false,
         envelopeColor: extraData.envelopeColor || "black",
         registrySubtitle: extraData.registrySubtitle || "",
         registryAfterRsvp: extraData.registryAfterRsvp ?? false,
@@ -1168,6 +1172,18 @@ function BuildInvitationModal({ order }) {
             </label>
           </div>
 
+          {/* Christmas Vibes toggle — all tiers */}
+          <div className="border border-white/8 rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input type="checkbox" checked={extraData.christmasVibes ?? false} onChange={e => update("christmasVibes", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <div>
+                <p className="text-white/60 text-sm">🎄 Christmas Vibes</p>
+                <p className="text-white/25 text-xs mt-0.5">Adds gently falling holiday emojis (🎄🎅❄️🎁) across the invitation</p>
+              </div>
+            </label>
+          </div>
+
           {/* Photo Upload */}
           <div>
             <label className="text-white/30 text-xs mb-1 block">Client Photos — {tier === "bronze" ? `Cover & Venue (${photos.length}/3)` : `Gallery (${photos.length}/9)`} · drag to reorder</label>
@@ -1262,6 +1278,7 @@ function BuildBirthdayModal({ order }) {
     tl2: formatTime12(order.tl2) || "11:00 PM", tl2loc: order.tl2loc || "Grand Ballroom", tl2locAr: order.tl2locAr || "",
     memoriesEnabled: false,
     hideEmojis: false,
+    christmasVibes: false,
     envelopeColor: "black",
     accentColor: order.accentColor || "",
     fontColor: order.fontColor || "",
@@ -1315,6 +1332,7 @@ function BuildBirthdayModal({ order }) {
             tl2: d.timeline?.[2]?.time || "11:00 PM", tl2loc: d.timeline?.[2]?.location || "", tl2locAr: d.timeline?.[2]?.locationAr || "",
             memoriesEnabled: d.memoriesEnabled ?? false,
             hideEmojis: d.hideEmojis ?? false,
+            christmasVibes: d.christmasVibes ?? false,
             envelopeColor: d.envelopeColor || "black",
             accentColor: d.accentColor || "",
             fontColor: d.fontColor || "",
@@ -1392,6 +1410,7 @@ function BuildBirthdayModal({ order }) {
     ],
     memoriesEnabled: extraData.memoriesEnabled ?? false,
     hideEmojis: extraData.hideEmojis ?? false,
+    christmasVibes: extraData.christmasVibes ?? false,
     envelopeColor: extraData.envelopeColor || "black",
     accentColor: extraData.accentColor || "",
     fontColor: extraData.fontColor || "",
@@ -1770,6 +1789,15 @@ function BuildBirthdayModal({ order }) {
             </label>
           </div>
 
+          {/* Christmas Vibes toggle */}
+          <div className="border border-white/8 rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input type="checkbox" checked={extraData.christmasVibes ?? false} onChange={e => update("christmasVibes", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <p className="text-white/60 text-sm">🎄 Christmas Vibes (falling holiday emojis)</p>
+            </label>
+          </div>
+
           {/* Photo Uploads */}
           <p className="text-white/20 text-xs uppercase tracking-widest pt-1">📷 Photos</p>
           <div className="grid grid-cols-2 gap-3">
@@ -1865,6 +1893,7 @@ function BuildOccasionModal({ order }) {
     tl2: formatTime12(order.tl2) || "9:00 PM", tl2loc: order.tl2loc || "", tl2locAr: order.tl2locAr || "", tl2label: order.tl2label || "Dinner & Dancing", tl2labelAr: "",
     memoriesEnabled: false,
     hideEmojis: false,
+    christmasVibes: false,
     envelopeColor: "black",
     accentColor: order.accentColor || "",
     fontColor: order.fontColor || "",
@@ -1921,6 +1950,7 @@ function BuildOccasionModal({ order }) {
             tl2: d.timeline?.[2]?.time || "9:00 PM", tl2loc: d.timeline?.[2]?.location || "", tl2locAr: d.timeline?.[2]?.locationAr || "", tl2label: d.timeline?.[2]?.label || "Dinner & Dancing", tl2labelAr: d.timeline?.[2]?.labelAr || "",
             memoriesEnabled: d.memoriesEnabled ?? false,
             hideEmojis: d.hideEmojis ?? false,
+            christmasVibes: d.christmasVibes ?? false,
             envelopeColor: d.envelopeColor || "black",
             accentColor: d.accentColor || "",
             fontColor: d.fontColor || "",
@@ -2002,6 +2032,7 @@ function BuildOccasionModal({ order }) {
     ],
     memoriesEnabled: extraData.memoriesEnabled ?? false,
     hideEmojis: extraData.hideEmojis ?? false,
+    christmasVibes: extraData.christmasVibes ?? false,
     envelopeColor: extraData.envelopeColor || "black",
     accentColor: extraData.accentColor || "",
     fontColor: extraData.fontColor || "",
@@ -2406,6 +2437,15 @@ function BuildOccasionModal({ order }) {
               <input type="checkbox" checked={extraData.hideEmojis ?? false} onChange={e => update("hideEmojis", e.target.checked)}
                 className="w-4 h-4 rounded accent-[#c9a96e]" />
               <p className="text-white/60 text-sm">✨ Hide decorative sparkles</p>
+            </label>
+          </div>
+
+          {/* Christmas Vibes toggle */}
+          <div className="border border-white/8 rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input type="checkbox" checked={extraData.christmasVibes ?? false} onChange={e => update("christmasVibes", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <p className="text-white/60 text-sm">🎄 Christmas Vibes (falling holiday emojis)</p>
             </label>
           </div>
 
