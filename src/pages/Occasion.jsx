@@ -356,19 +356,21 @@ export default function Occasion({ override = null }) {
             <div className="relative">
               <div className="absolute left-[88px] top-0 bottom-0 border-l border-white/10" />
               {EVENT.timeline.map((item, i) => (
-                <motion.div key={i} className="flex gap-6 mb-10 items-center"
+                <motion.div key={i} className="mb-10"
                   initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
-                  <div className="text-right w-16">
-                    <span className="text-white/40 text-xs">{ar ? toArabicTime(item.time) : item.time}</span>
+                  <div className="flex gap-6 items-center">
+                    <div className="text-right w-16">
+                      <span className="text-white/40 text-xs">{ar ? toArabicTime(item.time) : item.time}</span>
+                    </div>
+                    <div className="w-8 h-8 rounded-full bg-[#101a13] border flex items-center justify-center flex-shrink-0 relative z-10" style={{ borderColor: `${GOLD}66` }}>
+                      <div className="w-2 h-2 rotate-45" style={{ background: GOLD }} />
+                    </div>
+                    <p className="font-medium text-white flex-1">{ar ? item.labelAr : item.label}</p>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-[#101a13] border flex items-center justify-center flex-shrink-0 relative z-10" style={{ borderColor: `${GOLD}66` }}>
-                    <div className="w-2 h-2 rotate-45" style={{ background: GOLD }} />
-                  </div>
-                  <div>
-                    <p className="font-medium text-white">{ar ? item.labelAr : item.label}</p>
-                    <p className="text-white/40 text-sm mt-0.5">{ar ? item.locationAr : item.location}</p>
-                  </div>
+                  {(ar ? item.locationAr : item.location) && (
+                    <p className="text-white/40 text-sm mt-1" style={{ paddingLeft: 88 }}>{ar ? item.locationAr : item.location}</p>
+                  )}
                 </motion.div>
               ))}
             </div>
