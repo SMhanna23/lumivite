@@ -228,8 +228,6 @@ function HeroSection({ WEDDING, photos, ar }) {
       }} />
       <div className="absolute inset-0 z-0" style={{ background: "linear-gradient(to bottom, rgba(11,10,9,0.78) 0%, rgba(11,10,9,0.1) 28%, rgba(11,10,9,0.1) 65%, rgba(11,10,9,0.88) 100%)" }} />
       <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(11,10,9,0.6) 100%)" }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5 pointer-events-none" />
-
       <motion.div className="relative z-10" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} viewport={{ once: true }}>
         <p className="tracking-[0.4em] text-sm uppercase mb-8" style={{ color: GOLD }}>{ar ? "نحتفل بزفافنا" : "We're getting married"}</p>
         <h1 className="text-6xl md:text-8xl font-light text-white mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
