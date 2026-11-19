@@ -22,6 +22,7 @@ const ENVELOPE_TEXT_TAP = {
 export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setLang, envelopeColor = "black" }) {
   const videoRef = useRef(null)
   const [started, setStarted] = useState(false)
+  const [ready, setReady] = useState(false) // video hidden until confirmed paused at frame 0
   const tapped = useRef(false) // guard: only call onVideoEnd after a real tap
 
   const videoSrc  = ENVELOPE_VIDEO[envelopeColor]  || ENVELOPE_VIDEO.black
@@ -32,8 +33,16 @@ export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setL
   useEffect(() => {
     const v = videoRef.current
     if (!v) return
-    // Preload first frame without triggering onVideoEnd
-    v.play().then(() => { v.pause(); v.currentTime = 0 }).catch(() => {})
+    // Preload first frame without triggering onVideoEnd. The video stays
+    // hidden (opacity 0, solid envelope color shows through) until this
+    // confirms the video is paused back at frame 0 — on slow connections
+    // the play()->pause() gap could otherwise flash a few real frames of
+    // the opening animation before resetting, making the envelope look
+    // like it already opened.
+    v.play().then(() => {
+      if (!tapped.current) { v.pause(); v.currentTime = 0 }
+      setReady(true)
+    }).catch(() => setReady(true))
   }, [])
 
   const tap = () => {
@@ -60,6 +69,7 @@ export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setL
         ref={videoRef}
         src={videoSrc}
         className="absolute inset-0 w-full h-full object-cover"
+        style={{ opacity: ready ? 1 : 0, transition: "opacity 0.25s" }}
         playsInline
         muted
         preload="auto"
