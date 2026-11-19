@@ -235,7 +235,7 @@ function HeroSection({ WEDDING, photos, ar }) {
         <p className="text-4xl italic mb-2" style={{ color: GOLD, fontFamily: "'Cormorant Garamond', serif" }}>&</p>
         <h1 className="text-6xl md:text-8xl font-light text-white mb-10" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
         <p className="tracking-widest uppercase mb-2 text-white/50 text-base">
-          {ar ? formatArabicDate(new Date(WEDDING.date)) : new Date(WEDDING.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+          {ar ? formatArabicDate(new Date(WEDDING.date)) : new Date(WEDDING.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
         </p>
         <p className="mb-12 text-white/45 text-base">{ar ? (WEDDING.venueAr || WEDDING.venue) : WEDDING.venue}</p>
         <Countdown targetDate={WEDDING.date} ar={ar} />

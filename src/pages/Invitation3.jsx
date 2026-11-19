@@ -383,7 +383,7 @@ export default function Invitation({ override = null }) {
             <p className="tracking-widest uppercase" style={{ fontSize: subtextSize, fontWeight: subtextWeight, opacity: WEDDING.heroSubtextBold ? 0.9 : 0.6 }}>
               {ar
                 ? formatArabicDate(new Date(WEDDING.date))
-                : new Date(WEDDING.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                : new Date(WEDDING.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
             </p>
             <div className="h-px w-16" style={{ background: `${roseGold}50` }} />
           </div>

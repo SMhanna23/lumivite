@@ -246,7 +246,7 @@ export default function Birthday({ override = null }) {
             <p className="tracking-widest uppercase mb-2 text-white/50 text-base">
               {ar
                 ? formatArabicDate(new Date(CELEBRATION.date))
-                : new Date(CELEBRATION.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                : new Date(CELEBRATION.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
             </p>
             <p className="mb-12 text-white/45 text-base">
               {ar ? CELEBRATION.venue.locationAr : CELEBRATION.venue.location}

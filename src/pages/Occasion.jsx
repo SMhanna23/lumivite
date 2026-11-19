@@ -255,7 +255,7 @@ export default function Occasion({ override = null }) {
             <p className="tracking-widest uppercase mb-2 text-white/50 text-base">
               {ar
                 ? formatArabicDate(new Date(EVENT.date))
-                : new Date(EVENT.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                : new Date(EVENT.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
             </p>
             <p className="mb-12 text-white/45 text-base">
               {ar ? EVENT.venue.locationAr : EVENT.venue.location}

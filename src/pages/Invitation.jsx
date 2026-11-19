@@ -361,7 +361,7 @@ export default function Invitation({ override = null }) {
             style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
             {ar
               ? formatArabicDate(new Date(WEDDING.date))
-              : new Date(WEDDING.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+              : new Date(WEDDING.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
           </p>
           <p className={`mb-12 ${WEDDING.heroSubtextBold ? "text-white/80" : "text-white/45"}`}
             style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
