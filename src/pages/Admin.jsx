@@ -185,6 +185,7 @@ function BuildInvitationModal({ order }) {
     memoriesEnabled: false,
     hideEmojis: false,
     christmasVibes: false,
+    hideParentsLabel: false,
     envelopeColor: "black",
   })
 
@@ -273,6 +274,7 @@ function BuildInvitationModal({ order }) {
             memoriesEnabled: d.memoriesEnabled ?? false,
             hideEmojis: d.hideEmojis ?? false,
             christmasVibes: d.christmasVibes ?? false,
+            hideParentsLabel: d.hideParentsLabel ?? false,
             envelopeColor: d.envelopeColor || "black",
           })
           if (d.photos?.length) setPhotos(d.photos)
@@ -375,6 +377,7 @@ function BuildInvitationModal({ order }) {
         memoriesEnabled: extraData.memoriesEnabled ?? false,
         hideEmojis: extraData.hideEmojis ?? false,
         christmasVibes: extraData.christmasVibes ?? false,
+        hideParentsLabel: extraData.hideParentsLabel ?? false,
         envelopeColor: extraData.envelopeColor || "black",
         registrySubtitle: extraData.registrySubtitle || "",
         registryAfterRsvp: extraData.registryAfterRsvp ?? false,
@@ -470,6 +473,7 @@ function BuildInvitationModal({ order }) {
         memoriesEnabled: extraData.memoriesEnabled ?? false,
         hideEmojis: extraData.hideEmojis ?? false,
         christmasVibes: extraData.christmasVibes ?? false,
+        hideParentsLabel: extraData.hideParentsLabel ?? false,
         envelopeColor: extraData.envelopeColor || "black",
         registrySubtitle: extraData.registrySubtitle || "",
         registryAfterRsvp: extraData.registryAfterRsvp ?? false,
@@ -771,6 +775,16 @@ function BuildInvitationModal({ order }) {
                 placeholder={"فادي ودانيا عبود\nنيكولا ومرلين حنا"} rows={2} dir="rtl"
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e] resize-none" />
             </div>
+          </div>
+          <div className="border border-white/8 rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input type="checkbox" checked={extraData.hideParentsLabel ?? false} onChange={e => update("hideParentsLabel", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <div>
+                <p className="text-white/60 text-sm">👪 Hide "Mr. & Mrs." label on parent cards</p>
+                <p className="text-white/25 text-xs mt-0.5">Keeps the parents' names but removes the "Mr. & Mrs." prefix — useful if a parent has passed away</p>
+              </div>
+            </label>
           </div>
 
           {/* Quote */}

@@ -552,7 +552,7 @@ export default function Invitation5({ override = null }) {
                   transition={{ delay: i * 0.15 }} viewport={{ once: true }}
                   className="rounded-xl px-4 py-5 text-center"
                   style={{ border: `1px solid ${GOLD}4d`, background: `${GOLD}0d` }}>
-                  <p className="text-xs tracking-[0.3em] uppercase mb-2" style={{ color: GOLD }}>{ar ? "عائلة" : "Mr. & Mrs."}</p>
+                  {!WEDDING.hideParentsLabel && <p className="text-xs tracking-[0.3em] uppercase mb-2" style={{ color: GOLD }}>{ar ? "عائلة" : "Mr. & Mrs."}</p>}
                   <p className="text-white font-light text-sm leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>{p}</p>
                 </motion.div>
               ))}

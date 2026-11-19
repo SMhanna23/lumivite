@@ -395,7 +395,7 @@ export default function Invitation({ override = null }) {
                 transition={{ delay: i * 0.15 }} viewport={{ once: true }}
                 className="border border-[rgb(var(--accent-rgb)/0.3)] rounded-xl px-4 py-5 text-center"
                 style={{ background: "rgb(var(--accent-rgb)/0.05)" }}>
-                <p className="text-[rgb(var(--accent-rgb))] text-xs tracking-[0.3em] uppercase mb-2">{ar ? "عائلة" : "Mr. & Mrs."}</p>
+                {!WEDDING.hideParentsLabel && <p className="text-[rgb(var(--accent-rgb))] text-xs tracking-[0.3em] uppercase mb-2">{ar ? "عائلة" : "Mr. & Mrs."}</p>}
                 <p className="text-white font-light text-sm leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "inherit" }}>{p}</p>
               </motion.div>
             ))}
