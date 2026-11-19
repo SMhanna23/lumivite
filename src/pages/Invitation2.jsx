@@ -217,18 +217,6 @@ export default function Invitation({ override = null }) {
     return () => audio.removeEventListener("timeupdate", onTimeUpdate)
   }, [musicStart, musicEnd])
 
-  // Optional: start music immediately instead of waiting for the envelope tap.
-  // Browsers may still block autoplay with sound until the guest's first
-  // interaction with the page, so we also start it on that as a fallback.
-  useEffect(() => {
-    if (tier === "bronze" || !WEDDING.musicAutoplay) return
-    startMusic()
-    const onFirstInteract = () => startMusic()
-    document.addEventListener("pointerdown", onFirstInteract, { once: true })
-    return () => document.removeEventListener("pointerdown", onFirstInteract)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const requireEventChoice = showEventChoice && attending === true
   const handleRSVP = async () => {
     if (!name || attending === null || (requireEventChoice && eventChoice === null)) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
