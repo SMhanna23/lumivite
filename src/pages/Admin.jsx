@@ -147,6 +147,7 @@ function BuildInvitationModal({ order }) {
     music: order.music || "",
     musicStart: order.musicStart ? Number(order.musicStart) : null,
     musicEnd: order.musicEnd ? Number(order.musicEnd) : null,
+    musicAutoplay: order.musicAutoplay ?? false,
     video: order.video || "",
     videoStart: order.videoStart ? Number(order.videoStart) : null,
     videoEnd: order.videoEnd ? Number(order.videoEnd) : null,
@@ -236,6 +237,7 @@ function BuildInvitationModal({ order }) {
             music: d.music || "",
             musicStart: d.musicStart ?? null,
             musicEnd: d.musicEnd ?? null,
+            musicAutoplay: d.musicAutoplay ?? false,
             video: d.video || "",
             videoStart: d.videoStart ?? null,
             videoEnd: d.videoEnd ?? null,
@@ -344,6 +346,7 @@ function BuildInvitationModal({ order }) {
         music: extraData.music,
         musicStart: extraData.musicStart ?? null,
         musicEnd: extraData.musicEnd ?? null,
+        musicAutoplay: extraData.musicAutoplay ?? false,
         video: extraData.video || "",
         videoStart: extraData.videoStart ?? null,
         videoEnd: extraData.videoEnd ?? null,
@@ -440,6 +443,7 @@ function BuildInvitationModal({ order }) {
         music: extraData.music,
         musicStart: extraData.musicStart ?? null,
         musicEnd: extraData.musicEnd ?? null,
+        musicAutoplay: extraData.musicAutoplay ?? false,
         video: extraData.video || "",
         videoStart: extraData.videoStart ?? null,
         videoEnd: extraData.videoEnd ?? null,
@@ -846,6 +850,14 @@ function BuildInvitationModal({ order }) {
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
               </div>
             </div>
+            <label className="flex items-center gap-3 cursor-pointer select-none mt-3">
+              <input type="checkbox" checked={extraData.musicAutoplay ?? false} onChange={e => update("musicAutoplay", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <div>
+                <p className="text-white/60 text-sm">🎵 Start music immediately (before the envelope is opened)</p>
+                <p className="text-white/25 text-xs mt-0.5">By default music starts when the guest taps to open the envelope. Some phones/browsers may still block this until the guest's first tap on the page.</p>
+              </div>
+            </label>
           </div>}
 
           {/* RSVP Deadline */}
@@ -1287,6 +1299,7 @@ function BuildBirthdayModal({ order }) {
     music: order.music || "",
     musicStart: order.musicStart ? Number(order.musicStart) : null,
     musicEnd: order.musicEnd ? Number(order.musicEnd) : null,
+    musicAutoplay: order.musicAutoplay ?? false,
     hideTimeline: false,
     tl0: formatTime12(order.tl0) || "8:00 PM", tl0loc: order.tl0loc || "Rooftop Terrace", tl0locAr: order.tl0locAr || "",
     tl1: formatTime12(order.tl1) || "9:00 PM", tl1loc: order.tl1loc || "Grand Ballroom", tl1locAr: order.tl1locAr || "",
@@ -1341,6 +1354,7 @@ function BuildBirthdayModal({ order }) {
             music: d.music || "",
             musicStart: d.musicStart ?? null,
             musicEnd: d.musicEnd ?? null,
+            musicAutoplay: d.musicAutoplay ?? false,
             hideTimeline: d.hideTimeline ?? false,
             tl0: d.timeline?.[0]?.time || "8:00 PM", tl0loc: d.timeline?.[0]?.location || "", tl0locAr: d.timeline?.[0]?.locationAr || "",
             tl1: d.timeline?.[1]?.time || "9:00 PM", tl1loc: d.timeline?.[1]?.location || "", tl1locAr: d.timeline?.[1]?.locationAr || "",
@@ -1417,6 +1431,7 @@ function BuildBirthdayModal({ order }) {
     music: extraData.music,
     musicStart: extraData.musicStart ?? null,
     musicEnd: extraData.musicEnd ?? null,
+    musicAutoplay: extraData.musicAutoplay ?? false,
     hideTimeline: extraData.hideTimeline ?? false,
     timeline: [
       { time: extraData.tl0, label: "Cocktail Hour", labelAr: "ساعة الكوكتيل", icon: "🥂", location: extraData.tl0loc, locationAr: extraData.tl0locAr || extraData.tl0loc },
@@ -1704,6 +1719,14 @@ function BuildBirthdayModal({ order }) {
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
               </div>
             </div>
+            <label className="flex items-center gap-3 cursor-pointer select-none mt-3">
+              <input type="checkbox" checked={extraData.musicAutoplay ?? false} onChange={e => update("musicAutoplay", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <div>
+                <p className="text-white/60 text-sm">🎵 Start music immediately (before the envelope is opened)</p>
+                <p className="text-white/25 text-xs mt-0.5">By default music starts when the guest taps to open the envelope. Some phones/browsers may still block this until the guest's first tap on the page.</p>
+              </div>
+            </label>
           </div>}
 
           {/* RSVP Deadline */}
@@ -1902,6 +1925,7 @@ function BuildOccasionModal({ order }) {
     music: order.music || "",
     musicStart: order.musicStart ? Number(order.musicStart) : null,
     musicEnd: order.musicEnd ? Number(order.musicEnd) : null,
+    musicAutoplay: order.musicAutoplay ?? false,
     hideTimeline: false,
     tl0: formatTime12(order.tl0) || "7:00 PM", tl0loc: order.tl0loc || "", tl0locAr: order.tl0locAr || "", tl0label: order.tl0label || "Welcome Reception", tl0labelAr: "",
     tl1: formatTime12(order.tl1) || "8:00 PM", tl1loc: order.tl1loc || "", tl1locAr: order.tl1locAr || "", tl1label: order.tl1label || "Toast & Blessing", tl1labelAr: "",
@@ -1959,6 +1983,7 @@ function BuildOccasionModal({ order }) {
             music: d.music || "",
             musicStart: d.musicStart ?? null,
             musicEnd: d.musicEnd ?? null,
+            musicAutoplay: d.musicAutoplay ?? false,
             hideTimeline: d.hideTimeline ?? false,
             tl0: d.timeline?.[0]?.time || "7:00 PM", tl0loc: d.timeline?.[0]?.location || "", tl0locAr: d.timeline?.[0]?.locationAr || "", tl0label: d.timeline?.[0]?.label || "Welcome Reception", tl0labelAr: d.timeline?.[0]?.labelAr || "",
             tl1: d.timeline?.[1]?.time || "8:00 PM", tl1loc: d.timeline?.[1]?.location || "", tl1locAr: d.timeline?.[1]?.locationAr || "", tl1label: d.timeline?.[1]?.label || "Toast & Blessing", tl1labelAr: d.timeline?.[1]?.labelAr || "",
@@ -2039,6 +2064,7 @@ function BuildOccasionModal({ order }) {
     music: extraData.music,
     musicStart: extraData.musicStart ?? null,
     musicEnd: extraData.musicEnd ?? null,
+    musicAutoplay: extraData.musicAutoplay ?? false,
     hideTimeline: extraData.hideTimeline ?? false,
     timeline: [
       { time: extraData.tl0, label: extraData.tl0label || "Welcome Reception", labelAr: extraData.tl0labelAr || extraData.tl0label || "", location: extraData.tl0loc, locationAr: extraData.tl0locAr || extraData.tl0loc },
@@ -2351,6 +2377,14 @@ function BuildOccasionModal({ order }) {
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
               </div>
             </div>
+            <label className="flex items-center gap-3 cursor-pointer select-none mt-3">
+              <input type="checkbox" checked={extraData.musicAutoplay ?? false} onChange={e => update("musicAutoplay", e.target.checked)}
+                className="w-4 h-4 rounded accent-[#c9a96e]" />
+              <div>
+                <p className="text-white/60 text-sm">🎵 Start music immediately (before the envelope is opened)</p>
+                <p className="text-white/25 text-xs mt-0.5">By default music starts when the guest taps to open the envelope. Some phones/browsers may still block this until the guest's first tap on the page.</p>
+              </div>
+            </label>
           </div>}
 
           {/* RSVP Deadline */}

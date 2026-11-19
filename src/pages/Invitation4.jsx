@@ -1048,6 +1048,18 @@ export default function Invitation4({ override = null }) {
     }
   }, [])
 
+  // Optional: start music immediately instead of waiting for the envelope tap.
+  // Browsers may still block autoplay with sound until the guest's first
+  // interaction with the page, so we also start it on that as a fallback.
+  useEffect(() => {
+    if (tier === "bronze" || !W.musicAutoplay) return
+    startMusic()
+    const onFirstInteract = () => startMusic()
+    document.addEventListener("pointerdown", onFirstInteract, { once: true })
+    return () => document.removeEventListener("pointerdown", onFirstInteract)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const photos = W.photos?.length ? W.photos : [
     "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800",
     "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200",
