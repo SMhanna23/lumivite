@@ -388,7 +388,7 @@ export default function Invitation({ override = null }) {
           </div>
 
           <p className="mb-10" style={{ fontSize: subtextSize, fontWeight: subtextWeight, opacity: WEDDING.heroSubtextBold ? 0.75 : 0.5 }}>
-            {ar ? WEDDING.venueAr : WEDDING.venue}
+            {ar ? (WEDDING.venueAr || WEDDING.venue) : WEDDING.venue}
           </p>
           <Countdown targetDate={WEDDING.date} ar={ar} />
         </motion.div>
@@ -532,8 +532,8 @@ export default function Invitation({ override = null }) {
                     {ar ? v.labelAr : v.label}
                   </p>
                   <p className="text-3xl font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? toArabicTime(v.time) : v.time}</p>
-                  <p className="font-medium mb-1">{ar ? v.placeAr : v.place}</p>
-                  <p className="text-sm mb-4 opacity-50">{ar ? v.locationAr : v.location}</p>
+                  <p className="font-medium mb-1">{ar ? (v.placeAr || v.place) : v.place}</p>
+                  <p className="text-sm mb-4 opacity-50">{ar ? (v.locationAr || v.location) : v.location}</p>
                   {tier === "gold" && <a href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
                     target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm rounded-full px-4 py-2 transition"

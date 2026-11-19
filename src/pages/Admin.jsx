@@ -219,7 +219,7 @@ function BuildInvitationModal({ order }) {
             brideAr: d.brideAr || "",
             messageEn: d.message || "Together with their families",
             messageAr: d.messageAr || "معاً مع عائلتيهما",
-            venue: d.venue || `${order.ceremonyPlace}, ${order.city}`,
+            venue: d.venue ?? `${order.ceremonyPlace}, ${order.city}`,
             venueAr: d.venueAr || "",
             parentsEn: (d.parents || []).join("\n"),
             parentsAr: (d.parentsAr || []).join("\n"),
@@ -333,7 +333,7 @@ function BuildInvitationModal({ order }) {
         date: order.weddingDate + "T18:00:00",
         template: order.template,
         venue: extraData.venue,
-        venueAr: extraData.venueAr || extraData.venue,
+        venueAr: extraData.venueAr || "",
         quote: extraData.quote,
         quoteAr: extraData.quoteAr,
         quoteRef: extraData.quoteRef,
@@ -352,8 +352,8 @@ function BuildInvitationModal({ order }) {
         parents: extraData.parentsEn ? extraData.parentsEn.split("\n") : [],
         parentsAr: extraData.parentsAr ? extraData.parentsAr.split("\n") : [],
         venues: [
-          { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: formatTime12(order.ceremonyTime), place: order.ceremonyPlace, placeAr: extraData.ceremonyPlaceAr || order.ceremonyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.ceremonyMapUrl || null },
-          { label: "Wedding Party", labelAr: "حفل الزفاف", time: formatTime12(order.partyTime), place: order.partyPlace, placeAr: extraData.partyPlaceAr || order.partyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.partyMapUrl || null },
+          { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: formatTime12(order.ceremonyTime), place: order.ceremonyPlace, placeAr: extraData.ceremonyPlaceAr || "", location: order.city, locationAr: extraData.venueAr || "", map: extraData.ceremonyMapUrl || null },
+          { label: "Wedding Party", labelAr: "حفل الزفاف", time: formatTime12(order.partyTime), place: order.partyPlace, placeAr: extraData.partyPlaceAr || "", location: order.city, locationAr: extraData.venueAr || "", map: extraData.partyMapUrl || null },
         ],
         registry: [
           ...(extraData.registryWishMoneyAcc || extraData.registryWishMoneyPhone || extraData.registryLink1 ? [{ name: "Whish Money", icon: "💳", acc: extraData.registryWishMoneyAcc || null, phone: extraData.registryWishMoneyPhone || null, link: extraData.registryLink1 || null, color: "#c9a96e" }] : []),
@@ -429,7 +429,7 @@ function BuildInvitationModal({ order }) {
         date: order.weddingDate + "T18:00:00",
         template: order.template,
         venue: extraData.venue,
-        venueAr: extraData.venueAr || extraData.venue,
+        venueAr: extraData.venueAr || "",
         quote: extraData.quote,
         quoteAr: extraData.quoteAr,
         quoteRef: extraData.quoteRef,
@@ -448,8 +448,8 @@ function BuildInvitationModal({ order }) {
         parents: extraData.parentsEn ? extraData.parentsEn.split("\n") : [],
         parentsAr: extraData.parentsAr ? extraData.parentsAr.split("\n") : [],
         venues: [
-          { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: formatTime12(order.ceremonyTime), place: order.ceremonyPlace, placeAr: extraData.ceremonyPlaceAr || order.ceremonyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.ceremonyMapUrl || null },
-          { label: "Wedding Party", labelAr: "حفل الزفاف", time: formatTime12(order.partyTime), place: order.partyPlace, placeAr: extraData.partyPlaceAr || order.partyPlace, location: order.city, locationAr: extraData.venueAr || order.city, map: extraData.partyMapUrl || null },
+          { label: "Wedding Ceremony", labelAr: "مراسم الزواج", time: formatTime12(order.ceremonyTime), place: order.ceremonyPlace, placeAr: extraData.ceremonyPlaceAr || "", location: order.city, locationAr: extraData.venueAr || "", map: extraData.ceremonyMapUrl || null },
+          { label: "Wedding Party", labelAr: "حفل الزفاف", time: formatTime12(order.partyTime), place: order.partyPlace, placeAr: extraData.partyPlaceAr || "", location: order.city, locationAr: extraData.venueAr || "", map: extraData.partyMapUrl || null },
         ],
         registry: [
           ...(extraData.registryWishMoneyAcc || extraData.registryWishMoneyPhone || extraData.registryLink1 ? [{ name: "Whish Money", icon: "💳", acc: extraData.registryWishMoneyAcc || null, phone: extraData.registryWishMoneyPhone || null, link: extraData.registryLink1 || null, color: "#c9a96e" }] : []),

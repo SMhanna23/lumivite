@@ -888,12 +888,12 @@ function RSVPScreen({ w, ar, setLang, onReplay }) {
                     target="_blank" rel="noopener noreferrer"
                     className="text-xs px-3 py-1.5 rounded-full transition"
                     style={{ border: `1px solid ${GOLD}35`, color: GOLD, fontFamily: "'Jost', sans-serif" }}>
-                    📍 {ar ? v.placeAr : v.place} · {ar ? toArabicTime(v.time) : v.time}
+                    📍 {ar ? (v.placeAr || v.place) : v.place} · {ar ? toArabicTime(v.time) : v.time}
                   </a>
                 ) : (
                   <span key={i} className="text-xs px-3 py-1.5 rounded-full"
                     style={{ border: `1px solid ${GOLD}35`, color: GOLD, fontFamily: "'Jost', sans-serif" }}>
-                    📍 {ar ? v.placeAr : v.place} · {ar ? toArabicTime(v.time) : v.time}
+                    📍 {ar ? (v.placeAr || v.place) : v.place} · {ar ? toArabicTime(v.time) : v.time}
                   </span>
                 )
               })}

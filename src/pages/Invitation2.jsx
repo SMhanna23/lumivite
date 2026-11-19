@@ -421,7 +421,7 @@ export default function Invitation({ override = null }) {
 
           <p className={`mb-10 ${WEDDING.heroSubtextBold ? "text-[rgb(var(--accent-rgb)/0.9)]" : "text-[rgb(var(--accent-rgb)/0.55)]"}`}
             style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
-            {ar ? WEDDING.venueAr : WEDDING.venue}
+            {ar ? (WEDDING.venueAr || WEDDING.venue) : WEDDING.venue}
           </p>
           <Countdown targetDate={WEDDING.date} ar={ar} />
         </motion.div>
@@ -563,8 +563,8 @@ export default function Invitation({ override = null }) {
                   </p>
                   <p className="text-3xl font-light mb-1 text-[#2d3a2e]"
                     style={{ fontFamily: "'Cormorant Garamond', serif" }}>{ar ? toArabicTime(v.time) : v.time}</p>
-                  <p className="text-[#2d3a2e] font-medium mb-1">{ar ? v.placeAr : v.place}</p>
-                  <p className="text-[rgb(var(--accent-rgb)/0.6)] text-sm mb-4">{ar ? v.locationAr : v.location}</p>
+                  <p className="text-[#2d3a2e] font-medium mb-1">{ar ? (v.placeAr || v.place) : v.place}</p>
+                  <p className="text-[rgb(var(--accent-rgb)/0.6)] text-sm mb-4">{ar ? (v.locationAr || v.location) : v.location}</p>
                   {tier === "gold" && <a href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
                     target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-[rgb(var(--accent-rgb))] text-sm border border-[rgb(var(--accent-rgb)/0.3)] rounded-full px-4 py-2 hover:bg-[rgb(var(--accent-rgb)/0.1)] transition">

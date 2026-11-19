@@ -364,7 +364,7 @@ export default function Invitation({ override = null }) {
           </p>
           <p className={`mb-12 ${WEDDING.heroSubtextBold ? "text-white/80" : "text-white/45"}`}
             style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
-            {ar ? WEDDING.venueAr : WEDDING.venue}
+            {ar ? (WEDDING.venueAr || WEDDING.venue) : WEDDING.venue}
           </p>
           <Countdown targetDate={WEDDING.date} ar={ar} />
         </motion.div>
@@ -490,8 +490,8 @@ export default function Invitation({ override = null }) {
           <div className="p-6 text-center">
             <p className="text-[rgb(var(--accent-rgb))] text-sm tracking-widest uppercase mb-2">{ar ? v.labelAr : v.label}</p>
             <p className="font-serif text-2xl font-light mb-1">{ar ? toArabicTime(v.time) : v.time}</p>
-            <p className="text-white font-medium mb-1">{ar ? v.placeAr : v.place}</p>
-            <p className="text-white/40 text-sm mb-4">{ar ? v.locationAr : v.location}</p>
+            <p className="text-white font-medium mb-1">{ar ? (v.placeAr || v.place) : v.place}</p>
+            <p className="text-white/40 text-sm mb-4">{ar ? (v.locationAr || v.location) : v.location}</p>
             {tier === "gold" && (
               <a href={v.map || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.place + " " + v.location)}`}
                 target="_blank" rel="noopener noreferrer"
