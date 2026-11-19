@@ -43,7 +43,7 @@ body { font-family: 'Jost', sans-serif; }
    transparent stops fills the "see-through" areas with a flat color
    instead of letting the photo show through, washing it out. */
 .lumi-force-bg,
-.lumi-force-bg *:is([class*="bg-"], [style*="background"]):not(img):not(video):not(.text-black):not([style*="gradient"]):not([style*="url("]) {
+.lumi-force-bg *:is([class*="bg-"], [style*="background"]):not(img):not(video):not(.text-black):not(.lumi-keep-accent):not([style*="gradient"]):not([style*="url("]) {
   background-color: var(--force-bg-color) !important;
 }
 

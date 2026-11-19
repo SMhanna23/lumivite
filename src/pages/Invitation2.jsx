@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import EnvelopeScreen from "../components/EnvelopeScreen"
 import ChristmasVibes from "../components/ChristmasVibes"
+import TimelineIcon from "../components/TimelineIcons"
 import { motion, AnimatePresence } from "framer-motion"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
@@ -608,16 +609,16 @@ export default function Invitation({ override = null }) {
             {ar ? "برنامج حفل الزفاف" : "Wedding Timeline"}
           </h2>
           <div className="relative">
-            <div className="absolute left-[88px] top-0 bottom-0 w-px bg-[rgb(var(--accent-rgb)/0.2)]" />
+            <div className="absolute left-[88px] top-0 bottom-0 border-l border-[rgb(var(--accent-rgb)/0.2)]" />
             {(WEDDING.timeline || timeline).map((item, i) => (
-              <motion.div key={i} className="flex gap-6 mb-10 items-start"
+              <motion.div key={i} className="flex gap-6 mb-10 items-center"
                 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
-                <div className="text-right w-16 pt-1">
+                <div className="text-right w-16">
                   <span className="text-[rgb(var(--accent-rgb)/0.5)] text-xs">{ar ? toArabicTime(item.time) : item.time}</span>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white border border-[rgb(var(--accent-rgb)/0.4)] flex items-center justify-center text-sm flex-shrink-0 relative z-10 shadow-sm">
-                  {item.icon}
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 relative z-10 shadow-sm lumi-keep-accent" style={{ background: "rgb(var(--accent-rgb))" }}>
+                  <TimelineIcon icon={item.icon} />
                 </div>
                 <div>
                   <p className="font-medium text-[#2d3a2e]">{ar ? (item.labelAr || item.label) : item.label}</p>

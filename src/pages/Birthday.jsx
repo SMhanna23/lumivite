@@ -345,12 +345,12 @@ export default function Birthday({ override = null }) {
             <p className="tracking-[0.3em] text-xs uppercase text-center mb-2" style={{ color: GOLD }}>{ar ? "الأمسية" : "The Evening"}</p>
             <h2 className="font-serif text-4xl font-light text-center mb-16">{ar ? "برنامج الحفلة" : "Night's Program"}</h2>
             <div className="relative">
-              <div className="absolute left-[88px] top-0 bottom-0 w-px bg-white/10" />
+              <div className="absolute left-[88px] top-0 bottom-0 border-l border-white/10" />
               {CELEBRATION.timeline.map((item, i) => (
-                <motion.div key={i} className="flex gap-6 mb-10 items-start"
+                <motion.div key={i} className="flex gap-6 mb-10 items-center"
                   initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
-                  <div className="text-right w-16 pt-1">
+                  <div className="text-right w-16">
                     <span className="text-white/40 text-xs">{ar ? toArabicTime(item.time) : item.time}</span>
                   </div>
                   <div className="w-8 h-8 rounded-full bg-[#1a1510] border flex items-center justify-center text-sm flex-shrink-0 relative z-10" style={{ borderColor: `${GOLD}66` }}>
