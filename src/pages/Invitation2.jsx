@@ -619,7 +619,7 @@ export default function Invitation({ override = null }) {
                     <span className="text-[rgb(var(--accent-rgb)/0.5)] text-xs">{ar ? toArabicTime(item.time) : item.time}</span>
                   </div>
                   <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 relative z-10 shadow-sm lumi-keep-accent" style={{ background: "rgb(var(--accent-rgb))" }}>
-                    <TimelineIcon icon={item.icon} size={22} />
+                    <TimelineIcon icon={item.icon} size={32} />
                   </div>
                   <p className="font-medium text-[#2d3a2e] flex-1">{ar ? (item.labelAr || item.label) : item.label}</p>
                 </div>

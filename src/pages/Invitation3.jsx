@@ -589,7 +589,7 @@ export default function Invitation({ override = null }) {
                   </div>
                   <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 relative z-10 shadow-sm lumi-keep-accent"
                     style={{ background: roseGold }}>
-                    <TimelineIcon icon={item.icon} size={22} />
+                    <TimelineIcon icon={item.icon} size={32} />
                   </div>
                   <p className="font-medium flex-1">{ar ? (item.labelAr || item.label) : item.label}</p>
                 </div>
