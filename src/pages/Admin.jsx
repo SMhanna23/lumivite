@@ -1016,10 +1016,10 @@ function BuildInvitationModal({ order }) {
           {tier === "gold" && <>
           {/* Registry subtitle */}
           <div>
-            <label className="text-white/30 text-xs mb-1 block">Registry Subtitle (optional — leave blank for default)</label>
-            <input value={extraData.registrySubtitle} onChange={e => update("registrySubtitle", e.target.value)}
-              placeholder="Your presence is our greatest gift. If you wish to honor us further:"
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+            <label className="text-white/30 text-xs mb-1 block">Registry Subtitle (optional — leave blank for default, press Enter for a line break)</label>
+            <textarea value={extraData.registrySubtitle} onChange={e => update("registrySubtitle", e.target.value)}
+              placeholder="Your presence is our greatest gift. If you wish to honor us further:" rows={2}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#c9a96e] resize-none" />
           </div>
           {/* Whish Money */}
           <p className="text-white/20 text-xs uppercase tracking-widest">💳 Whish Money</p>

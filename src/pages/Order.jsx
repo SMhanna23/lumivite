@@ -1247,7 +1247,7 @@ export default function Order({ plannerPreset } = {}) {
                     <div className="space-y-4">
                       <div>
                         <label className="text-white/30 text-xs mb-2 block">{t.registrySubtitleLabel}</label>
-                        <input value={form.registrySubtitle} onChange={e => update("registrySubtitle", e.target.value)} placeholder={t.registrySubtitlePh} className={inp} />
+                        <textarea value={form.registrySubtitle} onChange={e => update("registrySubtitle", e.target.value)} placeholder={t.registrySubtitlePh} rows={2} className={`${inp} resize-none`} />
                       </div>
                       <p className="text-white/20 text-xs uppercase tracking-widest">{t.wishMoney}</p>
                       <div className="grid grid-cols-2 gap-4">

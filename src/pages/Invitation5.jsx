@@ -453,7 +453,7 @@ export default function Invitation5({ override = null }) {
               style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem" }}>
               {ar ? "قائمة الهدايا" : "Gift Registry"}
             </h2>
-            <p className="text-white/40 text-sm text-center mb-12">{ar ? "وجودكم معنا هو أجمل هدية! لمن يرغب تتوفر قائمة الهدايا :" : (WEDDING.registrySubtitle || "Your presence is our greatest gift. If you wish to honor us further:")}</p>
+            <p className="text-white/40 text-sm text-center mb-12 whitespace-pre-line">{ar ? "وجودكم معنا هو أجمل هدية! لمن يرغب تتوفر قائمة الهدايا :" : (WEDDING.registrySubtitle || "Your presence is our greatest gift. If you wish to honor us further:")}</p>
             <div className="grid gap-4">
               {WEDDING.registry.map((item, i) => (
                 <motion.div key={i}
