@@ -602,19 +602,26 @@ export default function Invitation({ override = null }) {
       {/* Photos 4-6 (Silver and Gold only) */}
       {tier !== "bronze" && <section className="py-10 px-6 max-w-5xl mx-auto relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-10">
-          {[{ src: photos[6], rot: -3 }, { src: photos[7], rot: 1.5 }, { src: photos[8], rot: -1 }].filter(item => item.src).map(({ src, rot }, i) => (
-            <motion.div key={i}
-              initial={{ opacity: 0, y: 30, rotate: rot }}
-              whileInView={{ opacity: 1, y: 0, rotate: rot }}
-              whileHover={{ scale: 1.05, rotate: 0, zIndex: 20 }}
-              transition={{ delay: i * 0.15, duration: 0.5 }}
-              viewport={{ once: true }}
-              style={{ cursor: "pointer" }}>
-              <div className="bg-white p-2 pb-10" style={{ boxShadow: `0 10px 40px ${roseGold}45` }}>
-                <img src={src} alt={`moment ${i + 4}`} className="w-full" />
-              </div>
-            </motion.div>
-          ))}
+          {(() => {
+            const items = [{ src: photos[6], rot: -3 }, { src: photos[7], rot: 1.5 }, { src: photos[8], rot: -1 }].filter(item => item.src)
+            return items.map(({ src, rot }, i) => {
+              const isOrphan = items.length % 2 === 1 && i === items.length - 1
+              return (
+                <motion.div key={i}
+                  initial={{ opacity: 0, y: 30, rotate: rot }}
+                  whileInView={{ opacity: 1, y: 0, rotate: rot }}
+                  whileHover={{ scale: 1.05, rotate: 0, zIndex: 20 }}
+                  transition={{ delay: i * 0.15, duration: 0.5 }}
+                  viewport={{ once: true }}
+                  className={isOrphan ? "col-span-2 md:col-span-1" : ""}
+                  style={{ cursor: "pointer" }}>
+                  <div className={`bg-white p-2 pb-10 ${isOrphan ? "w-1/2 md:w-full mx-auto" : ""}`} style={{ boxShadow: `0 10px 40px ${roseGold}45` }}>
+                    <img src={src} alt={`moment ${i + 4}`} className="w-full" />
+                  </div>
+                </motion.div>
+              )
+            })
+          })()}
         </div>
       </section>}
 
