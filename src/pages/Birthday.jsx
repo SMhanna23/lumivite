@@ -360,7 +360,11 @@ export default function Birthday({ override = null }) {
                     <p className="font-medium text-white flex-1">{ar ? item.labelAr : item.label}</p>
                   </div>
                   {(ar ? item.locationAr : item.location) && (
-                    <p className="text-white/40 text-sm mt-1" style={{ paddingLeft: 88 }}>{ar ? item.locationAr : item.location}</p>
+                    <div className="flex gap-6 mt-1">
+                      <div className="w-16 flex-shrink-0" />
+                      <div className="w-8 flex-shrink-0" />
+                      <p className="text-white/40 text-sm">{ar ? item.locationAr : item.location}</p>
+                    </div>
                   )}
                 </motion.div>
               ))}

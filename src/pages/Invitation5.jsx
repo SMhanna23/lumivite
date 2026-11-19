@@ -698,12 +698,16 @@ export default function Invitation5({ override = null }) {
                       <span className="text-white/40 text-xs">{ar ? toArabicTime(item.time) : item.time}</span>
                     </div>
                     <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 relative z-10 lumi-keep-accent" style={{ background: GOLD }}>
-                      <TimelineIcon icon={item.icon} size={32} />
+                      <TimelineIcon icon={item.icon} size={36} />
                     </div>
                     <p className="font-medium text-white flex-1">{ar ? (item.labelAr || item.label) : item.label}</p>
                   </div>
                   {(item.locationAr || item.location || item.desc) && (
-                    <p className="text-white/40 text-sm mt-1" style={{ paddingLeft: 88 }}>{ar ? (item.locationAr || item.location || item.desc) : (item.location || item.desc)}</p>
+                    <div className="flex gap-6 mt-1">
+                      <div className="w-16 flex-shrink-0" />
+                      <div className="w-12 flex-shrink-0" />
+                      <p className="text-white/40 text-sm">{ar ? (item.locationAr || item.location || item.desc) : (item.location || item.desc)}</p>
+                    </div>
                   )}
                 </motion.div>
               ))}
