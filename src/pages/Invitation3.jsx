@@ -251,7 +251,7 @@ export default function Invitation({ override = null }) {
             style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem", color: dark }}>
             {ar ? "قائمة الهدايا" : "Gift Registry"}
           </h2>
-          <p className="text-sm text-center mb-12 opacity-40 whitespace-pre-line">
+          <p className={`text-sm mb-12 opacity-40 whitespace-pre-line ${ar ? "text-right" : "text-left"}`}>
             {ar ? "وجودكم معنا هو أجمل هدية! لمن يرغب تتوفر قائمة الهدايا :" : (WEDDING.registrySubtitle || "Your presence is our greatest gift. If you wish to honor us further:")}
           </p>
           <div className="grid gap-4">
