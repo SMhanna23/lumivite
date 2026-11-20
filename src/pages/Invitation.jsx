@@ -371,7 +371,7 @@ export default function Invitation({ override = null }) {
           </p>
           <Countdown targetDate={WEDDING.date} ar={ar} />
         </motion.div>
-        <motion.div className="absolute bottom-10 left-1/2 flex flex-col items-center gap-2 z-10"
+        <motion.div className="absolute bottom-6 left-1/2 flex flex-col items-center gap-2 z-10"
           initial={{ x: "-50%" }} animate={{ x: "-50%", y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
           <span className="text-white/70 text-sm font-bold tracking-widest">SCROLL</span>
           <div className="w-px h-10 bg-gradient-to-b from-white/30 to-transparent" />
@@ -383,10 +383,10 @@ export default function Invitation({ override = null }) {
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
           {!WEDDING.hideQuote && (
           <div className="mb-10">
-            {!WEDDING.hideEmojis && <div className="text-[rgb(var(--accent-rgb))] text-2xl mb-6">✦</div>}
+            <div className="text-[rgb(var(--accent-rgb))] text-2xl mb-6">✦</div>
             <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>"{ar ? WEDDING.quoteAr : WEDDING.quote}"</p>
             {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className={`text-[rgb(var(--accent-rgb))] text-xs mt-3 tracking-widest ${ar ? "text-left" : "text-right"}`}>— {ar ? (WEDDING.quoteRefAr || WEDDING.quoteRef) : WEDDING.quoteRef}</p>}
-            {!WEDDING.hideEmojis && <div className="text-[rgb(var(--accent-rgb))] text-2xl mt-8">✦</div>}
+            <div className="text-[rgb(var(--accent-rgb))] text-2xl mt-8">✦</div>
           </div>
           )}
 
@@ -417,7 +417,7 @@ export default function Invitation({ override = null }) {
           </h2>
           <div className="flex items-center justify-center gap-4 mb-10">
             <div className="h-px w-20 bg-gradient-to-r from-transparent to-[rgb(var(--accent-rgb)/0.6)]" />
-            {!WEDDING.hideEmojis && <span className="text-[rgb(var(--accent-rgb))]">✦</span>}
+            <span className="text-[rgb(var(--accent-rgb))]">✦</span>
             <div className="h-px w-20 bg-gradient-to-l from-transparent to-[rgb(var(--accent-rgb)/0.6)]" />
           </div>
         </motion.div>

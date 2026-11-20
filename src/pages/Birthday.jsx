@@ -255,7 +255,7 @@ export default function Birthday({ override = null }) {
             <Countdown targetDate={CELEBRATION.date} ar={ar} />
           </motion.div>
 
-          <motion.div className="absolute bottom-10 left-1/2 flex flex-col items-center gap-2 z-10"
+          <motion.div className="absolute bottom-6 left-1/2 flex flex-col items-center gap-2 z-10"
             initial={{ x: "-50%" }} animate={{ x: "-50%", y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
             <span className="text-white/70 text-sm font-bold tracking-widest">SCROLL</span>
             <div className="w-px h-10 bg-gradient-to-b from-white/30 to-transparent" />
@@ -267,12 +267,12 @@ export default function Birthday({ override = null }) {
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}>
             {!CELEBRATION.hideQuote && (
             <div className="mb-6">
-              {!CELEBRATION.hideEmojis && <div className="text-2xl mb-6" style={{ color: GOLD }}>✦</div>}
+              <div className="text-2xl mb-6" style={{ color: GOLD }}>✦</div>
               <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
                 "{ar ? CELEBRATION.quoteAr : CELEBRATION.quote}"
               </p>
               {CELEBRATION.quoteRef && <p className={`text-xs mt-3 tracking-widest ${ar ? "text-left" : "text-right"}`} style={{ color: GOLD }}>— {ar ? (CELEBRATION.quoteRefAr || CELEBRATION.quoteRef) : CELEBRATION.quoteRef}</p>}
-              {!CELEBRATION.hideEmojis && <div className="text-2xl mt-8" style={{ color: GOLD }}>✦</div>}
+              <div className="text-2xl mt-8" style={{ color: GOLD }}>✦</div>
             </div>
             )}
             <p className="text-white/40 text-sm italic">{ar ? CELEBRATION.messageAr : CELEBRATION.message}</p>
