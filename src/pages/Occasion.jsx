@@ -215,7 +215,7 @@ export default function Occasion({ override = null }) {
         </motion.button>
 
         {/* Hero */}
-        <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center z-10 overflow-hidden">
+        <section className="relative min-h-screen !min-h-[100dvh] flex flex-col items-center justify-center px-6 text-center z-10 overflow-hidden">
           {/* Host photo background — swappable per client via EVENT.photo */}
           {EVENT.photo && (
             <div className="absolute inset-0 z-0" style={{

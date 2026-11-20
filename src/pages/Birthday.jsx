@@ -211,7 +211,7 @@ export default function Birthday({ override = null }) {
         </motion.button>
 
         {/* Hero */}
-        <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center z-10 overflow-hidden">
+        <section className="relative min-h-screen !min-h-[100dvh] flex flex-col items-center justify-center px-6 text-center z-10 overflow-hidden">
           {/* Celebrant photo background — swappable per client via CELEBRATION.photo */}
           {CELEBRATION.photo && (
             <div className="absolute inset-0 z-0" style={{

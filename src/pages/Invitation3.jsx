@@ -339,7 +339,7 @@ export default function Invitation({ override = null }) {
       </motion.button>
 
       {/* Hero */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center z-10">
+      <section className="relative min-h-screen !min-h-[100dvh] flex flex-col items-center justify-center px-6 text-center z-10">
         {/* Photo background */}
         <div className="absolute inset-0 z-0" style={{
           backgroundImage: `url(${photos[1] || photos[0]})`,

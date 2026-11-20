@@ -178,7 +178,7 @@ function VideoHeroSection({ videoUrl, videoStart, videoEnd, ar, onScrolledPast, 
   }, [onScrolledPast, onScrolledBack])
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-screen !min-h-[100dvh] overflow-hidden">
       <motion.div className="absolute inset-0" style={{ scale, opacity }}>
         {isDirect ? (
           <video ref={videoRef} playsInline loop muted={muted}
@@ -221,7 +221,7 @@ function VideoHeroSection({ videoUrl, videoStart, videoEnd, ar, onScrolledPast, 
 function HeroSection({ WEDDING, photos, ar }) {
   const GOLD = WEDDING.accentColor || "#e0b589"
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden">
+    <section className="relative min-h-screen !min-h-[100dvh] flex flex-col items-center justify-center px-6 text-center overflow-hidden">
       <div className="absolute inset-0 z-0" style={{
         backgroundImage: `url(${photos[1] || photos[0]})`,
         backgroundSize: "cover", backgroundPosition: "center",
@@ -261,7 +261,7 @@ function CalendarSection({ WEDDING, ar }) {
   while (cells.length % 7 !== 0) cells.push(null)
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center"
+    <section className="relative min-h-screen !min-h-[100dvh] flex flex-col items-center justify-center px-6 text-center"
       style={{ background: "radial-gradient(ellipse at 50% 30%, #1a140c 0%, #0b0a09 70%)" }}>
       <div className="absolute inset-[18px] md:inset-10 pointer-events-none" style={{ border: `1px solid ${GOLD}2e` }} />
 
