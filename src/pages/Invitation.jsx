@@ -161,6 +161,7 @@ export default function Invitation({ override = null }) {
   const isScriptName = WEDDING.namesFont === "script" || WEDDING.namesFont === "formal"
   const namesFontSize = isScriptName ? "clamp(2.75rem, 18.4vw, 8rem)" : "clamp(2.25rem, 15.4vw, 6rem)"
   const subtextSize = WEDDING.heroSubtextSize === "lg" ? "1.25rem" : WEDDING.heroSubtextSize === "md" ? "1.125rem" : "1rem"
+  const heroTs = "0 2px 20px rgba(0,0,0,0.75), 0 1px 6px rgba(0,0,0,0.95)"
   const subtextWeight = WEDDING.heroSubtextBold ? 600 : 400
   const audioRef = useRef(null)
   const ytRef = useRef(null)
@@ -349,23 +350,23 @@ export default function Invitation({ override = null }) {
           filter: "brightness(0.6)"
         }} />
         {/* Vignette: dark top & bottom for text, transparent centre so photo shows */}
-        <div className="absolute inset-0 z-0" style={{ background: "linear-gradient(to bottom, rgba(10,8,6,0.75) 0%, rgba(10,8,6,0.05) 28%, rgba(10,8,6,0.05) 65%, rgba(10,8,6,0.85) 100%)" }} />
+        <div className="absolute inset-0 z-0" style={{ background: "linear-gradient(to bottom, rgba(10,8,6,0.75) 0%, rgba(10,8,6,0.2) 28%, rgba(10,8,6,0.2) 65%, rgba(10,8,6,0.85) 100%)" }} />
         {/* Edge vignette */}
         <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(10,8,6,0.65) 100%)" }} />
 
         <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
-          <p className="text-[rgb(var(--accent-rgb))] tracking-[0.4em] text-sm uppercase mb-8">{ar ? "نحتفل بزفافنا" : "We're getting married"}</p>
-          <h1 className="font-light text-white mb-2" style={{ fontFamily: namesFont, fontSize: namesFontSize }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
-          <p className="text-[rgb(var(--accent-rgb))] text-4xl italic mb-2" style={{ fontFamily: namesFont }}>&</p>
-          <h1 className="font-light text-white mb-10" style={{ fontFamily: namesFont, fontSize: namesFontSize }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
+          <p className="text-[rgb(var(--accent-rgb))] tracking-[0.4em] text-sm uppercase mb-8" style={{ textShadow: heroTs }}>{ar ? "نحتفل بزفافنا" : "We're getting married"}</p>
+          <h1 className="font-light text-white mb-2" style={{ fontFamily: namesFont, fontSize: namesFontSize, textShadow: heroTs }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
+          <p className="text-[rgb(var(--accent-rgb))] text-4xl italic mb-2" style={{ fontFamily: namesFont, textShadow: heroTs }}>&</p>
+          <h1 className="font-light text-white mb-10" style={{ fontFamily: namesFont, fontSize: namesFontSize, textShadow: heroTs }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
           <p className={`tracking-widest uppercase mb-2 ${WEDDING.heroSubtextBold ? "text-white/90" : "text-white/50"}`}
-            style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
+            style={{ fontSize: subtextSize, fontWeight: subtextWeight, textShadow: heroTs }}>
             {ar
               ? formatArabicDate(new Date(WEDDING.date))
               : new Date(WEDDING.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
           </p>
           <p className={`mb-12 ${WEDDING.heroSubtextBold ? "text-white/80" : "text-white/45"}`}
-            style={{ fontSize: subtextSize, fontWeight: subtextWeight }}>
+            style={{ fontSize: subtextSize, fontWeight: subtextWeight, textShadow: heroTs }}>
             {ar ? (WEDDING.venueAr || WEDDING.venue) : WEDDING.venue}
           </p>
           <Countdown targetDate={WEDDING.date} ar={ar} />

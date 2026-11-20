@@ -89,6 +89,7 @@ function Sparkles() {
 export default function Occasion({ override = null }) {
   const EVENT = override ? { ...DEFAULT_EVENT, ...override } : DEFAULT_EVENT
   const GOLD = EVENT.accentColor || "#bfa15f"
+  const heroTs = "0 2px 20px rgba(0,0,0,0.75), 0 1px 6px rgba(0,0,0,0.95)"
   const tier = (EVENT.package || "gold").toLowerCase().includes("gold") ? "gold"
              : (EVENT.package || "").toLowerCase().includes("silver") ? "silver"
              : "bronze"
@@ -224,7 +225,7 @@ export default function Occasion({ override = null }) {
               filter: "brightness(0.5)"
             }} />
           )}
-          <div className="absolute inset-0 z-0" style={{ background: EVENT.photo ? "linear-gradient(to bottom, rgba(7,13,9,0.82) 0%, rgba(7,13,9,0.22) 26%, rgba(7,13,9,0.25) 62%, rgba(7,13,9,0.93) 100%)" : "radial-gradient(ellipse at 50% 38%, #14241a 0%, #0c160f 45%, #070d09 85%)" }} />
+          <div className="absolute inset-0 z-0" style={{ background: EVENT.photo ? "linear-gradient(to bottom, rgba(7,13,9,0.82) 0%, rgba(7,13,9,0.34) 26%, rgba(7,13,9,0.35) 62%, rgba(7,13,9,0.93) 100%)" : "radial-gradient(ellipse at 50% 38%, #14241a 0%, #0c160f 45%, #070d09 85%)" }} />
           <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(7,13,9,0.55) 100%)" }} />
           <div className="absolute inset-[18px] md:inset-10 z-0 pointer-events-none" style={{ border: `1px solid ${GOLD}33` }} />
           <div className="absolute inset-[26px] md:inset-14 z-0 pointer-events-none" style={{ border: `1px solid ${GOLD}1a` }} />
@@ -241,23 +242,23 @@ export default function Occasion({ override = null }) {
           </div>
 
           <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
-            <p className="tracking-[0.4em] text-sm uppercase mb-6" style={{ color: GOLD }}>{ar ? "أنتم مدعوون" : "You're Invited"}</p>
-            <h1 className="font-light text-white mb-3" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.25rem, 15.4vw, 6rem)" }}>
+            <p className="tracking-[0.4em] text-sm uppercase mb-6" style={{ color: GOLD, textShadow: heroTs }}>{ar ? "أنتم مدعوون" : "You're Invited"}</p>
+            <h1 className="font-light text-white mb-3" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.25rem, 15.4vw, 6rem)", textShadow: heroTs }}>
               {ar ? EVENT.titleAr : EVENT.title}
             </h1>
             <div className="flex items-center justify-center gap-3 mb-10">
               <svg width="28" height="16" viewBox="0 0 28 16" fill="none"><path d="M26 2C20 2 15 7 14 14C13 7 8 2 2 2" stroke={GOLD} strokeWidth="1" strokeLinecap="round" opacity="0.6" /></svg>
-              <p className="text-2xl md:text-3xl italic" style={{ fontFamily: "'Great Vibes', cursive", color: GOLD }}>
+              <p className="text-2xl md:text-3xl italic" style={{ fontFamily: "'Great Vibes', cursive", color: GOLD, textShadow: heroTs }}>
                 {ar ? EVENT.subtitleAr : EVENT.subtitle}
               </p>
               <svg width="28" height="16" viewBox="0 0 28 16" fill="none" style={{ transform: "scaleX(-1)" }}><path d="M26 2C20 2 15 7 14 14C13 7 8 2 2 2" stroke={GOLD} strokeWidth="1" strokeLinecap="round" opacity="0.6" /></svg>
             </div>
-            <p className="tracking-widest uppercase mb-2 text-white/50 text-base">
+            <p className="tracking-widest uppercase mb-2 text-white/50 text-base" style={{ textShadow: heroTs }}>
               {ar
                 ? formatArabicDate(new Date(EVENT.date))
                 : new Date(EVENT.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
             </p>
-            <p className="mb-12 text-white/45 text-base">
+            <p className="mb-12 text-white/45 text-base" style={{ textShadow: heroTs }}>
               {ar ? EVENT.venue.locationAr : EVENT.venue.location}
             </p>
             <Countdown targetDate={EVENT.date} ar={ar} />

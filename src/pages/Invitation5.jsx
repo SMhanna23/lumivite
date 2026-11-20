@@ -220,6 +220,7 @@ function VideoHeroSection({ videoUrl, videoStart, videoEnd, ar, onScrolledPast, 
 // ── Photo hero with names, date & countdown ──────────────────────────────────
 function HeroSection({ WEDDING, photos, ar }) {
   const GOLD = WEDDING.accentColor || "#e0b589"
+  const heroTs = "0 2px 20px rgba(0,0,0,0.75), 0 1px 6px rgba(0,0,0,0.95)"
   return (
     <section className="relative min-h-screen !min-h-[100dvh] flex flex-col items-center justify-center px-6 text-center overflow-hidden">
       <div className="absolute inset-0 z-0" style={{
@@ -227,17 +228,17 @@ function HeroSection({ WEDDING, photos, ar }) {
         backgroundSize: "cover", backgroundPosition: "center",
         filter: "brightness(0.55)"
       }} />
-      <div className="absolute inset-0 z-0" style={{ background: "linear-gradient(to bottom, rgba(11,10,9,0.78) 0%, rgba(11,10,9,0.1) 28%, rgba(11,10,9,0.1) 65%, rgba(11,10,9,0.88) 100%)" }} />
+      <div className="absolute inset-0 z-0" style={{ background: "linear-gradient(to bottom, rgba(11,10,9,0.78) 0%, rgba(11,10,9,0.22) 28%, rgba(11,10,9,0.22) 65%, rgba(11,10,9,0.88) 100%)" }} />
       <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(11,10,9,0.6) 100%)" }} />
       <motion.div className="relative z-10" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} viewport={{ once: true }}>
-        <p className="tracking-[0.4em] text-sm uppercase mb-8" style={{ color: GOLD }}>{ar ? "نحتفل بزفافنا" : "We're getting married"}</p>
-        <h1 className="font-light text-white mb-2" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.25rem, 15.4vw, 6rem)" }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
-        <p className="text-4xl italic mb-2" style={{ color: GOLD, fontFamily: "'Cormorant Garamond', serif" }}>&</p>
-        <h1 className="font-light text-white mb-10" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.25rem, 15.4vw, 6rem)" }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
-        <p className="tracking-widest uppercase mb-2 text-white/50 text-base">
+        <p className="tracking-[0.4em] text-sm uppercase mb-8" style={{ color: GOLD, textShadow: heroTs }}>{ar ? "نحتفل بزفافنا" : "We're getting married"}</p>
+        <h1 className="font-light text-white mb-2" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.25rem, 15.4vw, 6rem)", textShadow: heroTs }}>{ar ? WEDDING.groomAr : WEDDING.groom}</h1>
+        <p className="text-4xl italic mb-2" style={{ color: GOLD, fontFamily: "'Cormorant Garamond', serif", textShadow: heroTs }}>&</p>
+        <h1 className="font-light text-white mb-10" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.25rem, 15.4vw, 6rem)", textShadow: heroTs }}>{ar ? WEDDING.brideAr : WEDDING.bride}</h1>
+        <p className="tracking-widest uppercase mb-2 text-white/50 text-base" style={{ textShadow: heroTs }}>
           {ar ? formatArabicDate(new Date(WEDDING.date)) : new Date(WEDDING.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
         </p>
-        <p className="mb-12 text-white/45 text-base">{ar ? (WEDDING.venueAr || WEDDING.venue) : WEDDING.venue}</p>
+        <p className="mb-12 text-white/45 text-base" style={{ textShadow: heroTs }}>{ar ? (WEDDING.venueAr || WEDDING.venue) : WEDDING.venue}</p>
         <Countdown targetDate={WEDDING.date} ar={ar} />
       </motion.div>
 

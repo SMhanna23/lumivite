@@ -85,6 +85,7 @@ function Sparkles() {
 export default function Birthday({ override = null }) {
   const CELEBRATION = override ? { ...DEFAULT_CELEBRATION, ...override } : DEFAULT_CELEBRATION
   const GOLD = CELEBRATION.accentColor || "#d4af37"
+  const heroTs = "0 2px 20px rgba(0,0,0,0.75), 0 1px 6px rgba(0,0,0,0.95)"
   const tier = (CELEBRATION.package || "gold").toLowerCase().includes("gold") ? "gold"
              : (CELEBRATION.package || "").toLowerCase().includes("silver") ? "silver"
              : "bronze"
@@ -220,7 +221,7 @@ export default function Birthday({ override = null }) {
               filter: "brightness(0.5)"
             }} />
           )}
-          <div className="absolute inset-0 z-0" style={{ background: CELEBRATION.photo ? "linear-gradient(to bottom, rgba(10,8,6,0.8) 0%, rgba(10,8,6,0.2) 26%, rgba(10,8,6,0.25) 62%, rgba(10,8,6,0.92) 100%)" : "radial-gradient(ellipse at 50% 38%, #221a10 0%, #130f0a 45%, #0a0806 85%)" }} />
+          <div className="absolute inset-0 z-0" style={{ background: CELEBRATION.photo ? "linear-gradient(to bottom, rgba(10,8,6,0.8) 0%, rgba(10,8,6,0.32) 26%, rgba(10,8,6,0.35) 62%, rgba(10,8,6,0.92) 100%)" : "radial-gradient(ellipse at 50% 38%, #221a10 0%, #130f0a 45%, #0a0806 85%)" }} />
           <div className="absolute inset-0 z-0" style={{ background: "radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(10,8,6,0.55) 100%)" }} />
           <div className="absolute inset-[18px] md:inset-10 z-0 pointer-events-none" style={{ border: `1px solid ${GOLD}33` }} />
           <div className="absolute inset-[26px] md:inset-14 z-0 pointer-events-none" style={{ border: `1px solid ${GOLD}1a` }} />
@@ -232,23 +233,23 @@ export default function Birthday({ override = null }) {
           </div>
 
           <motion.div className="relative z-10" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2 }}>
-            <p className="tracking-[0.4em] text-sm uppercase mb-6" style={{ color: GOLD }}>{ar ? "أنتم مدعوون" : "You're Invited"}</p>
-            <h1 className="font-light text-white mb-3" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.75rem, 18.4vw, 8rem)" }}>
+            <p className="tracking-[0.4em] text-sm uppercase mb-6" style={{ color: GOLD, textShadow: heroTs }}>{ar ? "أنتم مدعوون" : "You're Invited"}</p>
+            <h1 className="font-light text-white mb-3" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.75rem, 18.4vw, 8rem)", textShadow: heroTs }}>
               {ar ? CELEBRATION.nameAr : CELEBRATION.name}
             </h1>
             <div className="flex items-center justify-center gap-3 mb-10">
               <svg width="28" height="16" viewBox="0 0 28 16" fill="none"><path d="M26 2C20 2 15 7 14 14C13 7 8 2 2 2" stroke={GOLD} strokeWidth="1" strokeLinecap="round" opacity="0.6" /></svg>
-              <p className="text-2xl md:text-3xl italic" style={{ fontFamily: "'Great Vibes', cursive", color: GOLD }}>
+              <p className="text-2xl md:text-3xl italic" style={{ fontFamily: "'Great Vibes', cursive", color: GOLD, textShadow: heroTs }}>
                 {ar ? `تحتفل بعيدها الـ ${toArabicDigits(CELEBRATION.age)}` : `is turning ${CELEBRATION.age}`}
               </p>
               <svg width="28" height="16" viewBox="0 0 28 16" fill="none" style={{ transform: "scaleX(-1)" }}><path d="M26 2C20 2 15 7 14 14C13 7 8 2 2 2" stroke={GOLD} strokeWidth="1" strokeLinecap="round" opacity="0.6" /></svg>
             </div>
-            <p className="tracking-widest uppercase mb-2 text-white/50 text-base">
+            <p className="tracking-widest uppercase mb-2 text-white/50 text-base" style={{ textShadow: heroTs }}>
               {ar
                 ? formatArabicDate(new Date(CELEBRATION.date))
                 : new Date(CELEBRATION.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
             </p>
-            <p className="mb-12 text-white/45 text-base">
+            <p className="mb-12 text-white/45 text-base" style={{ textShadow: heroTs }}>
               {ar ? CELEBRATION.venue.locationAr : CELEBRATION.venue.location}
             </p>
             <Countdown targetDate={CELEBRATION.date} ar={ar} />
