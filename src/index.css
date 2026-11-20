@@ -69,8 +69,8 @@ body { font-family: 'Jost', sans-serif; }
 
 @keyframes christmas-vibes-fall {
   0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
-  8% { opacity: 0.85; }
-  92% { opacity: 0.85; }
+  8% { opacity: 0.45; }
+  92% { opacity: 0.45; }
   100% { transform: translateY(110vh) translateX(var(--christmas-drift)) rotate(360deg); opacity: 0; }
 }
 .christmas-vibes-fall {

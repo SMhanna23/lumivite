@@ -1,9 +1,9 @@
 import { useMemo } from "react"
 
-const EMOJIS = ["🎄", "🎅", "❄️", "🎁", "⭐", "🔔", "🦌", "☃️"]
+const EMOJIS = ["🎄", "⭐"]
 
 export default function ChristmasVibes() {
-  const particles = useMemo(() => Array.from({ length: 10 }, (_, i) => ({
+  const particles = useMemo(() => Array.from({ length: 7 }, (_, i) => ({
     id: i,
     emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
     left: Math.random() * 100,
@@ -25,6 +25,7 @@ export default function ChristmasVibes() {
             animationDuration: `${p.duration}s`,
             animationDelay: `${p.delay}s`,
             "--christmas-drift": `${p.drift}px`,
+            filter: "brightness(0.8) saturate(0.6)",
           }}
         >
           {p.emoji}
