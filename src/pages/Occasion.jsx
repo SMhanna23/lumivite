@@ -279,7 +279,7 @@ export default function Occasion({ override = null }) {
               <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
                 "{ar ? EVENT.quoteAr : EVENT.quote}"
               </p>
-              {EVENT.quoteRef && <p className="text-xs mt-3 tracking-widest text-right" style={{ color: GOLD }}>— {ar ? (EVENT.quoteRefAr || EVENT.quoteRef) : EVENT.quoteRef}</p>}
+              {EVENT.quoteRef && <p className={`text-xs mt-3 tracking-widest ${ar ? "text-left" : "text-right"}`} style={{ color: GOLD }}>— {ar ? (EVENT.quoteRefAr || EVENT.quoteRef) : EVENT.quoteRef}</p>}
               {!EVENT.hideEmojis && <div className="text-2xl mt-8" style={{ color: GOLD }}>✦</div>}
             </div>
             )}
@@ -354,7 +354,7 @@ export default function Occasion({ override = null }) {
             <p className="tracking-[0.3em] text-xs uppercase text-center mb-2" style={{ color: GOLD }}>{ar ? "الأمسية" : "The Evening"}</p>
             <h2 className="font-serif text-4xl font-light text-center mb-16">{ar ? "برنامج الحفل" : "The Program"}</h2>
             <div className="relative">
-              <div className="absolute left-[88px] top-0 bottom-0 border-l border-white/10" />
+              <div className={`absolute ${ar ? "right-[88px]" : "left-[88px]"} top-0 bottom-0 border-l border-white/10`} />
               {EVENT.timeline.map((item, i) => (
                 <motion.div key={i} className="mb-10"
                   initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}

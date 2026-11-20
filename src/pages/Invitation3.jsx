@@ -415,7 +415,7 @@ export default function Invitation({ override = null }) {
               style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>
               "{ar ? WEDDING.quoteAr : WEDDING.quote}"
             </p>
-            {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-xs mt-3 tracking-widest text-right" style={{ color: roseGold }}>— {ar ? (WEDDING.quoteRefAr || WEDDING.quoteRef) : WEDDING.quoteRef}</p>}
+            {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className={`text-xs mt-3 tracking-widest ${ar ? "text-left" : "text-right"}`} style={{ color: roseGold }}>— {ar ? (WEDDING.quoteRefAr || WEDDING.quoteRef) : WEDDING.quoteRef}</p>}
             <div className="flex items-center gap-4 justify-center mt-8 mb-10">
               <div className="h-px w-20" style={{ background: `${roseGold}40` }} />
               {!WEDDING.hideEmojis && <span className="text-2xl">💮</span>}
@@ -579,7 +579,7 @@ export default function Invitation({ override = null }) {
             {ar ? "برنامج حفل الزفاف" : "Wedding Timeline"}
           </h2>
           <div className="relative">
-            <div className="absolute left-[88px] top-0 bottom-0 border-l" style={{ borderColor: `${roseGold}25` }} />
+            <div className={`absolute ${ar ? "right-[88px]" : "left-[88px]"} top-0 bottom-0 border-l`} style={{ borderColor: `${roseGold}25` }} />
             {(WEDDING.timeline || timeline).map((item, i) => (
               <motion.div key={i} className="mb-10"
                 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}

@@ -384,7 +384,7 @@ export default function Invitation({ override = null }) {
           <div className="mb-10">
             {!WEDDING.hideEmojis && <div className="text-[rgb(var(--accent-rgb))] text-2xl mb-6">✦</div>}
             <p className="text-white/70 text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Great Vibes', cursive" }}>"{ar ? WEDDING.quoteAr : WEDDING.quote}"</p>
-            {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className="text-[rgb(var(--accent-rgb))] text-xs mt-3 tracking-widest text-right">— {ar ? (WEDDING.quoteRefAr || WEDDING.quoteRef) : WEDDING.quoteRef}</p>}
+            {!WEDDING.hideQuoteRef && WEDDING.quoteRef && <p className={`text-[rgb(var(--accent-rgb))] text-xs mt-3 tracking-widest ${ar ? "text-left" : "text-right"}`}>— {ar ? (WEDDING.quoteRefAr || WEDDING.quoteRef) : WEDDING.quoteRef}</p>}
             {!WEDDING.hideEmojis && <div className="text-[rgb(var(--accent-rgb))] text-2xl mt-8">✦</div>}
           </div>
           )}
@@ -534,7 +534,7 @@ export default function Invitation({ override = null }) {
           <p className="text-[rgb(var(--accent-rgb))] tracking-[0.3em] text-xs uppercase text-center mb-2">{ar ? "اليوم" : "The Day"}</p>
           <h2 className="font-serif text-4xl font-light text-center mb-16">{ar ? "برنامج حفل الزفاف" : "Wedding Timeline"}</h2>
           <div className="relative">
-            <div className="absolute left-[88px] top-0 bottom-0 border-l border-white/10" />
+            <div className={`absolute ${ar ? "right-[88px]" : "left-[88px]"} top-0 bottom-0 border-l border-white/10`} />
             {(WEDDING.timeline || timeline).map((item, i) => (
               <motion.div key={i} className="mb-10"
                 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
