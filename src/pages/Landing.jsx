@@ -584,7 +584,7 @@ export default function Landing() {
       </section>
 
       <footer className="text-center py-8 text-white/20 text-xs border-t border-white/5">
-        © 2026 Lumivite · Digital Wedding Invitations · Lebanon & Worldwide
+        © {new Date().getFullYear()} Lumivite · Digital Wedding Invitations · Lebanon & Worldwide
       </footer>
 
       {/* Floating WhatsApp Button */}
