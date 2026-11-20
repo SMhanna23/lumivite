@@ -41,9 +41,14 @@ body { font-family: 'Jost', sans-serif; }
    every hero photo and its vignette overlay sets its background inline
    that way — forcing a solid color underneath a gradient with
    transparent stops fills the "see-through" areas with a flat color
-   instead of letting the photo show through, washing it out. */
+   instead of letting the photo show through, washing it out.
+   [class*="h-px"] (hairline divider lines, e.g. the accent-colored
+   rules flanking "A glimpse of us") are excluded too — a 1px-tall
+   element is never a real panel needing the page's fill color, only
+   ever a thin decorative accent line, and forcing it to match the new
+   background made it vanish entirely instead of just restyling. */
 .lumi-force-bg,
-.lumi-force-bg *:is([class*="bg-"], [style*="background"]):not(img):not(video):not(.text-black):not(.lumi-keep-accent):not([style*="gradient"]):not([style*="url("]) {
+.lumi-force-bg *:is([class*="bg-"], [style*="background"]):not(img):not(video):not(.text-black):not(.lumi-keep-accent):not([style*="gradient"]):not([style*="url("]):not([class*="h-px"]) {
   background-color: var(--force-bg-color) !important;
 }
 

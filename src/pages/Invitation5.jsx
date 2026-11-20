@@ -750,7 +750,7 @@ export default function Invitation5({ override = null }) {
           <section className="py-10 px-6 max-w-lg mx-auto text-center relative z-10">
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="h-px w-16" style={{ background: `linear-gradient(to right, transparent, ${GOLD}66)` }} />
-              <div className="w-1.5 h-1.5 rounded-full" style={{ background: `${GOLD}66` }} />
+              <div className="w-1.5 h-1.5 rounded-full lumi-keep-accent" style={{ background: `${GOLD}66` }} />
               <div className="h-px w-16" style={{ background: `linear-gradient(to left, transparent, ${GOLD}66)` }} />
             </div>
             <p className="text-white/85 font-medium leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif", fontSize: ar ? "1.2rem" : "1.1rem", fontStyle: "italic" }}>
@@ -788,7 +788,7 @@ export default function Invitation5({ override = null }) {
                   </select>
                   <div className="flex gap-3">
                     <button onClick={() => setAttending(true)}
-                      className="flex-1 py-4 rounded-lg border transition font-medium tracking-wider"
+                      className="flex-1 py-4 rounded-lg border transition font-medium tracking-wider lumi-keep-accent"
                       style={{
                         background: attending === true ? GOLD : "transparent",
                         borderColor: attending === true ? GOLD : "rgba(255,255,255,0.2)",
@@ -809,7 +809,7 @@ export default function Invitation5({ override = null }) {
                           style={{ borderColor: eventChoice === opt.id ? GOLD : "rgba(255,255,255,0.15)", background: eventChoice === opt.id ? `${GOLD}1a` : "transparent" }}>
                           <span className="w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition"
                             style={{ borderColor: eventChoice === opt.id ? GOLD : "rgba(255,255,255,0.3)" }}>
-                            {eventChoice === opt.id && <span className="w-2.5 h-2.5 rounded-full" style={{ background: GOLD }} />}
+                            {eventChoice === opt.id && <span className="w-2.5 h-2.5 rounded-full lumi-keep-accent" style={{ background: GOLD }} />}
                           </span>
                           <span className="text-sm leading-snug" style={{ color: eventChoice === opt.id ? "white" : "rgba(255,255,255,0.6)" }}>{ar ? opt.labelAr : opt.label}</span>
                         </button>

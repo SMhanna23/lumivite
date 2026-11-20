@@ -642,7 +642,7 @@ export default function Invitation({ override = null }) {
         <section className="py-10 px-6 max-w-lg mx-auto text-center relative z-10">
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="h-px w-16" style={{ background: `linear-gradient(to right, transparent, ${roseGold}40)` }} />
-            <div className="w-1.5 h-1.5 rounded-full" style={{ background: `${roseGold}60` }} />
+            <div className="w-1.5 h-1.5 rounded-full lumi-keep-accent" style={{ background: `${roseGold}60` }} />
             <div className="h-px w-16" style={{ background: `linear-gradient(to left, transparent, ${roseGold}40)` }} />
           </div>
           <p className="font-medium leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif", fontSize: ar ? "1.2rem" : "1.1rem", fontStyle: "italic", color: dark, opacity: 0.8 }}>
@@ -691,7 +691,7 @@ export default function Invitation({ override = null }) {
                 </select>
                 <div className="flex gap-3">
                   <button onClick={() => setAttending(true)}
-                    className="flex-1 py-4 rounded-xl font-medium tracking-wider transition"
+                    className="flex-1 py-4 rounded-xl font-medium tracking-wider transition lumi-keep-accent"
                     style={{ background: attending === true ? roseGold : "white", color: attending === true ? "white" : roseGold, border: `1px solid ${roseGold}50` }}>
                     {ar ? "✓ حاضر" : "✓ Attending"}
                   </button>
@@ -709,7 +709,7 @@ export default function Invitation({ override = null }) {
                         style={{ background: eventChoice === opt.id ? `${roseGold}15` : "white", border: `1px solid ${eventChoice === opt.id ? roseGold : `${roseGold}30`}` }}>
                         <span className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center transition"
                           style={{ border: `2px solid ${eventChoice === opt.id ? roseGold : `${roseGold}40`}` }}>
-                          {eventChoice === opt.id && <span className="w-2.5 h-2.5 rounded-full" style={{ background: roseGold }} />}
+                          {eventChoice === opt.id && <span className="w-2.5 h-2.5 rounded-full lumi-keep-accent" style={{ background: roseGold }} />}
                         </span>
                         <span className="text-sm leading-snug" style={{ color: eventChoice === opt.id ? dark : `${dark}90` }}>{ar ? opt.labelAr : opt.label}</span>
                       </button>

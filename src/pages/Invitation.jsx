@@ -595,7 +595,7 @@ export default function Invitation({ override = null }) {
         <section className="py-10 px-6 max-w-lg mx-auto text-center relative z-10">
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="h-px w-16 bg-gradient-to-r from-transparent to-[rgb(var(--accent-rgb)/0.4)]" />
-            <div className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--accent-rgb)/0.4)]" />
+            <div className="w-1.5 h-1.5 rounded-full bg-[rgb(var(--accent-rgb)/0.4)] lumi-keep-accent" />
             <div className="h-px w-16 bg-gradient-to-l from-transparent to-[rgb(var(--accent-rgb)/0.4)]" />
           </div>
           <p className="text-white/85 font-medium leading-relaxed" style={{ fontFamily: ar ? "'Noto Naskh Arabic', serif" : "'Cormorant Garamond', serif", fontSize: ar ? "1.2rem" : "1.1rem", fontStyle: "italic" }}>
@@ -646,7 +646,7 @@ export default function Invitation({ override = null }) {
                       <button key={opt.id} type="button" onClick={() => setEventChoice(opt.id)}
                         className={`w-full flex items-center gap-3 p-4 rounded-lg border transition ${ar ? "text-right" : "text-left"} ${eventChoice === opt.id ? "border-[rgb(var(--accent-rgb))] bg-[rgb(var(--accent-rgb)/0.1)]" : "border-white/15 hover:border-white/30"}`}>
                         <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition ${eventChoice === opt.id ? "border-[rgb(var(--accent-rgb))]" : "border-white/30"}`}>
-                          {eventChoice === opt.id && <span className="w-2.5 h-2.5 rounded-full bg-[rgb(var(--accent-rgb))]" />}
+                          {eventChoice === opt.id && <span className="w-2.5 h-2.5 rounded-full bg-[rgb(var(--accent-rgb))] lumi-keep-accent" />}
                         </span>
                         <span className={`text-sm leading-snug ${eventChoice === opt.id ? "text-white" : "text-white/60"}`}>{ar ? opt.labelAr : opt.label}</span>
                       </button>
