@@ -605,8 +605,8 @@ export default function Invitation({ override = null }) {
           <p className="text-[rgb(var(--accent-rgb))] tracking-[0.3em] text-xs uppercase text-center mb-2 font-medium">
             {ar ? "اليوم" : "The Day"}
           </p>
-          <h2 className="text-4xl font-light text-center mb-16 text-[#2d3a2e]"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <h2 className="font-light text-center mb-16 text-[#2d3a2e]"
+            style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem" }}>
             {ar ? "برنامج حفل الزفاف" : "Wedding Timeline"}
           </h2>
           <div className="relative">

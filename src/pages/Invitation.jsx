@@ -533,7 +533,10 @@ export default function Invitation({ override = null }) {
       {!WEDDING.hideTimeline && <section className="py-24 px-6 max-w-lg mx-auto relative z-10">
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
           <p className="text-[rgb(var(--accent-rgb))] tracking-[0.3em] text-xs uppercase text-center mb-2">{ar ? "اليوم" : "The Day"}</p>
-          <h2 className="font-serif text-4xl font-light text-center mb-16">{ar ? "برنامج حفل الزفاف" : "Wedding Timeline"}</h2>
+          <h2 className="font-light text-center mb-16 text-white"
+            style={{ fontFamily: ar ? "'Cormorant Garamond', serif" : "'Great Vibes', cursive", fontSize: ar ? "2.2rem" : "3rem" }}>
+            {ar ? "برنامج حفل الزفاف" : "Wedding Timeline"}
+          </h2>
           <div className="relative">
             <div className={`absolute ${ar ? "right-[88px]" : "left-[88px]"} top-0 bottom-0 border-l border-white/10`} />
             {(WEDDING.timeline || timeline).map((item, i) => (
