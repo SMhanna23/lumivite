@@ -130,7 +130,7 @@ export default function Invitation({ override = null }) {
   const [attending, setAttending] = useState(null)
   const [eventChoice, setEventChoice] = useState(null)
   const [wishes, setWishes] = useState("")
-  const [persons, setPersons] = useState(() => tier !== "bronze" ? parseInt(new URLSearchParams(window.location.search).get("np") || "1") : 1)
+  const [persons, setPersons] = useState(() => { if (tier === "bronze") return 1; const np = new URLSearchParams(window.location.search).get("np"); return np ? parseInt(np) : null })
   const [status, setStatus] = useState("idle")
   const [rsvpError, setRsvpError] = useState("")
   const [copiedKey, setCopiedKey] = useState(null)
@@ -222,7 +222,7 @@ export default function Invitation({ override = null }) {
 
   const requireEventChoice = showEventChoice && attending === true
   const handleRSVP = async () => {
-    if (!name || attending === null || (requireEventChoice && eventChoice === null)) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
+    if (!name || attending === null || (attending === true && !persons) || (requireEventChoice && eventChoice === null)) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور وعدد الأشخاص" : "Please enter your name, select attendance, and choose number of guests"); return }
     setRsvpError("")
     setStatus("loading")
     try {
@@ -685,9 +685,10 @@ export default function Invitation({ override = null }) {
                   className="w-full rounded-xl px-5 py-4 focus:outline-none transition disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ background: "white", border: `1px solid ${roseGold}30`, color: dark,
                     boxShadow: "0 1px 4px rgba(183,110,121,0.08)" }} />
-                <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
+                <select value={persons ?? ""} onChange={e => setPersons(parseInt(e.target.value))}
                   className="w-full rounded-xl px-5 py-4 focus:outline-none transition"
                   style={{ background: "white", border: `1px solid ${roseGold}30`, color: dark }}>
+                  {persons === null && <option value="" disabled hidden>{ar ? "... عدد الأشخاص" : "... Persons"}</option>}
                   {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n}>{ar ? personsLabelAr(n) : `${n} ${n === 1 ? "person" : "persons"}`}</option>)}
                 </select>
                 <div className="flex gap-3">

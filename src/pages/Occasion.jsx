@@ -97,7 +97,7 @@ export default function Occasion({ override = null }) {
   const [name, setName] = useState(() => tier !== "bronze" ? (new URLSearchParams(window.location.search).get("gn") || "") : "")
   const [attending, setAttending] = useState(null)
   const [wishes, setWishes] = useState("")
-  const [persons, setPersons] = useState(() => tier !== "bronze" ? parseInt(new URLSearchParams(window.location.search).get("np") || "1") : 1)
+  const [persons, setPersons] = useState(() => { if (tier === "bronze") return 1; const np = new URLSearchParams(window.location.search).get("np"); return np ? parseInt(np) : null })
   const [status, setStatus] = useState("idle")
   const [rsvpError, setRsvpError] = useState("")
   const [playing, setPlaying] = useState(false)
@@ -147,7 +147,7 @@ export default function Occasion({ override = null }) {
   }, [musicStart, musicEnd])
 
   const handleRSVP = async () => {
-    if (!name || attending === null) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور" : "Please enter your name and select attendance"); return }
+    if (!name || attending === null || (attending === true && !persons)) { setRsvpError(ar ? "يرجى إدخال اسمك واختيار الحضور وعدد الأشخاص" : "Please enter your name, select attendance, and choose number of guests"); return }
     setRsvpError("")
     setStatus("loading")
     try {
@@ -424,8 +424,9 @@ export default function Occasion({ override = null }) {
                     disabled={tier !== "bronze" && !!searchParams.get("gn")}
                     className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white placeholder-white/30 focus:outline-none transition disabled:opacity-60 disabled:cursor-not-allowed"
                     style={{ borderColor: "rgba(255,255,255,0.1)" }} />
-                  <select value={persons} onChange={e => setPersons(parseInt(e.target.value))}
+                  <select value={persons ?? ""} onChange={e => setPersons(parseInt(e.target.value))}
                     className="w-full bg-white/5 border border-white/10 rounded-lg px-5 py-4 text-white focus:outline-none transition">
+                    {persons === null && <option value="" disabled hidden>{ar ? "... عدد الأشخاص" : "... Persons"}</option>}
                     {Array.from({ length: (tier !== "bronze" && searchParams.get("np")) ? parseInt(searchParams.get("np")) : 5 }, (_, i) => i + 1).map(n => <option key={n} value={n} className="bg-[#10190f]">{ar ? personsLabelAr(n) : `${n} ${n === 1 ? "person" : "persons"}`}</option>)}
                   </select>
                   <div className="flex gap-3">
