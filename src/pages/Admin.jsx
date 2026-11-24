@@ -2526,6 +2526,21 @@ export default function Admin() {
   const [guestSlug, setGuestSlug] = useState("")
   const [guestLines, setGuestLines] = useState("")
   const [guestCopied, setGuestCopied] = useState(null)
+  const [sentLinks, setSentLinks] = useState(new Set())
+  useEffect(() => {
+    if (!guestSlug) { setSentLinks(new Set()); return }
+    try {
+      setSentLinks(new Set(JSON.parse(localStorage.getItem(`lumivite_sent_${guestSlug}`) || "[]")))
+    } catch { setSentLinks(new Set()) }
+  }, [guestSlug])
+  const markLinkSent = (url) => {
+    setSentLinks(prev => {
+      const next = new Set(prev)
+      next.add(url)
+      try { localStorage.setItem(`lumivite_sent_${guestSlug}`, JSON.stringify([...next])) } catch {}
+      return next
+    })
+  }
   const [orderPage, setOrderPage] = useState(0)
   const ORDERS_PER_PAGE = 15
   const [plannerLinks, setPlannerLinks] = useState([])
@@ -3148,13 +3163,20 @@ export default function Admin() {
                       </div>
 
                       <div className="grid gap-2">
-                        {guestLinks.map((g, i) => (
-                          <div key={i} className="bg-white/3 border border-white/8 rounded-xl p-3 flex items-center gap-3 hover:border-white/15 transition">
+                        {guestLinks.map((g, i) => {
+                          const sent = sentLinks.has(g.url)
+                          return (
+                          <div key={i} className="rounded-xl p-3 flex items-center gap-3 transition"
+                            style={{
+                              background: sent ? "rgba(248,113,113,0.08)" : "rgba(255,255,255,0.03)",
+                              border: `1px solid ${sent ? "rgba(248,113,113,0.35)" : "rgba(255,255,255,0.08)"}`
+                            }}>
                             <div className="flex-1 min-w-0">
                               <p className="text-white text-sm font-medium">
                                 {g.name}
                                 {g.persons && <span className="text-white/40 text-xs ml-2">({g.persons} {g.persons === 1 ? "person" : "persons"})</span>}
                                 {g.hideGifts && <span className="text-xs ml-2 px-2 py-0.5 rounded-full" style={{ background: "rgba(248,113,113,0.12)", color: "#f87171" }}>🚫 No Gifts</span>}
+                                {sent && <span className="text-xs ml-2 px-2 py-0.5 rounded-full" style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}>✓ Sent</span>}
                               </p>
                               <p className="text-white/25 text-xs truncate font-mono mt-0.5">{g.url}</p>
                             </div>
@@ -3162,6 +3184,7 @@ export default function Admin() {
                               onClick={() => {
                                 navigator.clipboard.writeText(g.url)
                                 setGuestCopied(i)
+                                markLinkSent(g.url)
                                 setTimeout(() => setGuestCopied(null), 2000)
                               }}
                               className="flex-shrink-0 text-xs px-3 py-1.5 rounded-lg border transition"
@@ -3172,8 +3195,23 @@ export default function Admin() {
                               }}>
                               {guestCopied === i ? "✓" : "Copy"}
                             </button>
+                            {sent && (
+                              <button onClick={() => {
+                                setSentLinks(prev => {
+                                  const next = new Set(prev)
+                                  next.delete(g.url)
+                                  try { localStorage.setItem(`lumivite_sent_${guestSlug}`, JSON.stringify([...next])) } catch {}
+                                  return next
+                                })
+                              }}
+                                title="Unmark as sent"
+                                className="flex-shrink-0 text-xs px-2 py-1.5 rounded-lg border border-white/10 text-white/30 hover:text-white/60 hover:border-white/20 transition">
+                                ↺
+                              </button>
+                            )}
                           </div>
-                        ))}
+                          )
+                        })}
                       </div>
                     </div>
                   )}
