@@ -8,9 +8,7 @@ export default function Logo({ size = "md", href = "/", className = "" }) {
 
   return (
     <a href={href} className={`flex items-center gap-2 ${className}`}>
-      <div className="rounded-lg overflow-hidden" style={{ flexShrink: 0, width: s.ring, height: s.ring }}>
-        <img src="/logo.jpg" alt="Lumivite" className="w-full h-full object-cover" style={{ transform: "scale(1.6)" }} />
-      </div>
+      <img src="/logo.png" alt="Lumivite" className="rounded-lg object-cover" style={{ flexShrink: 0, width: s.ring, height: s.ring }} />
       <span className={`font-serif ${s.text} text-[#c9a96e]`}>Lumivite</span>
     </a>
   )
