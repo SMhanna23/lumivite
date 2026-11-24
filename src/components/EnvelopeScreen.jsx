@@ -84,7 +84,7 @@ export default function EnvelopeScreen({ guestName, onOpen, onVideoEnd, ar, setL
           initial={{ opacity: 0 }}
           transition={{ duration: started ? 0.3 : 1.3, delay: started ? 0 : 0.8 }}>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.1rem,4vw,1.6rem)", color: dearColor, fontStyle: "italic" }}>
-            {ar ? "عزيزنا" : "Dear"} <span style={{ color: GOLD }}>{guestName}</span>
+            <span style={{ color: GOLD }}>{guestName}</span>
           </p>
         </motion.div>
       )}

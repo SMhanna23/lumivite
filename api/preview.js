@@ -81,7 +81,7 @@ export default async function handler(req, res) {
   } catch (_) {}
 
   if (guestName) {
-    description = `Dear ${guestName} — ${description}`
+    description = `${guestName} — ${description}`
   }
 
   const t      = escapeHtml(title)
