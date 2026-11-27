@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
-import { getAuth } from "firebase/auth"
+import { getAuth, setPersistence, browserSessionPersistence } from "firebase/auth"
 import { getStorage } from "firebase/storage"
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check"
 
@@ -23,3 +23,9 @@ initializeAppCheck(app, {
 export const db = getFirestore(app)
 export const auth = getAuth(app)
 export const storage = getStorage(app)
+
+// Session (per-tab), not local (shared across every tab of this browser) —
+// otherwise logging into the venue portal in one tab silently signs the
+// owner's /admin session in every other open tab into that venue account,
+// since Firebase's default persistence is shared browser-wide per origin.
+setPersistence(auth, browserSessionPersistence)
