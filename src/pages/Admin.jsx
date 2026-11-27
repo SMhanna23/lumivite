@@ -2550,6 +2550,11 @@ export default function Admin() {
   const [financeEntries, setFinanceEntries] = useState([])
   const [financeForm, setFinanceForm] = useState({ clientName: "", amount: "", date: new Date().toISOString().slice(0, 10), note: "" })
   const [financeSaving, setFinanceSaving] = useState(false)
+  const [venues, setVenues] = useState([])
+  const [venueForm, setVenueForm] = useState({ name: "", contactName: "", contactEmail: "", contactPhone: "", ownerNote: "" })
+  const [venueCreating, setVenueCreating] = useState(false)
+  const [venueResetLink, setVenueResetLink] = useState(null)
+  const [venueLinkCopied, setVenueLinkCopied] = useState(false)
 
   useEffect(() => { fetchAll() }, [])
 
@@ -2577,6 +2582,60 @@ export default function Admin() {
       const res = await fetch("/api/finance", { headers: { Authorization: `Bearer ${token}` } })
       const data = await res.json()
       setFinanceEntries(data.entries || [])
+    } catch (e) { console.error(e) }
+
+    try {
+      const token = await getAuth().currentUser.getIdToken()
+      const res = await fetch("/api/venues?list=1", { headers: { Authorization: `Bearer ${token}` } })
+      const data = await res.json()
+      setVenues(data.venues || [])
+    } catch (e) { console.error(e) }
+  }
+
+  const createVenue = async () => {
+    if (!venueForm.name.trim() || !venueForm.contactEmail.trim()) return
+    setVenueCreating(true)
+    setVenueResetLink(null)
+    try {
+      const token = await getAuth().currentUser.getIdToken()
+      const res = await fetch("/api/venues", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(venueForm),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setVenueResetLink(data.resetLink || null)
+        setVenueForm({ name: "", contactName: "", contactEmail: "", contactPhone: "", ownerNote: "" })
+        fetchAll()
+      } else {
+        alert(data.error || "Could not create venue")
+      }
+    } catch (e) { console.error(e) }
+    setVenueCreating(false)
+  }
+
+  const toggleVenueStatus = async (id, status) => {
+    try {
+      const token = await getAuth().currentUser.getIdToken()
+      const res = await fetch("/api/venues", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ id, status }),
+      })
+      if (res.ok) setVenues(vs => vs.map(v => v.id === id ? { ...v, status } : v))
+    } catch (e) { console.error(e) }
+  }
+
+  const deleteVenue = async (id) => {
+    if (!confirm("Delete this venue account? This also deletes their login.")) return
+    try {
+      const token = await getAuth().currentUser.getIdToken()
+      const res = await fetch(`/api/venues?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (res.ok) setVenues(vs => vs.filter(v => v.id !== id))
     } catch (e) { console.error(e) }
   }
 
@@ -2809,6 +2868,7 @@ export default function Admin() {
             { id: "rsvps", label: `RSVPs (${rsvps.length})`, icon: "💌" },
             { id: "guests", label: "Guest Links", icon: "🔗" },
             { id: "planner", label: "Planner Orders", icon: "🧑‍💼" },
+            { id: "venues", label: "Venues", icon: "🏛️" },
             { id: "finance", label: "Finance", icon: "💰" },
           ].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
@@ -3351,6 +3411,103 @@ export default function Admin() {
                             </div>
                           )
                         })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {/* VENUES TAB */}
+            {tab === "venues" && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <div className="max-w-2xl">
+                  <p className="text-white/40 text-sm mb-6">
+                    Create a login for a venue, hotel, or event planner partner. They get their own portal at lumivite.net/venue/login to manage their event calendar, deposits, and vendor coordination — separate from your admin dashboard.
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                      <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Venue Name</label>
+                      <input value={venueForm.name} onChange={e => setVenueForm(f => ({ ...f, name: e.target.value }))}
+                        placeholder="e.g. Phoenicia Ballroom"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                    </div>
+                    <div>
+                      <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Contact Name</label>
+                      <input value={venueForm.contactName} onChange={e => setVenueForm(f => ({ ...f, contactName: e.target.value }))}
+                        placeholder="e.g. Rami Abou Khalil"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                    </div>
+                    <div>
+                      <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Contact Email <span className="text-white/20 normal-case font-normal">(this is their login)</span></label>
+                      <input value={venueForm.contactEmail} onChange={e => setVenueForm(f => ({ ...f, contactEmail: e.target.value }))}
+                        type="email" placeholder="venue@email.com"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                    </div>
+                    <div>
+                      <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Contact Phone</label>
+                      <input value={venueForm.contactPhone} onChange={e => setVenueForm(f => ({ ...f, contactPhone: e.target.value }))}
+                        placeholder="+961 ..."
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <label className="text-white/30 text-xs uppercase tracking-widest mb-2 block">Note <span className="text-white/20 normal-case font-normal">(for your reference only)</span></label>
+                    <input value={venueForm.ownerNote} onChange={e => setVenueForm(f => ({ ...f, ownerNote: e.target.value }))}
+                      placeholder="e.g. 3 free months in exchange for feedback"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#c9a96e]" />
+                  </div>
+
+                  <button onClick={createVenue} disabled={venueCreating || !venueForm.name.trim() || !venueForm.contactEmail.trim()}
+                    className="px-6 py-3 rounded-xl font-semibold text-sm text-black disabled:opacity-30 transition"
+                    style={{ background: "#c9a96e" }}>
+                    {venueCreating ? "Creating..." : "🏛️ Create Venue Account"}
+                  </button>
+
+                  {venueResetLink && (
+                    <div className="mt-4 p-4 rounded-xl border" style={{ borderColor: "rgba(74,222,128,0.3)", background: "rgba(74,222,128,0.06)" }}>
+                      <p className="text-[#4ade80] text-sm font-medium mb-2">✓ Venue created — send them this link to set their password:</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-white/70 text-xs font-mono truncate flex-1">{venueResetLink}</p>
+                        <button onClick={() => { navigator.clipboard.writeText(venueResetLink); setVenueLinkCopied(true); setTimeout(() => setVenueLinkCopied(false), 2000) }}
+                          className="flex-shrink-0 text-xs px-3 py-1.5 rounded-lg border transition"
+                          style={{ borderColor: venueLinkCopied ? "rgba(74,222,128,0.4)" : "rgba(201,169,110,0.3)", color: venueLinkCopied ? "#4ade80" : "#c9a96e" }}>
+                          {venueLinkCopied ? "✓" : "Copy"}
+                        </button>
+                      </div>
+                      <p className="text-white/30 text-xs mt-2">After setting their password, they log in at lumivite.net/venue/login with their email.</p>
+                    </div>
+                  )}
+
+                  {venues.length > 0 && (
+                    <div className="mt-8">
+                      <p className="text-[#c9a96e] text-xs uppercase tracking-widest mb-3">{venues.length} Venue{venues.length !== 1 ? "s" : ""}</p>
+                      <div className="grid gap-2">
+                        {venues.map(v => (
+                          <div key={v.id} className="bg-white/3 border border-white/8 rounded-xl p-3 flex items-center gap-3 hover:border-white/15 transition">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-white text-sm font-medium">
+                                {v.name}
+                                <span className="text-xs ml-2 px-2 py-0.5 rounded-full"
+                                  style={{ background: v.status === "active" ? "rgba(74,222,128,0.12)" : "rgba(248,113,113,0.12)", color: v.status === "active" ? "#4ade80" : "#f87171" }}>
+                                  {v.status}
+                                </span>
+                              </p>
+                              <p className="text-white/30 text-xs mt-0.5">{v.contactName} · {v.contactEmail} {v.contactPhone ? `· ${v.contactPhone}` : ""}</p>
+                              {v.ownerNote && <p className="text-white/20 text-xs mt-0.5">{v.ownerNote}</p>}
+                            </div>
+                            <button onClick={() => toggleVenueStatus(v.id, v.status === "active" ? "paused" : "active")}
+                              className="flex-shrink-0 text-xs px-3 py-1.5 rounded-lg border border-white/10 text-white/40 hover:text-white transition">
+                              {v.status === "active" ? "Pause" : "Activate"}
+                            </button>
+                            <button onClick={() => deleteVenue(v.id)}
+                              className="flex-shrink-0 text-xs px-3 py-1.5 rounded-lg border border-white/10 text-white/40 hover:text-red-400 hover:border-red-400/30 transition">
+                              🗑
+                            </button>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}

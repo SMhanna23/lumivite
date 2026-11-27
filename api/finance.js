@@ -1,6 +1,6 @@
 import { initializeApp, getApps, cert } from "firebase-admin/app"
 import { getFirestore } from "firebase-admin/firestore"
-import { getAuth } from "firebase-admin/auth"
+import { requireOwner } from "./_lib/auth.js"
 
 // Initialise Firebase Admin once per cold start
 if (!getApps().length) {
@@ -13,22 +13,10 @@ if (!getApps().length) {
 const ID_RE = /^[a-zA-Z0-9_-]{1,64}$/
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 
-async function requireAdmin(req) {
-  const header = req.headers.authorization || ""
-  const token = header.startsWith("Bearer ") ? header.slice(7) : null
-  if (!token) return false
-  try {
-    await getAuth().verifyIdToken(token)
-    return true
-  } catch {
-    return false
-  }
-}
-
-// Every endpoint here is admin-only — this is financial data, never
-// exposed to any public/client-facing route.
+// Every endpoint here is owner-only — this is financial data, never
+// exposed to any public/client-facing route, and never to a venue account.
 export default async function handler(req, res) {
-  if (!(await requireAdmin(req))) return res.status(401).json({ error: "Unauthorized" })
+  if (!(await requireOwner(req))) return res.status(401).json({ error: "Unauthorized" })
 
   if (req.method === "GET") {
     try {

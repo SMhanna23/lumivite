@@ -1,6 +1,6 @@
 import { initializeApp, getApps, cert } from "firebase-admin/app"
 import { getFirestore } from "firebase-admin/firestore"
-import { getAuth } from "firebase-admin/auth"
+import { requireOwner } from "./_lib/auth.js"
 
 // Initialise Firebase Admin once per cold start
 if (!getApps().length) {
@@ -14,23 +14,11 @@ const ID_RE = /^[a-zA-Z0-9_-]{1,64}$/
 const EVENT_TYPES = ["wedding", "birthday", "occasion"]
 const PACKAGES = ["bronze", "silver", "gold"]
 
-async function requireAdmin(req) {
-  const header = req.headers.authorization || ""
-  const token = header.startsWith("Bearer ") ? header.slice(7) : null
-  if (!token) return false
-  try {
-    await getAuth().verifyIdToken(token)
-    return true
-  } catch {
-    return false
-  }
-}
-
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    // Admin-only: list every planner link (full fields) for the dashboard table.
+    // Owner-only: list every planner link (full fields) for the dashboard table.
     if (req.query?.list === "1") {
-      if (!(await requireAdmin(req))) return res.status(401).json({ error: "Unauthorized" })
+      if (!(await requireOwner(req))) return res.status(401).json({ error: "Unauthorized" })
       try {
         const db = getFirestore()
         const snap = await db.collection("plannerLinks").orderBy("createdAt", "desc").get()
@@ -80,8 +68,8 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "PUT") {
-    // Admin-only: create a new planner link.
-    if (!(await requireAdmin(req))) return res.status(401).json({ error: "Unauthorized" })
+    // Owner-only: create a new planner link.
+    if (!(await requireOwner(req))) return res.status(401).json({ error: "Unauthorized" })
 
     const { eventType, package: pkg, template, customPrice, note } = req.body || {}
     const price = Number(customPrice)
@@ -127,8 +115,8 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "DELETE") {
-    // Admin-only: permanently remove a planner link.
-    if (!(await requireAdmin(req))) return res.status(401).json({ error: "Unauthorized" })
+    // Owner-only: permanently remove a planner link.
+    if (!(await requireOwner(req))) return res.status(401).json({ error: "Unauthorized" })
 
     const { id } = req.query || {}
     if (!id || !ID_RE.test(id)) {
